@@ -3,13 +3,18 @@ import { Menu } from "lucide-react"
 import { Logo } from "@/components/layout/logo"
 import { LanguageMenu, RegionSwitcher } from "@/components/layout/region-switcher"
 import { CartButton } from "@/components/cart/cart-button"
+import { AccountButton } from "@/components/account/account-button"
+import { ThemeToggle } from "@/components/layout/theme-toggle"
 import { CATEGORIES } from "@/lib/catalog"
 import { getDictionary, storePath, type Store } from "@/lib/i18n"
+import { getExtras } from "@/lib/i18n/extras"
 
 export function Header({ store }: { store: Store }) {
   const t = getDictionary(store)
+  const x = getExtras(store)
   const nav = [
     ...CATEGORIES.map((c) => ({ href: storePath(store, `/${c.slug}`), label: t.categories[c.slug].name })),
+    { href: storePath(store, "/track"), label: x.track.nav },
     { href: storePath(store, "/faq"), label: t.common.help },
     { href: storePath(store, "/contact"), label: t.common.contact },
   ]
@@ -30,6 +35,8 @@ export function Header({ store }: { store: Store }) {
             </span>
           </p>
           <div className="flex shrink-0 items-center gap-3">
+            <ThemeToggle />
+            <span aria-hidden="true" className="h-4 w-px bg-secondary-foreground/25" />
             <LanguageMenu />
             <span aria-hidden="true" className="h-4 w-px bg-secondary-foreground/25" />
             <RegionSwitcher />
@@ -57,6 +64,7 @@ export function Header({ store }: { store: Store }) {
           </nav>
 
           <div className="flex items-center gap-1">
+            <AccountButton />
             <CartButton />
             <details className="group relative md:hidden">
               <summary className="cursor-pointer p-2" aria-label={t.common.openMenu}>

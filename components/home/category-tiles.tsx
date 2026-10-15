@@ -1,11 +1,13 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
-import { CATEGORIES, getProductsByCategory } from "@/lib/catalog"
+import { CATEGORIES } from "@/lib/catalog"
+import { getProducts } from "@/lib/catalog/queries"
 import { fmt, getDictionary, storePath, type Store } from "@/lib/i18n"
 
-export function CategoryTiles({ store }: { store: Store }) {
+export async function CategoryTiles({ store }: { store: Store }) {
   const t = getDictionary(store)
+  const products = await getProducts(store.market)
   return (
     <section aria-labelledby="categories-title" className="mx-auto max-w-7xl px-4 pt-20 md:px-6">
       <div className="mb-8 flex items-end justify-between gap-4">
@@ -15,7 +17,7 @@ export function CategoryTiles({ store }: { store: Store }) {
       </div>
       <ul className="grid gap-4 md:grid-cols-3">
         {CATEGORIES.map((c) => {
-          const count = getProductsByCategory(store.market, c.slug).length
+          const count = products.filter((p) => p.category === c.slug).length
           const copy = t.categories[c.slug]
           return (
             <li key={c.slug}>

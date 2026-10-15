@@ -1,27 +1,43 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { useState, useTransition } from "react"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { useCart } from "@/components/cart/cart-provider"
 import { SummaryRows } from "@/components/cart/cart-view"
 import { useI18n } from "@/components/i18n/i18n-provider"
+import { placeOrder } from "@/lib/actions/checkout"
+import { useSession } from "@/lib/auth-client"
+import { fmt } from "@/lib/i18n/fmt"
 import { storePath } from "@/lib/i18n/config"
 import { MARKETS, formatPrice } from "@/lib/markets"
 import { policyHref } from "@/lib/legal/pages"
 
 export function CheckoutForm() {
-  const { lines, subtotalCents } = useCart()
-  const { store, t: dict, intl } = useI18n()
+  const { lines, subtotalCents, clear } = useCart()
+  const { store, t: dict, x, intl } = useI18n()
   const t = dict.checkout
   const { market } = store
+  const router = useRouter()
+  const { data: session } = useSession()
   const [accepted, setAccepted] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
+  const [failed, setFailed] = useState(false)
+  const [placed, setPlaced] = useState(false)
+  const [pending, startTransition] = useTransition()
   const isEu = market === "eu"
   const regionNames = new Intl.DisplayNames([intl], { type: "region" })
   const countries = MARKETS[market].shipsTo
     .map((c) => ({ code: c.code, name: regionNames.of(c.code) ?? c.name }))
     .sort((a, b) => a.name.localeCompare(b.name, intl))
+
+  if (placed) {
+    return (
+      <p role="status" className="py-16 text-sm text-muted-foreground">
+        {x.checkout.placing}
+      </p>
+    )
+  }
 
   if (lines.length === 0) {
     return (
@@ -39,13 +55,57 @@ export function CheckoutForm() {
       className="grid gap-10 py-8 lg:grid-cols-12"
       onSubmit={(e) => {
         e.preventDefault()
-        if (accepted) setSubmitted(true)
+        if (!accepted || pending) return
+        const form = new FormData(e.currentTarget)
+        const get = (name: string) => String(form.get(name) ?? "")
+        setFailed(false)
+        startTransition(async () => {
+          const result = await placeOrder({
+            market: store.market,
+            lang: store.lang,
+            lines: lines.map((l) => ({ slug: l.slug, quantity: l.quantity })),
+            email: get("email"),
+            phone: get("phone"),
+            firstName: get("given-name"),
+            lastName: get("family-name"),
+            address: get("address"),
+            postal: get("postal"),
+            city: get("city"),
+            state: get("state"),
+            country: get("country"),
+            accepted,
+          })
+          if (!result.ok) {
+            setFailed(true)
+            return
+          }
+          setPlaced(true)
+          clear()
+          router.push(storePath(store, `/order/${result.orderNumber}`))
+        })
       }}
     >
       <div className="flex flex-col gap-8 lg:col-span-7">
         <fieldset className="flex flex-col gap-4">
           <legend className="label-caps mb-4">{t.contact}</legend>
-          <Field label={t.email} name="email" type="email" autoComplete="email" required />
+          <p className="text-sm text-muted-foreground">
+            {session?.user ? (
+              fmt(x.checkout.signedInAs, { email: session.user.email })
+            ) : (
+              <Link href={storePath(store, "/account")} className="underline underline-offset-4">
+                {x.checkout.signInHint}
+              </Link>
+            )}
+          </p>
+          <Field
+            label={t.email}
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            defaultValue={session?.user?.email ?? undefined}
+            key={session?.user?.email ?? "guest"}
+          />
           <Field label={t.phone} name="phone" type="tel" autoComplete="tel" required />
         </fieldset>
 
@@ -133,12 +193,12 @@ export function CheckoutForm() {
         </label>
 
         {/* EU Directive 2011/83, Art. 8(2): the order button must state the obligation to pay. */}
-        <Button type="submit" size="lg" className="w-full" disabled={!accepted}>
-          {t.submit}
+        <Button type="submit" size="lg" className="w-full" disabled={!accepted || pending}>
+          {pending ? x.checkout.placing : t.submit}
         </Button>
-        {submitted && (
-          <p role="status" className="text-sm text-primary">
-            {t.notConnected}
+        {failed && (
+          <p role="alert" className="text-sm text-primary">
+            {x.checkout.error}
           </p>
         )}
       </aside>

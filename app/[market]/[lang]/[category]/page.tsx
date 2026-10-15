@@ -5,12 +5,12 @@ import {
   CATEGORIES,
   TIRE_OPTIONS,
   filterProducts,
-  getProductsByCategory,
   isCategory,
   localizeProduct,
   type Category,
   type Product,
 } from "@/lib/catalog"
+import { getProductsByCategory } from "@/lib/catalog/queries"
 import { ALL_STORES, fmt, getDictionary, parseStore, storePath, type Dictionary, type Store } from "@/lib/i18n"
 import { storeAlternates } from "@/lib/seo"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
@@ -49,7 +49,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
     Object.entries(raw).map(([k, v]) => [k, typeof v === "string" && v !== "" ? v : undefined]),
   )
   const copy = t.categories[category]
-  const all = getProductsByCategory(store.market, category).map((p) => localizeProduct(p, store))
+  const all = (await getProductsByCategory(store.market, category)).map((p) => localizeProduct(p, store))
   const products = filterProducts(all, filters)
   const active = Object.values(filters).some(Boolean)
 

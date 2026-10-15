@@ -1,16 +1,18 @@
 import type { MetadataRoute } from "next"
-import { CATEGORIES, getProducts } from "@/lib/catalog"
+import { CATEGORIES } from "@/lib/catalog"
+import { getProducts } from "@/lib/catalog/queries"
 import { policySlugs } from "@/lib/legal"
 import { storePath, storesOf } from "@/lib/i18n/config"
 import { markets, type Market } from "@/lib/markets"
 import { absoluteUrl, hreflangMap } from "@/lib/seo"
 
 // One entry per store language, each listing the full hreflang cluster.
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = []
   const shared = ["", ...CATEGORIES.map((c) => `/${c.slug}`), "/faq", "/contact", "/about"]
 
   for (const market of markets) {
+    const marketProducts = await getProducts(market)
     const pages: { path: string; availableIn: readonly Market[] }[] = [
       ...shared.map((path) => ({ path, availableIn: markets })),
       ...policySlugs(market).map((slug) => ({
@@ -18,7 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         availableIn: markets.filter((m) => policySlugs(m).includes(slug)),
       })),
       // Sample records are noindex and stay out of the sitemap.
-      ...getProducts(market)
+      ...marketProducts
         .filter((p) => !p.sample)
         .map((p) => ({
           path: `/product/${p.slug}`,

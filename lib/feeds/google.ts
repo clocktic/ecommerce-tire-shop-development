@@ -1,4 +1,5 @@
-import { getProducts, localizeProduct, offerFor, tireServiceDescription, tireSize, type Product } from "@/lib/catalog"
+import { localizeProduct, offerFor, tireServiceDescription, tireSize, type Product } from "@/lib/catalog"
+import { getProducts } from "@/lib/catalog/queries"
 import { COMPANY } from "@/lib/company"
 import { getDictionary, storePath, type Dictionary, type Store } from "@/lib/i18n"
 import { MARKETS, type Market } from "@/lib/markets"
@@ -153,12 +154,12 @@ function item(product: Product, store: Store, d: Dictionary): string {
   return `    <item>\n${lines.join("\n")}\n    </item>`
 }
 
-export function buildGoogleFeed(store: Store): { xml: string; included: number; skipped: FeedSkip[] } {
+export async function buildGoogleFeed(store: Store): Promise<{ xml: string; included: number; skipped: FeedSkip[] }> {
   const { market } = store
   const d = getDictionary(store)
   const skipped: FeedSkip[] = []
   const items: string[] = []
-  for (const base of getProducts(market)) {
+  for (const base of await getProducts(market)) {
     const product = localizeProduct(base, store)
     const reason = feedExclusion(product, market)
     if (reason) skipped.push({ slug: product.slug, reason })

@@ -10,7 +10,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ fil
   const store = match ? parseStore(match[1], match[2]) : null
   if (!store) return new Response("Not found", { status: 404 })
 
-  const { xml, included, skipped } = buildGoogleFeed(store)
+  const { xml, included, skipped } = await buildGoogleFeed(store)
   return new Response(xml, {
     headers: {
       "Content-Type": "application/xml; charset=utf-8",

@@ -1,4 +1,3 @@
-import { PRODUCTS } from "@/lib/catalog/data"
 import type { Category, Offer, Product } from "@/lib/catalog/types"
 import type { Market } from "@/lib/markets"
 import { localeMeta, type Store } from "@/lib/i18n/config"
@@ -59,22 +58,6 @@ export function offerFor(product: Product, market: Market, now = new Date()): Of
     return { priceCents: offer.compareAtCents, availability: offer.availability }
   }
   return offer
-}
-
-export function getProducts(market: Market): Product[] {
-  return PRODUCTS.filter((p) => p.offers[market])
-}
-
-export function getProductsByCategory(market: Market, category: Category): Product[] {
-  return getProducts(market).filter((p) => p.category === category)
-}
-
-export function getProductBySlug(slug: string): Product | undefined {
-  return PRODUCTS.find((p) => p.slug === slug)
-}
-
-export function getAllProductSlugs(): string[] {
-  return PRODUCTS.map((p) => p.slug)
 }
 
 export type CatalogFilters = Record<string, string | undefined>

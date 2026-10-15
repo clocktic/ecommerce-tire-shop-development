@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { getProducts, localizeProduct } from "@/lib/catalog"
+import { localizeProduct } from "@/lib/catalog"
+import { getProducts } from "@/lib/catalog/queries"
 import { getDictionary, parseStore, storePath } from "@/lib/i18n"
 import { Hero } from "@/components/home/hero"
 import { CategoryTiles } from "@/components/home/category-tiles"
@@ -13,7 +14,7 @@ export default async function HomePage({ params }: { params: Promise<{ market: s
   const store = parseStore(market, lang)
   if (!store) notFound()
   const t = getDictionary(store)
-  const featured = getProducts(store.market)
+  const featured = (await getProducts(store.market))
     .slice(0, 4)
     .map((p) => localizeProduct(p, store))
 

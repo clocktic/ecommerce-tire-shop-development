@@ -7,6 +7,7 @@ import { getDictionary, parseStore, storePath } from "@/lib/i18n"
 import { policyHref } from "@/lib/legal/pages"
 import { storeAlternates } from "@/lib/seo"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
+import { ContactForm } from "@/components/contact/contact-form"
 
 type Params = Promise<{ market: string; lang: string }>
 
@@ -48,7 +49,8 @@ export default async function ContactPage({ params }: { params: Params }) {
       </header>
 
       <div className="grid gap-10 py-10 lg:grid-cols-12">
-        <ul className="grid gap-px border border-border bg-border sm:grid-cols-2 lg:col-span-8">
+        <div className="flex flex-col gap-10 lg:col-span-8">
+        <ul className="grid gap-px border border-border bg-border sm:grid-cols-2">
           {cards.map(({ icon: Icon, label, value, href }) => (
             <li key={label} className="flex flex-col gap-3 bg-card p-6">
               <Icon className="size-5 text-primary" aria-hidden="true" />
@@ -63,6 +65,8 @@ export default async function ContactPage({ params }: { params: Params }) {
             </li>
           ))}
         </ul>
+        <ContactForm />
+        </div>
 
         <aside className="flex flex-col gap-6 lg:col-span-4">
           <div className="flex flex-col gap-2">

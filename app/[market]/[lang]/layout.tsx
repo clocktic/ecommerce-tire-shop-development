@@ -10,8 +10,11 @@ import { I18nProvider } from "@/components/i18n/i18n-provider"
 import { ConsentDefaults } from "@/components/legal/consent-defaults"
 import { CookieConsent } from "@/components/legal/cookie-consent"
 import { OrganizationJsonLd } from "@/components/legal/organization-jsonld"
+import { ThemeProvider } from "@/components/layout/theme-provider"
+import { ChatWidget } from "@/components/chat/chat-widget"
 import { COMPANY } from "@/lib/company"
 import { ALL_STORES, getDictionary, localeMeta, parseStore } from "@/lib/i18n"
+import { getExtras } from "@/lib/i18n/extras"
 import { SITE_URL, storeAlternates } from "@/lib/seo"
 import "@/app/globals.css"
 
@@ -42,7 +45,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 }
 
 export const viewport: Viewport = {
-  themeColor: "#f2f3f5",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f2f3f5" },
+    { media: "(prefers-color-scheme: dark)", color: "#16181c" },
+  ],
   width: "device-width",
   initialScale: 1,
 }
@@ -55,10 +61,15 @@ export default async function StoreLayout({ children, params }: { children: Reac
   const meta = localeMeta(store)
 
   return (
-    <html lang={meta.htmlLang} className={`${archivo.variable} ${jetbrains.variable} bg-background`}>
+    <html
+      lang={meta.htmlLang}
+      className={`${archivo.variable} ${jetbrains.variable} bg-background`}
+      suppressHydrationWarning
+    >
       <body className="min-h-dvh flex flex-col">
         <ConsentDefaults market={store.market} />
-        <I18nProvider store={store} t={t} intl={meta.intlLocale}>
+        <ThemeProvider>
+        <I18nProvider store={store} t={t} x={getExtras(store)} intl={meta.intlLocale}>
           <CartProvider market={store.market}>
             <a
               href="#main"
@@ -73,8 +84,10 @@ export default async function StoreLayout({ children, params }: { children: Reac
             </main>
             <Footer store={store} />
             <CookieConsent />
+            <ChatWidget />
           </CartProvider>
         </I18nProvider>
+        </ThemeProvider>
         <OrganizationJsonLd />
         {process.env.NODE_ENV === "production" && <Analytics />}
       </body>

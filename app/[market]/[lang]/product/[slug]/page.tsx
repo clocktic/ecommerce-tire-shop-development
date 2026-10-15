@@ -3,8 +3,9 @@ import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Truck, RotateCcw, ShieldCheck } from "lucide-react"
-import { getAllProductSlugs, getProductBySlug, getProductsByCategory, localizeProduct, offerFor } from "@/lib/catalog"
-import { ALL_STORES, counterpart, fmt, getDictionary, parseStore, storePath, type Store } from "@/lib/i18n"
+import { localizeProduct, offerFor } from "@/lib/catalog"
+import { getProductBySlug, getProductsByCategory } from "@/lib/catalog/queries"
+import { counterpart, fmt, getDictionary, parseStore, storePath, type Store } from "@/lib/i18n"
 import { markets } from "@/lib/markets"
 import { storeAlternates } from "@/lib/seo"
 import { productJsonLd } from "@/lib/structured-data"
@@ -19,14 +20,13 @@ import { Utqg } from "@/components/product/utqg"
 
 type Params = Promise<{ market: string; lang: string; slug: string }>
 
-export function generateStaticParams() {
-  return ALL_STORES.flatMap(({ market, lang }) => getAllProductSlugs().map((slug) => ({ market, lang, slug })))
-}
+// Products come from the database and change from the admin, so pages render on request.
+export const dynamicParams = true
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { market, lang, slug } = await params
   const store = parseStore(market, lang)
-  const base = getProductBySlug(slug)
+  const base = await getProductBySlug(slug)
   if (!base || !store) return {}
   const product = localizeProduct(base, store)
   const availableIn = markets.filter((m) => product.offers[m])
@@ -43,7 +43,7 @@ export default async function ProductPage({ params }: { params: Params }) {
   const { market, lang, slug } = await params
   const store = parseStore(market, lang)
   if (!store) notFound()
-  const base = getProductBySlug(slug)
+  const base = await getProductBySlug(slug)
   if (!base) notFound()
 
   const t = getDictionary(store)
@@ -55,7 +55,7 @@ export default async function ProductPage({ params }: { params: Params }) {
   const { code, meta } = productCode(product, t)
   const categoryName = t.categories[product.category].name
   const jsonLd = productJsonLd(product, store)
-  const related = getProductsByCategory(store.market, product.category)
+  const related = (await getProductsByCategory(store.market, product.category))
     .filter((p) => p.slug !== product.slug)
     .slice(0, 4)
     .map((p) => localizeProduct(p, store))
