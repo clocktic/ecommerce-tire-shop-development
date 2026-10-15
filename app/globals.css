@@ -145,6 +145,42 @@
   }
 }
 
+/* Hero wheel roll-in. Travel is 125% of the wheel's own width, so a matching
+   rotation of 125% / π × 360° ≈ 143° keeps the tread from sliding. Both use the
+   same duration and easing so the roll stays locked to the travel. */
+@keyframes wheel-travel-in {
+  from {
+    transform: translateX(-125%);
+  }
+}
+@keyframes wheel-spin-in {
+  from {
+    transform: rotate(-143deg);
+  }
+}
+.hero-wheel-travel,
+.hero-wheel-spin {
+  animation-duration: 1.6s;
+  animation-delay: 0.15s;
+  animation-timing-function: cubic-bezier(0.2, 0.75, 0.25, 1);
+  animation-fill-mode: both;
+}
+.hero-wheel-travel {
+  animation-name: wheel-travel-in;
+}
+.hero-wheel-spin {
+  animation-name: wheel-spin-in;
+}
+.hero-wheel-shadow {
+  background: radial-gradient(closest-side, oklch(0.22 0.02 255 / 0.55), oklch(0.22 0.02 255 / 0));
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-wheel-travel,
+  .hero-wheel-spin {
+    animation: none;
+  }
+}
+
 /* Native <details> disclosure marker reset. */
 details > summary {
   list-style: none;

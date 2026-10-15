@@ -6,15 +6,34 @@ export function Hero({ store }: { store: Store }) {
   const t = getDictionary(store)
   return (
     <section aria-labelledby="hero-title" className="relative overflow-hidden bg-photo">
-      <div className="relative aspect-[16/10] w-full lg:absolute lg:inset-y-0 lg:-left-32 lg:right-0 lg:aspect-auto lg:w-auto">
-        <Image
-          src="/images/hero-wheel.png"
-          alt={t.home.heroAlt}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-left"
-        />
+      <div
+        className="relative aspect-[16/10] w-full lg:absolute lg:inset-y-0 lg:-left-32 lg:right-0 lg:aspect-auto lg:w-auto"
+        style={{ containerType: "size" }}
+      >
+        {/* Same box object-cover + object-left would give the 1408×768 photo, so the
+            wheel can be placed in photo percentages at any container size. */}
+        <div
+          className="absolute top-1/2 left-0 -translate-y-1/2"
+          style={{ width: "max(100cqw, calc(100cqh * 1408 / 768))", aspectRatio: "1408 / 768" }}
+        >
+          <Image src="/images/hero-backdrop.png" alt="" fill priority sizes="100vw" className="object-cover" />
+          <div className="hero-wheel-travel absolute" style={{ left: "9.517%", top: "5.729%", width: "48.58%" }}>
+            <div
+              aria-hidden="true"
+              className="hero-wheel-shadow absolute"
+              style={{ left: "8%", right: "8%", bottom: "-4%", height: "9%" }}
+            />
+            <div className="hero-wheel-spin relative aspect-square">
+              <Image
+                src="/images/hero-wheel-cutout.png"
+                alt={t.home.heroAlt}
+                fill
+                priority
+                sizes="(min-width: 1024px) 50vw, 90vw"
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="relative mx-auto grid max-w-7xl px-4 py-10 md:px-6 lg:min-h-[640px] lg:grid-cols-12 lg:py-16">
