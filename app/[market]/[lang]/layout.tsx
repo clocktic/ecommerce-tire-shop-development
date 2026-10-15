@@ -13,7 +13,7 @@ import { OrganizationJsonLd } from "@/components/legal/organization-jsonld"
 import { COMPANY } from "@/lib/company"
 import { ALL_STORES, getDictionary, localeMeta, parseStore } from "@/lib/i18n"
 import { SITE_URL, storeAlternates } from "@/lib/seo"
-import "../../globals.css"
+import "@/app/globals.css"
 
 const archivo = Archivo({ subsets: ["latin", "latin-ext"], axes: ["wdth"], variable: "--font-archivo" })
 const jetbrains = JetBrains_Mono({ subsets: ["latin", "latin-ext"], variable: "--font-jetbrains" })
