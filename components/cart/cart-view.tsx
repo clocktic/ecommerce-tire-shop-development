@@ -5,20 +5,24 @@ import Link from "next/link"
 import { Minus, Plus, X } from "lucide-react"
 import { buttonVariants } from "@/components/ui/button"
 import { MAX_QUANTITY, useCart } from "@/components/cart/cart-provider"
-import { MARKETS, formatPrice } from "@/lib/markets"
-import { POLICIES, deliveryLabel } from "@/lib/policies"
+import { useI18n } from "@/components/i18n/i18n-provider"
+import { fmt } from "@/lib/i18n/fmt"
+import { storePath } from "@/lib/i18n/config"
+import { formatPrice } from "@/lib/markets"
+import { POLICIES } from "@/lib/policies"
 import { cn } from "@/lib/utils"
 
 export function CartView() {
-  const { market, lines, subtotalCents, setQuantity, remove } = useCart()
-  const shipping = POLICIES[market].shipping
+  const { lines, subtotalCents, setQuantity, remove } = useCart()
+  const { store, t, intl } = useI18n()
+  const { market } = store
 
   if (lines.length === 0) {
     return (
       <div className="flex flex-col items-start gap-4 py-16">
-        <p className="font-expanded text-xl font-extrabold uppercase">Your cart is empty</p>
-        <Link href={`/${market}/tires`} className={buttonVariants({ size: "lg" })}>
-          Shop tires
+        <p className="font-expanded text-xl font-extrabold uppercase">{t.cart.empty}</p>
+        <Link href={storePath(store, "/tires")} className={buttonVariants({ size: "lg" })}>
+          {t.cart.shopTires}
         </Link>
       </div>
     )
@@ -34,25 +38,25 @@ export function CartView() {
             </div>
             <div className="flex flex-1 flex-col gap-3">
               <div className="flex items-start justify-between gap-4">
-                <Link href={`/${market}/product/${line.slug}`} className="font-semibold leading-snug hover:text-primary">
+                <Link href={storePath(store, `/product/${line.slug}`)} className="font-semibold leading-snug hover:text-primary">
                   {line.name}
                 </Link>
                 <button
                   type="button"
                   onClick={() => remove(line.slug)}
                   className="p-1 text-muted-foreground hover:text-foreground"
-                  aria-label={`Remove ${line.name}`}
+                  aria-label={fmt(t.cart.remove, { name: line.name })}
                 >
                   <X className="size-4" aria-hidden="true" />
                 </button>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center border border-border" role="group" aria-label={`Quantity for ${line.name}`}>
+                <div className="flex items-center border border-border" role="group" aria-label={fmt(t.cart.quantityFor, { name: line.name })}>
                   <button
                     type="button"
                     onClick={() => setQuantity(line.slug, line.quantity - 1)}
                     className="flex size-9 items-center justify-center hover:bg-muted"
-                    aria-label="Decrease quantity"
+                    aria-label={t.product.decrease}
                   >
                     <Minus className="size-3.5" aria-hidden="true" />
                   </button>
@@ -62,13 +66,13 @@ export function CartView() {
                     onClick={() => setQuantity(line.slug, line.quantity + 1)}
                     disabled={line.quantity >= MAX_QUANTITY}
                     className="flex size-9 items-center justify-center hover:bg-muted disabled:opacity-40"
-                    aria-label="Increase quantity"
+                    aria-label={t.product.increase}
                   >
                     <Plus className="size-3.5" aria-hidden="true" />
                   </button>
                 </div>
                 <span className="font-mono font-semibold tabular-nums">
-                  {formatPrice(line.priceCents * line.quantity, market)}
+                  {formatPrice(line.priceCents * line.quantity, market, intl)}
                 </span>
               </div>
             </div>
@@ -78,14 +82,14 @@ export function CartView() {
 
       <aside aria-labelledby="summary-title" className="flex flex-col gap-4 border border-border bg-card p-5 lg:col-span-4 lg:self-start">
         <h2 id="summary-title" className="label-caps">
-          Order summary
+          {t.cart.summary}
         </h2>
         <SummaryRows subtotalCents={subtotalCents} />
         <p className="text-xs leading-relaxed text-muted-foreground">
-          Delivery in {deliveryLabel(market)} to {shipping.area}.
+          {t.cart.delivery}
         </p>
-        <Link href={`/${market}/checkout`} className={cn(buttonVariants({ size: "lg" }), "w-full")}>
-          Checkout
+        <Link href={storePath(store, "/checkout")} className={cn(buttonVariants({ size: "lg" }), "w-full")}>
+          {t.cart.checkout}
         </Link>
       </aside>
     </div>
@@ -93,30 +97,33 @@ export function CartView() {
 }
 
 export function SummaryRows({ subtotalCents }: { subtotalCents: number }) {
-  const { market } = useCart()
+  const { store, t, intl } = useI18n()
+  const { market } = store
   const shipping = POLICIES[market].shipping
   const total = subtotalCents + shipping.rateCents
   return (
     <dl className="flex flex-col gap-2 text-sm">
       <div className="flex justify-between">
-        <dt className="text-muted-foreground">Subtotal</dt>
-        <dd className="font-mono tabular-nums">{formatPrice(subtotalCents, market)}</dd>
+        <dt className="text-muted-foreground">{t.cart.subtotal}</dt>
+        <dd className="font-mono tabular-nums">{formatPrice(subtotalCents, market, intl)}</dd>
       </div>
       <div className="flex justify-between">
-        <dt className="text-muted-foreground">Shipping</dt>
-        <dd className="font-mono tabular-nums">{shipping.rateCents === 0 ? "Free" : formatPrice(shipping.rateCents, market)}</dd>
+        <dt className="text-muted-foreground">{t.cart.shipping}</dt>
+        <dd className="font-mono tabular-nums">
+          {shipping.rateCents === 0 ? t.common.free : formatPrice(shipping.rateCents, market, intl)}
+        </dd>
       </div>
-      {market === "us" && (
-        <div className="flex justify-between">
-          <dt className="text-muted-foreground">Sales tax</dt>
-          <dd className="font-mono text-muted-foreground">At checkout</dd>
+      {t.cart.tax && (
+        <div className="flex justify-between gap-4">
+          <dt className="text-muted-foreground">{t.cart.tax.label}</dt>
+          <dd className="font-mono text-muted-foreground">{t.cart.tax.value}</dd>
         </div>
       )}
       <div className="flex justify-between border-t border-border pt-2 text-base font-semibold">
-        <dt>Total</dt>
-        <dd className="font-mono tabular-nums">{formatPrice(total, market)}</dd>
+        <dt>{t.cart.total}</dt>
+        <dd className="font-mono tabular-nums">{formatPrice(total, market, intl)}</dd>
       </div>
-      {market === "eu" && <p className="text-xs text-muted-foreground">{MARKETS.eu.priceNote}.</p>}
+      {t.cart.priceNote && <p className="text-xs text-muted-foreground">{t.cart.priceNote}</p>}
     </dl>
   )
 }

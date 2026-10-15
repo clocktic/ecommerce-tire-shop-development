@@ -4,8 +4,10 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { X } from "lucide-react"
-import { GEO_COOKIE, MARKET_COOKIE, MARKETS, isMarket, type Market } from "@/lib/markets"
-import { rememberMarket, swapMarket } from "@/components/layout/region-switcher"
+import { useI18n } from "@/components/i18n/i18n-provider"
+import { rememberMarket } from "@/components/layout/region-switcher"
+import { counterpart, swapStorePath } from "@/lib/i18n/config"
+import { GEO_COOKIE, MARKET_COOKIE, isMarket } from "@/lib/markets"
 
 function readCookie(name: string) {
   return document.cookie
@@ -16,43 +18,38 @@ function readCookie(name: string) {
 
 // Shown when the visitor's location points to the other store and they have not
 // picked a store themselves. Never auto-redirects a prefixed URL.
-export function GeoBanner({ market }: { market: Market }) {
+export function GeoBanner() {
   const pathname = usePathname()
-  const [suggested, setSuggested] = useState<Market | null>(null)
+  const { store, t } = useI18n()
+  const [show, setShow] = useState(false)
 
   useEffect(() => {
     const geo = readCookie(GEO_COOKIE)
     const chosen = readCookie(MARKET_COOKIE)
-    if (isMarket(geo) && geo !== market && !chosen) setSuggested(geo)
-    else setSuggested(null)
-  }, [market])
+    setShow(isMarket(geo) && geo !== store.market && !chosen)
+  }, [store.market])
 
-  if (!suggested) return null
+  if (!show) return null
 
+  const target = counterpart(store)
   const dismiss = () => {
-    rememberMarket(market)
-    setSuggested(null)
+    rememberMarket(store.market)
+    setShow(false)
   }
 
   return (
-    <div role="region" aria-label="Store region suggestion" className="bg-primary text-primary-foreground">
+    <div role="region" aria-label={t.geo.region} className="bg-primary text-primary-foreground">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2 text-sm md:px-6">
-        <p className="text-pretty">
-          {"You're viewing the "}
-          {MARKETS[market].short}
-          {" store. Shopping from "}
-          {suggested === "us" ? "the United States" : "Europe"}
-          {"?"}
-        </p>
+        <p className="text-pretty">{t.geo.text}</p>
         <div className="flex shrink-0 items-center gap-3">
           <Link
-            href={swapMarket(pathname, suggested)}
-            onClick={() => rememberMarket(suggested)}
+            href={swapStorePath(pathname, target)}
+            onClick={() => rememberMarket(target.market)}
             className="font-mono text-xs uppercase tracking-[0.18em] underline underline-offset-4"
           >
-            Go to {MARKETS[suggested].short} store
+            {t.geo.go}
           </Link>
-          <button type="button" onClick={dismiss} aria-label="Stay in this store" className="p-1">
+          <button type="button" onClick={dismiss} aria-label={t.geo.stay} className="p-1">
             <X className="size-4" aria-hidden="true" />
           </button>
         </div>

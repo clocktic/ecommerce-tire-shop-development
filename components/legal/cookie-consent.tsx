@@ -4,10 +4,13 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { OPEN_CONSENT_EVENT, hasGlobalPrivacyControl, readConsent, saveConsent } from "@/components/legal/consent"
+import { useI18n } from "@/components/i18n/i18n-provider"
 import { policyHref } from "@/lib/legal/pages"
-import type { Market } from "@/lib/markets"
 
-export function CookieConsent({ market }: { market: Market }) {
+export function CookieConsent() {
+  const { store, t } = useI18n()
+  const { market } = store
+  const c = t.consent
   const [open, setOpen] = useState(false)
   const [details, setDetails] = useState(false)
   const [analytics, setAnalytics] = useState(market === "us")
@@ -54,43 +57,29 @@ export function CookieConsent({ market }: { market: Market }) {
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-5 md:px-6">
         <div className="flex flex-col gap-2">
           <h2 id="consent-title" className="label-caps text-foreground">
-            {isEu ? "Cookies & consent" : "Your privacy choices"}
+            {c.title}
           </h2>
           <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">
-            {isEu ? (
-              <>
-                We use strictly necessary cookies to run the store. With your consent we also use analytics and
-                advertising cookies (Google). Nothing optional is set until you choose. You can change your choice at any
-                time under Cookie settings in the footer.{" "}
-                <Link href={policyHref(market, "cookies")} className="underline underline-offset-4">
-                  Cookie Policy
-                </Link>
-              </>
-            ) : (
-              <>
-                We use cookies for analytics and advertising, which may count as &quot;sharing&quot; personal information
-                under some US state laws. You can opt out at any time. We honor Global Privacy Control signals.{" "}
-                <Link href={policyHref(market, "privacy-choices")} className="underline underline-offset-4">
-                  Your Privacy Choices
-                </Link>
-              </>
-            )}
+            {c.text}{" "}
+            <Link href={policyHref(store, isEu ? "cookies" : "privacy-choices")} className="underline underline-offset-4">
+              {c.policyLink}
+            </Link>
           </p>
           {gpc && (
             <p className="text-sm font-medium text-foreground">
-              Global Privacy Control detected — advertising cookies stay off.
+              {c.gpc}
             </p>
           )}
         </div>
 
         {details && (
           <fieldset className="grid gap-3 border border-border p-4 md:grid-cols-3">
-            <legend className="label-caps px-1 text-muted-foreground">Categories</legend>
+            <legend className="label-caps px-1 text-muted-foreground">{c.categories}</legend>
             <label className="flex items-start gap-3 text-sm">
               <input type="checkbox" checked disabled className="mt-1 accent-primary" />
               <span>
-                <span className="block font-semibold">Strictly necessary</span>
-                <span className="text-muted-foreground">Cart, region choice, security. Always on.</span>
+                <span className="block font-semibold">{c.necessary}</span>
+                <span className="text-muted-foreground">{c.necessaryText}</span>
               </span>
             </label>
             <label className="flex items-start gap-3 text-sm">
@@ -101,8 +90,8 @@ export function CookieConsent({ market }: { market: Market }) {
                 className="mt-1 accent-primary"
               />
               <span>
-                <span className="block font-semibold">Analytics</span>
-                <span className="text-muted-foreground">Aggregated visit statistics.</span>
+                <span className="block font-semibold">{c.analytics}</span>
+                <span className="text-muted-foreground">{c.analyticsText}</span>
               </span>
             </label>
             <label className="flex items-start gap-3 text-sm">
@@ -114,36 +103,25 @@ export function CookieConsent({ market }: { market: Market }) {
                 className="mt-1 accent-primary"
               />
               <span>
-                <span className="block font-semibold">Advertising</span>
-                <span className="text-muted-foreground">Ad measurement and personalisation.</span>
+                <span className="block font-semibold">{c.advertising}</span>
+                <span className="text-muted-foreground">{c.advertisingText}</span>
               </span>
             </label>
           </fieldset>
         )}
 
         <div className="flex flex-wrap gap-2">
-          {isEu ? (
-            <>
-              <Button onClick={() => persist(true, true)}>Accept all</Button>
-              <Button variant="outline" onClick={() => persist(false, false)}>
-                Reject all
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button onClick={() => persist(true, true)}>OK</Button>
-              <Button variant="outline" onClick={() => persist(analytics, false)}>
-                Opt out of sharing
-              </Button>
-            </>
-          )}
+          <Button onClick={() => persist(true, true)}>{c.primary}</Button>
+          <Button variant="outline" onClick={() => (isEu ? persist(false, false) : persist(analytics, false))}>
+            {c.secondary}
+          </Button>
           {details ? (
             <Button variant="ghost" onClick={() => persist(analytics, ads)}>
-              Save choices
+              {c.save}
             </Button>
           ) : (
             <Button variant="ghost" onClick={() => setDetails(true)}>
-              Customize
+              {c.customize}
             </Button>
           )}
         </div>

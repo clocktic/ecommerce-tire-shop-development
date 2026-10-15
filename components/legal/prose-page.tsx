@@ -1,37 +1,39 @@
 import Link from "next/link"
 import type { Block, PolicyDoc } from "@/lib/legal/types"
-import { POLICY_PAGES, policyHref } from "@/lib/legal/pages"
-import { MARKETS, type Market } from "@/lib/markets"
+import { policyLinks } from "@/lib/legal"
+import { policyHref } from "@/lib/legal/pages"
+import { getDictionary, localeMeta, storePath, type Store } from "@/lib/i18n"
 import { COMPANY } from "@/lib/company"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
 import { cn } from "@/lib/utils"
 
 export function ProsePage({
-  market,
+  store,
   doc,
   slug,
   updated,
   children,
 }: {
-  market: Market
+  store: Store
   doc: PolicyDoc
   slug: string
   updated: string
   children?: React.ReactNode
 }) {
-  const formatted = new Intl.DateTimeFormat(MARKETS[market].intlLocale, { dateStyle: "long" }).format(new Date(updated))
+  const t = getDictionary(store)
+  const formatted = new Intl.DateTimeFormat(localeMeta(store).intlLocale, { dateStyle: "long" }).format(new Date(updated))
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-6">
-      <Breadcrumbs items={[{ href: `/${market}`, label: "Home" }, { label: doc.title }]} />
+      <Breadcrumbs label={t.common.breadcrumb} items={[{ href: storePath(store), label: t.common.home }, { label: doc.title }]} />
       <div className="grid gap-12 pb-8 lg:grid-cols-12">
         <aside className="lg:col-span-3">
-          <nav aria-label={`${MARKETS[market].short} policies`} className="lg:sticky lg:top-36">
-            <p className="label-caps mb-3 text-muted-foreground">{MARKETS[market].short} store policies</p>
+          <nav aria-label={t.prose.nav} className="lg:sticky lg:top-36">
+            <p className="label-caps mb-3 text-muted-foreground">{t.prose.nav}</p>
             <ul className="flex flex-col border-l border-border">
-              {POLICY_PAGES[market].map((p) => (
+              {policyLinks(store).map((p) => (
                 <li key={p.slug}>
                   <Link
-                    href={policyHref(market, p.slug)}
+                    href={policyHref(store, p.slug)}
                     aria-current={p.slug === slug ? "page" : undefined}
                     className={cn(
                       "-ml-px block border-l-2 py-1.5 pl-4 text-sm",
@@ -48,13 +50,13 @@ export function ProsePage({
 
         <article className="flex max-w-3xl flex-col gap-10 lg:col-span-8 lg:col-start-5">
           <header className="flex flex-col gap-4 border-b border-border pb-8">
-            <p className="label-caps text-primary">{MARKETS[market].name} store</p>
+            <p className="label-caps text-primary">{t.prose.store}</p>
             <h1 className="text-balance font-expanded text-3xl font-extrabold uppercase leading-tight md:text-5xl">
               {doc.title}
             </h1>
             <p className="text-pretty text-lg leading-relaxed">{doc.intro}</p>
             <p className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
-              Last updated <time dateTime={updated}>{formatted}</time>
+              {t.prose.updated} <time dateTime={updated}>{formatted}</time>
             </p>
           </header>
 
@@ -62,7 +64,7 @@ export function ProsePage({
             <section key={section.heading} className="flex flex-col gap-4">
               <h2 className="font-expanded text-lg font-extrabold uppercase">{section.heading}</h2>
               {section.blocks.map((block, i) => (
-                <BlockView key={i} block={block} />
+                <BlockView key={i} block={block} store={store} />
               ))}
             </section>
           ))}
@@ -70,13 +72,13 @@ export function ProsePage({
           {children}
 
           <footer className="border-t border-border pt-6 text-sm leading-relaxed text-muted-foreground">
-            Questions about this page? Contact {COMPANY.tradingName} at{" "}
+            {t.prose.questions}{" "}
             <a href={`mailto:${COMPANY.email}`} className="underline underline-offset-4">
               {COMPANY.email}
             </a>{" "}
-            or{" "}
-            <Link href={`/${market}/contact`} className="underline underline-offset-4">
-              see all contact options
+            {t.prose.or}{" "}
+            <Link href={storePath(store, "/contact")} className="underline underline-offset-4">
+              {t.prose.allContact}
             </Link>
             .
           </footer>
@@ -86,7 +88,7 @@ export function ProsePage({
   )
 }
 
-function BlockView({ block }: { block: Block }) {
+function BlockView({ block, store }: { block: Block; store: Store }) {
   if (typeof block === "string") return <p className="text-pretty leading-relaxed">{block}</p>
   if ("list" in block) {
     return (
@@ -114,7 +116,7 @@ function BlockView({ block }: { block: Block }) {
   }
   if ("note" in block) return <p className="text-sm text-muted-foreground">{block.note}</p>
   return (
-    <Link href={block.link.href} className="font-mono text-xs uppercase tracking-[0.18em] underline underline-offset-4">
+    <Link href={storePath(store, block.link.href)} className="font-mono text-xs uppercase tracking-[0.18em] underline underline-offset-4">
       {block.link.label}
     </Link>
   )

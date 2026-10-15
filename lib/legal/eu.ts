@@ -71,7 +71,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
           `You have the right to withdraw from this contract within ${r.windowDays} days without giving any reason.`,
           `The withdrawal period will expire after ${r.windowDays} days from the day on which you acquire, or a third party other than the carrier and indicated by you acquires, physical possession of the goods. If you ordered multiple goods delivered separately, the period expires ${r.windowDays} days after you, or your nominated third party, acquire physical possession of the last good.`,
           `To exercise the right of withdrawal, you must inform us (${seller}) of your decision to withdraw from this contract by an unequivocal statement (e.g. an email). You may use the model withdrawal form, but it is not obligatory.`,
-          { link: { href: "/eu/policies/withdrawal-form", label: "Model withdrawal form" } },
+          { link: { href: "/policies/withdrawal-form", label: "Model withdrawal form" } },
           "To meet the withdrawal deadline, it is sufficient for you to send your communication concerning your exercise of the right of withdrawal before the withdrawal period has expired.",
         ],
       },
@@ -229,7 +229,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
         heading: "Conclusion of the contract",
         blocks: [
           "Product listings are an invitation to order. By clicking \"Order with obligation to pay\" you make a binding offer. We confirm receipt by email immediately; this is not yet an acceptance. The contract is concluded when we send the dispatch confirmation, or at the latest when the goods are delivered.",
-          "The contract language is English. We store the contract text and send you the order details and these terms by email.",
+          "The contract language is the language of the store version in which you place the order (English, German, French, Italian, Spanish or Dutch). We store the contract text and send you the order details and these terms by email.",
         ],
       },
       {
@@ -345,6 +345,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
             rows: [
               ["cp_market", "Remembers the store region you chose — 12 months"],
               ["cp_geo", "Store region suggested from your country — 12 months"],
+              ["cp_lang", "Remembers the language you chose — 12 months"],
               ["cp-cart-eu-v1 (local storage)", "Keeps the contents of your cart — until cleared"],
               ["cp-consent-v1 (local storage)", `Stores your cookie choice — ${Math.round(CONSENT_MAX_AGE_DAYS / 30.4)} months`],
             ],

@@ -3,63 +3,71 @@ import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Truck, RotateCcw, ShieldCheck } from "lucide-react"
-import { getAllProductSlugs, getCategory, getProductBySlug, getProductsByCategory, offerFor } from "@/lib/catalog"
-import { MARKETS, isMarket, markets, otherMarket, type Market } from "@/lib/markets"
-import { POLICIES, deliveryLabel } from "@/lib/policies"
-import { marketAlternates } from "@/lib/seo"
+import { getAllProductSlugs, getProductBySlug, getProductsByCategory, localizeProduct, offerFor } from "@/lib/catalog"
+import { ALL_STORES, counterpart, fmt, getDictionary, parseStore, storePath, type Store } from "@/lib/i18n"
+import { markets } from "@/lib/markets"
+import { storeAlternates } from "@/lib/seo"
 import { productJsonLd } from "@/lib/structured-data"
 import { policyHref } from "@/lib/legal/pages"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
 import { AddToCart } from "@/components/product/add-to-cart"
 import { EuTyreLabel } from "@/components/product/eu-tyre-label"
-import { Price, AVAILABILITY_LABEL } from "@/components/product/price"
+import { Price } from "@/components/product/price"
 import { ProductCard, productCode } from "@/components/product/product-card"
 import { ProductDetails } from "@/components/product/product-details"
 import { Utqg } from "@/components/product/utqg"
 
-type Params = Promise<{ market: string; slug: string }>
+type Params = Promise<{ market: string; lang: string; slug: string }>
 
 export function generateStaticParams() {
-  return markets.flatMap((market) => getAllProductSlugs().map((slug) => ({ market, slug })))
+  return ALL_STORES.flatMap(({ market, lang }) => getAllProductSlugs().map((slug) => ({ market, lang, slug })))
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const { market, slug } = await params
-  const product = getProductBySlug(slug)
-  if (!product || !isMarket(market)) return {}
+  const { market, lang, slug } = await params
+  const store = parseStore(market, lang)
+  const base = getProductBySlug(slug)
+  if (!base || !store) return {}
+  const product = localizeProduct(base, store)
   const availableIn = markets.filter((m) => product.offers[m])
   return {
     title: product.name,
     description: product.shortDescription,
-    alternates: marketAlternates(market, `/product/${slug}`, availableIn),
-    robots: product.sample || !product.offers[market] ? { index: false, follow: true } : undefined,
+    alternates: storeAlternates(store, `/product/${slug}`, availableIn),
+    robots: product.sample || !product.offers[store.market] ? { index: false, follow: true } : undefined,
     openGraph: { images: product.images.slice(0, 1) },
   }
 }
 
 export default async function ProductPage({ params }: { params: Params }) {
-  const { market, slug } = await params
-  if (!isMarket(market)) notFound()
-  const product = getProductBySlug(slug)
-  if (!product) notFound()
+  const { market, lang, slug } = await params
+  const store = parseStore(market, lang)
+  if (!store) notFound()
+  const base = getProductBySlug(slug)
+  if (!base) notFound()
 
-  const category = getCategory(product.category)
-  const offer = offerFor(product, market)
+  const t = getDictionary(store)
+  const product = localizeProduct(base, store)
+  const offer = offerFor(product, store.market)
 
-  if (!offer) return <NotInMarket market={market} name={product.name} slug={slug} />
+  if (!offer) return <NotInMarket store={store} name={product.name} slug={slug} />
 
-  const { code, meta } = productCode(product)
-  const policy = POLICIES[market]
-  const jsonLd = productJsonLd(product, market)
-  const related = getProductsByCategory(market, product.category).filter((p) => p.slug !== product.slug).slice(0, 4)
+  const { code, meta } = productCode(product, t)
+  const categoryName = t.categories[product.category].name
+  const jsonLd = productJsonLd(product, store)
+  const related = getProductsByCategory(store.market, product.category)
+    .filter((p) => p.slug !== product.slug)
+    .slice(0, 4)
+    .map((p) => localizeProduct(p, store))
   const defaultQuantity = product.category === "brakes" ? 1 : 4
 
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-6">
       <Breadcrumbs
+        label={t.common.breadcrumb}
         items={[
-          { href: `/${market}`, label: "Home" },
-          { href: `/${market}/${category.slug}`, label: category.name },
+          { href: storePath(store), label: t.common.home },
+          { href: storePath(store, `/${product.category}`), label: categoryName },
           { label: product.name },
         ]}
       />
@@ -77,7 +85,7 @@ export default async function ProductPage({ params }: { params: Params }) {
             />
             {product.sample && (
               <span className="absolute left-4 top-4 bg-background px-2 py-1 font-mono text-xs uppercase tracking-[0.18em]">
-                Demo product
+                {t.product.demoProduct}
               </span>
             )}
           </div>
@@ -96,14 +104,18 @@ export default async function ProductPage({ params }: { params: Params }) {
           </div>
 
           <div className="flex items-end justify-between gap-4 border-y border-border py-4">
-            <Price offer={offer} market={market} size="lg" showNote />
-            <span className="font-mono text-xs uppercase tracking-[0.12em]">{AVAILABILITY_LABEL[offer.availability]}</span>
+            <Price offer={offer} store={store} size="lg" showNote />
+            <span className="text-right font-mono text-xs uppercase tracking-[0.12em]">
+              {t.labels.availability[offer.availability]}
+            </span>
           </div>
 
-          {product.category === "tires" && market === "eu" && product.tire.euLabel && (
-            <EuTyreLabel label={product.tire.euLabel} />
+          {product.category === "tires" && t.product.euLabel && product.tire.euLabel && (
+            <EuTyreLabel label={product.tire.euLabel} text={t.product.euLabel} />
           )}
-          {product.category === "tires" && market === "us" && product.tire.utqg && <Utqg grades={product.tire.utqg} />}
+          {product.category === "tires" && t.product.utqg && product.tire.utqg && (
+            <Utqg grades={product.tire.utqg} text={t.product.utqg} />
+          )}
 
           <AddToCart
             slug={product.slug}
@@ -113,36 +125,24 @@ export default async function ProductPage({ params }: { params: Params }) {
             defaultQuantity={defaultQuantity}
             disabled={offer.availability === "out_of_stock"}
           />
-          {product.sample && (
-            <p className="text-sm text-muted-foreground">
-              Demo listing to preview the layout and cart. It is hidden from search and feeds, and is replaced by real
-              products after the catalog import.
-            </p>
-          )}
+          {product.sample && <p className="text-sm text-muted-foreground">{t.product.demoNote}</p>}
 
           <ul className="flex flex-col divide-y divide-border border border-border bg-card text-sm">
             <li className="flex items-start gap-3 p-4">
               <Truck className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
               <span>
-                <span className="font-semibold">
-                  {policy.shipping.freeShipping ? "Free delivery" : "Delivery"} in {deliveryLabel(market)}
-                </span>
-                <span className="block text-muted-foreground">
-                  To {policy.shipping.area}. Orders before {policy.shipping.cutoff} leave within{" "}
-                  {policy.shipping.handlingDays[0]}–{policy.shipping.handlingDays[1]} business days.
-                </span>
+                <span className="font-semibold">{t.product.deliveryTitle}</span>
+                <span className="block text-muted-foreground">{t.product.deliveryText}</span>
               </span>
             </li>
             <li className="flex items-start gap-3 p-4">
               <RotateCcw className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
               <span>
-                <span className="font-semibold">
-                  {policy.returns.windowDays}-day {market === "eu" ? "right of withdrawal" : "returns"}
-                </span>
+                <span className="font-semibold">{t.product.returnsTitle}</span>
                 <span className="block text-muted-foreground">
-                  Unmounted and unused.{" "}
-                  <Link href={policyHref(market, "returns")} className="underline underline-offset-4">
-                    Return policy
+                  {t.product.returnsText}{" "}
+                  <Link href={policyHref(store, "returns")} className="underline underline-offset-4">
+                    {t.product.returnsLink}
                   </Link>
                 </span>
               </span>
@@ -150,24 +150,24 @@ export default async function ProductPage({ params }: { params: Params }) {
             <li className="flex items-start gap-3 p-4">
               <ShieldCheck className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
               <span>
-                <span className="font-semibold">{market === "eu" ? "2-year legal guarantee" : "Manufacturer warranty"}</span>
-                <span className="block text-muted-foreground">{policy.warranty.summary}</span>
+                <span className="font-semibold">{t.product.warrantyTitle}</span>
+                <span className="block text-muted-foreground">{t.policy.warranty}</span>
               </span>
             </li>
           </ul>
 
-          <ProductDetails product={product} market={market} />
+          <ProductDetails product={product} store={store} />
         </div>
       </div>
 
       {related.length > 0 && (
         <section aria-labelledby="related-title" className="border-t border-border pt-12">
           <h2 id="related-title" className="mb-6 font-expanded text-xl font-extrabold uppercase">
-            More {category.name.toLowerCase()}
+            {fmt(t.product.related, { category: categoryName.toLowerCase() })}
           </h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {related.map((p) => (
-              <ProductCard key={p.slug} product={p} market={market} />
+              <ProductCard key={p.slug} product={p} store={store} />
             ))}
           </div>
         </section>
@@ -183,22 +183,20 @@ export default async function ProductPage({ params }: { params: Params }) {
   )
 }
 
-function NotInMarket({ market, name, slug }: { market: Market; name: string; slug: string }) {
-  const other = otherMarket(market)
+function NotInMarket({ store, name, slug }: { store: Store; name: string; slug: string }) {
+  const t = getDictionary(store)
+  const other = counterpart(store)
   return (
     <div className="mx-auto flex max-w-2xl flex-col items-start gap-4 px-4 py-24 md:px-6">
-      <p className="label-caps text-primary">Not sold in the {MARKETS[market].short} store</p>
+      <p className="label-caps text-primary">{t.product.notSold.eyebrow}</p>
       <h1 className="text-balance font-expanded text-2xl font-extrabold uppercase">{name}</h1>
-      <p className="leading-relaxed text-muted-foreground">
-        This item is approved and stocked for the {MARKETS[other].name} only. Tires, wheels and brake parts must carry the
-        markings required where they are fitted, so each store lists only what it can legally sell.
-      </p>
+      <p className="leading-relaxed text-muted-foreground">{t.product.notSold.text}</p>
       <div className="flex flex-wrap gap-4">
-        <Link href={`/${market}`} className="underline underline-offset-4">
-          Back to the {MARKETS[market].short} store
+        <Link href={storePath(store)} className="underline underline-offset-4">
+          {t.product.notSold.back}
         </Link>
-        <Link href={`/${other}/product/${slug}`} className="underline underline-offset-4">
-          View in the {MARKETS[other].short} store
+        <Link href={storePath(other, `/product/${slug}`)} className="underline underline-offset-4">
+          {t.product.notSold.view}
         </Link>
       </div>
     </div>

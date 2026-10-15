@@ -7,9 +7,9 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: ["/", "/images/", "/feeds/"],
-        disallow: ["/api/", "/us/cart", "/eu/cart", "/us/checkout", "/eu/checkout"],
+        disallow: ["/api/", "/*/*/cart", "/*/*/checkout"],
       },
-      // Merchant Center and Shopping crawlers must reach product pages and images in both stores.
+      // Merchant Center and Shopping crawlers must reach product pages and images in every store language.
       { userAgent: ["Googlebot", "Googlebot-Image", "Storebot-Google", "AdsBot-Google"], allow: "/" },
     ],
     sitemap: absoluteUrl("/sitemap.xml"),

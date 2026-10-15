@@ -3,15 +3,17 @@ import { ChevronDown } from "lucide-react"
 export function FilterSelect({
   name,
   label,
+  any,
   value,
   options,
-  format = (v) => v,
+  labels,
 }: {
   name: string
   label: string
+  any: string
   value?: string
   options: string[]
-  format?: (value: string) => string
+  labels?: Record<string, string>
 }) {
   const id = `filter-${name}`
   return (
@@ -26,10 +28,10 @@ export function FilterSelect({
           defaultValue={value ?? ""}
           className="h-12 w-full appearance-none border border-border bg-card pl-3 pr-9 font-mono text-sm focus-visible:outline-2 focus-visible:outline-ring"
         >
-          <option value="">Any</option>
+          <option value="">{any}</option>
           {options.map((o) => (
             <option key={o} value={o}>
-              {format(o)}
+              {labels?.[o] ?? o}
             </option>
           ))}
         </select>

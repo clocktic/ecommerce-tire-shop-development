@@ -1,4 +1,5 @@
 import type { Market } from "@/lib/markets"
+import type { ContentLang } from "@/lib/i18n/config"
 
 export type Category = "tires" | "wheels" | "brakes"
 export type Availability = "in_stock" | "out_of_stock" | "preorder"
@@ -33,6 +34,16 @@ type ProductBase = {
   specs: Spec[]
   // A product is sold only in the markets it has an offer for.
   offers: Partial<Record<Market, Offer>>
+  // Copy per content language; English fields above are the fallback.
+  translations?: Partial<Record<ContentLang, ProductCopy>>
+}
+
+export type ProductCopy = {
+  name?: string
+  shortDescription?: string
+  description?: string
+  highlights?: string[]
+  specs?: Spec[]
 }
 
 // EU Regulation 2020/740 — must be shown next to the price for EU consumers.

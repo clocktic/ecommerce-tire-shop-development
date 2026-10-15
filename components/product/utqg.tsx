@@ -1,10 +1,13 @@
 import type { Utqg as UtqgGrades } from "@/lib/catalog"
+import type { Dictionary } from "@/lib/i18n"
 
-export function Utqg({ grades }: { grades: UtqgGrades }) {
+type Text = NonNullable<Dictionary["product"]["utqg"]>
+
+export function Utqg({ grades, text }: { grades: UtqgGrades; text: Text }) {
   const rows = [
-    { label: "Treadwear", value: String(grades.treadwear) },
-    { label: "Traction", value: grades.traction },
-    { label: "Temperature", value: grades.temperature },
+    { label: text.treadwear, value: String(grades.treadwear) },
+    { label: text.traction, value: grades.traction },
+    { label: text.temperature, value: grades.temperature },
   ]
   return (
     <section aria-labelledby="utqg-title" className="border border-border bg-card">

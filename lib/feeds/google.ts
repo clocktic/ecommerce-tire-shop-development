@@ -1,24 +1,22 @@
-import { getProducts, offerFor, tireServiceDescription, tireSize, type Product } from "@/lib/catalog"
+import { getProducts, localizeProduct, offerFor, tireServiceDescription, tireSize, type Product } from "@/lib/catalog"
 import { COMPANY } from "@/lib/company"
+import { getDictionary, storePath, type Dictionary, type Store } from "@/lib/i18n"
 import { MARKETS, type Market } from "@/lib/markets"
 import { POLICIES } from "@/lib/policies"
 import { absoluteUrl } from "@/lib/seo"
 
-// One feed per market: /feeds/google-us.xml (USD, US) and /feeds/google-eu.xml
-// (EUR incl. VAT, all EU states). Register each as its own GMC data source with
-// the matching feed label and target countries. Shipping and handling times come
-// from lib/policies.ts — the same numbers as the Shipping page and JSON-LD.
+// One feed per store language: /feeds/google-<market>-<lang>.xml, e.g.
+// google-us-en.xml, google-us-es.xml, google-eu-de.xml. Register each as its own
+// GMC data source with that content language, feed label US or EU and matching
+// target countries (EU suggestion: de → DE, AT, LU, BE; fr → FR, BE, LU; nl → NL, BE;
+// it → IT; es → ES; en → IE, MT and the remaining member states). Titles,
+// descriptions and links follow the store language. Shipping and handling times
+// come from lib/policies.ts — the same numbers as the Shipping page and JSON-LD.
 
 const GOOGLE_CATEGORY: Record<Product["category"], string> = {
   tires: "6093", // Motor Vehicle Tires > Automotive Tires
   wheels: "6090", // Motor Vehicle Rims & Wheels > Automotive Rims & Wheels
   brakes: "2977", // Motor Vehicle Parts > Motor Vehicle Braking
-}
-
-const PRODUCT_TYPE: Record<Product["category"], string> = {
-  tires: "Tires",
-  wheels: "Wheels",
-  brakes: "Brakes",
 }
 
 const DESCRIPTION_LIMIT = 5000
@@ -49,35 +47,36 @@ function description(product: Product): string {
   return compact.length <= DESCRIPTION_LIMIT ? compact : compact.slice(0, DESCRIPTION_LIMIT).replace(/\s+\S*$/, "")
 }
 
-function categoryDetails(product: Product, market: Market): [string, string][] {
+function categoryDetails(product: Product, market: Market, d: Dictionary): [string, string][] {
+  const approval = d.product.spec.approval
   if (product.category === "tires") {
     const t = product.tire
     const rows: [string, string][] = [
-      ["Size", tireSize(t)],
-      ["Load index / speed rating", tireServiceDescription(t)],
-      ["Season", t.season],
+      ["Size / LI / SI", `${tireSize(t)} ${tireServiceDescription(t)}`],
+      [d.product.spec.season, d.labels.season[t.season]],
     ]
-    if (market === "eu" && t.euLabel) {
-      rows.push(["Fuel efficiency class", t.euLabel.fuelEfficiency], ["Wet grip class", t.euLabel.wetGrip], ["External rolling noise", `${t.euLabel.noiseDb} dB (${t.euLabel.noiseClass})`])
+    const label = d.product.euLabel
+    if (label && t.euLabel) {
+      rows.push([label.fuel, t.euLabel.fuelEfficiency], [label.wet, t.euLabel.wetGrip], [label.noise, `${t.euLabel.noiseDb} dB (${t.euLabel.noiseClass})`])
     }
-    if (market === "us" && t.utqg) rows.push(["UTQG", `${t.utqg.treadwear} ${t.utqg.traction} ${t.utqg.temperature}`])
+    if (d.product.utqg && t.utqg) rows.push(["UTQG", `${t.utqg.treadwear} ${t.utqg.traction} ${t.utqg.temperature}`])
     return rows
   }
   if (product.category === "wheels") {
     const w = product.wheel
     return [
-      ["Diameter x width", `${w.diameter} x ${w.width} in`],
-      ["Bolt pattern", w.boltPattern],
-      ["Offset", `ET${w.offset}`],
-      ["Centre bore", `${w.centerBore} mm`],
-      ...(w.approvals[market] ? ([["Approval", w.approvals[market]!]] as [string, string][]) : []),
+      [d.catalog.diameter, `${w.diameter} x ${w.width} in`],
+      [d.catalog.bolt, w.boltPattern],
+      ["ET", `ET${w.offset}`],
+      ["CB", `${w.centerBore} mm`],
+      ...(w.approvals[market] ? ([[approval, w.approvals[market]!]] as [string, string][]) : []),
     ]
   }
   const b = product.brake
   return [
-    ["Axle", b.axle],
-    ...(b.discDiameterMm ? ([["Disc diameter", `${b.discDiameterMm} mm`]] as [string, string][]) : []),
-    ...(b.approvals[market] ? ([["Approval", b.approvals[market]!]] as [string, string][]) : []),
+    [d.catalog.axle, d.labels.axleShort[b.axle]],
+    ...(b.discDiameterMm ? ([[d.catalog.diameter, `${b.discDiameterMm} mm`]] as [string, string][]) : []),
+    ...(b.approvals[market] ? ([[approval, b.approvals[market]!]] as [string, string][]) : []),
   ]
 }
 
@@ -98,10 +97,11 @@ export function feedExclusion(product: Product, market: Market): string | null {
   return null
 }
 
-function item(product: Product, market: Market): string {
+function item(product: Product, store: Store, d: Dictionary): string {
+  const { market } = store
   const offer = offerFor(product, market)!
   const { shipping } = POLICIES[market]
-  const link = absoluteUrl(`/${market}/product/${product.slug}`)
+  const link = absoluteUrl(storePath(store, `/product/${product.slug}`))
   const [hero, ...rest] = product.images.map((src) => absoluteUrl(src))
   const onSale = offer.compareAtCents && offer.compareAtCents > offer.priceCents
   const lines: string[] = []
@@ -128,11 +128,11 @@ function item(product: Product, market: Market): string {
   if (product.mpn) tag("mpn", product.mpn)
   if (!product.gtin && !product.mpn) tag("identifier_exists", "no")
   tag("google_product_category", GOOGLE_CATEGORY[product.category])
-  tag("product_type", PRODUCT_TYPE[product.category])
+  tag("product_type", d.categories[product.category].name)
 
-  for (const [name, value] of [...product.specs.map((s) => [s.label, s.value] as [string, string]), ...categoryDetails(product, market)]) {
+  for (const [name, value] of [...product.specs.map((s) => [s.label, s.value] as [string, string]), ...categoryDetails(product, market, d)]) {
     lines.push(
-      `      <g:product_detail><g:section_name>Specifications</g:section_name><g:attribute_name>${xml(name)}</g:attribute_name><g:attribute_value>${xml(value)}</g:attribute_value></g:product_detail>`,
+      `      <g:product_detail><g:section_name>${xml(d.product.descSpecs)}</g:section_name><g:attribute_name>${xml(name)}</g:attribute_name><g:attribute_value>${xml(value)}</g:attribute_value></g:product_detail>`,
     )
   }
 
@@ -153,21 +153,24 @@ function item(product: Product, market: Market): string {
   return `    <item>\n${lines.join("\n")}\n    </item>`
 }
 
-export function buildGoogleFeed(market: Market): { xml: string; included: number; skipped: FeedSkip[] } {
+export function buildGoogleFeed(store: Store): { xml: string; included: number; skipped: FeedSkip[] } {
+  const { market } = store
+  const d = getDictionary(store)
   const skipped: FeedSkip[] = []
   const items: string[] = []
-  for (const product of getProducts(market)) {
+  for (const base of getProducts(market)) {
+    const product = localizeProduct(base, store)
     const reason = feedExclusion(product, market)
     if (reason) skipped.push({ slug: product.slug, reason })
-    else items.push(item(product, market))
+    else items.push(item(product, store, d))
   }
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
   <channel>
-    <title>${xml(`${COMPANY.tradingName} ${MARKETS[market].short}`)}</title>
-    <link>${xml(absoluteUrl(`/${market}`))}</link>
-    <description>${xml(`${COMPANY.tradingName} ${MARKETS[market].name} product feed`)}</description>
+    <title>${xml(`${COMPANY.tradingName} ${MARKETS[market].short} ${store.lang.toUpperCase()}`)}</title>
+    <link>${xml(absoluteUrl(storePath(store)))}</link>
+    <description>${xml(d.meta.description)}</description>
 ${items.join("\n")}
   </channel>
 </rss>

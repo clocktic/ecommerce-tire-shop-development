@@ -5,23 +5,30 @@ import { useState } from "react"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { useCart } from "@/components/cart/cart-provider"
 import { SummaryRows } from "@/components/cart/cart-view"
+import { useI18n } from "@/components/i18n/i18n-provider"
+import { storePath } from "@/lib/i18n/config"
 import { MARKETS, formatPrice } from "@/lib/markets"
-import { POLICIES, deliveryLabel } from "@/lib/policies"
 import { policyHref } from "@/lib/legal/pages"
 
 export function CheckoutForm() {
-  const { market, lines, subtotalCents } = useCart()
+  const { lines, subtotalCents } = useCart()
+  const { store, t: dict, intl } = useI18n()
+  const t = dict.checkout
+  const { market } = store
   const [accepted, setAccepted] = useState(false)
   const [submitted, setSubmitted] = useState(false)
-  const policy = POLICIES[market]
   const isEu = market === "eu"
+  const regionNames = new Intl.DisplayNames([intl], { type: "region" })
+  const countries = MARKETS[market].shipsTo
+    .map((c) => ({ code: c.code, name: regionNames.of(c.code) ?? c.name }))
+    .sort((a, b) => a.name.localeCompare(b.name, intl))
 
   if (lines.length === 0) {
     return (
       <div className="flex flex-col items-start gap-4 py-16">
-        <p className="font-expanded text-xl font-extrabold uppercase">Nothing to check out</p>
-        <Link href={`/${market}/tires`} className={buttonVariants({ size: "lg" })}>
-          Shop tires
+        <p className="font-expanded text-xl font-extrabold uppercase">{t.nothing}</p>
+        <Link href={storePath(store, "/tires")} className={buttonVariants({ size: "lg" })}>
+          {dict.cart.shopTires}
         </Link>
       </div>
     )
@@ -37,24 +44,24 @@ export function CheckoutForm() {
     >
       <div className="flex flex-col gap-8 lg:col-span-7">
         <fieldset className="flex flex-col gap-4">
-          <legend className="label-caps mb-4">Contact</legend>
-          <Field label="Email" name="email" type="email" autoComplete="email" required />
-          <Field label="Phone" name="phone" type="tel" autoComplete="tel" required />
+          <legend className="label-caps mb-4">{t.contact}</legend>
+          <Field label={t.email} name="email" type="email" autoComplete="email" required />
+          <Field label={t.phone} name="phone" type="tel" autoComplete="tel" required />
         </fieldset>
 
         <fieldset className="grid gap-4 sm:grid-cols-2">
-          <legend className="label-caps mb-4">Delivery address</legend>
-          <Field label="First name" name="given-name" autoComplete="given-name" required />
-          <Field label="Last name" name="family-name" autoComplete="family-name" required />
+          <legend className="label-caps mb-4">{t.address}</legend>
+          <Field label={t.firstName} name="given-name" autoComplete="given-name" required />
+          <Field label={t.lastName} name="family-name" autoComplete="family-name" required />
           <div className="sm:col-span-2">
-            <Field label="Street address" name="address" autoComplete="street-address" required />
+            <Field label={t.street} name="address" autoComplete="street-address" required />
           </div>
-          <Field label={isEu ? "Postcode" : "ZIP code"} name="postal" autoComplete="postal-code" required />
-          <Field label="City" name="city" autoComplete="address-level2" required />
-          {!isEu && <Field label="State" name="state" autoComplete="address-level1" required />}
+          <Field label={t.postal} name="postal" autoComplete="postal-code" required />
+          <Field label={t.city} name="city" autoComplete="address-level2" required />
+          {t.state && <Field label={t.state} name="state" autoComplete="address-level1" required />}
           <div className="flex flex-col gap-1.5">
             <label htmlFor="country" className="label-caps text-muted-foreground">
-              Country
+              {t.country}
             </label>
             <select
               id="country"
@@ -64,8 +71,8 @@ export function CheckoutForm() {
               defaultValue={isEu ? "" : "US"}
               className="h-12 border border-border bg-card px-3 text-sm"
             >
-              {isEu && <option value="">Select country</option>}
-              {MARKETS[market].shipsTo.map((c) => (
+              {isEu && <option value="">{t.selectCountry}</option>}
+              {countries.map((c) => (
                 <option key={c.code} value={c.code}>
                   {c.name}
                 </option>
@@ -73,32 +80,32 @@ export function CheckoutForm() {
             </select>
           </div>
           <p className="text-sm text-muted-foreground sm:col-span-2">
-            We deliver to {policy.shipping.area}. Not available: {policy.shipping.exclusions}.
+            {t.deliverTo}
           </p>
         </fieldset>
 
         <fieldset className="flex flex-col gap-3">
-          <legend className="label-caps mb-4">Payment</legend>
+          <legend className="label-caps mb-4">{t.payment}</legend>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            Accepted: {policy.paymentMethods.join(", ")}. The payment provider is not connected yet in this preview.
+            {t.accepted}
           </p>
         </fieldset>
       </div>
 
       <aside className="flex flex-col gap-5 border border-border bg-card p-5 lg:col-span-5 lg:self-start">
-        <h2 className="label-caps">Your order</h2>
+        <h2 className="label-caps">{t.yourOrder}</h2>
         <ul className="flex flex-col gap-2 text-sm">
           {lines.map((l) => (
             <li key={l.slug} className="flex justify-between gap-4">
               <span>
                 {l.quantity} × {l.name}
               </span>
-              <span className="font-mono tabular-nums">{formatPrice(l.priceCents * l.quantity, market)}</span>
+              <span className="font-mono tabular-nums">{formatPrice(l.priceCents * l.quantity, market, intl)}</span>
             </li>
           ))}
         </ul>
         <SummaryRows subtotalCents={subtotalCents} />
-        <p className="text-xs text-muted-foreground">Estimated delivery: {deliveryLabel(market)}.</p>
+        <p className="text-xs text-muted-foreground">{t.estimated}</p>
 
         <label className="flex items-start gap-3 text-sm leading-relaxed">
           <input
@@ -109,41 +116,29 @@ export function CheckoutForm() {
             className="mt-1 size-4 shrink-0 accent-primary"
           />
           <span>
-            I have read and accept the{" "}
-            <Link href={policyHref(market, "terms")} className="underline underline-offset-4" target="_blank">
-              {isEu ? "Terms & Conditions" : "Terms of Service"}
+            {t.acceptPrefix}{" "}
+            <Link href={policyHref(store, "terms")} className="underline underline-offset-4" target="_blank">
+              {t.termsLink}
             </Link>{" "}
-            and the{" "}
-            <Link href={policyHref(market, "privacy")} className="underline underline-offset-4" target="_blank">
-              Privacy Policy
+            {t.and}{" "}
+            <Link href={policyHref(store, "privacy")} className="underline underline-offset-4" target="_blank">
+              {t.privacyLink}
             </Link>
-            {isEu ? (
-              <>
-                , and I have been informed of my{" "}
-                <Link href={policyHref(market, "returns")} className="underline underline-offset-4" target="_blank">
-                  {policy.returns.windowDays}-day right of withdrawal
-                </Link>
-                .
-              </>
-            ) : (
-              <>
-                , including the{" "}
-                <Link href={policyHref(market, "returns")} className="underline underline-offset-4" target="_blank">
-                  Return Policy
-                </Link>
-                .
-              </>
-            )}
+            {t.returnsPrefix}{" "}
+            <Link href={policyHref(store, "returns")} className="underline underline-offset-4" target="_blank">
+              {t.returnsLink}
+            </Link>
+            {t.end}
           </span>
         </label>
 
         {/* EU Directive 2011/83, Art. 8(2): the order button must state the obligation to pay. */}
         <Button type="submit" size="lg" className="w-full" disabled={!accepted}>
-          {isEu ? "Order with obligation to pay" : "Place order"}
+          {t.submit}
         </Button>
         {submitted && (
           <p role="status" className="text-sm text-primary">
-            Payments are not connected yet — no order was created.
+            {t.notConnected}
           </p>
         )}
       </aside>

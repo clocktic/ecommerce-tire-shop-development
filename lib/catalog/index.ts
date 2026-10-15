@@ -1,6 +1,7 @@
 import { PRODUCTS } from "@/lib/catalog/data"
 import type { Category, Offer, Product } from "@/lib/catalog/types"
 import type { Market } from "@/lib/markets"
+import { localeMeta, type Store } from "@/lib/i18n/config"
 
 export * from "@/lib/catalog/types"
 
@@ -27,6 +28,20 @@ export const CATEGORIES: { slug: Category; name: string; singular: string; blurb
     image: "/images/products/brake-kit.png",
   },
 ]
+
+// Swaps in the store language's copy; missing fields fall back to English.
+export function localizeProduct<P extends Product>(product: P, store: Store): P {
+  const copy = product.translations?.[localeMeta(store).content]
+  if (!copy) return product
+  return {
+    ...product,
+    name: copy.name ?? product.name,
+    shortDescription: copy.shortDescription ?? product.shortDescription,
+    description: copy.description ?? product.description,
+    highlights: copy.highlights ?? product.highlights,
+    specs: copy.specs ?? product.specs,
+  }
+}
 
 export function isCategory(value: string): value is Category {
   return CATEGORIES.some((c) => c.slug === value)

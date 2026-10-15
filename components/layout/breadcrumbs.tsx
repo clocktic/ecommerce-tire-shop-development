@@ -2,9 +2,9 @@ import Link from "next/link"
 
 type Crumb = { href?: string; label: string }
 
-export function Breadcrumbs({ items }: { items: Crumb[] }) {
+export function Breadcrumbs({ items, label = "Breadcrumb" }: { items: Crumb[]; label?: string }) {
   return (
-    <nav aria-label="Breadcrumb" className="py-5">
+    <nav aria-label={label} className="py-5">
       <ol className="flex flex-wrap items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
         {items.map((item, i) => (
           <li key={i} className="flex items-center gap-2">

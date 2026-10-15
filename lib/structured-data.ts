@@ -1,6 +1,7 @@
 import { offerFor, type Product } from "@/lib/catalog"
 import { COMPANY } from "@/lib/company"
-import { MARKETS, type Market } from "@/lib/markets"
+import { MARKETS } from "@/lib/markets"
+import { storePath, type Store } from "@/lib/i18n/config"
 import { POLICIES } from "@/lib/policies"
 import { absoluteUrl } from "@/lib/seo"
 
@@ -12,7 +13,8 @@ const AVAILABILITY = {
 
 // Shipping and return terms in the markup come from lib/policies.ts, the same
 // source as the policy pages and the Google feed, so the three never disagree.
-export function productJsonLd(product: Product, market: Market) {
+export function productJsonLd(product: Product, store: Store) {
+  const { market } = store
   const offer = offerFor(product, market)
   if (!offer) return null
   const { currency, shipsTo } = MARKETS[market]
@@ -31,7 +33,7 @@ export function productJsonLd(product: Product, market: Market) {
     brand: { "@type": "Brand", name: product.brand },
     offers: {
       "@type": "Offer",
-      url: absoluteUrl(`/${market}/product/${product.slug}`),
+      url: absoluteUrl(storePath(store, `/product/${product.slug}`)),
       price: (offer.priceCents / 100).toFixed(2),
       priceCurrency: currency,
       availability: AVAILABILITY[offer.availability],
@@ -57,7 +59,7 @@ export function productJsonLd(product: Product, market: Market) {
           returns.returnShippingPaidBy === "merchant"
             ? "https://schema.org/FreeReturn"
             : "https://schema.org/ReturnShippingFees",
-        merchantReturnLink: absoluteUrl(`/${market}/policies/returns`),
+        merchantReturnLink: absoluteUrl(storePath(store, "/policies/returns")),
       },
     },
   }

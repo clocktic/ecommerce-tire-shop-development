@@ -60,18 +60,15 @@ export function isMarket(value: string | undefined | null): value is Market {
   return !!value && (markets as readonly string[]).includes(value)
 }
 
+// Language-specific wording (names, notes, hreflang) lives in lib/i18n.
 export type MarketConfig = {
   code: Market
   name: string
   short: string
   currency: "USD" | "EUR"
+  // Fallback number format when no language is known (feeds, emails).
   intlLocale: string
-  htmlLang: string
-  ogLocale: string
-  // hreflang tags this storefront answers for. EU uses English for every member state.
-  hreflang: string[]
   shipsTo: readonly { code: string; name: string }[]
-  priceNote: string
 }
 
 export const MARKETS: Record<Market, MarketConfig> = {
@@ -81,11 +78,7 @@ export const MARKETS: Record<Market, MarketConfig> = {
     short: "US",
     currency: "USD",
     intlLocale: "en-US",
-    htmlLang: "en-US",
-    ogLocale: "en_US",
-    hreflang: ["en-US"],
     shipsTo: [{ code: "US", name: "United States" }],
-    priceNote: "Sales tax calculated at checkout",
   },
   eu: {
     code: "eu",
@@ -93,11 +86,7 @@ export const MARKETS: Record<Market, MarketConfig> = {
     short: "EU",
     currency: "EUR",
     intlLocale: "en-IE",
-    htmlLang: "en",
-    ogLocale: "en_IE",
-    hreflang: EU_COUNTRIES.map((c) => `en-${c.code}`),
     shipsTo: EU_COUNTRIES,
-    priceNote: "VAT included, no import duties",
   },
 }
 
@@ -105,12 +94,6 @@ export function otherMarket(market: Market): Market {
   return market === "us" ? "eu" : "us"
 }
 
-export function formatPrice(cents: number, market: Market): string {
-  const { currency, intlLocale } = MARKETS[market]
-  return new Intl.NumberFormat(intlLocale, { style: "currency", currency }).format(cents / 100)
-}
-
-export function marketPath(market: Market, path = ""): string {
-  const clean = path.startsWith("/") ? path : `/${path}`
-  return clean === "/" ? `/${market}` : `/${market}${clean}`
+export function formatPrice(cents: number, market: Market, locale: string = MARKETS[market].intlLocale): string {
+  return new Intl.NumberFormat(locale, { style: "currency", currency: MARKETS[market].currency }).format(cents / 100)
 }

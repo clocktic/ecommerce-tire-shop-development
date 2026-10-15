@@ -1,25 +1,23 @@
 import Link from "next/link"
 import { Logo } from "@/components/layout/logo"
-import { RegionSwitcher } from "@/components/layout/region-switcher"
+import { LanguageSwitcher, RegionSwitcher } from "@/components/layout/region-switcher"
 import { CookieSettingsButton } from "@/components/legal/cookie-settings-button"
 import { CATEGORIES } from "@/lib/catalog"
 import { COMPANY, EU_PRESENCE, companyAddressLine } from "@/lib/company"
-import { POLICY_PAGES, policyHref } from "@/lib/legal/pages"
-import { MARKETS, type Market } from "@/lib/markets"
-import { POLICIES } from "@/lib/policies"
+import { getDictionary, storePath, type Store } from "@/lib/i18n"
+import { policyLinks } from "@/lib/legal"
+import { policyHref } from "@/lib/legal/pages"
 
-export function Footer({ market }: { market: Market }) {
+export function Footer({ store }: { store: Store }) {
+  const t = getDictionary(store)
   const year = new Date().getFullYear()
 
   return (
     <footer className="mt-24 bg-secondary text-secondary-foreground">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 py-16 md:grid-cols-12 md:px-6">
         <div className="flex flex-col gap-5 md:col-span-4">
-          <Logo market={market} />
-          <p className="max-w-sm text-sm leading-relaxed text-secondary-foreground/70">
-            {COMPANY.tradingName} is operated by {COMPANY.legalName}, a {COMPANY.entityType.toLowerCase()} registered in{" "}
-            {COMPANY.stateOfFormation}, United States.
-          </p>
+          <Logo store={store} label={t.common.logoHome} />
+          <p className="max-w-sm text-sm leading-relaxed text-secondary-foreground/70">{t.footer.about}</p>
           <address className="flex flex-col gap-1 text-sm not-italic leading-relaxed text-secondary-foreground/70">
             <span>{companyAddressLine}</span>
             <a href={`tel:${COMPANY.phoneTel}`} className="hover:text-secondary-foreground">
@@ -28,37 +26,37 @@ export function Footer({ market }: { market: Market }) {
             <a href={`mailto:${COMPANY.email}`} className="hover:text-secondary-foreground">
               {COMPANY.email}
             </a>
-            <span>{COMPANY.hours}</span>
+            <span>{t.company.hours}</span>
           </address>
-          {market === "eu" && (
+          {t.footer.vat && (
             <p className="text-xs leading-relaxed text-secondary-foreground/60">
-              {EU_PRESENCE.vatScheme}: {EU_PRESENCE.vatNumber}
+              {t.footer.vat}: {EU_PRESENCE.vatNumber}
             </p>
           )}
         </div>
 
-        <FooterColumn title="Shop" className="md:col-span-2">
+        <FooterColumn title={t.footer.shop} className="md:col-span-2">
           {CATEGORIES.map((c) => (
-            <FooterLink key={c.slug} href={`/${market}/${c.slug}`}>
-              {c.name}
+            <FooterLink key={c.slug} href={storePath(store, `/${c.slug}`)}>
+              {t.categories[c.slug].name}
             </FooterLink>
           ))}
         </FooterColumn>
 
-        <FooterColumn title="Help" className="md:col-span-2">
-          <FooterLink href={`/${market}/faq`}>FAQ</FooterLink>
-          <FooterLink href={`/${market}/contact`}>Contact</FooterLink>
-          <FooterLink href={`/${market}/about`}>About us</FooterLink>
+        <FooterColumn title={t.footer.help} className="md:col-span-2">
+          <FooterLink href={storePath(store, "/faq")}>{t.common.faq}</FooterLink>
+          <FooterLink href={storePath(store, "/contact")}>{t.common.contact}</FooterLink>
+          <FooterLink href={storePath(store, "/about")}>{t.common.about}</FooterLink>
         </FooterColumn>
 
-        <FooterColumn title={`${MARKETS[market].short} policies`} className="md:col-span-4">
-          {POLICY_PAGES[market].map((p) => (
-            <FooterLink key={p.slug} href={policyHref(market, p.slug)}>
+        <FooterColumn title={t.footer.policies} className="md:col-span-4">
+          {policyLinks(store).map((p) => (
+            <FooterLink key={p.slug} href={policyHref(store, p.slug)}>
               {p.title}
             </FooterLink>
           ))}
           <li>
-            <CookieSettingsButton market={market} />
+            <CookieSettingsButton label={t.footer.privacyLink} />
           </li>
         </FooterColumn>
       </div>
@@ -67,14 +65,24 @@ export function Footer({ market }: { market: Market }) {
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 md:flex-row md:items-center md:justify-between md:px-6">
           <p className="font-mono text-xs uppercase tracking-[0.18em] text-secondary-foreground/60">
             {"© "}
-            {year} {COMPANY.legalName} · Prices in {MARKETS[market].currency} · {MARKETS[market].priceNote}
+            {year} {COMPANY.legalName} · {t.footer.bottom}
           </p>
-          <div className="flex items-center gap-3">
-            <span className="font-mono text-xs uppercase tracking-[0.18em] text-secondary-foreground/60">Store</span>
-            <RegionSwitcher market={market} />
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-xs uppercase tracking-[0.18em] text-secondary-foreground/60">
+                {t.footer.language}
+              </span>
+              <LanguageSwitcher />
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-xs uppercase tracking-[0.18em] text-secondary-foreground/60">
+                {t.footer.store}
+              </span>
+              <RegionSwitcher />
+            </div>
           </div>
         </div>
-        <p className="sr-only">Accepted payment methods: {POLICIES[market].paymentMethods.join(", ")}</p>
+        <p className="sr-only">{t.footer.payments}</p>
       </div>
     </footer>
   )

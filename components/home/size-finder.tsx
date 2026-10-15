@@ -4,23 +4,26 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useI18n } from "@/components/i18n/i18n-provider"
 import { TIRE_OPTIONS } from "@/lib/catalog"
-import type { Market } from "@/lib/markets"
+import { storePath } from "@/lib/i18n/config"
 import { cn } from "@/lib/utils"
 
 type Size = { width: string; aspect: string; rim: string }
 
 const SIZE_PATTERN = /^\s*(\d{3})\s*[/\s-]?\s*(\d{2})\s*[zZ]?[rR]?\s*(\d{2})\s*$/
 
-export function SizeFinder({ market }: { market: Market }) {
+export function SizeFinder() {
   const router = useRouter()
+  const { store, t } = useI18n()
+  const f = t.home.finder
   const [size, setSize] = useState<Size>({ width: "225", aspect: "45", rim: "17" })
   const [typed, setTyped] = useState("")
   const [error, setError] = useState<string | null>(null)
 
   const submit = (s: Size) => {
     const params = new URLSearchParams({ width: s.width, aspect: s.aspect, rim: s.rim })
-    router.push(`/${market}/tires?${params.toString()}`)
+    router.push(`${storePath(store, "/tires")}?${params.toString()}`)
   }
 
   const onTyped = (value: string) => {
@@ -37,7 +40,7 @@ export function SizeFinder({ market }: { market: Market }) {
       onSubmit={(e) => {
         e.preventDefault()
         if (typed && !SIZE_PATTERN.test(typed)) {
-          setError("Use the format 225/45 R17")
+          setError(f.error)
           return
         }
         submit(size)
@@ -48,9 +51,9 @@ export function SizeFinder({ market }: { market: Market }) {
       <CornerMarks />
       <div className="flex items-center justify-between gap-4">
         <h2 id="size-finder-title" className="label-caps">
-          Tire size finder
+          {f.title}
         </h2>
-        <span className="label-caps text-muted-foreground">Read it off your sidewall</span>
+        <span className="label-caps text-right text-muted-foreground">{f.hint}</span>
       </div>
 
       <p
@@ -65,15 +68,15 @@ export function SizeFinder({ market }: { market: Market }) {
       </p>
 
       <div className="grid grid-cols-3 gap-2">
-        <Segment label="Width" unit="mm" value={size.width} options={TIRE_OPTIONS.width} onChange={(width) => setSize((s) => ({ ...s, width }))} />
-        <Segment label="Profile" unit="%" value={size.aspect} options={TIRE_OPTIONS.aspect} onChange={(aspect) => setSize((s) => ({ ...s, aspect }))} />
-        <Segment label="Rim" unit="in" value={size.rim} options={TIRE_OPTIONS.rim} onChange={(rim) => setSize((s) => ({ ...s, rim }))} />
+        <Segment id="width" label={f.width} unit="mm" value={size.width} options={TIRE_OPTIONS.width} onChange={(width) => setSize((s) => ({ ...s, width }))} />
+        <Segment id="aspect" label={f.profile} unit="%" value={size.aspect} options={TIRE_OPTIONS.aspect} onChange={(aspect) => setSize((s) => ({ ...s, aspect }))} />
+        <Segment id="rim" label={f.rim} unit="in" value={size.rim} options={TIRE_OPTIONS.rim} onChange={(rim) => setSize((s) => ({ ...s, rim }))} />
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="flex flex-1 flex-col gap-1.5">
           <label htmlFor="typed-size" className="label-caps text-muted-foreground">
-            Or type it
+            {f.orType}
           </label>
           <input
             id="typed-size"
@@ -88,7 +91,7 @@ export function SizeFinder({ market }: { market: Market }) {
           />
         </div>
         <Button type="submit" size="lg" className="sm:min-w-48">
-          Find tires
+          {f.submit}
           <ArrowRight aria-hidden="true" />
         </Button>
       </div>
@@ -102,19 +105,21 @@ export function SizeFinder({ market }: { market: Market }) {
 }
 
 function Segment({
+  id: name,
   label,
   unit,
   value,
   options,
   onChange,
 }: {
+  id: string
   label: string
   unit: string
   value: string
   options: number[]
   onChange: (value: string) => void
 }) {
-  const id = `seg-${label.toLowerCase()}`
+  const id = `seg-${name}`
   return (
     <div className="flex flex-col gap-1.5">
       <label htmlFor={id} className="label-caps text-muted-foreground">
@@ -131,7 +136,7 @@ function Segment({
       >
         {options.map((o) => (
           <option key={o} value={String(o)}>
-            {label === "Rim" ? `R${o}` : o}
+            {name === "rim" ? `R${o}` : o}
           </option>
         ))}
       </select>

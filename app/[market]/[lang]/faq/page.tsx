@@ -1,23 +1,26 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { ChevronDown } from "lucide-react"
-import { getFaq } from "@/lib/legal/faq"
-import { MARKETS, isMarket } from "@/lib/markets"
-import { marketAlternates } from "@/lib/seo"
+import { getDictionary, parseStore, storePath } from "@/lib/i18n"
+import { storeAlternates } from "@/lib/seo"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
 
-type Params = Promise<{ market: string }>
+type Params = Promise<{ market: string; lang: string }>
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const { market } = await params
-  if (!isMarket(market)) return {}
-  return { title: "FAQ", description: "Delivery, returns, fitment and payment questions.", alternates: marketAlternates(market, "/faq") }
+  const { market, lang } = await params
+  const store = parseStore(market, lang)
+  if (!store) return {}
+  const t = getDictionary(store)
+  return { title: t.faq.metaTitle, description: t.faq.description, alternates: storeAlternates(store, "/faq") }
 }
 
 export default async function FaqPage({ params }: { params: Params }) {
-  const { market } = await params
-  if (!isMarket(market)) notFound()
-  const groups = getFaq(market)
+  const { market, lang } = await params
+  const store = parseStore(market, lang)
+  if (!store) notFound()
+  const t = getDictionary(store)
+  const groups = t.faq.groups
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -28,10 +31,10 @@ export default async function FaqPage({ params }: { params: Params }) {
 
   return (
     <div className="mx-auto max-w-4xl px-4 md:px-6">
-      <Breadcrumbs items={[{ href: `/${market}`, label: "Home" }, { label: "FAQ" }]} />
+      <Breadcrumbs label={t.common.breadcrumb} items={[{ href: storePath(store), label: t.common.home }, { label: t.faq.metaTitle }]} />
       <header className="flex flex-col gap-3 border-b border-border pb-8">
-        <p className="label-caps text-primary">{MARKETS[market].name} store</p>
-        <h1 className="font-expanded text-4xl font-extrabold uppercase md:text-5xl">Questions</h1>
+        <p className="label-caps text-primary">{t.faq.eyebrow}</p>
+        <h1 className="font-expanded text-4xl font-extrabold uppercase md:text-5xl">{t.faq.title}</h1>
       </header>
       {groups.map((g) => (
         <section key={g.title} className="pt-10">
