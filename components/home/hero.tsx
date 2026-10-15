@@ -35,19 +35,19 @@ export function Hero({ store }: { store: Store }) {
               className="hero-wheel-shadow absolute"
               style={{ left: "8%", right: "8%", bottom: "-4%", height: "9%" }}
             />
-            {/* One photo split into three registered layers: disc and barrel (turn),
-                caliper (bolted to the car, never turns), spokes and tyre (turn, in
-                front). At rest they recompose the original photo pixel for pixel. */}
+            {/* Three registered layers: disc and barrel (turn), caliper (bolted to the
+                car, never turns), spokes and tyre (turn, in front). Disc and spokes are
+                rebuilt from one caliper-free 72° sector so nothing of the caliper turns. */}
             <div className="relative aspect-square">
               <div aria-hidden="true" className="hero-wheel-spin absolute inset-0">
-                <Image src="/images/hero-wheel-rear.png" alt="" fill priority sizes="(min-width: 1024px) 50vw, 90vw" />
+                <Image src="/images/hero-wheel-disc.png" alt="" fill priority sizes="(min-width: 1024px) 50vw, 90vw" />
               </div>
               <div aria-hidden="true" className="absolute inset-0">
                 <Image src="/images/hero-wheel-caliper.png" alt="" fill priority sizes="(min-width: 1024px) 50vw, 90vw" />
               </div>
               <div className="hero-wheel-spin absolute inset-0">
                 <Image
-                  src="/images/hero-wheel-front.png"
+                  src="/images/hero-wheel-spokes.png"
                   alt={t.home.heroAlt}
                   fill
                   priority
