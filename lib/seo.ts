@@ -23,3 +23,8 @@ export function hreflangMap(path: string, availableIn: readonly Market[] = marke
 export function storeAlternates(store: Store, path: string, availableIn: readonly Market[] = markets): Metadata["alternates"] {
   return { canonical: absoluteUrl(storePath(store, path)), languages: hreflangMap(path, availableIn) }
 }
+
+/** @deprecated Kept for stale preview snapshots of the pre-[lang] layout; use storeAlternates. */
+export function marketAlternates(market: Market, path: string, availableIn: readonly Market[] = markets): Metadata["alternates"] {
+  return storeAlternates({ market, lang: "en" }, path, availableIn)
+}
