@@ -1,0 +1,95 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: var(--font-archivo), 'Archivo', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), 'JetBrains Mono', ui-monospace, monospace;
+
+  --color-photo: var(--photo);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+}
+
+/*
+  Palette (5): aluminium (background), graphite (ink), steel (hairlines / muted),
+  studio grey (photo wells, matches product photography), caliper red (primary).
+*/
+:root {
+  color-scheme: light;
+  --background: oklch(0.962 0.004 250);
+  --foreground: oklch(0.21 0.012 255);
+  --card: oklch(0.985 0.002 250);
+  --card-foreground: oklch(0.21 0.012 255);
+  --popover: oklch(0.985 0.002 250);
+  --popover-foreground: oklch(0.21 0.012 255);
+  --primary: oklch(0.54 0.205 27);
+  --primary-foreground: oklch(0.985 0.002 250);
+  --secondary: oklch(0.21 0.012 255);
+  --secondary-foreground: oklch(0.962 0.004 250);
+  --muted: oklch(0.915 0.006 250);
+  --muted-foreground: oklch(0.47 0.012 255);
+  --accent: oklch(0.915 0.006 250);
+  --accent-foreground: oklch(0.21 0.012 255);
+  --destructive: oklch(0.54 0.205 27);
+  --border: oklch(0.84 0.008 250);
+  --input: oklch(0.84 0.008 250);
+  --ring: oklch(0.54 0.205 27);
+  --photo: oklch(0.86 0.011 255);
+  --radius: 0.25rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer utilities {
+  /* Archivo is a variable font with a width axis — expanded cuts read like sidewall lettering. */
+  .font-expanded {
+    font-stretch: 125%;
+  }
+  .font-condensed {
+    font-stretch: 75%;
+  }
+  .label-caps {
+    @apply font-mono text-xs uppercase tracking-[0.18em];
+  }
+}
+
+/* Native <details> disclosure marker reset. */
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
