@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Menu } from "lucide-react"
 import { Logo } from "@/components/layout/logo"
-import { LanguageSwitcher, RegionSwitcher } from "@/components/layout/region-switcher"
+import { LanguageMenu, RegionSwitcher } from "@/components/layout/region-switcher"
 import { CartButton } from "@/components/cart/cart-button"
 import { CATEGORIES } from "@/lib/catalog"
 import { getDictionary, storePath, type Store } from "@/lib/i18n"
@@ -30,10 +30,8 @@ export function Header({ store }: { store: Store }) {
             </span>
           </p>
           <div className="flex shrink-0 items-center gap-3">
-            <div className="hidden sm:block">
-              <LanguageSwitcher />
-            </div>
-            <span aria-hidden="true" className="hidden h-4 w-px bg-secondary-foreground/25 sm:block" />
+            <LanguageMenu />
+            <span aria-hidden="true" className="h-4 w-px bg-secondary-foreground/25" />
             <RegionSwitcher />
           </div>
         </div>
@@ -77,9 +75,6 @@ export function Header({ store }: { store: Store }) {
                     </li>
                   ))}
                 </ul>
-                <div className="border-t border-border px-1 pb-1 pt-3 sm:hidden">
-                  <LanguageSwitcher tone="light" />
-                </div>
               </nav>
             </details>
           </div>
