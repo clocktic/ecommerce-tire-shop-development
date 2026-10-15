@@ -35,14 +35,27 @@ export function Hero({ store }: { store: Store }) {
               className="hero-wheel-shadow absolute"
               style={{ left: "8%", right: "8%", bottom: "-4%", height: "9%" }}
             />
-            <div className="hero-wheel-spin relative aspect-square">
-              <Image
-                src="/images/hero-wheel-side.png"
-                alt={t.home.heroAlt}
-                fill
-                priority
-                sizes="(min-width: 1024px) 50vw, 90vw"
-              />
+            {/* Barrel and disc sit behind the open spokes. The disc turns with the
+                wheel; the caliper is bolted to the car, so it travels but never rotates. */}
+            <div className="relative aspect-square">
+              <div aria-hidden="true" className="hero-wheel-barrel absolute rounded-full" style={{ inset: "12%" }} />
+              <div aria-hidden="true" className="hero-wheel-spin absolute" style={{ inset: "20%" }}>
+                <Image src="/images/hero-brake-disc.png" alt="" fill priority sizes="30vw" />
+              </div>
+              <div aria-hidden="true" className="absolute inset-0" style={{ transform: "rotate(38deg)" }}>
+                <div className="absolute" style={{ left: "30%", top: "15.5%", width: "40%", aspectRatio: "640 / 289" }}>
+                  <Image src="/images/hero-brake-caliper.png" alt="" fill priority sizes="20vw" />
+                </div>
+              </div>
+              <div className="hero-wheel-spin absolute inset-0">
+                <Image
+                  src="/images/hero-wheel-side.png"
+                  alt={t.home.heroAlt}
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 50vw, 90vw"
+                />
+              </div>
             </div>
           </div>
         </div>

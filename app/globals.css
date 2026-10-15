@@ -175,6 +175,10 @@
   background: radial-gradient(closest-side, oklch(0.22 0.02 255 / 0.55), oklch(0.22 0.02 255 / 0));
 }
 
+.hero-wheel-barrel {
+  background: radial-gradient(closest-side, oklch(0.2 0.008 255), oklch(0.13 0.006 255) 85%, oklch(0.09 0.005 255));
+}
+
 /* Rubber left on the floor. It hangs off the wheel and reaches far to the left,
    so as the wheel travels it reads as a mark being laid down behind it. */
 .hero-wheel-skid {
@@ -196,10 +200,10 @@
     transform: scale(0.35, 0.55);
   }
   8% {
-    opacity: 0.85;
+    opacity: 0.45;
   }
   42% {
-    opacity: 1;
+    opacity: 0.55;
     transform: scale(1, 1);
   }
   100% {
