@@ -21,7 +21,9 @@ gtag('set','ads_data_redaction',!ad);gtag('set','url_passthrough',false);})();`
 
   return (
     <>
-      <script id="consent-defaults" dangerouslySetInnerHTML={{ __html: script }} />
+      <Script id="consent-defaults" strategy="beforeInteractive">
+        {script}
+      </Script>
       {GA_ID && (
         <>
           <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />

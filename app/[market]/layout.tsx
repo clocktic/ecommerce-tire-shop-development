@@ -59,10 +59,8 @@ export default async function MarketLayout({
 
   return (
     <html lang={MARKETS[market].htmlLang} className={`${archivo.variable} ${jetbrains.variable} bg-background`}>
-      <head>
-        <ConsentDefaults market={market} />
-      </head>
       <body className="min-h-dvh flex flex-col">
+        <ConsentDefaults market={market} />
         <CartProvider market={market}>
           <a
             href="#main"
