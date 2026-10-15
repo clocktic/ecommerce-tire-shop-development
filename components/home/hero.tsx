@@ -20,12 +20,24 @@ export function Hero({ store }: { store: Store }) {
           <div className="hero-wheel-travel absolute" style={{ left: "9.517%", top: "5.729%", width: "48.58%" }}>
             <div
               aria-hidden="true"
+              className="hero-wheel-skid absolute"
+              style={{ right: "50%", width: "260%", bottom: "-0.6%", height: "2.4%" }}
+            />
+            <div
+              aria-hidden="true"
+              className="hero-wheel-smoke pointer-events-none absolute"
+              style={{ right: "40%", bottom: "-2%", width: "230%", aspectRatio: "1400 / 594" }}
+            >
+              <Image src="/images/hero-smoke.webp" alt="" fill priority sizes="100vw" />
+            </div>
+            <div
+              aria-hidden="true"
               className="hero-wheel-shadow absolute"
               style={{ left: "8%", right: "8%", bottom: "-4%", height: "9%" }}
             />
             <div className="hero-wheel-spin relative aspect-square">
               <Image
-                src="/images/hero-wheel-cutout.png"
+                src="/images/hero-wheel-side.png"
                 alt={t.home.heroAlt}
                 fill
                 priority
