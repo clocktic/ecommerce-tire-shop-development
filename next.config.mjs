@@ -6,6 +6,11 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  experimental: {
+    // The persistent dev cache kept compiling a deleted app/[market]/layout.tsx after the
+    // move to app/[market]/[lang]; rebuild from source on every dev start instead.
+    turbopackFileSystemCacheForDev: false,
+  },
   async headers() {
     return [
       {
