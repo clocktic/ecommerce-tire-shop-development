@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next"
+import { cookies } from "next/headers"
 import { Archivo, JetBrains_Mono } from "next/font/google"
 import { notFound } from "next/navigation"
 import { Analytics } from "@vercel/analytics/next"
@@ -10,7 +11,8 @@ import { I18nProvider } from "@/components/i18n/i18n-provider"
 import { ConsentDefaults } from "@/components/legal/consent-defaults"
 import { CookieConsent } from "@/components/legal/cookie-consent"
 import { OrganizationJsonLd } from "@/components/legal/organization-jsonld"
-import { ThemeProvider } from "@/components/layout/theme-provider"
+import { ThemeSync } from "@/components/layout/theme-provider"
+import { THEME_COOKIE, themeClassName } from "@/lib/theme"
 import { ChatWidget } from "@/components/chat/chat-widget"
 import { COMPANY } from "@/lib/company"
 import { ALL_STORES, getDictionary, localeMeta, parseStore } from "@/lib/i18n"
@@ -59,16 +61,17 @@ export default async function StoreLayout({ children, params }: { children: Reac
   if (!store) notFound()
   const t = getDictionary(store)
   const meta = localeMeta(store)
+  const theme = themeClassName((await cookies()).get(THEME_COOKIE)?.value)
 
   return (
     <html
       lang={meta.htmlLang}
-      className={`${archivo.variable} ${jetbrains.variable} bg-background`}
+      className={`${archivo.variable} ${jetbrains.variable} bg-background ${theme}`}
       suppressHydrationWarning
     >
       <body className="min-h-dvh flex flex-col">
+        <ThemeSync />
         <ConsentDefaults market={store.market} />
-        <ThemeProvider>
         <I18nProvider store={store} t={t} x={getExtras(store)} intl={meta.intlLocale}>
           <CartProvider market={store.market}>
             <a
@@ -87,7 +90,6 @@ export default async function StoreLayout({ children, params }: { children: Reac
             <ChatWidget />
           </CartProvider>
         </I18nProvider>
-        </ThemeProvider>
         <OrganizationJsonLd />
         {process.env.NODE_ENV === "production" && <Analytics />}
       </body>

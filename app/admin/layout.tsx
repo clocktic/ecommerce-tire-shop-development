@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { cookies } from "next/headers"
 import Link from "next/link"
 import { Archivo, JetBrains_Mono } from "next/font/google"
 import { LogOut } from "lucide-react"
@@ -7,7 +8,8 @@ import { adminLogout } from "@/lib/actions/admin"
 import { AdminLogin } from "@/components/admin/admin-login"
 import { AdminNav } from "@/components/admin/admin-nav"
 import { AdminThemeToggle } from "@/components/admin/admin-theme-toggle"
-import { ThemeProvider } from "@/components/layout/theme-provider"
+import { ThemeSync } from "@/components/layout/theme-provider"
+import { THEME_COOKIE, themeClassName } from "@/lib/theme"
 import { Button } from "@/components/ui/button"
 import "@/app/globals.css"
 
@@ -24,11 +26,12 @@ export const dynamic = "force-dynamic"
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const authed = await isAdmin()
+  const theme = themeClassName((await cookies()).get(THEME_COOKIE)?.value)
 
   return (
-    <html lang="ru" className={`${archivo.variable} ${jetbrains.variable} bg-background`} suppressHydrationWarning>
+    <html lang="ru" className={`${archivo.variable} ${jetbrains.variable} bg-background ${theme}`} suppressHydrationWarning>
       <body className="min-h-dvh">
-        <ThemeProvider>
+        <ThemeSync />
           {!authed ? (
             <AdminLogin />
           ) : (
@@ -56,7 +59,6 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               <main className="mx-auto max-w-7xl px-4 py-6 pb-28 md:px-6 lg:pb-10">{children}</main>
             </div>
           )}
-        </ThemeProvider>
       </body>
     </html>
   )
