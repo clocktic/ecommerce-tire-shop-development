@@ -36,7 +36,6 @@ export function HeroVideo({ label }: { label: string }) {
       className="absolute inset-0 size-full object-cover object-center lg:inset-auto lg:top-0 lg:left-[34%] lg:h-full lg:w-auto lg:max-w-none lg:-translate-x-1/2 lg:[mask-image:linear-gradient(to_right,#000_74%,transparent)]"
       autoPlay
       muted
-      loop
       playsInline
       preload="auto"
       disablePictureInPicture
