@@ -49,16 +49,16 @@ export function SizeFinder() {
       aria-labelledby="size-finder-title"
     >
       <CornerMarks />
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <h2 id="size-finder-title" className="label-caps">
           {f.title}
         </h2>
-        <span className="label-caps text-right text-muted-foreground">{f.hint}</span>
+        <span className="label-caps text-muted-foreground">{f.hint}</span>
       </div>
 
       <p
         aria-live="polite"
-        className="flex items-baseline gap-1 font-expanded text-5xl font-black leading-none tracking-tight sm:text-6xl"
+        className="flex min-w-0 items-baseline gap-1 font-expanded text-[clamp(1.7rem,10vw,3.75rem)] font-black leading-none tracking-tight"
       >
         <span>{size.width}</span>
         <span className="text-primary">/</span>
@@ -67,7 +67,7 @@ export function SizeFinder() {
         <span>{size.rim}</span>
       </p>
 
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-2 *:min-w-0">
         <Segment id="width" label={f.width} unit="mm" value={size.width} options={TIRE_OPTIONS.width} onChange={(width) => setSize((s) => ({ ...s, width }))} />
         <Segment id="aspect" label={f.profile} unit="%" value={size.aspect} options={TIRE_OPTIONS.aspect} onChange={(aspect) => setSize((s) => ({ ...s, aspect }))} />
         <Segment id="rim" label={f.rim} unit="in" value={size.rim} options={TIRE_OPTIONS.rim} onChange={(rim) => setSize((s) => ({ ...s, rim }))} />
@@ -122,7 +122,7 @@ function Segment({
   const id = `seg-${name}`
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="label-caps text-muted-foreground">
+      <label htmlFor={id} className="label-caps text-balance text-muted-foreground">
         {label} <span className="normal-case tracking-normal">({unit})</span>
       </label>
       <select

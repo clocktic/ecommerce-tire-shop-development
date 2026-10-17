@@ -15,10 +15,10 @@ export function SidewallDecoder({ t }: { t: Dictionary }) {
           <p className="text-pretty leading-relaxed text-muted-foreground">{d.lead}</p>
         </div>
 
-        <ol className="grid grid-cols-2 border-l border-t border-border sm:grid-cols-3 lg:col-span-8 lg:grid-cols-6">
+        <ol className="grid min-w-0 grid-cols-2 border-l border-t border-border sm:grid-cols-3 lg:col-span-8 lg:grid-cols-6">
           {d.parts.map((p, i) => (
-            <li key={CODES[i]} className="flex flex-col gap-3 border-b border-r border-border p-4">
-              <span className="font-expanded text-4xl font-black leading-none">{CODES[i]}</span>
+            <li key={CODES[i]} className="flex min-w-0 flex-col gap-3 overflow-hidden border-b border-r border-border p-3 sm:p-4">
+              <span className="font-expanded text-3xl font-black leading-none sm:text-4xl">{CODES[i]}</span>
               <span className="label-caps break-words text-primary">{p.title}</span>
               <span className="text-sm leading-relaxed text-muted-foreground">{p.text}</span>
             </li>

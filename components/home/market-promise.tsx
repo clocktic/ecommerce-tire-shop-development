@@ -28,10 +28,10 @@ export function MarketPromise({ store }: { store: Store }) {
         </div>
         <ul className="grid md:grid-cols-3">
           {items.map((item) => (
-            <li key={item.href} className="border-b border-secondary-foreground/15 md:border-b-0 md:border-r md:last:border-r-0">
-              <Link href={item.href} className="group flex h-full flex-col gap-3 p-6 md:p-8">
+            <li key={item.href} className="min-w-0 border-b border-secondary-foreground/15 md:border-b-0 md:border-r md:last:border-r-0">
+              <Link href={item.href} className="group flex h-full min-w-0 flex-col gap-3 p-6 md:p-8">
                 <span className="label-caps text-secondary-foreground/60">{item.title}</span>
-                <span className="text-balance font-expanded text-3xl font-black uppercase group-hover:text-primary">
+                <span className="text-balance font-expanded text-[clamp(1.6rem,8.5vw,1.875rem)] font-black uppercase leading-none group-hover:text-primary">
                   {item.value}
                 </span>
                 <span className="text-sm leading-relaxed text-secondary-foreground/75">{item.text}</span>

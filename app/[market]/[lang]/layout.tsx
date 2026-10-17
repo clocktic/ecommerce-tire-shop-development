@@ -66,7 +66,7 @@ export default async function StoreLayout({ children, params }: { children: Reac
   return (
     <html
       lang={meta.htmlLang}
-      className={`${archivo.variable} ${jetbrains.variable} bg-background ${theme}`}
+      className={`${archivo.variable} ${jetbrains.variable} overflow-x-clip bg-background ${theme}`}
       suppressHydrationWarning
     >
       <body className="min-h-dvh flex flex-col">

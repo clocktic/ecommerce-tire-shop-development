@@ -22,8 +22,8 @@ export function Header({ store }: { store: Store }) {
   return (
     <header className="sticky top-0 z-40">
       <div className="bg-secondary text-secondary-foreground">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-1.5 md:px-6">
-          <p className="min-w-0 truncate font-mono text-xs uppercase tracking-[0.18em] text-secondary-foreground/80">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-1.5 md:px-6">
+          <p className="min-w-0 font-mono text-[10px] uppercase leading-relaxed tracking-[0.14em] text-secondary-foreground/80 sm:truncate sm:text-xs sm:tracking-[0.18em]">
             <span className="text-secondary-foreground">{t.topbar.shipsTo}</span>
             <span aria-hidden="true"> · </span>
             {t.topbar.shipping}
@@ -45,16 +45,16 @@ export function Header({ store }: { store: Store }) {
       </div>
 
       <div className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3 md:px-6">
+        <div className="@container/header mx-auto flex max-w-7xl items-center justify-between gap-2 px-4 py-3 md:px-6">
           <Logo store={store} label={t.common.logoHome} />
 
-          <nav aria-label={t.common.mainNav} className="hidden md:block">
-            <ul className="flex items-center gap-1">
+          <nav aria-label={t.common.mainNav} className="hidden min-w-0 @min-[1100px]/header:block">
+            <ul className="flex items-center">
               {nav.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="px-3 py-2 text-sm font-semibold uppercase tracking-wide transition-colors hover:text-primary"
+                    className="block whitespace-nowrap px-2 py-2 text-sm font-semibold uppercase tracking-wide transition-colors hover:text-primary xl:px-3"
                   >
                     {item.label}
                   </Link>
@@ -63,10 +63,10 @@ export function Header({ store }: { store: Store }) {
             </ul>
           </nav>
 
-          <div className="flex items-center gap-1">
+          <div className="flex shrink-0 items-center gap-0.5">
             <AccountButton />
             <CartButton />
-            <details className="group relative md:hidden">
+            <details className="group relative @min-[1100px]/header:hidden">
               <summary className="cursor-pointer p-2" aria-label={t.common.openMenu}>
                 <Menu className="size-5" aria-hidden="true" />
               </summary>

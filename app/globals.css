@@ -143,6 +143,10 @@
   .label-caps {
     @apply font-mono text-xs uppercase tracking-[0.18em];
   }
+  /* nowrap screen-reader text otherwise widens the page, worst in longer languages. */
+  .sr-only {
+    clip-path: inset(50%);
+  }
 }
 
 /* Native <details> disclosure marker reset. */

@@ -39,9 +39,9 @@ export function GeoBanner() {
 
   return (
     <div role="region" aria-label={t.geo.region} className="bg-primary text-primary-foreground">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2 text-sm md:px-6">
-        <p className="text-pretty">{t.geo.text}</p>
-        <div className="flex shrink-0 items-center gap-3">
+      <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-2 text-sm sm:flex-row sm:items-center sm:justify-between sm:gap-4 md:px-6">
+        <p className="min-w-0 text-pretty">{t.geo.text}</p>
+        <div className="flex items-center gap-3">
           <Link
             href={swapStorePath(pathname, target)}
             onClick={() => rememberMarket(target.market)}
