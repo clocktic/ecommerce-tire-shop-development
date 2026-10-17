@@ -4,6 +4,7 @@ Sources live in .v0/refs/ (gitignored harvest output). Output: .v0/refs/catalog_
 with SOURCE image urls; scripts/catalog/upload-images.mjs swaps them for Blob urls and
 writes the final lib/catalog/opening-catalog.json.
 """
+import os, sys
 import json, re, collections, math
 
 R = "/vercel/share/v0-project/.v0/refs/"
@@ -89,8 +90,20 @@ EN = {
     "summer": "Summer tire", "winter": "Winter tire", "all-season": "All-season tire", "xl": "Extra load (XL)", "runflat": "Run-flat",
     "cast": "Cast alloy wheel", "flow": "Flow-formed alloy wheel", "forged": "Forged alloy wheel",
     "pads": "Brake pad set", "discs": "Brake disc", "pads-and-discs": "Pads and rotors kit", "kit": "Big brake kit",
+    "caliper": "Brake caliper", "drum": "Brake drum", "shoes": "Brake shoe set", "hose": "Brake hose", "sensor": "Brake pad wear sensor",
     "front": "Front axle", "rear": "Rear axle", "front-rear": "Front and rear axle",
 }
+# Part kinds added after the first build; same keys as the storefront dictionaries.
+MORE_KINDS = {
+    "de": {"caliper": "Bremssattel", "drum": "Bremstrommel", "shoes": "Bremsbackensatz", "hose": "Bremsschlauch", "sensor": "Verschleißsensor"},
+    "fr": {"caliper": "Étrier de frein", "drum": "Tambour de frein", "shoes": "Jeu de mâchoires de frein", "hose": "Flexible de frein", "sensor": "Témoin d'usure"},
+    "it": {"caliper": "Pinza freno", "drum": "Tamburo freno", "shoes": "Kit ganasce freno", "hose": "Tubo freno", "sensor": "Sensore usura"},
+    "es": {"caliper": "Pinza de freno", "drum": "Tambor de freno", "shoes": "Juego de zapatas de freno", "hose": "Latiguillo de freno", "sensor": "Sensor de desgaste"},
+    "nl": {"caliper": "Remklauw", "drum": "Remtrommel", "shoes": "Remschoenenset", "hose": "Remslang", "sensor": "Slijtagesensor"},
+    "es-419": {"caliper": "Cáliper de freno", "drum": "Tambor de freno", "shoes": "Juego de zapatas de freno", "hose": "Manguera de freno", "sensor": "Sensor de desgaste"},
+}
+for _l, _m in MORE_KINDS.items():
+    T[_l].update(_m)
 
 
 def slugify(s):
@@ -131,6 +144,7 @@ sl = json.load(open(R + "eu_tyres_shortlist.json"))
 ep = {r[0]: r for r in json.load(open(R + "eprel_resolved.json")) if r[1] not in ("MISS", "ERR")}
 viewer = json.load(open(R + "bc_viewer_models.json"))
 pt = json.load(open(R + "prioritytire.json"))
+eu_tire_gtin = json.load(open(R + "eu_tire_gtin.json"))
 
 
 def norm(s):
@@ -174,6 +188,7 @@ for i, f in enumerate(sl):
     if e:
         label = {"fuelEfficiency": e[6], "wetGrip": e[7], "noiseDb": int(e[8]), "noiseClass": e[9], "snowGrip": bool(e[10]), "iceGrip": bool(e[11]), "eprelId": str(e[2])}
     season = f["season"]
+    gtin = eu_tire_gtin.get(str(v["sku"]))
     desc = (f.get("description") or "").strip()
     highlights = [EN[season], svc] + ([EN["xl"]] if v["xl"] else []) + ([EN["runflat"]] if v["runflat"] else [])
     if label:
@@ -186,7 +201,7 @@ for i, f in enumerate(sl):
         {"label": "Load index", "value": str(v["load"])},
         {"label": "Speed rating", "value": v["speed"]},
         {"label": "Run-flat", "value": "Yes" if v["runflat"] else "No"},
-    ] + ([{"label": "EPREL", "value": label["eprelId"]}] if label else [])
+    ] + ([{"label": "EPREL", "value": label["eprelId"]}] if label else []) + ([{"label": "EAN", "value": gtin}] if gtin else [])
     tr = {}
     for lang in EU_LANGS:
         t = T[lang]
@@ -197,14 +212,14 @@ for i, f in enumerate(sl):
                 hl.append(t["snow"])
         tr[lang] = {
             "shortDescription": t["tire_short"].format(season=t[season], size=size, svc=svc, brand=brand),
-            "description": t["tire_desc"].format(brand=brand, model=model, size=size, svc=svc, season=t[season], mpn=v["sku"], gtin="", size_check=t["size_check"]),
+            "description": t["tire_desc"].format(brand=brand, model=model, size=size, svc=svc, season=t[season], mpn=v["sku"], gtin=f" EAN {gtin}." if gtin else "", size_check=t["size_check"]),
             "highlights": hl,
         }
     add({
         "slug": slugify(f"{brand} {model} {size} {svc}"), "category": "tires", "name": f"{model} {size} {svc}", "brand": brand,
-        "mpn": v["sku"], "images": imgs,
+        **({"gtin": gtin} if gtin else {}), "mpn": v["sku"], "images": imgs,
         "shortDescription": f"{EN[season]} {size} {svc}." + (f" EU label {label['fuelEfficiency']}/{label['wetGrip']}/{label['noiseDb']} dB." if label else ""),
-        "description": (desc + " " if desc else "") + f"{brand} {model} in {size} {svc}. {EN[season]}. Confirm the size on your sidewall before ordering.",
+        "description": (desc + " " if desc else "") + f"{brand} {model} in {size} {svc}. {EN[season]}." + (f" EAN {gtin}." if gtin else "") + " Confirm the size on your sidewall before ordering.",
         "highlights": highlights, "specs": specs,
         "offers": {"eu": {"priceCents": pretty_eur(v["price"]), "availability": "in_stock"}},
         "translations": tr,
@@ -282,9 +297,33 @@ for m in pt:
 print("US tires", n_us)
 
 # ---------------------------------------------------------------- US wheels
-pp = json.load(open(R + "ppt_wheels.json"))
+
+
+def load_optional(name):
+    try:
+        return json.load(open(R + name))
+    except FileNotFoundError:
+        return {}
+
+
+def amazon_hit(table, mpn):
+    h = table.get(mpn) or table.get(mpn.rstrip("#"))
+    return h if h and h.get("asin") else None
+
+
+amz_wheels_us = load_optional("amazon_wheels-us.json")
+amz_wheels_eu = load_optional("amazon_wheels-eu.json")
+amz_brakes_us = load_optional("amazon_brakes-us.json")
+
+pp = json.load(open(R + "ppt_wheels_premium.json")) + json.load(open(R + "ppt_wheels.json"))
+seen_ppt = set()
 n_us_w = 0
 for w in pp:
+    if w["mpn"] in seen_ppt or not w.get("image"):
+        continue
+    seen_ppt.add(w["mpn"])
+    hit = amazon_hit(amz_wheels_us, w["mpn"])
+    gtin = hit["gtin"] if hit else None
     try:
         dia, wid, et = int(float(w["diameter"])), float(w["width"]), int(float(w["offset"]))
     except (TypeError, ValueError, KeyError):
@@ -301,13 +340,13 @@ for w in pp:
         {"label": "Size", "value": f"{dia}x{wid_s}"}, {"label": "Bolt pattern", "value": w["bolt"]}, {"label": "Offset", "value": f"ET{et}"},
     ] + ([{"label": "Center bore", "value": f"{cb:g} mm"}] if cb else []) + [
         {"label": "Finish", "value": w["finish"]}, {"label": "Material", "value": w.get("material") or "Aluminum"}, {"label": "Structure", "value": w.get("structure") or "1-Piece"},
-    ] + ([{"label": "Backspacing", "value": w["backspace_in"] + '"'}] if w.get("backspace_in") else []) + ([{"label": "Center cap", "value": w["cap"]}] if w.get("cap") else [])
+    ] + ([{"label": "Backspacing", "value": w["backspace_in"] + '"'}] if w.get("backspace_in") else []) + ([{"label": "Center cap", "value": w["cap"]}] if w.get("cap") else []) + ([{"label": "Load rating", "value": w["load"]}] if w.get("load") else []) + ([{"label": "UPC", "value": gtin}] if gtin else [])
     t = T["es-419"]
     add({
         "slug": slugify(f"{w['brand']} {model} {dia}x{wid_s} {w['bolt']} et{et} {w['finish']}"), "category": "wheels", "name": f"{model} {dia}x{wid_s} ET{et} {w['finish']}", "brand": w["brand"],
-        "mpn": w["mpn"], "images": [w["image"]],
+        **({"gtin": gtin} if gtin else {}), "mpn": w["mpn"], "images": ([w["image"]] + [g for g in (w.get("gallery") or []) if g != w["image"]])[:3],
         "shortDescription": f"{EN[constr_key]} {dia}x{wid_s} ET{et}, {w['bolt']}, {w['finish']}.",
-        "description": f"{w['brand']} {model} in {dia}x{wid_s} with ET{et} offset, {w['bolt']} bolt pattern" + (f" and {cb:g} mm center bore" if cb else "") + f". {w.get('material') or 'Aluminum'}, {w.get('structure') or '1-piece'} construction, {w['finish']} finish. Manufacturer part {w['mpn']}. Price per wheel.",
+        "description": f"{w['brand']} {model} in {dia}x{wid_s} with ET{et} offset, {w['bolt']} bolt pattern" + (f" and {cb:g} mm center bore" if cb else "") + f". {w.get('material') or 'Aluminum'}, {w.get('structure') or '1-piece'} construction, {w['finish']} finish. Manufacturer part {w['mpn']}." + (f" UPC {gtin}." if gtin else "") + " Price per wheel.",
         "highlights": [f"{dia}x{wid_s} ET{et}", w["bolt"], w["finish"], constr, "Price per wheel"], "specs": specs,
         "offers": {"us": {"priceCents": cents(w["price"]), "availability": "in_stock"}},
         "translations": {"es-419": {
@@ -321,9 +360,15 @@ for w in pp:
 print("US wheels", n_us_w)
 
 # ---------------------------------------------------------------- EU wheels
-wb = [w for w in json.load(open(R + "wba_wheels.json")) if w.get("image") and w.get("priceGbp")]
+wb = [w for w in json.load(open(R + "wba_wheels_premium.json")) + json.load(open(R + "wba_wheels.json")) if w.get("image") and w.get("priceGbp")]
+seen_wba = set()
 n_eu_w = 0
 for w in wb:
+    if w["mpn"] in seen_wba:
+        continue
+    seen_wba.add(w["mpn"])
+    hit = amazon_hit(amz_wheels_eu, w["mpn"])
+    gtin = hit["gtin"] if hit else None
     try:
         dia, wid, et = int(float(w["size"])), float(w["width"]), int(float(w["offset"]))
         cb = float(w["bore"])
@@ -342,20 +387,20 @@ for w in wb:
     specs = [
         {"label": "Size", "value": f"{dia}x{wid_s}"}, {"label": "Bolt pattern", "value": pcd}, {"label": "Offset", "value": f"ET{et}"},
         {"label": "Centre bore", "value": f"{cb:g} mm"}, {"label": "Finish", "value": finish}, {"label": "Construction", "value": constr},
-    ] + ([{"label": "Load rating", "value": f"{load} kg"}] if load else [])
+    ] + ([{"label": "Load rating", "value": f"{load} kg"}] if load else []) + ([{"label": "Weight", "value": f"{float(w['weight']):g} kg"}] if w.get("weight") and float(w["weight"]) > 0 else []) + ([{"label": "EAN", "value": gtin}] if gtin else [])
     tr = {}
     for lang in EU_LANGS:
         t = T[lang]
         tr[lang] = {
             "shortDescription": t["wheel_short"].format(dia=dia, w=wid_s, et=et, pcd=pcd, finish=finish),
-            "description": t["wheel_desc"].format(brand=w["brand"], model=model, dia=dia, w=wid_s, et=et, pcd=pcd, cb=f"{cb:g}", finish=finish, constr=t[constr_key] + "."),
+            "description": t["wheel_desc"].format(brand=w["brand"], model=model, dia=dia, w=wid_s, et=et, pcd=pcd, cb=f"{cb:g}", finish=finish, constr=t[constr_key] + "." + (f" EAN {gtin}." if gtin else "")),
             "highlights": [f"{dia}x{wid_s} ET{et}", pcd, finish, t[constr_key]] + ([t["load"].format(kg=load)] if load else []) + ([t["tuv"]] if approvals else []) + [t["per_wheel"]],
         }
     add({
         "slug": slugify(f"{w['brand']} {model} {dia}x{wid_s} {pcd} et{et} {finish}"), "category": "wheels", "name": f"{model} {dia}x{wid_s} ET{et} {finish}", "brand": w["brand"],
-        "mpn": w["mpn"].rstrip("#"), "images": [w["image"]],
+        **({"gtin": gtin} if gtin else {}), "mpn": w["mpn"].rstrip("#"), "images": [w["image"]],
         "shortDescription": f"{EN[constr_key]} {dia}x{wid_s} ET{et}, {pcd}, {finish}.",
-        "description": f"{w['brand']} {model} in {dia}x{wid_s} with ET{et} offset, {pcd} bolt pattern and {cb:g} mm centre bore. {finish} finish" + (f", {load} kg load rating per wheel" if load else "") + ". " + ("TÜV approved. " if approvals else "") + "Price per wheel.",
+        "description": f"{w['brand']} {model} in {dia}x{wid_s} with ET{et} offset, {pcd} bolt pattern and {cb:g} mm centre bore. {finish} finish" + (f", {load} kg load rating per wheel" if load else "") + ". " + ("TÜV approved. " if approvals else "") + (f"EAN {gtin}. " if gtin else "") + "Price per wheel.",
         "highlights": [f"{dia}x{wid_s} ET{et}", pcd, finish, constr] + ([f"{load} kg load rating"] if load else []) + (["TÜV approved"] if approvals else []) + ["Price per wheel"],
         "specs": specs,
         "offers": {"eu": {"priceCents": pretty_eur(w["priceGbp"]), "availability": "in_stock"}},
@@ -388,14 +433,20 @@ def veh_label(slug):
 
 def brake_kind(name):
     n = name.lower()
-    if "big brake" in n or "bbk" in n:
+    if "big brake" in n or "bbk" in n or re.search(r"\bw/\s*calipers?\b|\bwith calipers?\b|\bcaliper kit\b", n):
         return "kit"
+    if re.search(r"\bcalipers?\b", n):
+        return "caliper"
     if "rotor" in n and "pad" in n:
         return "pads-and-discs"
     if "kit" in n:
         return "pads-and-discs"
     if "rotor" in n or "disc" in n:
         return "discs"
+    if "hose" in n or "line" in n:
+        return "hose"
+    if "sensor" in n:
+        return "sensor"
     return "pads"
 
 
@@ -425,24 +476,29 @@ for r in us_brakes:
     mpn_slug = re.sub(rf"^{re.escape(brand)}-", "", r["mpn"], flags=re.I)
     fit = [veh_label(v) for v in r["vehicles"]][:12]
     axle_en = EN["front-rear"] if both else EN[axle]
+    hit = amazon_hit(amz_brakes_us, r["mpn"])
+    gtin = hit["gtin"] if hit else None
+    # Prefer the manufacturer's own photos (via Amazon hi-res) over the reseller's watermarked shot.
+    images = (hit["images"][:3] if hit and hit.get("images") else [r["image"].replace("/thumb/", "/web/")])
+    mpn_real = hit["cleanMpn"] if hit and hit.get("cleanMpn") else r["mpn"]
     t = T["es-419"]
     axle_t = t["front-rear"] if both else t[axle]
     add({
         "slug": slugify(f"{brand} {mpn_slug}"), "category": "brakes", "name": model, "brand": brand,
-        "mpn": r["mpn"], "images": [r["image"].replace("/thumb/", "/web/")],
+        **({"gtin": gtin} if gtin else {}), "mpn": mpn_real, "images": images,
         "shortDescription": f"{EN[kind]}, {axle_en.lower()}. Fits {fit[0] if fit else 'listed vehicles'}" + (f" and {len(fit)-1} more" if len(fit) > 1 else "") + ".",
-        "description": f"{brand} {model}. {EN[kind]} for the {axle_en.lower()}. Manufacturer part {r['mpn']}. Verified fitment: {', '.join(fit) if fit else 'see list'}. Confirm your trim, brake package and rotor diameter before ordering.",
-        "highlights": [EN[kind], axle_en] + fit[:2] + [f"MPN {r['mpn']}"],
-        "specs": [{"label": "Type", "value": EN[kind]}, {"label": "Axle", "value": axle_en}, {"label": "MPN", "value": r["mpn"]}],
+        "description": f"{brand} {model}. {EN[kind]} for the {axle_en.lower()}. Manufacturer part {mpn_real}." + (f" UPC {gtin}." if gtin else "") + f" Verified fitment: {', '.join(fit) if fit else 'see list'}. Confirm your trim, brake package and rotor diameter before ordering.",
+        "highlights": [EN[kind], axle_en] + fit[:2] + [f"MPN {mpn_real}"],
+        "specs": [{"label": "Type", "value": EN[kind]}, {"label": "Axle", "value": axle_en}, {"label": "MPN", "value": mpn_real}] + ([{"label": "UPC", "value": gtin}] if gtin else []),
         "offers": {"us": {"priceCents": cents(r["price"]), "availability": "in_stock"}},
         "translations": {"es-419": {
             "shortDescription": t["brake_short"].format(kind=t[kind], axle=axle_t.lower(), fit=f"{t['fits']} {fit[0]}" if fit else t["fits"]),
-            "description": t["brake_desc"].format(brand=brand, kind=t[kind].lower(), mpn=r["mpn"], axle_l=axle_t.lower(), fit=f"{t['fits']}: {', '.join(fit)}" if fit else "", oe=""),
-            "highlights": [t[kind], axle_t] + fit[:2] + [f"MPN {r['mpn']}"],
+            "description": t["brake_desc"].format(brand=brand, kind=t[kind].lower(), mpn=mpn_real, axle_l=axle_t.lower(), fit=f"{t['fits']}: {', '.join(fit)}" if fit else "", oe=""),
+            "highlights": [t[kind], axle_t] + fit[:2] + [f"MPN {mpn_real}"],
         }},
         "brake": {"kind": kind, "axle": axle, "fitment": fit, "approvals": {}},
     })
-print("US brakes", len(us_brakes))
+print("US brakes", len(us_brakes), "with UPC", sum(1 for r in us_brakes if amazon_hit(amz_brakes_us, r["mpn"])))
 
 # ---------------------------------------------------------------- EU brakes
 # Axle per part, derived from the OE numbers each part replaces (VAG 1J0/1K0 698 151 =
@@ -453,27 +509,59 @@ EU_AXLE = {
     "09.C892.11": "front", "09.A444.11": "front", "DF5083S": "front", "0 986 479 431": "front", "0 986 424 523": "front",
     "0 986 478 875": "front", "09.C896.11": "front", "0 986 494 692": "front", "0 986 479 645": "rear", "0 986 494 736": "rear",
 }
-sp = json.load(open(R + "eu_brakes_pick.json"))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from brake_axle import infer_axle  # noqa: E402
+
+KIND_FROM_NAME = {"Brake Disc": "discs", "Brake Pad Set, disc brake": "pads", "Brake Caliper": "caliper", "Warning Contact, brake pad wear": "sensor", "Brake Drum": "drum", "Brake Shoe Set": "shoes", "Brake Hose": "hose"}
+# Balanced shelf per brand: enough depth for front + rear of every part kind without
+# drowning the category in 400 near-identical discs.
+EU_BRAKE_CAP = {("discs", "front"): 7, ("discs", "rear"): 6, ("pads", "front"): 7, ("pads", "rear"): 6, ("caliper", "front"): 4, ("caliper", "rear"): 4, ("drum", "rear"): 3, ("shoes", "rear"): 3, ("sensor", "front"): 3, ("sensor", "rear"): 2, ("hose", "front"): 2, ("hose", "rear"): 2}
+
+eu_candidates = []
+for r in json.load(open(R + "spareto_wide_enriched.json")):
+    if "InStock" not in (r.get("availability") or "") or not r.get("price") or not r.get("gtin"):
+        continue
+    axle, src = infer_axle(r)
+    if not axle:
+        continue
+    eu_candidates.append({**r, "kind": r.get("kind_hint") or KIND_FROM_NAME.get(r["name"], "pads"), "axle": axle, "axle_src": src})
+for r in json.load(open(R + "eu_brakes_pick.json")):
+    if r["mpn"] in {c["mpn"] for c in eu_candidates}:
+        continue
+    oe = re.findall(r"original part numbers? (.+?)\.$", r.get("oe_desc") or "")
+    oe_list = [x.strip() for x in re.split(r",\s*(?:and\s+)?|\s+and\s+", oe[0])] if oe else []
+    test = next((x for x in (r.get("trade") or []) if "90R" in x.replace(" ", "")), None)
+    eu_candidates.append({**r, "kind": "discs" if "Disc" in r["name"] else "pads", "axle": EU_AXLE.get(r["mpn"], "front"), "axle_src": "oe-manual", "oe": [o for o in oe_list if o], "test": test})
+
+# Items with a vehicle list and an approval mark first; then shortest OE-verified ones.
+eu_candidates.sort(key=lambda r: (0 if r.get("cars") else 1, 0 if r.get("test") else 1, 0 if r["axle_src"] == "fitting-position" else 1, float(r["price"])))
+eu_counts = collections.Counter()
+sp = []
+for r in eu_candidates:
+    k = (title_brand(r["brand"]), r["kind"], r["axle"])
+    if eu_counts[k] >= EU_BRAKE_CAP.get((r["kind"], r["axle"]), 2):
+        continue
+    eu_counts[k] += 1
+    sp.append(r)
+print("EU brake candidates", len(eu_candidates), "selected", len(sp), collections.Counter((r["kind"], r["axle"]) for r in sp))
+
 n_eu_b = 0
 for r in sp:
-    kind = "discs" if "Disc" in r["name"] else "pads"
-    axle = EU_AXLE.get(r["mpn"], "front")
+    kind, axle = r["kind"], r["axle"]
     brand = title_brand(r["brand"])
     props = dict(r.get("props") or [])
     cars = r.get("cars")
-    oe = re.findall(r"original part numbers? (.+?)\.$", r.get("oe_desc") or "")
-    oe_list = [x.strip() for x in re.split(r",\s*(?:and\s+)?|\s+and\s+", oe[0])] if oe else []
-    oe_list = [o for o in oe_list if o]
-    car = cars.replace(", and ", " / ").replace(" and ", " / ").replace(", ", " / ").title().replace("Vw", "VW").replace("Bmw", "BMW") if cars else None
+    oe_list = [o for o in (r.get("oe") or []) if o][:6]
+    car = cars.replace(", and ", " / ").replace(" and ", " / ").replace(", ", " / ").title().replace("Vw", "VW").replace("Bmw", "BMW").replace("Ds", "DS") if cars else None
     fit = ([car] if car else []) + (["OE " + ", ".join(oe_list)] if oe_list else [])
-    test = props.get("Test Mark") or next((x for x in (r.get("trade") or []) if "90R" in x.replace(" ", "")), None)
-    approvals = {"eu": test} if test else ({"eu": "ECE R90"} if kind == "pads" else {})
-    od = props.get("Outer Diameter")
-    dd = int(float(od)) if od and re.match(r"^[\d.]+$", od) else None
+    test = props.get("Test Mark") or r.get("test")
+    approvals = {"eu": test} if test else ({"eu": "ECE R90"} if kind in ("pads", "shoes") else {})
+    od = props.get("Outer Diameter") or dict(r.get("specs") or []).get("Outer Diameter")
+    dd = int(float(od)) if od and re.match(r"^[\d.]+$", str(od)) else None
     disc_type = (props.get("Brake Disc Type") or "").lower()
     vented = "vent" in disc_type
     specs = [{"label": "Type", "value": EN[kind]}, {"label": "Axle", "value": EN[axle]}, {"label": "MPN", "value": r["mpn"]}, {"label": "EAN", "value": r["gtin"]}]
-    for k, lab in [("WVA Number", "WVA"), ("Material", "Material"), ("Wear Warning Contact", "Wear indicator"), ("Height", "Height (mm)"), ("Width", "Width (mm)"), ("Thickness", "Thickness (mm)"), ("Brake Disc Type", "Disc type"), ("Outer Diameter", "Diameter (mm)"), ("Brake Disc Thickness", "Disc thickness (mm)"), ("Number of Holes", "Holes"), ("Centering Diameter", "Centre bore (mm)")]:
+    for k, lab in [("WVA Number", "WVA"), ("Material", "Material"), ("Wear Warning Contact", "Wear indicator"), ("Height", "Height (mm)"), ("Width", "Width (mm)"), ("Thickness", "Thickness (mm)"), ("Brake Disc Type", "Disc type"), ("Outer Diameter", "Diameter (mm)"), ("Brake Disc Thickness", "Disc thickness (mm)"), ("Number of Holes", "Holes"), ("Centering Diameter", "Centre bore (mm)"), ("Brake Caliper Type", "Caliper type"), ("Piston Diameter", "Piston diameter"), ("Brake System", "Brake system"), ("Inner diameter", "Inner diameter (mm)"), ("Drum diameter", "Drum diameter (mm)"), ("Length", "Length (mm)"), ("Thread Size 1", "Thread 1"), ("Thread Size 2", "Thread 2"), ("Number of wear indicators", "Wear indicators"), ("Fitting Position", "Fitting position")]:
         if props.get(k):
             specs.append({"label": lab, "value": props[k]})
     if test:
@@ -496,14 +584,14 @@ for r in sp:
         "slug": slugify(f"{brand} {r['mpn']}"), "category": "brakes", "name": f"{EN[kind]} {r['mpn']} — {EN[axle].lower()}", "brand": brand,
         "gtin": r["gtin"], "mpn": r["mpn"], "images": (r.get("images") or [r["image"]])[:3],
         "shortDescription": f"{EN[kind]}, {EN[axle].lower()}." + (f" Fits {car}." if car else (f" Replaces OE {oe_list[0]}." if oe_list else "")),
-        "description": f"{brand} {EN[kind].lower()} {r['mpn']} for the {EN[axle].lower()}." + (f" Fits {car}." if car else "") + (f" Replaces OE numbers {', '.join(oe_list)}." if oe_list else "") + f" EAN {r['gtin']}." + (f" {test}." if test else "") + " Confirm the application to your vehicle before ordering — pad and disc shapes are axle-specific.",
+        "description": f"{brand} {EN[kind].lower()} {r['mpn']} for the {EN[axle].lower()}." + (f" Fits {car}." if car else "") + (f" Replaces OE numbers {', '.join(oe_list)}." if oe_list else "") + f" EAN {r['gtin']}." + (f" {test}." if test else "") + " Confirm the application to your vehicle before ordering — brake parts are axle- and model-specific.",
         "highlights": highlights, "specs": specs,
         "offers": {"eu": {"priceCents": cents(r["price"]), "availability": "in_stock"}},
         "translations": tr,
         "brake": {"kind": kind, "axle": axle, "fitment": fit, **({"discDiameterMm": dd} if dd else {}), "approvals": approvals},
     })
     n_eu_b += 1
-print("EU brakes", n_eu_b)
+print("EU brakes", n_eu_b, collections.Counter(title_brand(r["brand"]) for r in sp))
 
 json.dump(out, open(R + "catalog_build.json", "w"), ensure_ascii=False)
 print("TOTAL", len(out), collections.Counter((p["category"], tuple(p["offers"].keys())) for p in out))
