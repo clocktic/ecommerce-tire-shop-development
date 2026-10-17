@@ -73,7 +73,17 @@ export const euNl: Dictionary = {
   },
   labels: {
     season: { summer: "Zomer", winter: "Winter", "all-season": "All-season" },
-    brakeKind: { pads: "Remblokken", discs: "Remschijven", kit: "Big-brake-kit", "pads-and-discs": "Blokken + schijven" },
+    brakeKind: {
+      discs: "Remschijven",
+      pads: "Remblokken",
+      "pads-and-discs": "Set blokken + schijven",
+      caliper: "Remklauw",
+      kit: "Big-brake-kit",
+      drum: "Remtrommel",
+      shoes: "Remschoenen",
+      hose: "Remslang",
+      sensor: "Slijtagesensor",
+    },
     axle: { front: "Vooras", rear: "Achteras" },
     axleShort: { front: "Voor", rear: "Achter" },
     availability: { in_stock: "Op voorraad", out_of_stock: "Niet op voorraad", preorder: "Pre-order" },

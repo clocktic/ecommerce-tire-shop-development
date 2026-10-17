@@ -74,7 +74,17 @@ export const euEs: Dictionary = {
   },
   labels: {
     season: { summer: "Verano", winter: "Invierno", "all-season": "Todo tiempo" },
-    brakeKind: { pads: "Pastillas", discs: "Discos", kit: "Kit de frenos", "pads-and-discs": "Pastillas + discos" },
+    brakeKind: {
+      discs: "Discos de freno",
+      pads: "Pastillas de freno",
+      "pads-and-discs": "Kit pastillas + discos",
+      caliper: "Pinza de freno",
+      kit: "Kit de frenos",
+      drum: "Tambor de freno",
+      shoes: "Zapatas de freno",
+      hose: "Latiguillo de freno",
+      sensor: "Sensor de desgaste",
+    },
     axle: { front: "Eje delantero", rear: "Eje trasero" },
     axleShort: { front: "Delantero", rear: "Trasero" },
     availability: { in_stock: "En stock", out_of_stock: "Agotado", preorder: "Reserva" },

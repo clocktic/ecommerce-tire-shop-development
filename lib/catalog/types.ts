@@ -96,10 +96,23 @@ export type WheelProduct = ProductBase & {
   }
 }
 
+export const BRAKE_KINDS = [
+  "discs",
+  "pads",
+  "pads-and-discs",
+  "caliper",
+  "kit",
+  "drum",
+  "shoes",
+  "hose",
+  "sensor",
+] as const
+export type BrakeKind = (typeof BRAKE_KINDS)[number]
+
 export type BrakeProduct = ProductBase & {
   category: "brakes"
   brake: {
-    kind: "pads" | "discs" | "kit" | "pads-and-discs"
+    kind: BrakeKind
     axle: "front" | "rear"
     fitment: string[]
     discDiameterMm?: number

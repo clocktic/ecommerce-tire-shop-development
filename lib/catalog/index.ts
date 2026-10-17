@@ -92,4 +92,14 @@ export const TIRE_OPTIONS = {
 }
 
 export const SEASON_LABEL = { summer: "Summer", winter: "Winter", "all-season": "All-season" } as const
-export const BRAKE_KIND_LABEL = { pads: "Pads", discs: "Discs", kit: "Big brake kit", "pads-and-discs": "Pads + discs" } as const
+export const BRAKE_KIND_LABEL = {
+  discs: "Brake discs",
+  pads: "Brake pads",
+  "pads-and-discs": "Pads + discs kit",
+  caliper: "Brake caliper",
+  kit: "Big brake kit",
+  drum: "Brake drum",
+  shoes: "Brake shoes",
+  hose: "Brake hose",
+  sensor: "Wear sensor",
+} as const

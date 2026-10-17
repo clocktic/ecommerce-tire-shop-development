@@ -37,7 +37,17 @@ const categories = {
 
 const labels = {
   season: { summer: "Summer", winter: "Winter", "all-season": "All-season" },
-  brakeKind: { pads: "Pads", discs: "Discs", kit: "Big brake kit", "pads-and-discs": "Pads + discs" },
+  brakeKind: {
+    discs: "Brake discs",
+    pads: "Brake pads",
+    "pads-and-discs": "Pads + discs kit",
+    caliper: "Brake caliper",
+    kit: "Big brake kit",
+    drum: "Brake drum",
+    shoes: "Brake shoes",
+    hose: "Brake hose",
+    sensor: "Wear sensor",
+  },
   axle: { front: "Front axle", rear: "Rear axle" },
   axleShort: { front: "Front", rear: "Rear" },
   availability: { in_stock: "In stock", out_of_stock: "Out of stock", preorder: "Pre-order" },

@@ -73,7 +73,17 @@ export const euFr: Dictionary = {
   },
   labels: {
     season: { summer: "Été", winter: "Hiver", "all-season": "Toutes saisons" },
-    brakeKind: { pads: "Plaquettes", discs: "Disques", kit: "Kit gros freins", "pads-and-discs": "Plaquettes + disques" },
+    brakeKind: {
+      discs: "Disques de frein",
+      pads: "Plaquettes de frein",
+      "pads-and-discs": "Kit plaquettes + disques",
+      caliper: "Étrier de frein",
+      kit: "Kit gros freins",
+      drum: "Tambour de frein",
+      shoes: "Mâchoires de frein",
+      hose: "Flexible de frein",
+      sensor: "Témoin d'usure",
+    },
     axle: { front: "Essieu avant", rear: "Essieu arrière" },
     axleShort: { front: "Avant", rear: "Arrière" },
     availability: { in_stock: "En stock", out_of_stock: "Épuisé", preorder: "Précommande" },

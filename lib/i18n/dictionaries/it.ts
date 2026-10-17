@@ -73,7 +73,17 @@ export const euIt: Dictionary = {
   },
   labels: {
     season: { summer: "Estivo", winter: "Invernale", "all-season": "Quattro stagioni" },
-    brakeKind: { pads: "Pastiglie", discs: "Dischi", kit: "Kit freni maggiorato", "pads-and-discs": "Pastiglie + dischi" },
+    brakeKind: {
+      discs: "Dischi freno",
+      pads: "Pastiglie freno",
+      "pads-and-discs": "Kit pastiglie + dischi",
+      caliper: "Pinza freno",
+      kit: "Kit freni maggiorato",
+      drum: "Tamburo freno",
+      shoes: "Ganasce freno",
+      hose: "Tubo freno",
+      sensor: "Sensore usura",
+    },
     axle: { front: "Asse anteriore", rear: "Asse posteriore" },
     axleShort: { front: "Anteriore", rear: "Posteriore" },
     availability: { in_stock: "Disponibile", out_of_stock: "Esaurito", preorder: "Preordine" },

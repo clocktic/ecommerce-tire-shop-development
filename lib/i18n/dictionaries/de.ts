@@ -73,7 +73,17 @@ export const euDe: Dictionary = {
   },
   labels: {
     season: { summer: "Sommer", winter: "Winter", "all-season": "Ganzjahr" },
-    brakeKind: { pads: "Bremsbeläge", discs: "Bremsscheiben", kit: "Big-Brake-Kit", "pads-and-discs": "Beläge + Scheiben" },
+    brakeKind: {
+      discs: "Bremsscheiben",
+      pads: "Bremsbeläge",
+      "pads-and-discs": "Beläge + Scheiben Set",
+      caliper: "Bremssattel",
+      kit: "Big-Brake-Kit",
+      drum: "Bremstrommel",
+      shoes: "Bremsbacken",
+      hose: "Bremsschlauch",
+      sensor: "Verschleißsensor",
+    },
     axle: { front: "Vorderachse", rear: "Hinterachse" },
     axleShort: { front: "Vorne", rear: "Hinten" },
     availability: { in_stock: "Auf Lager", out_of_stock: "Nicht auf Lager", preorder: "Vorbestellung" },
