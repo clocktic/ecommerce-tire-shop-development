@@ -96,7 +96,8 @@ export function ProductForm({ product, archived, isNew }: { product: Product; ar
           <Field label="Slug (URL)" name="slug" value={slug} onChange={(e) => setSlug(e.target.value)} required pattern="[a-z0-9-]+" />
           <div className="grid grid-cols-2 gap-4">
             <Field label="GTIN (реальный или пусто)" name="gtin" defaultValue={product.gtin} inputMode="numeric" />
-            <Field label="MPN" name="mpn" defaultValue={product.mpn} />
+            <Field label="MPN производителя" name="mpn" defaultValue={product.mpn} />
+            <Field label="Артикул поставщика" name="supplierSku" defaultValue={product.supplierSku} />
           </div>
         </div>
         <div className="flex flex-wrap gap-6 text-sm">

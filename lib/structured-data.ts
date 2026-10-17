@@ -11,6 +11,16 @@ const AVAILABILITY = {
   preorder: "https://schema.org/PreOrder",
 } as const
 
+// Schema.org rejects a 12-digit UPC in gtin13. Pick the property that matches the length.
+function gtinProperty(gtin?: string) {
+  if (!gtin) return {}
+  if (gtin.length === 8) return { gtin8: gtin }
+  if (gtin.length === 12) return { gtin12: gtin }
+  if (gtin.length === 13) return { gtin13: gtin }
+  if (gtin.length === 14) return { gtin14: gtin }
+  return {}
+}
+
 // Shipping and return terms in the markup come from lib/policies.ts, the same
 // source as the policy pages and the Google feed, so the three never disagree.
 export function productJsonLd(product: Product, store: Store) {
@@ -29,7 +39,7 @@ export function productJsonLd(product: Product, store: Store) {
     image: product.images.map((src) => absoluteUrl(src)),
     sku: product.id,
     ...(product.mpn ? { mpn: product.mpn } : {}),
-    ...(product.gtin ? { gtin13: product.gtin } : {}),
+    ...gtinProperty(product.gtin),
     brand: { "@type": "Brand", name: product.brand },
     offers: {
       "@type": "Offer",

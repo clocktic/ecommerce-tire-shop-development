@@ -107,6 +107,10 @@ const product = {
     pistons: "Caliper pistons",
     season: "Season",
     runFlat: "Run-flat",
+    mpn: "MPN",
+    ean: "EAN",
+    upc: "UPC",
+    supplierPart: "Supplier part",
   },
 }
 
