@@ -1,0 +1,255 @@
+[
+  {
+    "id": "michelin-defender2-225-65r17",
+    "slug": "michelin-defender2-225-65r17",
+    "name": "Defender2 225/65R17 102H",
+    "brand": "Michelin",
+    "gtin": "086699082183",
+    "mpn": "08218",
+    "images": ["/images/catalog/tire-touring.png"],
+    "shortDescription": "All-season touring tire for crossovers. UTQG 840 B B.",
+    "description": "Michelin Defender2 in 225/65R17 102H. All-season passenger tire. Manufacturer part 08218. UPC 086699082183. UTQG 840 B B. Confirm the size on your sidewall before ordering.",
+    "highlights": ["All-season", "UTQG 840 B B", "UPC 086699082183"],
+    "specs": [
+      {"label": "Size", "value": "225/65R17 102H"},
+      {"label": "MPN", "value": "08218"},
+      {"label": "UPC", "value": "086699082183"},
+      {"label": "UTQG", "value": "840 B B"},
+      {"label": "Season", "value": "All-season"}
+    ],
+    "offers": {"us": {"priceCents": 26900, "availability": "in_stock"}},
+    "translations": {
+      "es": {
+        "name": "Defender2 225/65R17 102H",
+        "shortDescription": "Llanta all-season para crossover. UTQG 840 B B.",
+        "description": "Michelin Defender2 en 225/65R17 102H. Llanta de turismo para todo el año. Parte 08218. UPC 086699082183. UTQG 840 B B. Confirma la medida en el costado antes de pedir.",
+        "highlights": ["Todo el año", "UTQG 840 B B", "UPC 086699082183"],
+        "specs": [
+          {"label": "Medida", "value": "225/65R17 102H"},
+          {"label": "MPN", "value": "08218"},
+          {"label": "UPC", "value": "086699082183"},
+          {"label": "UTQG", "value": "840 B B"},
+          {"label": "Temporada", "value": "Todo el año"}
+        ]
+      }
+    },
+    "category": "tires",
+    "tire": {
+      "width": 225,
+      "aspect": 65,
+      "rim": 17,
+      "loadIndex": 102,
+      "speedRating": "H",
+      "season": "all-season",
+      "extraLoad": false,
+      "runFlat": false,
+      "utqg": {"treadwear": 840, "traction": "B", "temperature": "B"}
+    }
+  },
+  {
+    "id": "michelin-crossclimate-2-205-55r16",
+    "slug": "michelin-crossclimate-2-205-55r16",
+    "name": "CrossClimate 2 205/55R16 91V",
+    "brand": "Michelin",
+    "mpn": "252295",
+    "images": ["/images/catalog/tire-winter.png"],
+    "shortDescription": "All-season tyre with the 3PMSF mark. EU label C / B / 69 dB.",
+    "description": "Michelin CrossClimate 2, 205/55R16 91V. EPREL registration 409519. Manufacturer model identifier 252295. Fuel C, wet grip B, external noise 69 dB class A. Severe-snow tyre. No EAN was published on the EPREL record, so none is stored.",
+    "highlights": ["3PMSF", "EU label C / B / 69 dB", "EPREL 409519"],
+    "specs": [
+      {"label": "Size", "value": "205/55R16 91V"},
+      {"label": "EPREL", "value": "409519"},
+      {"label": "Model identifier", "value": "252295"},
+      {"label": "EU label", "value": "C / B / 69 dB A"},
+      {"label": "Snow grip", "value": "Yes"}
+    ],
+    "offers": {"eu": {"priceCents": 14900, "availability": "in_stock"}},
+    "translations": {
+      "de": {
+        "shortDescription": "Ganzjahresreifen mit 3PMSF. EU-Label C / B / 69 dB.",
+        "description": "Michelin CrossClimate 2, 205/55R16 91V. EPREL 409519. Modellkennung 252295. Kraftstoff C, Nasshaftung B, Abrollgeräusch 69 dB Klasse A. Schneereifen. Eine EAN steht im EPREL-Datensatz nicht.",
+        "highlights": ["3PMSF", "EU-Label C / B / 69 dB", "EPREL 409519"],
+        "specs": [
+          {"label": "Größe", "value": "205/55R16 91V"},
+          {"label": "EPREL", "value": "409519"},
+          {"label": "Modellkennung", "value": "252295"},
+          {"label": "EU-Label", "value": "C / B / 69 dB A"},
+          {"label": "Schnee", "value": "Ja"}
+        ]
+      },
+      "fr": {
+        "shortDescription": "Pneu toutes saisons 3PMSF. Étiquette UE C / B / 69 dB.",
+        "description": "Michelin CrossClimate 2, 205/55R16 91V. Enregistrement EPREL 409519. Identifiant modèle 252295. Carburant C, adhérence sur sol mouillé B, bruit 69 dB classe A. Pneu neige. Aucun EAN dans la fiche EPREL.",
+        "highlights": ["3PMSF", "Étiquette UE C / B / 69 dB", "EPREL 409519"]
+      }
+    },
+    "category": "tires",
+    "tire": {
+      "width": 205,
+      "aspect": 55,
+      "rim": 16,
+      "loadIndex": 91,
+      "speedRating": "V",
+      "season": "all-season",
+      "extraLoad": false,
+      "runFlat": false,
+      "euLabel": {
+        "fuelEfficiency": "C",
+        "wetGrip": "B",
+        "noiseDb": 69,
+        "noiseClass": "A",
+        "snowGrip": true,
+        "iceGrip": false,
+        "eprelId": "409519"
+      }
+    }
+  },
+  {
+    "id": "michelin-pilot-sport-5-225-45r17",
+    "slug": "michelin-pilot-sport-5-225-45r17",
+    "name": "Pilot Sport 5 225/45ZR17 94Y XL",
+    "brand": "Michelin",
+    "mpn": "371721",
+    "images": ["/images/catalog/tire-performance.png"],
+    "shortDescription": "Summer performance tyre. EU label C / A / 72 dB.",
+    "description": "Michelin Pilot Sport 5, 225/45ZR17 (94Y) XL. EPREL registration 909522. Manufacturer model identifier 371721. Fuel C, wet grip A, external noise 72 dB class B. Not a severe-snow tyre. No EAN was published on the EPREL record.",
+    "highlights": ["Extra load", "Wet grip A", "EPREL 909522"],
+    "specs": [
+      {"label": "Size", "value": "225/45ZR17 (94Y) XL"},
+      {"label": "EPREL", "value": "909522"},
+      {"label": "Model identifier", "value": "371721"},
+      {"label": "EU label", "value": "C / A / 72 dB B"}
+    ],
+    "offers": {"eu": {"priceCents": 21400, "availability": "in_stock"}},
+    "translations": {
+      "de": {
+        "shortDescription": "Sommerreifen. EU-Label C / A / 72 dB.",
+        "description": "Michelin Pilot Sport 5, 225/45ZR17 (94Y) XL. EPREL 909522. Modellkennung 371721. Kraftstoff C, Nasshaftung A, Abrollgeräusch 72 dB Klasse B.",
+        "highlights": ["Extra Load", "Nasshaftung A", "EPREL 909522"]
+      },
+      "fr": {
+        "shortDescription": "Pneu été. Étiquette UE C / A / 72 dB.",
+        "description": "Michelin Pilot Sport 5, 225/45ZR17 (94Y) XL. EPREL 909522. Identifiant modèle 371721. Carburant C, adhérence sur sol mouillé A, bruit 72 dB classe B.",
+        "highlights": ["Extra load", "Adhérence mouillée A", "EPREL 909522"]
+      }
+    },
+    "category": "tires",
+    "tire": {
+      "width": 225,
+      "aspect": 45,
+      "rim": 17,
+      "loadIndex": 94,
+      "speedRating": "Y",
+      "season": "summer",
+      "extraLoad": true,
+      "runFlat": false,
+      "euLabel": {
+        "fuelEfficiency": "C",
+        "wetGrip": "A",
+        "noiseDb": 72,
+        "noiseClass": "B",
+        "snowGrip": false,
+        "iceGrip": false,
+        "eprelId": "909522"
+      }
+    }
+  },
+  {
+    "id": "continental-premiumcontact-7-225-45r17",
+    "slug": "continental-premiumcontact-7-225-45r17",
+    "name": "PremiumContact 7 225/45R17 94V XL",
+    "brand": "Continental",
+    "mpn": "0313052",
+    "images": ["/images/catalog/tire-performance.png"],
+    "shortDescription": "Summer tyre. EU label C / A / 72 dB.",
+    "description": "Continental PremiumContact 7, 225/45R17 94V XL. EPREL registration 843297. Manufacturer model identifier 0313052. Fuel C, wet grip A, external noise 72 dB class B. Not a severe-snow tyre. No EAN was published on the EPREL record.",
+    "highlights": ["Extra load", "Wet grip A", "EPREL 843297"],
+    "specs": [
+      {"label": "Size", "value": "225/45R17 94V XL"},
+      {"label": "EPREL", "value": "843297"},
+      {"label": "Model identifier", "value": "0313052"},
+      {"label": "EU label", "value": "C / A / 72 dB B"}
+    ],
+    "offers": {"eu": {"priceCents": 16800, "availability": "in_stock"}},
+    "translations": {
+      "de": {
+        "shortDescription": "Sommerreifen. EU-Label C / A / 72 dB.",
+        "description": "Continental PremiumContact 7, 225/45R17 94V XL. EPREL 843297. Modellkennung 0313052. Kraftstoff C, Nasshaftung A, Abrollgeräusch 72 dB Klasse B.",
+        "highlights": ["Extra Load", "Nasshaftung A", "EPREL 843297"]
+      },
+      "fr": {
+        "shortDescription": "Pneu été. Étiquette UE C / A / 72 dB.",
+        "description": "Continental PremiumContact 7, 225/45R17 94V XL. EPREL 843297. Identifiant modèle 0313052. Carburant C, adhérence sur sol mouillé A, bruit 72 dB classe B.",
+        "highlights": ["Extra load", "Adhérence mouillée A", "EPREL 843297"]
+      }
+    },
+    "category": "tires",
+    "tire": {
+      "width": 225,
+      "aspect": 45,
+      "rim": 17,
+      "loadIndex": 94,
+      "speedRating": "V",
+      "season": "summer",
+      "extraLoad": true,
+      "runFlat": false,
+      "euLabel": {
+        "fuelEfficiency": "C",
+        "wetGrip": "A",
+        "noiseDb": 72,
+        "noiseClass": "B",
+        "snowGrip": false,
+        "iceGrip": false,
+        "eprelId": "843297"
+      }
+    }
+  },
+  {
+    "id": "brembo-prime-p85020",
+    "slug": "brembo-prime-p85020",
+    "name": "Prime P85020 rear brake pads",
+    "brand": "Brembo",
+    "gtin": "8020584058237",
+    "mpn": "P85020",
+    "images": ["/images/catalog/brake-pads.png"],
+    "shortDescription": "Rear axle pad set. EAN 8020584058237.",
+    "description": "Brembo Prime brake pad set P85020 for the rear axle. EAN / GTIN 8020584058237. Confirm the application to the vehicle before ordering — pad shape is axle-specific.",
+    "highlights": ["Rear axle", "EAN 8020584058237", "Prime line"],
+    "specs": [
+      {"label": "MPN", "value": "P85020"},
+      {"label": "EAN", "value": "8020584058237"},
+      {"label": "Axle", "value": "Rear"},
+      {"label": "Line", "value": "Prime"}
+    ],
+    "offers": {
+      "us": {"priceCents": 7900, "availability": "in_stock"},
+      "eu": {"priceCents": 6490, "availability": "in_stock"}
+    },
+    "translations": {
+      "de": {
+        "name": "Prime P85020 Bremsbeläge hinten",
+        "shortDescription": "Belagsatz Hinterachse. EAN 8020584058237.",
+        "description": "Brembo Prime Belagsatz P85020 für die Hinterachse. EAN 8020584058237. Anwendung am Fahrzeug prüfen — die Belagform ist achsspezifisch.",
+        "highlights": ["Hinterachse", "EAN 8020584058237", "Prime"]
+      },
+      "fr": {
+        "name": "Plaquettes arrière Prime P85020",
+        "shortDescription": "Jeu de plaquettes arrière. EAN 8020584058237.",
+        "description": "Jeu de plaquettes Brembo Prime P85020 pour l'essieu arrière. EAN 8020584058237. Vérifiez l'application sur le véhicule.",
+        "highlights": ["Essieu arrière", "EAN 8020584058237", "Prime"]
+      },
+      "es": {
+        "name": "Pastillas traseras Prime P85020",
+        "shortDescription": "Juego de pastillas traseras. EAN 8020584058237.",
+        "description": "Juego de pastillas Brembo Prime P85020 para el eje trasero. EAN 8020584058237. Confirma la aplicación en el vehículo."
+      }
+    },
+    "category": "brakes",
+    "brake": {
+      "kind": "pads",
+      "axle": "rear",
+      "fitment": ["Rear axle — confirm the application to the vehicle"],
+      "approvals": {}
+    }
+  }
+]
