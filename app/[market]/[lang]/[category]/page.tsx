@@ -3,10 +3,18 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import {
   CATEGORIES,
+  DISC_OPTIONS,
+  FINISH_FAMILIES,
+  OFFSET_BANDS,
+  PISTON_OPTIONS,
+  PRICE_BANDS,
+  SPEED_RATINGS,
   TIRE_OPTIONS,
   filterProducts,
+  finishFamily,
   isCategory,
   localizeProduct,
+  offsetBand,
   type Category,
   type Product,
 } from "@/lib/catalog"
@@ -50,7 +58,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
   )
   const copy = t.categories[category]
   const all = (await getProductsByCategory(store.market, category)).map((p) => localizeProduct(p, store))
-  const products = filterProducts(all, filters)
+  const products = filterProducts(all, filters, store.market)
   const active = Object.values(filters).some(Boolean)
 
   return (
@@ -69,9 +77,9 @@ export default async function CategoryPage({ params, searchParams }: { params: P
       </header>
 
       <form method="get" className="flex flex-col gap-4 border-b border-border py-6 md:flex-row md:items-end">
-        <fieldset className="grid flex-1 grid-cols-2 gap-3 md:grid-cols-4">
+        <fieldset className="grid flex-1 grid-cols-2 gap-3 lg:grid-cols-4">
           <legend className="sr-only">{fmt(t.catalog.filter, { category: copy.name })}</legend>
-          <CategoryFilters category={category} products={all} filters={filters} t={t} />
+          <CategoryFilters category={category} products={all} filters={filters} store={store} t={t} />
         </fieldset>
         <div className="flex items-center gap-3">
           <Button type="submit" size="lg">
@@ -102,16 +110,43 @@ function CategoryFilters({
   category,
   products,
   filters,
+  store,
   t,
 }: {
   category: Category
   products: Product[]
   filters: Record<string, string | undefined>
+  store: Store
   t: Dictionary
 }) {
   const c = t.catalog
   const any = c.any
+  const brands = unique(products.map((p) => p.brand))
+  const yesNo = { yes: c.yes, no: c.no }
+  const shared = (
+    <>
+      {brands.length > 0 && <FilterSelect name="brand" label={c.brand} any={any} value={filters.brand} options={brands} />}
+      <FilterSelect
+        name="price"
+        label={c.price}
+        any={any}
+        value={filters.price}
+        options={PRICE_BANDS.map((band) => band.id)}
+        labels={priceLabels(store, t)}
+      />
+      <FilterSelect
+        name="stock"
+        label={c.stock}
+        any={any}
+        value={filters.stock}
+        options={Object.keys(t.labels.availability)}
+        labels={t.labels.availability}
+      />
+    </>
+  )
+
   if (category === "tires") {
+    const loads = unique(products.map((p) => (p.category === "tires" ? String(p.tire.loadIndex) : "")))
     return (
       <>
         <FilterSelect name="width" label={c.width} any={any} value={filters.width} options={TIRE_OPTIONS.width.map(String)} />
@@ -122,56 +157,64 @@ function CategoryFilters({
           any={any}
           value={filters.rim}
           options={TIRE_OPTIONS.rim.map(String)}
-          labels={Object.fromEntries(TIRE_OPTIONS.rim.map((r) => [String(r), `R${r}`]))}
+          labels={Object.fromEntries(TIRE_OPTIONS.rim.map((rim) => [String(rim), `R${rim}`]))}
         />
-        <FilterSelect
-          name="season"
-          label={c.season}
-          any={any}
-          value={filters.season}
-          options={Object.keys(t.labels.season)}
-          labels={t.labels.season}
-        />
+        <FilterSelect name="season" label={c.season} any={any} value={filters.season} options={Object.keys(t.labels.season)} labels={t.labels.season} />
+        <FilterSelect name="speed" label={c.speed} any={any} value={filters.speed} options={[...SPEED_RATINGS]} />
+        {loads.length > 0 && <FilterSelect name="load" label={c.load} any={any} value={filters.load} options={loads} />}
+        <FilterSelect name="runFlat" label={c.runFlat} any={any} value={filters.runFlat} options={["yes", "no"]} labels={yesNo} />
+        <FilterSelect name="extraLoad" label={c.extraLoad} any={any} value={filters.extraLoad} options={["yes", "no"]} labels={yesNo} />
+        {shared}
       </>
     )
   }
+
   if (category === "wheels") {
-    const diameters = unique(products.map((p) => (p.category === "wheels" ? String(p.wheel.diameter) : "")))
-    const bolts = unique(products.map((p) => (p.category === "wheels" ? p.wheel.boltPattern : "")))
+    const wheels = products.filter((p) => p.category === "wheels")
+    const diameters = unique(wheels.map((p) => String(p.wheel.diameter)))
+    const widths = unique(wheels.map((p) => String(p.wheel.width)))
+    const bolts = unique(wheels.map((p) => p.wheel.boltPattern))
+    const bores = unique(wheels.map((p) => String(p.wheel.centerBore)))
+    const finishes = FINISH_FAMILIES.filter((family) => wheels.some((p) => finishFamily(p.wheel.finish) === family))
+    const offsets = OFFSET_BANDS.filter((band) => wheels.some((p) => offsetBand(p.wheel.offset) === band))
+    const constructions = unique(wheels.map((p) => p.wheel.construction))
     return (
       <>
-        <FilterSelect
-          name="diameter"
-          label={c.diameter}
-          any={any}
-          value={filters.diameter}
-          options={diameters}
-          labels={Object.fromEntries(diameters.map((d) => [d, `${d}"`]))}
-        />
-        <FilterSelect
-          name="bolt"
-          label={c.bolt}
-          any={any}
-          value={filters.bolt}
-          options={bolts}
-          labels={Object.fromEntries(bolts.map((b) => [b, b.replace("x", "×")]))}
-        />
+        <FilterSelect name="diameter" label={c.diameter} any={any} value={filters.diameter} options={diameters} labels={Object.fromEntries(diameters.map((d) => [d, `${d}"`]))} />
+        <FilterSelect name="width" label={c.width} any={any} value={filters.width} options={widths} labels={Object.fromEntries(widths.map((w) => [w, `${w}"`]))} />
+        <FilterSelect name="bolt" label={c.bolt} any={any} value={filters.bolt} options={bolts} labels={Object.fromEntries(bolts.map((b) => [b, b.replace("x", "×")]))} />
+        <FilterSelect name="offset" label={c.offset} any={any} value={filters.offset} options={[...offsets]} labels={c.offsetBand} />
+        <FilterSelect name="bore" label={c.bore} any={any} value={filters.bore} options={bores} labels={Object.fromEntries(bores.map((b) => [b, `${b} mm`]))} />
+        <FilterSelect name="finish" label={c.finish} any={any} value={filters.finish} options={[...finishes]} labels={c.finishFamily} />
+        <FilterSelect name="construction" label={c.construction} any={any} value={filters.construction} options={constructions} />
+        {shared}
       </>
     )
   }
+
+  const discs = unique([
+    ...DISC_OPTIONS,
+    ...products.map((p) => (p.category === "brakes" && p.brake.discDiameterMm ? String(p.brake.discDiameterMm) : "")),
+  ])
   return (
     <>
-      <FilterSelect
-        name="kind"
-        label={c.type}
-        any={any}
-        value={filters.kind}
-        options={Object.keys(t.labels.brakeKind)}
-        labels={t.labels.brakeKind}
-      />
+      <FilterSelect name="kind" label={c.type} any={any} value={filters.kind} options={Object.keys(t.labels.brakeKind)} labels={t.labels.brakeKind} />
       <FilterSelect name="axle" label={c.axle} any={any} value={filters.axle} options={["front", "rear"]} labels={t.labels.axleShort} />
+      <FilterSelect name="pistons" label={c.pistons} any={any} value={filters.pistons} options={[...PISTON_OPTIONS]} />
+      <FilterSelect name="disc" label={c.disc} any={any} value={filters.disc} options={discs} labels={Object.fromEntries(discs.map((d) => [d, `${d} mm`]))} />
+      {shared}
     </>
   )
+}
+
+function priceLabels(store: Store, t: Dictionary): Record<string, string> {
+  const symbol = store.market === "us" ? "$" : "€"
+  return {
+    "200": fmt(t.catalog.under, { n: `${symbol}200` }),
+    "400": `${symbol}200–${symbol}400`,
+    "800": `${symbol}400–${symbol}800`,
+    "800+": fmt(t.catalog.over, { n: `${symbol}800` }),
+  }
 }
 
 function unique(values: string[]) {

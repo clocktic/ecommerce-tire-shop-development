@@ -108,7 +108,10 @@ export function VehicleFinder({ stockedSizes }: { stockedSizes: string[] }) {
   const makes = makesFor(store.market)
   const [make, setMake] = useState(makes[0] ?? "")
   const models = useMemo(
-    () => vehiclesFor(store.market).filter((vehicle) => vehicle.make === make),
+    () =>
+      vehiclesFor(store.market)
+        .filter((vehicle) => vehicle.make === make)
+        .sort((a, b) => a.model.localeCompare(b.model) || a.yearFrom - b.yearFrom),
     [store.market, make],
   )
   const [modelId, setModelId] = useState(models[0]?.id ?? "")
@@ -121,7 +124,9 @@ export function VehicleFinder({ stockedSizes }: { stockedSizes: string[] }) {
   const inStock = stockedSizes.includes(key)
 
   const pickMake = (next: string) => {
-    const nextModels = vehiclesFor(store.market).filter((vehicle) => vehicle.make === next)
+    const nextModels = vehiclesFor(store.market)
+      .filter((vehicle) => vehicle.make === next)
+      .sort((a, b) => a.model.localeCompare(b.model) || a.yearFrom - b.yearFrom)
     setMake(next)
     applyModel(nextModels[0])
   }
@@ -157,26 +162,21 @@ export function VehicleFinder({ stockedSizes }: { stockedSizes: string[] }) {
 
       <div className="relative min-w-0 border border-foreground/80 bg-card p-4 md:p-7">
         <CornerMarks />
-        <div className="-mx-4 mb-5 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:flex-wrap md:px-0" role="group" aria-label={copy.make}>
-          {makes.map((item) => {
-            const selected = item === make
-            return (
-              <button
-                key={item}
-                type="button"
-                aria-pressed={selected}
-                onClick={() => pickMake(item)}
-                className={`h-11 shrink-0 border px-3 font-expanded text-xs font-bold uppercase tracking-wide ${
-                  selected ? "border-foreground bg-foreground text-background" : "border-border bg-background text-foreground"
-                }`}
-              >
-                {item}
-              </button>
-            )
-          })}
-        </div>
-
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-3">
+          <label className="flex min-w-0 flex-col gap-1.5">
+            <span className="label-caps text-muted-foreground">{copy.make}</span>
+            <select
+              value={make}
+              onChange={(event) => pickMake(event.target.value)}
+              className="h-12 w-full border border-border bg-background px-3 text-base"
+            >
+              {makes.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </label>
           <label className="flex min-w-0 flex-col gap-1.5">
             <span className="label-caps text-muted-foreground">{copy.model}</span>
             <select
@@ -186,7 +186,7 @@ export function VehicleFinder({ stockedSizes }: { stockedSizes: string[] }) {
             >
               {models.map((item) => (
                 <option key={item.id} value={item.id}>
-                  {item.model}
+                  {item.model} {item.yearFrom}–{item.yearTo}
                 </option>
               ))}
             </select>
