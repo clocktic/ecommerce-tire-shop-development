@@ -691,7 +691,9 @@ for p in out:
     for img in p.get("images") or []:
         if img not in prev["images"]:
             prev["images"].append(img)
-out = merged
+# Tires and brakes from the old references are withdrawn: those photos were
+# watermarked, diagrammatic, or missing a real description. Wheels stay.
+out = [p for p in merged if p["category"] == "wheels"]
 for p in out:
     offers = p["offers"]
     if "eu" in offers and "us" not in offers:
