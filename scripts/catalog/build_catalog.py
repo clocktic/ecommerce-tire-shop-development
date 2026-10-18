@@ -656,6 +656,49 @@ for r in sp:
     n_eu_b += 1
 print("EU brakes", n_eu_b, collections.Counter(title_brand(r["brand"]) for r in sp))
 
+# One listing per product, sold in both stores. Prices convert at the 2026-10-17
+# mid-market rate and snap to the shelf ending already used in each market.
+USD_PER_EUR = 1.12390244
+
+def snap_usd(cents):
+    return max(99, int(round(cents / 100.0)) * 100 - 1)
+
+def snap_eur(cents):
+    return max(90, int(round(cents / 100.0)) * 100 - 10)
+
+def product_identity(p):
+    if p["category"] == "tires":
+        t = p.get("tire") or {}
+        model = p["name"].split(f" {t.get('width')}/")[0].strip().lower()
+        return ("tire", p["brand"].lower(), model, t.get("width"), t.get("aspect"), t.get("rim"), t.get("loadIndex"), t.get("speedRating"))
+    if p.get("mpn"):
+        return ("mpn", p["brand"].lower(), p["mpn"].lower())
+    if p.get("gtin"):
+        return ("gtin", p["gtin"])
+    return ("slug", p["slug"])
+
+merged = []
+seen = {}
+for p in out:
+    key = product_identity(p)
+    prev = seen.get(key)
+    if not prev:
+        seen[key] = p
+        merged.append(p)
+        continue
+    for market, offer in p["offers"].items():
+        prev["offers"].setdefault(market, offer)
+    for img in p.get("images") or []:
+        if img not in prev["images"]:
+            prev["images"].append(img)
+out = merged
+for p in out:
+    offers = p["offers"]
+    if "eu" in offers and "us" not in offers:
+        offers["us"] = {"priceCents": snap_usd(offers["eu"]["priceCents"] * USD_PER_EUR), "availability": offers["eu"]["availability"]}
+    elif "us" in offers and "eu" not in offers:
+        offers["eu"] = {"priceCents": snap_eur(offers["us"]["priceCents"] / USD_PER_EUR), "availability": offers["us"]["availability"]}
+
 json.dump(out, open(R + "catalog_build.json", "w"), ensure_ascii=False)
 print("TOTAL", len(out), collections.Counter((p["category"], tuple(p["offers"].keys())) for p in out))
 print("images", sum(len(p["images"]) for p in out))
