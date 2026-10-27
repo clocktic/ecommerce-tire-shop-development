@@ -81,7 +81,7 @@ export const POLICIES: Record<Market, MarketPolicy> = {
       area: "all 27 EU member states",
       exclusions: "Non-EU countries (incl. UK, Switzerland, Norway) and EU outermost regions such as the Canary Islands",
       duties:
-        "Ships from the United States. Prices exclude import duties and import VAT — you pay them to the carrier or customs on delivery. If you return the goods, we refund the import VAT you paid.",
+        "Ships from the United States. Prices exclude import duties and import VAT — you pay them to the carrier or customs on delivery. After you receive your order, we refund the import VAT you paid.",
     },
     returns: {
       windowDays: 14,

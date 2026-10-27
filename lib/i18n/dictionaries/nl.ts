@@ -8,7 +8,7 @@ const [min, max] = deliveryDays("eu")
 const days = `${min}–${max} werkdagen`
 const area = "alle 27 EU-lidstaten"
 const exclusions = "landen buiten de EU (waaronder het Verenigd Koninkrijk, Zwitserland en Noorwegen) en ultraperifere EU-gebieden zoals de Canarische Eilanden"
-const duties = "Verzonden vanuit de Verenigde Staten. De prijzen zijn exclusief invoerrechten en invoer-btw, die u bij levering aan de vervoerder of de douane betaalt. Bij een retour betalen wij de betaalde invoer-btw aan u terug."
+const duties = "Verzonden vanuit de Verenigde Staten. De prijzen zijn exclusief invoerrechten en invoer-btw, die u bij levering aan de vervoerder of de douane betaalt. Nadat u uw bestelling heeft ontvangen, betalen wij de betaalde invoer-btw aan u terug."
 const warranty = "Wettelijke conformiteitsgarantie in de EU van 2 jaar na levering, naast een eventuele fabrieksgarantie."
 const bulky = "maximaal ongeveer € 25 per band of velg en € 15 per remmenpakket"
 const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "SEPA-overschrijving" : m)).join(", ")

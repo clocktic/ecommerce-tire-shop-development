@@ -9,7 +9,7 @@ const [min, max] = deliveryDays("eu")
 const days = `${min}–${max} días laborables`
 const area = "los 27 Estados miembros de la UE"
 const exclusions = "países de fuera de la UE (incluidos Reino Unido, Suiza y Noruega) y regiones ultraperiféricas de la UE como las Islas Canarias"
-const duties = "Enviado desde Estados Unidos. Los precios no incluyen aranceles ni IVA de importación, que pagas al transportista o a la aduana en la entrega. Si devuelves el pedido, te reembolsamos el IVA de importación abonado."
+const duties = "Enviado desde Estados Unidos. Los precios no incluyen aranceles ni IVA de importación, que pagas al transportista o a la aduana en la entrega. Una vez recibido tu pedido, te reembolsamos el IVA de importación abonado."
 const warranty = "Garantía legal de conformidad de la UE durante 2 años desde la entrega, además de cualquier garantía del fabricante."
 const bulky = "como máximo unos 25 € por neumático o llanta y 15 € por bulto de frenos"
 const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "transferencia SEPA" : m)).join(", ")

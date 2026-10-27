@@ -5,7 +5,7 @@ import type { PolicyDoc, PolicySection } from "@/lib/legal/types"
 
 // EU orders are shipped from the United States on a DAP basis (Delivered at
 // Place): the customer pays import VAT and any customs duty to the carrier or
-// customs on delivery, and we refund the import VAT on returns. This file holds
+// customs on delivery, and we refund the import VAT after delivery, on proof of payment. This file holds
 // the full "Duties, Import VAT & Customs" page and the short fragments the other
 // EU policy pages reuse, so the wording stays identical everywhere.
 
@@ -36,7 +36,7 @@ const EN: Snippets = {
   paymentsVat: {
     heading: "Import VAT and duties",
     blocks: [
-      "We do not charge VAT at checkout. Import VAT and any customs duty are charged by the customs authority of the country of delivery and collected by the carrier. You pay them on delivery, and we refund the import VAT if you return the goods.",
+      "We do not charge VAT at checkout. Import VAT and any customs duty are charged by the customs authority of the country of delivery and collected by the carrier. You pay them on delivery. After you receive your order, we refund the import VAT to you.",
       { link: { href, label: "Duties, Import VAT & Customs" } },
     ],
   },
@@ -44,14 +44,14 @@ const EN: Snippets = {
   returnsSection: {
     heading: "Import VAT and customs charges",
     blocks: [
-      "If you paid import VAT on the returned goods, we refund it in addition to the price of the goods, on presentation of the customs receipt or carrier invoice. Customs duty is paid to the customs authority, which may refund it when the goods are re-exported; we provide the return documents it asks for.",
+      "We refund import VAT after delivery, whether or not you return the goods, so no further VAT refund is due on a return. Customs duty is paid to the customs authority, which may refund it when the goods are re-exported; we provide the return documents it asks for.",
       { link: { href, label: "Duties, Import VAT & Customs" } },
     ],
   },
   termsSection: {
     heading: "Customs, import VAT and duties",
     blocks: [
-      "Goods are shipped from the United States on a Delivered at Place (DAP) basis. You are the importer of record and pay import VAT, customs duty and any carrier clearance fee on delivery. We refund import VAT on returned goods as described on the Duties, Import VAT & Customs page. Mandatory consumer rights are not affected.",
+      "Goods are shipped from the United States on a Delivered at Place (DAP) basis. You are the importer of record and pay import VAT, customs duty and any carrier clearance fee on delivery. After you receive your order, we refund the import VAT as described on the Duties, Import VAT & Customs page. Mandatory consumer rights are not affected.",
       { link: { href, label: "Duties, Import VAT & Customs" } },
     ],
   },
@@ -66,7 +66,7 @@ const DE: Snippets = {
   paymentsVat: {
     heading: "Einfuhrumsatzsteuer und Zölle",
     blocks: [
-      "Wir berechnen an der Kasse keine Mehrwertsteuer. Einfuhrumsatzsteuer und etwaige Zölle werden von der Zollbehörde des Lieferlandes erhoben und vom Zusteller eingezogen. Sie zahlen sie bei Lieferung; bei einer Rücksendung erstatten wir Ihnen die Einfuhrumsatzsteuer.",
+      "Wir berechnen an der Kasse keine Mehrwertsteuer. Einfuhrumsatzsteuer und etwaige Zölle werden von der Zollbehörde des Lieferlandes erhoben und vom Zusteller eingezogen. Sie zahlen sie bei Lieferung; nachdem Sie Ihre Bestellung erhalten haben, erstatten wir Ihnen die Einfuhrumsatzsteuer.",
       { link: { href, label: "Zölle, Einfuhrumsatzsteuer & Zollabwicklung" } },
     ],
   },
@@ -74,14 +74,14 @@ const DE: Snippets = {
   returnsSection: {
     heading: "Einfuhrumsatzsteuer und Zollgebühren",
     blocks: [
-      "Haben Sie für die zurückgesandten Waren Einfuhrumsatzsteuer gezahlt, erstatten wir diese zusätzlich zum Kaufpreis gegen Vorlage des Zollbelegs oder der Rechnung des Zustellers. Zoll wird an die Zollbehörde gezahlt, die ihn bei einer Wiederausfuhr der Waren erstatten kann; die dafür verlangten Rücksendeunterlagen stellen wir Ihnen bereit.",
+      "Die Einfuhrumsatzsteuer erstatten wir nach der Lieferung, unabhängig von einer Rücksendung; bei einer Rücksendung ist daher keine weitere Steuererstattung fällig. Zoll wird an die Zollbehörde gezahlt, die ihn bei einer Wiederausfuhr der Waren erstatten kann; die dafür verlangten Rücksendeunterlagen stellen wir Ihnen bereit.",
       { link: { href, label: "Zölle, Einfuhrumsatzsteuer & Zollabwicklung" } },
     ],
   },
   termsSection: {
     heading: "Zoll, Einfuhrumsatzsteuer und Abgaben",
     blocks: [
-      "Die Ware wird aus den USA „geliefert benannter Ort“ (DAP) versandt. Sie sind Importeur und zahlen Einfuhrumsatzsteuer, Zoll und etwaige Abfertigungsgebühren des Zustellers bei Lieferung. Die Einfuhrumsatzsteuer auf zurückgesandte Ware erstatten wir wie auf der Seite „Zölle, Einfuhrumsatzsteuer & Zollabwicklung“ beschrieben. Zwingende Verbraucherrechte bleiben unberührt.",
+      "Die Ware wird aus den USA „geliefert benannter Ort“ (DAP) versandt. Sie sind Importeur und zahlen Einfuhrumsatzsteuer, Zoll und etwaige Abfertigungsgebühren des Zustellers bei Lieferung. Nach Erhalt Ihrer Bestellung erstatten wir Ihnen die Einfuhrumsatzsteuer, wie auf der Seite „Zölle, Einfuhrumsatzsteuer & Zollabwicklung“ beschrieben. Zwingende Verbraucherrechte bleiben unberührt.",
       { link: { href, label: "Zölle, Einfuhrumsatzsteuer & Zollabwicklung" } },
     ],
   },
@@ -96,7 +96,7 @@ const FR: Snippets = {
   paymentsVat: {
     heading: "TVA à l’importation et droits de douane",
     blocks: [
-      "Nous ne facturons pas de TVA au paiement. La TVA à l’importation et les éventuels droits de douane sont prélevés par l’administration douanière du pays de livraison et encaissés par le transporteur. Vous les réglez à la livraison ; en cas de retour, nous vous remboursons la TVA à l’importation.",
+      "Nous ne facturons pas de TVA au paiement. La TVA à l’importation et les éventuels droits de douane sont prélevés par l’administration douanière du pays de livraison et encaissés par le transporteur. Vous les réglez à la livraison ; une fois votre commande reçue, nous vous remboursons la TVA à l’importation.",
       { link: { href, label: "Droits de douane, TVA à l’importation et dédouanement" } },
     ],
   },
@@ -104,14 +104,14 @@ const FR: Snippets = {
   returnsSection: {
     heading: "TVA à l’importation et frais de douane",
     blocks: [
-      "Si vous avez payé la TVA à l’importation sur les biens retournés, nous la remboursons en plus du prix des biens, sur présentation du reçu de douane ou de la facture du transporteur. Les droits de douane sont versés à l’administration douanière, qui peut les rembourser lors de la réexportation des biens ; nous fournissons les documents de retour qu’elle demande.",
+      "Nous remboursons la TVA à l’importation après la livraison, que vous retourniez ou non les biens ; aucun autre remboursement de TVA n’est donc dû lors d’un retour. Les droits de douane sont versés à l’administration douanière, qui peut les rembourser lors de la réexportation des biens ; nous fournissons les documents de retour qu’elle demande.",
       { link: { href, label: "Droits de douane, TVA à l’importation et dédouanement" } },
     ],
   },
   termsSection: {
     heading: "Douane, TVA à l’importation et droits",
     blocks: [
-      "Les biens sont expédiés depuis les États-Unis en « rendu au lieu de destination » (DAP). Vous êtes l’importateur et réglez à la livraison la TVA à l’importation, les droits de douane et les éventuels frais de dédouanement du transporteur. Nous remboursons la TVA à l’importation sur les biens retournés comme décrit sur la page « Droits de douane, TVA à l’importation et dédouanement ». Les droits impératifs des consommateurs ne sont pas affectés.",
+      "Les biens sont expédiés depuis les États-Unis en « rendu au lieu de destination » (DAP). Vous êtes l’importateur et réglez à la livraison la TVA à l’importation, les droits de douane et les éventuels frais de dédouanement du transporteur. Une fois votre commande reçue, nous vous remboursons la TVA à l’importation comme décrit sur la page « Droits de douane, TVA à l’importation et dédouanement ». Les droits impératifs des consommateurs ne sont pas affectés.",
       { link: { href, label: "Droits de douane, TVA à l’importation et dédouanement" } },
     ],
   },
@@ -126,7 +126,7 @@ const IT: Snippets = {
   paymentsVat: {
     heading: "IVA all’importazione e dazi",
     blocks: [
-      "Non addebitiamo l’IVA al checkout. L’IVA all’importazione e gli eventuali dazi sono applicati dall’autorità doganale del paese di consegna e riscossi dal corriere. Li paghi alla consegna; in caso di reso ti rimborsiamo l’IVA all’importazione.",
+      "Non addebitiamo l’IVA al checkout. L’IVA all’importazione e gli eventuali dazi sono applicati dall’autorità doganale del paese di consegna e riscossi dal corriere. Li paghi alla consegna; dopo che hai ricevuto l’ordine, ti rimborsiamo l’IVA all’importazione.",
       { link: { href, label: "Dazi, IVA all’importazione e sdoganamento" } },
     ],
   },
@@ -134,14 +134,14 @@ const IT: Snippets = {
   returnsSection: {
     heading: "IVA all’importazione e oneri doganali",
     blocks: [
-      "Se hai pagato l’IVA all’importazione sui beni restituiti, la rimborsiamo in aggiunta al prezzo dei beni, dietro presentazione della bolletta doganale o della fattura del corriere. I dazi sono versati all’autorità doganale, che può rimborsarli in caso di riesportazione dei beni; ti forniamo i documenti di reso che richiede.",
+      "Rimborsiamo l’IVA all’importazione dopo la consegna, che tu restituisca o meno i beni; in caso di reso non è quindi dovuto un ulteriore rimborso dell’IVA. I dazi sono versati all’autorità doganale, che può rimborsarli in caso di riesportazione dei beni; ti forniamo i documenti di reso che richiede.",
       { link: { href, label: "Dazi, IVA all’importazione e sdoganamento" } },
     ],
   },
   termsSection: {
     heading: "Dogana, IVA all’importazione e dazi",
     blocks: [
-      "I beni sono spediti dagli Stati Uniti con resa «reso al luogo di destinazione» (DAP). Sei tu l’importatore e paghi alla consegna IVA all’importazione, dazi ed eventuali spese di sdoganamento del corriere. Rimborsiamo l’IVA all’importazione sui beni restituiti come descritto nella pagina «Dazi, IVA all’importazione e sdoganamento». I diritti inderogabili dei consumatori non sono pregiudicati.",
+      "I beni sono spediti dagli Stati Uniti con resa «reso al luogo di destinazione» (DAP). Sei tu l’importatore e paghi alla consegna IVA all’importazione, dazi ed eventuali spese di sdoganamento del corriere. Dopo che hai ricevuto l’ordine, ti rimborsiamo l’IVA all’importazione come descritto nella pagina «Dazi, IVA all’importazione e sdoganamento». I diritti inderogabili dei consumatori non sono pregiudicati.",
       { link: { href, label: "Dazi, IVA all’importazione e sdoganamento" } },
     ],
   },
@@ -156,7 +156,7 @@ const ES: Snippets = {
   paymentsVat: {
     heading: "IVA de importación y aranceles",
     blocks: [
-      "No cobramos IVA al pagar. El IVA de importación y los aranceles que correspondan los fija la aduana del país de entrega y los cobra el transportista. Los pagas en la entrega; si devuelves el pedido, te reembolsamos el IVA de importación.",
+      "No cobramos IVA al pagar. El IVA de importación y los aranceles que correspondan los fija la aduana del país de entrega y los cobra el transportista. Los pagas en la entrega; una vez recibido tu pedido, te reembolsamos el IVA de importación.",
       { link: { href, label: "Aranceles, IVA de importación y trámite aduanero" } },
     ],
   },
@@ -164,14 +164,14 @@ const ES: Snippets = {
   returnsSection: {
     heading: "IVA de importación y gastos de aduana",
     blocks: [
-      "Si pagaste IVA de importación por los bienes devueltos, te lo reembolsamos además del precio de los bienes, previa presentación del recibo de aduana o de la factura del transportista. Los aranceles se pagan a la aduana, que puede reembolsarlos si los bienes se reexportan; te facilitamos los documentos de devolución que solicita.",
+      "Reembolsamos el IVA de importación tras la entrega, devuelvas o no los bienes; por tanto, no se debe otro reembolso de IVA en una devolución. Los aranceles se pagan a la aduana, que puede reembolsarlos si los bienes se reexportan; te facilitamos los documentos de devolución que solicita.",
       { link: { href, label: "Aranceles, IVA de importación y trámite aduanero" } },
     ],
   },
   termsSection: {
     heading: "Aduana, IVA de importación y aranceles",
     blocks: [
-      "Los bienes se envían desde Estados Unidos en condiciones de «entregado en lugar convenido» (DAP). Tú eres el importador y pagas en la entrega el IVA de importación, los aranceles y las tasas de despacho del transportista. Reembolsamos el IVA de importación de los bienes devueltos según se describe en la página «Aranceles, IVA de importación y trámite aduanero». Los derechos imperativos de los consumidores no se ven afectados.",
+      "Los bienes se envían desde Estados Unidos en condiciones de «entregado en lugar convenido» (DAP). Tú eres el importador y pagas en la entrega el IVA de importación, los aranceles y las tasas de despacho del transportista. Una vez recibido tu pedido, te reembolsamos el IVA de importación según se describe en la página «Aranceles, IVA de importación y trámite aduanero». Los derechos imperativos de los consumidores no se ven afectados.",
       { link: { href, label: "Aranceles, IVA de importación y trámite aduanero" } },
     ],
   },
@@ -186,7 +186,7 @@ const NL: Snippets = {
   paymentsVat: {
     heading: "Invoer-btw en invoerrechten",
     blocks: [
-      "Wij berekenen bij het afrekenen geen btw. Invoer-btw en eventuele invoerrechten worden geheven door de douane van het land van levering en geïnd door de vervoerder. U betaalt ze bij levering; bij een retour betalen wij u de invoer-btw terug.",
+      "Wij berekenen bij het afrekenen geen btw. Invoer-btw en eventuele invoerrechten worden geheven door de douane van het land van levering en geïnd door de vervoerder. U betaalt ze bij levering; nadat u uw bestelling heeft ontvangen, betalen wij u de invoer-btw terug.",
       { link: { href, label: "Invoerrechten, invoer-btw & douane" } },
     ],
   },
@@ -194,14 +194,14 @@ const NL: Snippets = {
   returnsSection: {
     heading: "Invoer-btw en douanekosten",
     blocks: [
-      "Heeft u invoer-btw betaald over de geretourneerde goederen, dan betalen wij die terug bovenop de prijs van de goederen, op vertoon van het douanebewijs of de factuur van de vervoerder. Invoerrechten worden aan de douane betaald, die ze kan terugbetalen bij wederuitvoer van de goederen; wij leveren de retourdocumenten die zij vraagt.",
+      "Wij betalen de invoer-btw terug na levering, ongeacht of u de goederen terugstuurt; bij een retour is dus geen verdere btw-terugbetaling verschuldigd. Invoerrechten worden aan de douane betaald, die ze kan terugbetalen bij wederuitvoer van de goederen; wij leveren de retourdocumenten die zij vraagt.",
       { link: { href, label: "Invoerrechten, invoer-btw & douane" } },
     ],
   },
   termsSection: {
     heading: "Douane, invoer-btw en invoerrechten",
     blocks: [
-      "De goederen worden vanuit de Verenigde Staten verzonden op basis van «geleverd op bestemming» (DAP). U bent de importeur en betaalt bij levering invoer-btw, invoerrechten en eventuele afhandelingskosten van de vervoerder. Wij betalen de invoer-btw op geretourneerde goederen terug zoals beschreven op de pagina «Invoerrechten, invoer-btw & douane». Dwingende consumentenrechten blijven onverlet.",
+      "De goederen worden vanuit de Verenigde Staten verzonden op basis van «geleverd op bestemming» (DAP). U bent de importeur en betaalt bij levering invoer-btw, invoerrechten en eventuele afhandelingskosten van de vervoerder. Nadat u uw bestelling heeft ontvangen, betalen wij u de invoer-btw terug zoals beschreven op de pagina «Invoerrechten, invoer-btw & douane». Dwingende consumentenrechten blijven onverlet.",
       { link: { href, label: "Invoerrechten, invoer-btw & douane" } },
     ],
   },
@@ -229,7 +229,7 @@ const contactLine = `${COMPANY.email} · ${COMPANY.phoneDisplay} (${hours})`
 const COPY: Record<string, CustomsCopy> = {
   en: {
     title: EN.linkLabel,
-    description: "Orders to the EU ship from the United States. You pay import VAT and any duty on delivery, and we refund the import VAT if you return the goods.",
+    description: "Orders to the EU ship from the United States. You pay import VAT and any duty on delivery, and we refund the import VAT to you after you receive your order.",
     intro: `${COMPANY.tradingName} EU orders are dispatched from the United States by ${COMPANY.legalName}. Because the goods enter the EU from outside, the customs authority of your country charges import VAT and, where applicable, customs duty. This page explains who pays what and how we refund import VAT.`,
     how: {
       heading: "How it works",
@@ -260,12 +260,12 @@ const COPY: Record<string, CustomsCopy> = {
     },
     refund: {
       heading: "Refund of import VAT",
-      intro: "We want a return to cost you as little as possible. If you return goods under your right of withdrawal or the legal guarantee, or the order is cancelled after delivery, we refund the import VAT you paid, in addition to the price of the goods. To receive it:",
+      intro: "After you receive your order, we refund the import VAT you paid on it, whether or not you return the goods. The refund is separate from any return refund. To receive it:",
       steps: [
-        "Send us the customs receipt or the carrier invoice showing the import VAT you paid. A clear photo is enough.",
-        "The refund covers the import VAT on the returned goods only, up to the amount shown on that document.",
+        "After delivery, email us the customs receipt or the carrier invoice showing the import VAT you paid. A clear photo is enough.",
+        "The refund covers the import VAT only, up to the amount shown on that document. It does not cover customs duty or carrier fees.",
         "You must not have reclaimed or deducted the same VAT elsewhere, for example from customs or as input VAT in a business account.",
-        `We refund the VAT to your original payment method within ${r.refundDays} days after we receive the goods and the document.`,
+        `We refund the VAT to your original payment method within ${r.refundDays} days after we receive the document. If you later return the goods, we refund the price of the goods under the return rules and do not refund the VAT a second time.`,
       ],
       duty: "Customs duty is paid to the customs authority, not to us. When returned goods are re-exported, your customs office may refund the duty and VAT it collected. We give you, free of charge, the return documents it asks for: a statement and shipping papers showing that the goods were returned to the United States.",
     },
@@ -285,7 +285,7 @@ const COPY: Record<string, CustomsCopy> = {
   },
   de: {
     title: DE.linkLabel,
-    description: "Bestellungen in die EU werden aus den USA versandt. Einfuhrumsatzsteuer und Zoll zahlen Sie bei Lieferung; bei einer Rücksendung erstatten wir die Einfuhrumsatzsteuer.",
+    description: "Bestellungen in die EU werden aus den USA versandt. Einfuhrumsatzsteuer und Zoll zahlen Sie bei Lieferung; die Einfuhrumsatzsteuer erstatten wir Ihnen, nachdem Sie Ihre Bestellung erhalten haben.",
     intro: `Bestellungen im EU-Shop von ${COMPANY.tradingName} werden von ${COMPANY.legalName} aus den USA versandt. Da die Ware von außerhalb in die EU eingeführt wird, erhebt die Zollbehörde Ihres Landes Einfuhrumsatzsteuer und gegebenenfalls Zoll. Diese Seite erklärt, wer was zahlt und wie wir die Einfuhrumsatzsteuer erstatten.`,
     how: {
       heading: "So funktioniert es",
@@ -316,12 +316,12 @@ const COPY: Record<string, CustomsCopy> = {
     },
     refund: {
       heading: "Erstattung der Einfuhrumsatzsteuer",
-      intro: "Eine Rücksendung soll Sie so wenig wie möglich kosten. Senden Sie Waren aufgrund Ihres Widerrufsrechts oder der gesetzlichen Gewährleistung zurück oder wird die Bestellung nach Lieferung storniert, erstatten wir die von Ihnen gezahlte Einfuhrumsatzsteuer zusätzlich zum Warenpreis. Dafür gilt:",
+      intro: "Nachdem Sie Ihre Bestellung erhalten haben, erstatten wir Ihnen die darauf gezahlte Einfuhrumsatzsteuer, unabhängig davon, ob Sie die Ware zurücksenden. Die Erstattung erfolgt getrennt von einer Rückerstattung bei Rücksendung. So erhalten Sie sie:",
       steps: [
-        "Senden Sie uns den Zollbeleg oder die Rechnung des Zustellers, aus dem die gezahlte Einfuhrumsatzsteuer hervorgeht. Ein gut lesbares Foto genügt.",
-        "Erstattet wird nur die Einfuhrumsatzsteuer auf die zurückgesandten Waren, höchstens bis zu dem auf dem Beleg ausgewiesenen Betrag.",
+        "Senden Sie uns nach der Lieferung den Zollbeleg oder die Rechnung des Zustellers, aus dem die gezahlte Einfuhrumsatzsteuer hervorgeht. Ein gut lesbares Foto genügt.",
+        "Erstattet wird nur die Einfuhrumsatzsteuer, höchstens bis zu dem auf dem Beleg ausgewiesenen Betrag. Zoll und Gebühren des Zustellers sind nicht erfasst.",
         "Sie dürfen dieselbe Steuer nicht anderweitig zurückgefordert oder abgezogen haben, etwa beim Zoll oder als Vorsteuer in der Buchhaltung Ihres Unternehmens.",
-        `Wir erstatten die Steuer innerhalb von ${r.refundDays} Tagen nach Eingang der Waren und des Belegs auf Ihr ursprüngliches Zahlungsmittel.`,
+        `Wir erstatten die Steuer innerhalb von ${r.refundDays} Tagen nach Eingang des Belegs auf Ihr ursprüngliches Zahlungsmittel. Senden Sie die Ware später zurück, erstatten wir den Warenpreis nach den Rückgaberegeln und die Steuer nicht ein zweites Mal.`,
       ],
       duty: "Zoll wird an die Zollbehörde gezahlt, nicht an uns. Werden zurückgesandte Waren wieder ausgeführt, kann Ihr Zollamt Zoll und Einfuhrumsatzsteuer erstatten. Die dafür verlangten Rücksendeunterlagen stellen wir Ihnen kostenlos bereit: eine Bestätigung und Versandpapiere, die die Rücksendung in die USA belegen.",
     },
@@ -341,7 +341,7 @@ const COPY: Record<string, CustomsCopy> = {
   },
   fr: {
     title: FR.linkLabel,
-    description: "Les commandes vers l’UE sont expédiées depuis les États-Unis. Vous réglez la TVA à l’importation et les droits à la livraison ; en cas de retour, nous remboursons la TVA à l’importation.",
+    description: "Les commandes vers l’UE sont expédiées depuis les États-Unis. Vous réglez la TVA à l’importation et les droits à la livraison ; nous vous remboursons la TVA à l’importation une fois votre commande reçue.",
     intro: `Les commandes de la boutique UE de ${COMPANY.tradingName} sont expédiées depuis les États-Unis par ${COMPANY.legalName}. Les biens entrant dans l’UE depuis l’extérieur, l’administration douanière de votre pays perçoit la TVA à l’importation et, le cas échéant, des droits de douane. Cette page explique qui paie quoi et comment nous remboursons la TVA à l’importation.`,
     how: {
       heading: "Comment ça marche",
@@ -372,12 +372,12 @@ const COPY: Record<string, CustomsCopy> = {
     },
     refund: {
       heading: "Remboursement de la TVA à l’importation",
-      intro: "Un retour doit vous coûter le moins possible. Si vous retournez des biens au titre de votre droit de rétractation ou de la garantie légale, ou si la commande est annulée après livraison, nous remboursons la TVA à l’importation que vous avez payée, en plus du prix des biens. Pour la recevoir :",
+      intro: "Une fois votre commande reçue, nous vous remboursons la TVA à l’importation que vous avez payée, que vous retourniez ou non les biens. Ce remboursement est distinct de celui d’un retour. Pour le recevoir :",
       steps: [
-        "Envoyez-nous le reçu de douane ou la facture du transporteur indiquant la TVA à l’importation payée. Une photo lisible suffit.",
-        "Le remboursement porte uniquement sur la TVA à l’importation des biens retournés, dans la limite du montant figurant sur ce document.",
+        "Après la livraison, envoyez-nous par e-mail le reçu de douane ou la facture du transporteur indiquant la TVA à l’importation payée. Une photo lisible suffit.",
+        "Le remboursement porte uniquement sur la TVA à l’importation, dans la limite du montant figurant sur ce document. Il ne couvre ni les droits de douane ni les frais du transporteur.",
         "Vous ne devez pas avoir réclamé ni déduit la même TVA ailleurs, par exemple auprès de la douane ou comme TVA déductible dans la comptabilité de votre entreprise.",
-        `Nous remboursons la TVA sur votre moyen de paiement initial dans un délai de ${r.refundDays} jours après réception des biens et du document.`,
+        `Nous remboursons la TVA sur votre moyen de paiement initial dans un délai de ${r.refundDays} jours après réception du document. Si vous retournez ensuite les biens, nous remboursons leur prix selon les règles de retour, sans rembourser la TVA une seconde fois.`,
       ],
       duty: "Les droits de douane sont versés à l’administration douanière, pas à nous. Lorsque les biens retournés sont réexportés, votre bureau de douane peut rembourser les droits et la TVA perçus. Nous vous remettons gratuitement les documents de retour qu’il demande : une attestation et les documents d’expédition prouvant le retour des biens aux États-Unis.",
     },
@@ -397,7 +397,7 @@ const COPY: Record<string, CustomsCopy> = {
   },
   it: {
     title: IT.linkLabel,
-    description: "Gli ordini per l’UE partono dagli Stati Uniti. Paghi IVA all’importazione e dazi alla consegna; in caso di reso rimborsiamo l’IVA all’importazione.",
+    description: "Gli ordini per l’UE partono dagli Stati Uniti. Paghi IVA all’importazione e dazi alla consegna; ti rimborsiamo l’IVA all’importazione dopo che hai ricevuto l’ordine.",
     intro: `Gli ordini del negozio UE di ${COMPANY.tradingName} sono spediti dagli Stati Uniti da ${COMPANY.legalName}. Poiché i beni entrano nell’UE dall’esterno, l’autorità doganale del tuo paese applica l’IVA all’importazione e, se dovuti, i dazi. Questa pagina spiega chi paga cosa e come rimborsiamo l’IVA all’importazione.`,
     how: {
       heading: "Come funziona",
@@ -428,12 +428,12 @@ const COPY: Record<string, CustomsCopy> = {
     },
     refund: {
       heading: "Rimborso dell’IVA all’importazione",
-      intro: "Un reso deve costarti il meno possibile. Se restituisci beni in base al diritto di recesso o alla garanzia legale, o se l’ordine è annullato dopo la consegna, rimborsiamo l’IVA all’importazione che hai pagato, oltre al prezzo dei beni. Per riceverla:",
+      intro: "Dopo che hai ricevuto l’ordine, ti rimborsiamo l’IVA all’importazione che hai pagato, che tu restituisca o meno i beni. Il rimborso è separato da quello di un eventuale reso. Per riceverlo:",
       steps: [
-        "Inviaci la bolletta doganale o la fattura del corriere che indica l’IVA all’importazione pagata. Basta una foto leggibile.",
-        "Il rimborso copre solo l’IVA all’importazione sui beni restituiti, fino all’importo indicato su quel documento.",
-        "Non devi aver richiesto o dedotto la stessa IVA altrove, ad esempio presso la dogana o come IVA a credito nella contabilità della tua azienda.",
-        `Rimborsiamo l’IVA sul metodo di pagamento originale entro ${r.refundDays} giorni dal ricevimento dei beni e del documento.`,
+        "Dopo la consegna, inviaci via e-mail la bolletta doganale o la fattura del corriere con l’IVA all’importazione pagata. Una foto leggibile è sufficiente.",
+        "Il rimborso copre solo l’IVA all’importazione, fino all’importo indicato nel documento. Non copre i dazi né le spese del corriere.",
+        "Non devi aver richiesto o dedotto la stessa IVA altrove, ad esempio alla dogana o come IVA a credito nella contabilità della tua impresa.",
+        `Rimborsiamo l’IVA sul metodo di pagamento originale entro ${r.refundDays} giorni dal ricevimento del documento. Se in seguito restituisci i beni, rimborsiamo il prezzo dei beni secondo le regole sul reso e non rimborsiamo l’IVA una seconda volta.`,
       ],
       duty: "I dazi sono versati all’autorità doganale, non a noi. Quando i beni restituiti vengono riesportati, il tuo ufficio doganale può rimborsare dazi e IVA riscossi. Ti forniamo gratuitamente i documenti di reso che richiede: una dichiarazione e i documenti di spedizione che provano il ritorno dei beni negli Stati Uniti.",
     },
@@ -453,7 +453,7 @@ const COPY: Record<string, CustomsCopy> = {
   },
   es: {
     title: ES.linkLabel,
-    description: "Los pedidos a la UE salen de Estados Unidos. Pagas el IVA de importación y los aranceles en la entrega; si devuelves el pedido, te reembolsamos el IVA de importación.",
+    description: "Los pedidos a la UE salen de Estados Unidos. Pagas el IVA de importación y los aranceles en la entrega; te reembolsamos el IVA de importación una vez recibido tu pedido.",
     intro: `Los pedidos de la tienda UE de ${COMPANY.tradingName} se envían desde Estados Unidos por ${COMPANY.legalName}. Como los bienes entran en la UE desde fuera, la aduana de tu país cobra el IVA de importación y, en su caso, aranceles. Esta página explica quién paga qué y cómo reembolsamos el IVA de importación.`,
     how: {
       heading: "Cómo funciona",
@@ -484,12 +484,12 @@ const COPY: Record<string, CustomsCopy> = {
     },
     refund: {
       heading: "Reembolso del IVA de importación",
-      intro: "Queremos que una devolución te cueste lo mínimo. Si devuelves bienes por tu derecho de desistimiento o por la garantía legal, o si el pedido se cancela tras la entrega, te reembolsamos el IVA de importación que pagaste, además del precio de los bienes. Para recibirlo:",
+      intro: "Una vez recibido tu pedido, te reembolsamos el IVA de importación que pagaste, devuelvas o no los bienes. Este reembolso es independiente del de una devolución. Para recibirlo:",
       steps: [
-        "Envíanos el recibo de aduana o la factura del transportista donde figure el IVA de importación pagado. Basta una foto legible.",
-        "El reembolso cubre solo el IVA de importación de los bienes devueltos, hasta el importe que figura en ese documento.",
+        "Tras la entrega, envíanos por correo el recibo de aduana o la factura del transportista con el IVA de importación pagado. Una foto legible es suficiente.",
+        "El reembolso cubre solo el IVA de importación, hasta el importe que figura en ese documento. No cubre los aranceles ni las tarifas del transportista.",
         "No debes haber reclamado ni deducido el mismo IVA en otro lugar, por ejemplo ante la aduana o como IVA soportado en la contabilidad de tu empresa.",
-        `Reembolsamos el IVA en tu medio de pago original en un plazo de ${r.refundDays} días desde que recibimos los bienes y el documento.`,
+        `Reembolsamos el IVA a tu método de pago original en un plazo de ${r.refundDays} días desde que recibimos el documento. Si después devuelves los bienes, reembolsamos su precio según las reglas de devolución y no reembolsamos el IVA por segunda vez.`,
       ],
       duty: "Los aranceles se pagan a la aduana, no a nosotros. Cuando los bienes devueltos se reexportan, tu oficina de aduanas puede reembolsar los aranceles y el IVA cobrados. Te facilitamos gratis los documentos de devolución que solicita: una declaración y los documentos de envío que acreditan que los bienes volvieron a Estados Unidos.",
     },
@@ -509,7 +509,7 @@ const COPY: Record<string, CustomsCopy> = {
   },
   nl: {
     title: NL.linkLabel,
-    description: "Bestellingen naar de EU worden vanuit de Verenigde Staten verzonden. U betaalt invoer-btw en invoerrechten bij levering; bij een retour betalen wij de invoer-btw terug.",
+    description: "Bestellingen naar de EU worden vanuit de Verenigde Staten verzonden. U betaalt invoer-btw en invoerrechten bij levering; wij betalen de invoer-btw aan u terug nadat u uw bestelling heeft ontvangen.",
     intro: `Bestellingen in de EU-winkel van ${COMPANY.tradingName} worden door ${COMPANY.legalName} vanuit de Verenigde Staten verzonden. Omdat de goederen van buiten de EU binnenkomen, heft de douane van uw land invoer-btw en, indien van toepassing, invoerrechten. Deze pagina legt uit wie wat betaalt en hoe wij de invoer-btw terugbetalen.`,
     how: {
       heading: "Zo werkt het",
@@ -540,12 +540,12 @@ const COPY: Record<string, CustomsCopy> = {
     },
     refund: {
       heading: "Terugbetaling van invoer-btw",
-      intro: "Een retour mag u zo min mogelijk kosten. Stuurt u goederen terug op grond van uw herroepingsrecht of de wettelijke garantie, of wordt de bestelling na levering geannuleerd, dan betalen wij de door u betaalde invoer-btw terug, bovenop de prijs van de goederen. Om die te ontvangen:",
+      intro: "Nadat u uw bestelling heeft ontvangen, betalen wij u de invoer-btw terug die u heeft betaald, ongeacht of u de goederen terugstuurt. Deze terugbetaling staat los van een eventuele terugbetaling bij retour. Om die te ontvangen:",
       steps: [
-        "Stuur ons het douanebewijs of de factuur van de vervoerder waarop de betaalde invoer-btw staat. Een duidelijke foto volstaat.",
-        "De terugbetaling betreft alleen de invoer-btw over de geretourneerde goederen, tot het bedrag op dat document.",
+        "Stuur ons na levering het douanebewijs of de factuur van de vervoerder waarop de betaalde invoer-btw staat. Een duidelijke foto volstaat.",
+        "De terugbetaling betreft alleen de invoer-btw, tot het bedrag op dat document. Invoerrechten en kosten van de vervoerder vallen hier niet onder.",
         "U mag dezelfde btw niet elders hebben teruggevraagd of afgetrokken, bijvoorbeeld bij de douane of als voorbelasting in de boekhouding van uw bedrijf.",
-        `Wij betalen de btw binnen ${r.refundDays} dagen na ontvangst van de goederen en het document terug via uw oorspronkelijke betaalmethode.`,
+        `Wij betalen de btw terug op uw oorspronkelijke betaalmethode binnen ${r.refundDays} dagen nadat wij het document hebben ontvangen. Stuurt u de goederen later terug, dan betalen wij de prijs van de goederen terug volgens de retourregels en betalen wij de btw niet een tweede keer terug.`,
       ],
       duty: "Invoerrechten worden aan de douane betaald, niet aan ons. Worden geretourneerde goederen opnieuw uitgevoerd, dan kan uw douanekantoor de geheven rechten en btw terugbetalen. De retourdocumenten die het daarvoor vraagt leveren wij gratis: een verklaring en verzenddocumenten die aantonen dat de goederen naar de Verenigde Staten zijn teruggestuurd.",
     },
