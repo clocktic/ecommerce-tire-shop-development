@@ -1,11 +1,10 @@
 import type { Metadata } from "next"
-import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Truck, RotateCcw, ShieldCheck } from "lucide-react"
-import { localizeProduct, offerFor } from "@/lib/catalog"
+import { localizeProduct, offerFor, type Product } from "@/lib/catalog"
 import { getProductBySlug, getProductsByCategory } from "@/lib/catalog/queries"
-import { counterpart, fmt, getDictionary, parseStore, storePath, type Store } from "@/lib/i18n"
+import { counterpart, fmt, getDictionary, parseStore, storePath, type Dictionary, type Store } from "@/lib/i18n"
 import { markets } from "@/lib/markets"
 import { storeAlternates } from "@/lib/seo"
 import { productJsonLd } from "@/lib/structured-data"
@@ -16,6 +15,7 @@ import { EuTyreLabel } from "@/components/product/eu-tyre-label"
 import { Price } from "@/components/product/price"
 import { ProductCard, productCode } from "@/components/product/product-card"
 import { ProductDetails } from "@/components/product/product-details"
+import { ProductGallery } from "@/components/product/product-gallery"
 import { Utqg } from "@/components/product/utqg"
 
 type Params = Promise<{ market: string; lang: string; slug: string }>
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     description: product.shortDescription,
     alternates: storeAlternates(store, `/product/${slug}`, availableIn),
     robots: product.sample || !product.offers[store.market] ? { index: false, follow: true } : undefined,
-    openGraph: { images: product.images.slice(0, 1) },
+    openGraph: { images: product.images.slice(0, 6) },
   }
 }
 
@@ -72,23 +72,9 @@ export default async function ProductPage({ params }: { params: Params }) {
         ]}
       />
 
-      <div className="grid gap-10 pb-16 lg:grid-cols-12">
+      <div className="grid gap-6 pb-16 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-7">
-          <div className="relative aspect-square overflow-hidden bg-photo">
-            <Image
-              src={product.images[0] || "/placeholder.svg"}
-              alt={product.name}
-              fill
-              priority
-              sizes="(min-width: 1024px) 58vw, 100vw"
-              className="object-cover"
-            />
-            {product.sample && (
-              <span className="absolute left-4 top-4 bg-background px-2 py-1 font-mono text-xs uppercase tracking-[0.18em]">
-                {t.product.demoProduct}
-              </span>
-            )}
-          </div>
+          <ProductGallery images={product.images} alt={product.name} badge={product.sample ? t.product.demoProduct : undefined} />
         </div>
 
         <div className="flex flex-col gap-6 lg:col-span-5">
@@ -101,6 +87,7 @@ export default async function ProductPage({ params }: { params: Params }) {
               <span className="font-semibold">{code}</span>
               <span className="text-muted-foreground"> · {meta}</span>
             </p>
+            <Identifiers product={product} labels={t.product.spec} />
           </div>
 
           <div className="flex items-end justify-between gap-4 border-y border-border py-4">
@@ -180,6 +167,25 @@ export default async function ProductPage({ params }: { params: Params }) {
         />
       )}
     </div>
+  )
+}
+
+function Identifiers({ product, labels }: { product: Product; labels: Dictionary["product"]["spec"] }) {
+  const rows = [
+    product.mpn ? { label: labels.mpn, value: product.mpn } : null,
+    product.gtin ? { label: product.gtin.length === 12 ? labels.upc : labels.ean, value: product.gtin } : null,
+    product.supplierSku ? { label: labels.supplierPart, value: product.supplierSku } : null,
+  ].filter((row) => row !== null)
+  if (!rows.length) return null
+  return (
+    <dl className="flex flex-wrap gap-x-5 gap-y-1 font-mono text-xs">
+      {rows.map((row) => (
+        <div key={row.label} className="flex gap-2">
+          <dt className="text-muted-foreground">{row.label}</dt>
+          <dd>{row.value}</dd>
+        </div>
+      ))}
+    </dl>
   )
 }
 

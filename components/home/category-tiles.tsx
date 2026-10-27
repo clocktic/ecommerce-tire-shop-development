@@ -15,7 +15,7 @@ export async function CategoryTiles({ store }: { store: Store }) {
           {t.home.systems}
         </h2>
       </div>
-      <ul className="grid gap-4 md:grid-cols-3">
+      <ul className="grid gap-3 sm:grid-cols-3">
         {CATEGORIES.map((c) => {
           const count = products.filter((p) => p.category === c.slug).length
           const copy = t.categories[c.slug]
@@ -25,13 +25,13 @@ export async function CategoryTiles({ store }: { store: Store }) {
                 href={storePath(store, `/${c.slug}`)}
                 className="group flex h-full flex-col border border-border bg-card transition-colors hover:border-foreground"
               >
-                <div className="relative aspect-[4/3] overflow-hidden bg-photo">
+                <div className="relative h-36 overflow-hidden bg-photo sm:h-44">
                   <Image
                     src={c.image || "/placeholder.svg"}
                     alt=""
                     fill
-                    sizes="(min-width: 768px) 33vw, 100vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                    sizes="(min-width: 640px) 33vw, 100vw"
+                    className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.04]"
                   />
                 </div>
                 <div className="flex flex-1 items-start justify-between gap-4 p-5">

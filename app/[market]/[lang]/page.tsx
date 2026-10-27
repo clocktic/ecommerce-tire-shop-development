@@ -4,6 +4,7 @@ import { localizeProduct } from "@/lib/catalog"
 import { getProducts } from "@/lib/catalog/queries"
 import { getDictionary, parseStore, storePath } from "@/lib/i18n"
 import { Hero } from "@/components/home/hero"
+import { VehicleFinder } from "@/components/home/vehicle-finder"
 import { CategoryTiles } from "@/components/home/category-tiles"
 import { SidewallDecoder } from "@/components/home/sidewall-decoder"
 import { MarketPromise } from "@/components/home/market-promise"
@@ -14,13 +15,16 @@ export default async function HomePage({ params }: { params: Promise<{ market: s
   const store = parseStore(market, lang)
   if (!store) notFound()
   const t = getDictionary(store)
-  const featured = (await getProducts(store.market))
-    .slice(0, 4)
-    .map((p) => localizeProduct(p, store))
+  const listed = await getProducts(store.market)
+  const featured = listed.slice(0, 4).map((p) => localizeProduct(p, store))
+  const stockedSizes = listed.flatMap((product) =>
+    product.category === "tires" ? [`${product.tire.width}/${product.tire.aspect}R${product.tire.rim}`] : [],
+  )
 
   return (
     <>
       <Hero store={store} />
+      <VehicleFinder stockedSizes={stockedSizes} />
       <CategoryTiles store={store} />
       <SidewallDecoder t={t} />
 

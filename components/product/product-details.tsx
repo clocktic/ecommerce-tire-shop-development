@@ -6,7 +6,7 @@ import { policyHref } from "@/lib/legal/pages"
 
 export function ProductDetails({ product, store }: { product: Product; store: Store }) {
   const t = getDictionary(store)
-  const specs = [...product.specs, ...categorySpecs(product, store, t)]
+  const specs = [...product.specs.filter((s) => !IDENTIFIER_LABELS.has(s.label)), ...identifierSpecs(product, t), ...categorySpecs(product, store, t)]
 
   return (
     <div className="border-t border-border">
@@ -56,6 +56,17 @@ export function ProductDetails({ product, store }: { product: Product; store: St
       </Section>
     </div>
   )
+}
+
+const IDENTIFIER_LABELS = new Set(["EAN", "UPC", "MPN", "GTIN", "Supplier part", "Manufacturer part"])
+
+function identifierSpecs(product: Product, t: Dictionary) {
+  const label = t.product.spec
+  return [
+    ...(product.mpn ? [{ label: label.mpn, value: product.mpn }] : []),
+    ...(product.gtin ? [{ label: product.gtin.length === 12 ? label.upc : label.ean, value: product.gtin }] : []),
+    ...(product.supplierSku ? [{ label: label.supplierPart, value: product.supplierSku }] : []),
+  ]
 }
 
 function categorySpecs(product: Product, { market }: Store, t: Dictionary) {

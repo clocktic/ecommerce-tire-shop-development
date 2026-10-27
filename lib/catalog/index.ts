@@ -62,24 +62,78 @@ export function offerFor(product: Product, market: Market, now = new Date()): Of
 
 export type CatalogFilters = Record<string, string | undefined>
 
-export function filterProducts(products: Product[], filters: CatalogFilters): Product[] {
+export const PRICE_BANDS = [
+  { id: "200", min: 0, max: 20000 },
+  { id: "400", min: 20000, max: 40000 },
+  { id: "800", min: 40000, max: 80000 },
+  { id: "800+", min: 80000, max: Number.POSITIVE_INFINITY },
+] as const
+
+export const SPEED_RATINGS = ["Q", "R", "S", "T", "H", "V", "W", "Y"] as const
+export const PISTON_OPTIONS = ["1", "2", "4", "6", "8"] as const
+export const DISC_OPTIONS = ["280", "300", "312", "320", "330", "345", "355", "380", "405"] as const
+export const FINISH_FAMILIES = ["black", "silver", "gunmetal", "bronze", "gold", "chrome", "grey", "white", "other"] as const
+export const OFFSET_BANDS = ["low", "mid", "std", "high", "deep"] as const
+
+export function finishFamily(finish: string): (typeof FINISH_FAMILIES)[number] {
+  const value = finish.toLowerCase()
+  if (/(bronze|copper)/.test(value)) return "bronze"
+  if (value.includes("gold")) return "gold"
+  if (value.includes("chrome")) return "chrome"
+  if (value.includes("white")) return "white"
+  if (/(gunmetal|anthracite|graphite)/.test(value)) return "gunmetal"
+  if (/(grey|gray)/.test(value)) return "grey"
+  if (value.includes("silver") || value.includes("hyper")) return "silver"
+  if (value.includes("black")) return "black"
+  return "other"
+}
+
+export function offsetBand(offset: number): (typeof OFFSET_BANDS)[number] {
+  if (offset <= 0) return "low"
+  if (offset <= 20) return "mid"
+  if (offset <= 35) return "std"
+  if (offset <= 45) return "high"
+  return "deep"
+}
+
+export function filterProducts(products: Product[], filters: CatalogFilters, market?: Market): Product[] {
   return products.filter((p) => {
+    if (filters.brand && p.brand !== filters.brand) return false
+    if (market && filters.stock && p.offers[market]?.availability !== filters.stock) return false
+    if (market && filters.price) {
+      const cents = p.offers[market]?.priceCents
+      const band = PRICE_BANDS.find((item) => item.id === filters.price)
+      if (cents == null || !band || cents < band.min || cents >= band.max) return false
+    }
     if (p.category === "tires") {
       const t = p.tire
       if (filters.width && String(t.width) !== filters.width) return false
       if (filters.aspect && String(t.aspect) !== filters.aspect) return false
       if (filters.rim && String(t.rim) !== filters.rim) return false
       if (filters.season && t.season !== filters.season) return false
+      if (filters.speed && t.speedRating !== filters.speed) return false
+      if (filters.load && String(t.loadIndex) !== filters.load) return false
+      if (filters.runFlat === "yes" && !t.runFlat) return false
+      if (filters.runFlat === "no" && t.runFlat) return false
+      if (filters.extraLoad === "yes" && !t.extraLoad) return false
+      if (filters.extraLoad === "no" && t.extraLoad) return false
     }
     if (p.category === "wheels") {
       const w = p.wheel
       if (filters.diameter && String(w.diameter) !== filters.diameter) return false
+      if (filters.width && String(w.width) !== filters.width) return false
       if (filters.bolt && w.boltPattern !== filters.bolt) return false
+      if (filters.offset && offsetBand(w.offset) !== filters.offset) return false
+      if (filters.bore && String(w.centerBore) !== filters.bore) return false
+      if (filters.finish && finishFamily(w.finish) !== filters.finish) return false
+      if (filters.construction && w.construction !== filters.construction) return false
     }
     if (p.category === "brakes") {
       const b = p.brake
       if (filters.kind && b.kind !== filters.kind) return false
       if (filters.axle && b.axle !== filters.axle) return false
+      if (filters.pistons && String(b.pistons ?? "") !== filters.pistons) return false
+      if (filters.disc && String(b.discDiameterMm ?? "") !== filters.disc) return false
     }
     return true
   })
@@ -92,4 +146,14 @@ export const TIRE_OPTIONS = {
 }
 
 export const SEASON_LABEL = { summer: "Summer", winter: "Winter", "all-season": "All-season" } as const
-export const BRAKE_KIND_LABEL = { pads: "Pads", discs: "Discs", kit: "Big brake kit", "pads-and-discs": "Pads + discs" } as const
+export const BRAKE_KIND_LABEL = {
+  discs: "Brake discs",
+  pads: "Brake pads",
+  "pads-and-discs": "Pads + discs kit",
+  caliper: "Brake caliper",
+  kit: "Big brake kit",
+  drum: "Brake drum",
+  shoes: "Brake shoes",
+  hose: "Brake hose",
+  sensor: "Wear sensor",
+} as const

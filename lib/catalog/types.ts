@@ -24,7 +24,10 @@ type ProductBase = {
   brand: string
   // Real codes only. No code → leave empty; the feed then sends identifier_exists=no.
   gtin?: string
+  // Manufacturer part number. A reseller SKU does not belong here.
   mpn?: string
+  // Distributor or retailer code, shown on the page but never sent to Google as an MPN.
+  supplierSku?: string
   // Demo records: shown with a badge, noindex, never in a feed.
   sample?: boolean
   images: string[]
@@ -96,10 +99,23 @@ export type WheelProduct = ProductBase & {
   }
 }
 
+export const BRAKE_KINDS = [
+  "discs",
+  "pads",
+  "pads-and-discs",
+  "caliper",
+  "kit",
+  "drum",
+  "shoes",
+  "hose",
+  "sensor",
+] as const
+export type BrakeKind = (typeof BRAKE_KINDS)[number]
+
 export type BrakeProduct = ProductBase & {
   category: "brakes"
   brake: {
-    kind: "pads" | "discs" | "kit" | "pads-and-discs"
+    kind: BrakeKind
     axle: "front" | "rear"
     fitment: string[]
     discDiameterMm?: number

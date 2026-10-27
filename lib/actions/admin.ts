@@ -196,6 +196,7 @@ export async function saveProduct(_prev: ActionResult | null, form: FormData): P
     brand: str(form, "brand", 100),
     gtin: str(form, "gtin", 20) || undefined,
     mpn: str(form, "mpn", 60) || undefined,
+    supplierSku: str(form, "supplierSku", 60) || undefined,
     sample: form.get("sample") === "on" || undefined,
     images: lines(str(form, "images", 5000)),
     shortDescription: str(form, "shortDescription", 400),
