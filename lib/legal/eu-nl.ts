@@ -3,6 +3,7 @@ import { CONSENT_MAX_AGE_DAYS } from "@/components/legal/consent"
 import { POLICIES } from "@/lib/policies"
 import { euNl } from "@/lib/i18n/dictionaries/nl"
 import type { PolicyDoc } from "@/lib/legal/types"
+import { EU_SNIPPETS } from "@/lib/legal/eu-customs"
 
 // Dutch version of lib/legal/eu.ts. Same facts and numbers; update all EU language
 // files together. Withdrawal wording follows the official model (Richtlijn 2011/83/EU, bijlage I).
@@ -15,11 +16,13 @@ const seller = `${COMPANY.legalName}, ${companyAddressLine}, e-mail ${COMPANY.em
 const bulky = "maximaal ongeveer € 25 per band of velg en € 15 per remmenpakket"
 const payments = p.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "SEPA-overschrijving" : m))
 
+const SNIP = EU_SNIPPETS.nl
+
 export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
   shipping: {
     title: "Leveringsvoorwaarden",
-    description: `Gratis levering in ${t.area}. Inclusief btw, geen invoerrechten. ${t.days}.`,
-    intro: `Deze voorwaarden gelden voor bestellingen in de EU-winkel van ${COMPANY.tradingName} (prijzen in EUR, inclusief btw).`,
+    description: SNIP.shippingDescription,
+    intro: SNIP.shippingIntro,
     sections: [
       {
         heading: "Leveringsgebied",
@@ -29,10 +32,11 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Kosten, btw en douane",
+        heading: "Kosten, invoerrechten en invoer-btw",
         blocks: [
           s.freeShipping ? "Levering is gratis voor alle bestellingen, zonder minimumbedrag." : "Verzendkosten worden getoond voordat u de bestelling bevestigt.",
-          `${t.duties} De prijzen bevatten de btw van uw land, afgedragen via het EU-éénloketsysteem (OSS).`,
+          t.duties,
+          SNIP.paymentsVat.blocks[1],
         ],
       },
       {
@@ -45,7 +49,7 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
               ["Transittijd", `${s.transitDays[0]}–${s.transitDays[1]} werkdagen`],
               ["Totale levertijd", t.days],
               ["Vervoerders", s.carriers.join(", ")],
-              ["Verzonden vanuit", EU_PRESENCE.warehouseCountry],
+              ["Verzonden vanuit", EU_PRESENCE.dispatchCountry],
             ],
           },
           "Als wij niet binnen 30 dagen na uw bestelling kunnen leveren en geen latere datum met u afspreken, kunt u de bestelling annuleren en krijgt u het volledige bedrag terug.",
@@ -86,7 +90,7 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
         blocks: [
           `Als u de overeenkomst herroept, ontvangt u alle betalingen die u tot op dat moment heeft gedaan, inclusief leveringskosten (met uitzondering van eventuele extra kosten ten gevolge van uw keuze voor een andere wijze van levering dan de door ons geboden goedkoopste standaardlevering), onverwijld en in ieder geval niet later dan ${r.refundDays} dagen nadat wij op de hoogte zijn gesteld van uw beslissing de overeenkomst te herroepen, van ons terug. Wij betalen u terug met hetzelfde betaalmiddel als waarmee u de oorspronkelijke transactie heeft verricht, tenzij u uitdrukkelijk anderszins heeft ingestemd; in ieder geval zult u voor zulke terugbetaling geen kosten hoeven te betalen.`,
           "Wij mogen wachten met terugbetalen tot wij de goederen hebben teruggekregen, of tot u heeft aangetoond dat u de goederen heeft teruggezonden, al naargelang welk tijdstip eerst valt.",
-          `U dient de goederen onverwijld, en in ieder geval niet later dan ${r.windowDays} dagen na de dag waarop u ons uw herroeping heeft meegedeeld, terug te zenden naar ${EU_PRESENCE.returnsAddress}. U bent op tijd als u de goederen terugzendt voordat de termijn van ${r.windowDays} dagen is verstreken.`,
+          `U dient de goederen onverwijld, en in ieder geval niet later dan ${r.windowDays} dagen na de dag waarop u ons uw herroeping heeft meegedeeld, terug te zenden naar het adres dat wij u met het retourautorisatienummer (RMA) per e-mail doorgeven. U bent op tijd als u de goederen terugzendt voordat de termijn van ${r.windowDays} dagen is verstreken.`,
           r.returnShippingPaidBy === "merchant"
             ? "Wij dragen de kosten van het terugzenden van de goederen."
             : `U draagt de rechtstreekse kosten van het terugzenden van de goederen. Banden, velgen en remmensets kunnen vanwege hun aard normaal gesproken niet per post worden teruggezonden; deze kosten worden geschat op ${bulky}. Op verzoek sturen wij u een vooraf betaald retourlabel voor dat bedrag.`,
@@ -132,6 +136,7 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
         heading: "Defecte of verkeerde artikelen",
         blocks: ["Is een artikel defect of niet wat u heeft besteld, dan gelden uw wettelijke garantierechten en betalen wij alle retourkosten. Zie Wettelijke en commerciële garantie."],
       },
+      SNIP.returnsSection,
     ],
   },
 
@@ -206,8 +211,8 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
 
   payments: {
     title: "Betaalmethoden",
-    description: `Betaal met ${payments.join(", ")}. Prijzen in EUR, inclusief btw.`,
-    intro: "Alle prijzen in de EU-winkel zijn in euro (EUR) en inclusief btw.",
+    description: SNIP.paymentsDescription,
+    intro: SNIP.paymentsIntro,
     sections: [
       { heading: "Geaccepteerde methoden", blocks: [{ list: payments }] },
       {
@@ -221,7 +226,7 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
         blocks: ["Kaartbetalingen gebruiken sterke klantauthenticatie (3-D Secure) zoals vereist door de EU-betaaldienstenrichtlijn. Wij slaan geen volledige kaartnummers op."],
       },
       { heading: "Geen toeslagen", blocks: ["Wij rekenen voor geen enkele betaalmethode extra kosten."] },
-      { heading: "Btw", blocks: [`De btw is in alle prijzen inbegrepen en wordt afgedragen via het EU-éénloketsysteem (OSS), identificatienummer ${EU_PRESENCE.vatNumber}. U ontvangt een btw-factuur per e-mail.`] },
+      SNIP.paymentsVat,
     ],
   },
 
@@ -230,7 +235,7 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
     description: `Algemene verkoopvoorwaarden van de EU-winkel van ${COMPANY.tradingName}.`,
     intro: `Deze voorwaarden gelden voor overeenkomsten die via de EU-winkel van ${COMPANY.tradingName} worden gesloten tussen u en ${COMPANY.legalName}, ${companyAddressLine} („wij”).`,
     sections: [
-      { heading: "Verkoper", blocks: [seller, `EU-btw (OSS): ${EU_PRESENCE.vatNumber}`] },
+      { heading: "Verkoper", blocks: [seller, `${COMPANY.stateOfFormation} Secretary of State: ${COMPANY.registrationNumber}`] },
       {
         heading: "Totstandkoming van de overeenkomst",
         blocks: [
@@ -238,7 +243,7 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
           "De taal van de overeenkomst is de taal van de winkelversie waarin u bestelt (Nederlands, Engels, Duits, Frans, Italiaans of Spaans). Wij bewaren de tekst van de overeenkomst en sturen u de bestelgegevens en deze voorwaarden per e-mail.",
         ],
       },
-      { heading: "Prijzen", blocks: ["Alle prijzen zijn in EUR en inclusief btw. Eventuele leveringskosten worden vóór de bestelling getoond."] },
+      { heading: "Prijzen", blocks: [SNIP.pricesText] },
       { heading: "Levering", blocks: ["De leveringsvoorwaarden staan beschreven in Leveringsvoorwaarden."] },
       { heading: "Herroepingsrecht", blocks: [`Consumenten hebben een herroepingsrecht van ${r.windowDays} dagen, beschreven in Herroepingsrecht en retourneren.`] },
       { heading: "Wettelijke garantie", blocks: ["De wettelijke conformiteitsgarantie is van toepassing, beschreven in Wettelijke en commerciële garantie."] },
@@ -264,6 +269,7 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
         heading: "Geschillenbeslechting",
         blocks: ["Neem eerst contact met ons op: de meeste problemen zijn binnen enkele dagen opgelost. Wij zijn niet verplicht en niet bereid deel te nemen aan geschillenbeslechting voor een geschillencommissie voor consumenten."],
       },
+      SNIP.termsSection,
     ],
   },
 
@@ -301,7 +307,7 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
       {
         heading: "Ontvangers",
         blocks: [
-          "Betaaldienstverleners, vervoerders en ons EU-magazijn, hosting- en e-mailproviders en — alleen met uw toestemming — Google voor analyse en advertenties. Verwerkers handelen volgens onze instructies op grond van verwerkersovereenkomsten.",
+          "Betaaldienstverleners, vervoerders en onze logistieke partners in de Verenigde Staten, hosting- en e-mailproviders en — alleen met uw toestemming — Google voor analyse en advertenties. Verwerkers handelen volgens onze instructies op grond van verwerkersovereenkomsten.",
         ],
       },
       {
@@ -386,11 +392,10 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
               ["Rechtsvorm", `Limited liability company naar het recht van ${COMPANY.stateOfFormation}, VS`],
               ["Register", `${COMPANY.stateOfFormation} Secretary of State, nr. ${COMPANY.registrationNumber}`],
               ["Adres", companyAddressLine],
-              ["Vertegenwoordigd door", "[Naam van managing member / manager]"],
+              ["Vertegenwoordigd door", `${COMPANY.representative}, ${COMPANY.representativeRole}`],
               ["E-mail", COMPANY.email],
               ["Telefoon", COMPANY.phoneDisplay],
-              ["EU-btw (OSS)", EU_PRESENCE.vatNumber],
-              ["EIN (VS)", COMPANY.ein],
+              ["Seller's permit (CDTFA)", COMPANY.sellerPermit],
             ],
           },
         ],
@@ -401,7 +406,7 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
       },
       {
         heading: "Verantwoordelijk voor de inhoud",
-        blocks: ["[Naam], adres zoals hierboven."],
+        blocks: [`${COMPANY.representative}, adres zoals hierboven.`],
       },
     ],
   },

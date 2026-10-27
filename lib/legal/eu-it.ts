@@ -3,6 +3,7 @@ import { CONSENT_MAX_AGE_DAYS } from "@/components/legal/consent"
 import { POLICIES } from "@/lib/policies"
 import { euIt } from "@/lib/i18n/dictionaries/it"
 import type { PolicyDoc } from "@/lib/legal/types"
+import { EU_SNIPPETS } from "@/lib/legal/eu-customs"
 
 // Italian version of lib/legal/eu.ts. Same facts and numbers; update all EU
 // language files together. Withdrawal wording follows the official model
@@ -16,11 +17,13 @@ const seller = `${COMPANY.legalName}, ${companyAddressLine}, e-mail ${COMPANY.em
 const bulky = "al massimo circa 25 € per pneumatico o cerchio e 15 € per collo di freni"
 const payments = p.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "Bonifico SEPA" : m))
 
+const SNIP = EU_SNIPPETS.it
+
 export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
   shipping: {
     title: "Condizioni di consegna",
-    description: `Consegna gratuita in ${t.area}. IVA inclusa, nessun dazio. ${t.days}.`,
-    intro: `Queste condizioni si applicano agli ordini effettuati nel negozio UE di ${COMPANY.tradingName} (prezzi in EUR, IVA inclusa).`,
+    description: SNIP.shippingDescription,
+    intro: SNIP.shippingIntro,
     sections: [
       {
         heading: "Area di consegna",
@@ -30,10 +33,11 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Costi, IVA e dogana",
+        heading: "Costi, dazi e IVA all’importazione",
         blocks: [
           s.freeShipping ? "La consegna è gratuita per ogni ordine, senza importo minimo." : "I costi di consegna vengono mostrati prima della conferma dell’ordine.",
-          `${t.duties} I prezzi includono l’IVA del tuo paese, riscossa tramite lo sportello unico dell’UE (OSS).`,
+          t.duties,
+          SNIP.paymentsVat.blocks[1],
         ],
       },
       {
@@ -46,7 +50,7 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
               ["Tempo di trasporto", `${s.transitDays[0]}–${s.transitDays[1]} giorni lavorativi`],
               ["Tempo totale di consegna", t.days],
               ["Corrieri", s.carriers.join(", ")],
-              ["Spedito da", EU_PRESENCE.warehouseCountry],
+              ["Spedito da", EU_PRESENCE.dispatchCountry],
             ],
           },
           "Se non possiamo consegnare entro 30 giorni dall’ordine e non concordiamo con te una data successiva, puoi annullare l’ordine e ricevere il rimborso completo.",
@@ -87,7 +91,7 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
         blocks: [
           `Se recedi dal presente contratto, ti saranno rimborsati tutti i pagamenti che hai effettuato a nostro favore, compresi i costi di consegna (ad eccezione dei costi supplementari derivanti dalla tua eventuale scelta di un tipo di consegna diverso dal tipo meno costoso di consegna standard da noi offerto), senza indebito ritardo e in ogni caso non oltre ${r.refundDays} giorni dal giorno in cui siamo informati della tua decisione di recedere dal presente contratto. Detti rimborsi saranno effettuati utilizzando lo stesso mezzo di pagamento da te usato per la transazione iniziale, salvo che tu non abbia espressamente convenuto altrimenti; in ogni caso, non dovrai sostenere alcun costo quale conseguenza di tale rimborso.`,
           "Il rimborso può essere sospeso fino al ricevimento dei beni oppure fino all’avvenuta dimostrazione da parte tua di aver rispedito i beni, se precedente.",
-          `Sei pregato di rispedire i beni a ${EU_PRESENCE.returnsAddress} senza indebiti ritardi e in ogni caso entro ${r.windowDays} giorni dal giorno in cui ci hai comunicato il recesso dal presente contratto. Il termine è rispettato se rispedisci i beni prima della scadenza del periodo di ${r.windowDays} giorni.`,
+          `Sei pregato di rispedire i beni all’indirizzo indicato nell’e-mail di autorizzazione al reso (RMA) senza indebiti ritardi e in ogni caso entro ${r.windowDays} giorni dal giorno in cui ci hai comunicato il recesso dal presente contratto. Il termine è rispettato se rispedisci i beni prima della scadenza del periodo di ${r.windowDays} giorni.`,
           r.returnShippingPaidBy === "merchant"
             ? "I costi della restituzione dei beni saranno a nostro carico."
             : `I costi diretti della restituzione dei beni saranno a tuo carico. Pneumatici, cerchi e kit freni, per loro natura, non possono essere normalmente restituiti a mezzo posta; il costo è stimato in ${bulky}. Su richiesta possiamo inviarti un’etichetta prepagata a tale costo.`,
@@ -133,6 +137,7 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
         heading: "Articoli difettosi o errati",
         blocks: ["Se un articolo è difettoso o non è quello ordinato, si applicano i tuoi diritti di garanzia legale e copriamo tutti i costi di reso. Vedi Garanzia legale e garanzia commerciale."],
       },
+      SNIP.returnsSection,
     ],
   },
 
@@ -207,8 +212,8 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
 
   payments: {
     title: "Metodi di pagamento",
-    description: `Paga con ${payments.join(", ")}. Prezzi in EUR, IVA inclusa.`,
-    intro: "Tutti i prezzi del negozio UE sono in euro (EUR) e includono l’IVA.",
+    description: SNIP.paymentsDescription,
+    intro: SNIP.paymentsIntro,
     sections: [
       { heading: "Metodi accettati", blocks: [{ list: payments }] },
       {
@@ -222,7 +227,7 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
         blocks: ["I pagamenti con carta utilizzano l’autenticazione forte del cliente (3-D Secure) prevista dalla direttiva UE sui servizi di pagamento. Non conserviamo i numeri di carta completi."],
       },
       { heading: "Nessun sovrapprezzo", blocks: ["Non applichiamo commissioni su alcun metodo di pagamento."] },
-      { heading: "IVA", blocks: [`L’IVA è inclusa in ogni prezzo ed è riscossa tramite lo sportello unico dell’UE (OSS), numero identificativo ${EU_PRESENCE.vatNumber}. Ricevi una fattura con IVA via e-mail.`] },
+      SNIP.paymentsVat,
     ],
   },
 
@@ -231,7 +236,7 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
     description: `Condizioni generali per gli acquisti nel negozio UE di ${COMPANY.tradingName}.`,
     intro: `Le presenti condizioni si applicano ai contratti conclusi tramite il negozio UE di ${COMPANY.tradingName} tra te e ${COMPANY.legalName}, ${companyAddressLine} («noi»).`,
     sections: [
-      { heading: "Venditore", blocks: [seller, `IVA UE (OSS): ${EU_PRESENCE.vatNumber}`] },
+      { heading: "Venditore", blocks: [seller, `${COMPANY.stateOfFormation} Secretary of State: ${COMPANY.registrationNumber}`] },
       {
         heading: "Conclusione del contratto",
         blocks: [
@@ -241,7 +246,7 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
       },
       {
         heading: "Prezzi",
-        blocks: ["Tutti i prezzi sono in EUR e includono l’IVA. Eventuali costi di consegna sono indicati prima dell’ordine."],
+        blocks: [SNIP.pricesText],
       },
       { heading: "Consegna", blocks: ["Le modalità di consegna sono descritte nelle Condizioni di consegna."] },
       { heading: "Diritto di recesso", blocks: [`I consumatori hanno un diritto di recesso di ${r.windowDays} giorni, come descritto in Diritto di recesso e resi.`] },
@@ -268,6 +273,7 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
         heading: "Risoluzione delle controversie",
         blocks: ["Contattaci prima di tutto: la maggior parte dei problemi si risolve in pochi giorni. Non siamo obbligati a partecipare, e non partecipiamo, a procedure di risoluzione delle controversie dinanzi a un organismo di conciliazione per i consumatori."],
       },
+      SNIP.termsSection,
     ],
   },
 
@@ -305,7 +311,7 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
       {
         heading: "Destinatari",
         blocks: [
-          "Fornitori di servizi di pagamento, corrieri e il nostro magazzino nell’UE, fornitori di hosting ed e-mail e — solo con il tuo consenso — Google per analisi e pubblicità. I responsabili del trattamento agiscono su nostre istruzioni in base ad accordi sul trattamento dei dati.",
+          "Fornitori di servizi di pagamento, corrieri e i nostri partner logistici negli Stati Uniti, fornitori di hosting ed e-mail e — solo con il tuo consenso — Google per analisi e pubblicità. I responsabili del trattamento agiscono su nostre istruzioni in base ad accordi sul trattamento dei dati.",
         ],
       },
       {
@@ -390,11 +396,10 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
               ["Forma giuridica", `Limited liability company costituita secondo le leggi di ${COMPANY.stateOfFormation}, USA`],
               ["Registrazione", `${COMPANY.stateOfFormation} Secretary of State, n. ${COMPANY.registrationNumber}`],
               ["Indirizzo", companyAddressLine],
-              ["Rappresentata da", "[Nome del managing member / manager]"],
+              ["Rappresentata da", `${COMPANY.representative}, ${COMPANY.representativeRole}`],
               ["E-mail", COMPANY.email],
               ["Telefono", COMPANY.phoneDisplay],
-              ["IVA UE (OSS)", EU_PRESENCE.vatNumber],
-              ["EIN (USA)", COMPANY.ein],
+              ["Seller's permit (CDTFA)", COMPANY.sellerPermit],
             ],
           },
         ],
@@ -405,7 +410,7 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
       },
       {
         heading: "Responsabile dei contenuti",
-        blocks: ["[Nome], indirizzo come sopra."],
+        blocks: [`${COMPANY.representative}, indirizzo come sopra.`],
       },
     ],
   },

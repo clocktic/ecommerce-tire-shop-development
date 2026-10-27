@@ -202,6 +202,20 @@ export const US_POLICIES_ES: Record<string, PolicyDoc> = {
     intro: `Estos Términos del servicio rigen el uso de la tienda EE. UU. de ${COMPANY.tradingName} y las compras que hagas en ella. La tienda es operada por ${COMPANY.legalName}, ${companyAddressLine} («nosotros»). Esta traducción se ofrece para tu comodidad; en caso de discrepancia, prevalece la versión en inglés.`,
     sections: [
       {
+        heading: "Vendedor",
+        blocks: [
+          {
+            rows: [
+              ["Empresa", `${COMPANY.legalName}, sociedad de responsabilidad limitada de ${COMPANY.stateOfFormation}`],
+              ["N.º de registro estatal", COMPANY.registrationNumber],
+              ["Permiso de vendedor de California", `${COMPANY.sellerPermit} (${COMPANY.sellerPermitAuthority})`],
+              ["Dirección", companyAddressLine],
+              ["Contacto", `${COMPANY.email} · ${COMPANY.phoneDisplay}`],
+            ],
+          },
+        ],
+      },
+      {
         heading: "Requisitos",
         blocks: ["Para hacer un pedido debes tener al menos 18 años y una dirección de entrega dentro de la zona que atendemos."],
       },

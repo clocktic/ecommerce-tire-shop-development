@@ -3,6 +3,7 @@ import { CONSENT_MAX_AGE_DAYS } from "@/components/legal/consent"
 import { POLICIES } from "@/lib/policies"
 import { euFr } from "@/lib/i18n/dictionaries/fr"
 import type { PolicyDoc } from "@/lib/legal/types"
+import { EU_SNIPPETS } from "@/lib/legal/eu-customs"
 
 // French version of lib/legal/eu.ts. Same facts and numbers; update all EU
 // language files together. Withdrawal wording follows the official model
@@ -16,11 +17,13 @@ const seller = `${COMPANY.legalName}, ${companyAddressLine}, e-mail ${COMPANY.em
 const bulky = "au maximum environ 25 € par pneu ou jante et 15 € par colis de freinage"
 const payments = p.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "Virement SEPA" : m))
 
+const SNIP = EU_SNIPPETS.fr
+
 export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
   shipping: {
     title: "Conditions de livraison",
-    description: `Livraison gratuite dans ${t.area}. TVA incluse, sans frais de douane. ${t.days}.`,
-    intro: `Ces conditions s’appliquent aux commandes passées sur la boutique UE de ${COMPANY.tradingName} (prix en EUR, TVA incluse).`,
+    description: SNIP.shippingDescription,
+    intro: SNIP.shippingIntro,
     sections: [
       {
         heading: "Zone de livraison",
@@ -30,10 +33,11 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Frais, TVA et douane",
+        heading: "Coûts, droits de douane et TVA à l’importation",
         blocks: [
           s.freeShipping ? "La livraison est gratuite pour toutes les commandes, sans minimum d’achat." : "Les frais de livraison sont indiqués avant la validation de la commande.",
-          `${t.duties} Les prix incluent la TVA de votre pays, perçue via le guichet unique de l’UE (OSS).`,
+          t.duties,
+          SNIP.paymentsVat.blocks[1],
         ],
       },
       {
@@ -46,7 +50,7 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
               ["Délai d’acheminement", `${s.transitDays[0]} à ${s.transitDays[1]} jours ouvrés`],
               ["Délai total de livraison", t.days],
               ["Transporteurs", s.carriers.join(", ")],
-              ["Expédié depuis", EU_PRESENCE.warehouseCountry],
+              ["Expédié depuis", EU_PRESENCE.dispatchCountry],
             ],
           },
           "Si nous ne pouvons pas livrer dans les 30 jours suivant votre commande et qu’aucune date ultérieure n’a été convenue avec vous, vous pouvez annuler la commande et être intégralement remboursé.",
@@ -87,7 +91,7 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
         blocks: [
           `En cas de rétractation de votre part du présent contrat, nous vous rembourserons tous les paiements reçus de vous, y compris les frais de livraison (à l’exception des frais supplémentaires découlant du fait que vous avez choisi, le cas échéant, un mode de livraison autre que le mode moins coûteux de livraison standard proposé par nous), sans retard excessif et, en tout état de cause, au plus tard ${r.refundDays} jours à compter du jour où nous sommes informés de votre décision de rétractation du présent contrat. Nous procéderons au remboursement en utilisant le même moyen de paiement que celui que vous aurez utilisé pour la transaction initiale, sauf si vous convenez expressément d’un moyen différent ; en tout état de cause, ce remboursement n’occasionnera pas de frais pour vous.`,
           "Nous pouvons différer le remboursement jusqu’à ce que nous ayons reçu le bien ou jusqu’à ce que vous ayez fourni une preuve d’expédition du bien, la date retenue étant celle du premier de ces faits.",
-          `Vous devrez renvoyer le bien à ${EU_PRESENCE.returnsAddress} sans retard excessif et, en tout état de cause, au plus tard ${r.windowDays} jours après que vous nous aurez communiqué votre décision de rétractation du présent contrat. Ce délai est réputé respecté si vous renvoyez le bien avant l’expiration du délai de ${r.windowDays} jours.`,
+          `Vous devrez renvoyer le bien à l’adresse indiquée dans l’e-mail d’autorisation de retour (RMA) sans retard excessif et, en tout état de cause, au plus tard ${r.windowDays} jours après que vous nous aurez communiqué votre décision de rétractation du présent contrat. Ce délai est réputé respecté si vous renvoyez le bien avant l’expiration du délai de ${r.windowDays} jours.`,
           r.returnShippingPaidBy === "merchant"
             ? "Nous prendrons en charge les frais de renvoi du bien."
             : `Vous devrez prendre en charge les frais directs de renvoi du bien. Les pneus, jantes et kits de freinage ne peuvent normalement pas être renvoyés par la poste ; ces frais sont estimés à ${bulky}. Sur demande, nous pouvons vous envoyer une étiquette prépayée à ce prix.`,
@@ -133,6 +137,7 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
         heading: "Articles défectueux ou erronés",
         blocks: ["Si un article est défectueux ou ne correspond pas à votre commande, la garantie légale s’applique et nous prenons en charge tous les frais de retour. Voir Garantie légale et garantie commerciale."],
       },
+      SNIP.returnsSection,
     ],
   },
 
@@ -207,8 +212,8 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
 
   payments: {
     title: "Moyens de paiement",
-    description: `Payez par ${payments.join(", ")}. Prix en EUR, TVA incluse.`,
-    intro: "Tous les prix de la boutique UE sont en euros (EUR) et incluent la TVA.",
+    description: SNIP.paymentsDescription,
+    intro: SNIP.paymentsIntro,
     sections: [
       { heading: "Moyens acceptés", blocks: [{ list: payments }] },
       {
@@ -222,7 +227,7 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
         blocks: ["Les paiements par carte utilisent l’authentification forte du client (3-D Secure) exigée par la directive européenne sur les services de paiement. Nous ne conservons pas les numéros de carte complets."],
       },
       { heading: "Aucun supplément", blocks: ["Nous ne facturons aucun frais, quel que soit le moyen de paiement."] },
-      { heading: "TVA", blocks: [`La TVA est incluse dans chaque prix et perçue via le guichet unique de l’UE (OSS), numéro d’identification ${EU_PRESENCE.vatNumber}. Vous recevez une facture avec TVA par e-mail.`] },
+      SNIP.paymentsVat,
     ],
   },
 
@@ -231,7 +236,7 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
     description: `Conditions générales de vente de la boutique UE de ${COMPANY.tradingName}.`,
     intro: `Les présentes conditions s’appliquent aux contrats conclus via la boutique UE de ${COMPANY.tradingName} entre vous et ${COMPANY.legalName}, ${companyAddressLine} (« nous »).`,
     sections: [
-      { heading: "Vendeur", blocks: [seller, `TVA UE (OSS) : ${EU_PRESENCE.vatNumber}`] },
+      { heading: "Vendeur", blocks: [seller, `${COMPANY.stateOfFormation} Secretary of State: ${COMPANY.registrationNumber}`] },
       {
         heading: "Conclusion du contrat",
         blocks: [
@@ -241,7 +246,7 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
       },
       {
         heading: "Prix",
-        blocks: ["Tous les prix sont en EUR et incluent la TVA. Les éventuels frais de livraison sont indiqués avant la commande."],
+        blocks: [SNIP.pricesText],
       },
       { heading: "Livraison", blocks: ["Les modalités de livraison sont décrites dans les Conditions de livraison."] },
       { heading: "Droit de rétractation", blocks: [`Les consommateurs disposent d’un droit de rétractation de ${r.windowDays} jours, décrit dans Droit de rétractation et retours.`] },
@@ -268,6 +273,7 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
         heading: "Règlement des litiges",
         blocks: ["Contactez-nous d’abord — la plupart des problèmes sont résolus en quelques jours. Nous ne sommes pas tenus de participer, et ne participons pas, à une procédure de règlement des litiges devant un organisme de médiation de la consommation."],
       },
+      SNIP.termsSection,
     ],
   },
 
@@ -305,7 +311,7 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
       {
         heading: "Destinataires",
         blocks: [
-          "Prestataires de paiement, transporteurs et notre entrepôt dans l’UE, hébergeurs et fournisseurs d’e-mail et — uniquement avec votre consentement — Google pour la mesure d’audience et la publicité. Les sous-traitants agissent sur nos instructions dans le cadre de contrats de sous-traitance.",
+          "Prestataires de paiement, transporteurs et nos partenaires logistiques aux États-Unis, hébergeurs et fournisseurs d’e-mail et — uniquement avec votre consentement — Google pour la mesure d’audience et la publicité. Les sous-traitants agissent sur nos instructions dans le cadre de contrats de sous-traitance.",
         ],
       },
       {
@@ -390,11 +396,10 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
               ["Forme juridique", `Limited liability company de droit de l’État de ${COMPANY.stateOfFormation}, États-Unis`],
               ["Immatriculation", `${COMPANY.stateOfFormation} Secretary of State, n° ${COMPANY.registrationNumber}`],
               ["Adresse", companyAddressLine],
-              ["Représentée par", "[Nom du managing member / manager]"],
+              ["Représentée par", `${COMPANY.representative}, ${COMPANY.representativeRole}`],
               ["E-mail", COMPANY.email],
               ["Téléphone", COMPANY.phoneDisplay],
-              ["TVA UE (OSS)", EU_PRESENCE.vatNumber],
-              ["EIN (États-Unis)", COMPANY.ein],
+              ["Seller's permit (CDTFA)", COMPANY.sellerPermit],
             ],
           },
         ],
@@ -405,7 +410,7 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
       },
       {
         heading: "Directeur de la publication",
-        blocks: ["[Nom], adresse ci-dessus."],
+        blocks: [`${COMPANY.representative}, adresse ci-dessus.`],
       },
     ],
   },

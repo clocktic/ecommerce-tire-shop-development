@@ -3,6 +3,7 @@ import { CONSENT_MAX_AGE_DAYS } from "@/components/legal/consent"
 import { POLICIES } from "@/lib/policies"
 import { euEs } from "@/lib/i18n/dictionaries/es"
 import type { PolicyDoc } from "@/lib/legal/types"
+import { EU_SNIPPETS } from "@/lib/legal/eu-customs"
 
 // Spanish (Spain) version of lib/legal/eu.ts. Same facts and numbers; update all
 // EU language files together. Withdrawal wording follows the official model
@@ -16,11 +17,13 @@ const seller = `${COMPANY.legalName}, ${companyAddressLine}, correo electrónico
 const bulky = "como máximo unos 25 € por neumático o llanta y 15 € por bulto de frenos"
 const payments = p.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "Transferencia SEPA" : m))
 
+const SNIP = EU_SNIPPETS.es
+
 export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
   shipping: {
     title: "Condiciones de entrega",
-    description: `Entrega gratuita en ${t.area}. IVA incluido, sin aranceles. ${t.days}.`,
-    intro: `Estas condiciones se aplican a los pedidos realizados en la tienda UE de ${COMPANY.tradingName} (precios en EUR, IVA incluido).`,
+    description: SNIP.shippingDescription,
+    intro: SNIP.shippingIntro,
     sections: [
       {
         heading: "Zona de entrega",
@@ -30,10 +33,11 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Gastos, IVA y aduanas",
+        heading: "Costes, aranceles e IVA de importación",
         blocks: [
           s.freeShipping ? "La entrega es gratuita en todos los pedidos, sin importe mínimo." : "Los gastos de entrega se muestran antes de confirmar el pedido.",
-          `${t.duties} Los precios incluyen el IVA de tu país, recaudado a través de la ventanilla única de la UE (OSS).`,
+          t.duties,
+          SNIP.paymentsVat.blocks[1],
         ],
       },
       {
@@ -46,7 +50,7 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
               ["Tiempo de tránsito", `${s.transitDays[0]}–${s.transitDays[1]} días laborables`],
               ["Plazo total de entrega", t.days],
               ["Transportistas", s.carriers.join(", ")],
-              ["Enviado desde", EU_PRESENCE.warehouseCountry],
+              ["Enviado desde", EU_PRESENCE.dispatchCountry],
             ],
           },
           "Si no podemos entregar en un plazo de 30 días desde tu pedido y no acordamos contigo una fecha posterior, puedes cancelar el pedido y recibir el reembolso íntegro.",
@@ -87,7 +91,7 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
         blocks: [
           `En caso de desistimiento, te devolveremos todos los pagos recibidos de ti, incluidos los gastos de entrega (con la excepción de los gastos adicionales resultantes de la elección por tu parte de una modalidad de entrega diferente a la modalidad menos costosa de entrega ordinaria que ofrezcamos) sin ninguna demora indebida y, en todo caso, a más tardar ${r.refundDays} días naturales a partir de la fecha en la que se nos informe de tu decisión de desistir del presente contrato. Procederemos a efectuar dicho reembolso utilizando el mismo medio de pago empleado por ti para la transacción inicial, a no ser que hayas dispuesto expresamente lo contrario; en todo caso, no incurrirás en ningún gasto como consecuencia del reembolso.`,
           "Podremos retener el reembolso hasta haber recibido los bienes, o hasta que hayas presentado una prueba de la devolución de los mismos, según qué condición se cumpla primero.",
-          `Deberás devolver los bienes a ${EU_PRESENCE.returnsAddress} sin ninguna demora indebida y, en cualquier caso, a más tardar en el plazo de ${r.windowDays} días naturales a partir de la fecha en que nos comuniques tu decisión de desistimiento del contrato. Se considerará cumplido el plazo si efectúas la devolución de los bienes antes de que haya concluido dicho plazo.`,
+          `Deberás devolver los bienes a la dirección indicada en el correo de autorización de devolución (RMA) sin ninguna demora indebida y, en cualquier caso, a más tardar en el plazo de ${r.windowDays} días naturales a partir de la fecha en que nos comuniques tu decisión de desistimiento del contrato. Se considerará cumplido el plazo si efectúas la devolución de los bienes antes de que haya concluido dicho plazo.`,
           r.returnShippingPaidBy === "merchant"
             ? "Asumiremos el coste de la devolución de los bienes."
             : `Deberás asumir el coste directo de devolución de los bienes. Por su naturaleza, los neumáticos, las llantas y los kits de frenos no pueden devolverse normalmente por correo; se calcula que dicho coste asciende a ${bulky}. Si lo solicitas, podemos enviarte una etiqueta prepagada por ese importe.`,
@@ -133,6 +137,7 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
         heading: "Artículos defectuosos o erróneos",
         blocks: ["Si un artículo es defectuoso o no es el que pediste, se aplican tus derechos de garantía legal y cubrimos todos los gastos de devolución. Consulta Garantía legal y garantía comercial."],
       },
+      SNIP.returnsSection,
     ],
   },
 
@@ -207,8 +212,8 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
 
   payments: {
     title: "Métodos de pago",
-    description: `Paga con ${payments.join(", ")}. Precios en EUR, IVA incluido.`,
-    intro: "Todos los precios de la tienda UE están en euros (EUR) e incluyen el IVA.",
+    description: SNIP.paymentsDescription,
+    intro: SNIP.paymentsIntro,
     sections: [
       { heading: "Métodos aceptados", blocks: [{ list: payments }] },
       {
@@ -222,7 +227,7 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
         blocks: ["Los pagos con tarjeta utilizan la autenticación reforzada de cliente (3-D Secure) exigida por la Directiva de servicios de pago de la UE. No guardamos números de tarjeta completos."],
       },
       { heading: "Sin recargos", blocks: ["No cobramos ninguna comisión por ningún método de pago."] },
-      { heading: "IVA", blocks: [`El IVA está incluido en todos los precios y se recauda a través de la ventanilla única de la UE (OSS), número de identificación ${EU_PRESENCE.vatNumber}. Recibirás una factura con IVA por correo electrónico.`] },
+      SNIP.paymentsVat,
     ],
   },
 
@@ -231,7 +236,7 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
     description: `Condiciones generales de compra en la tienda UE de ${COMPANY.tradingName}.`,
     intro: `Estas condiciones se aplican a los contratos celebrados a través de la tienda UE de ${COMPANY.tradingName} entre tú y ${COMPANY.legalName}, ${companyAddressLine} («nosotros»).`,
     sections: [
-      { heading: "Vendedor", blocks: [seller, `IVA UE (OSS): ${EU_PRESENCE.vatNumber}`] },
+      { heading: "Vendedor", blocks: [seller, `${COMPANY.stateOfFormation} Secretary of State: ${COMPANY.registrationNumber}`] },
       {
         heading: "Celebración del contrato",
         blocks: [
@@ -241,7 +246,7 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
       },
       {
         heading: "Precios",
-        blocks: ["Todos los precios están en EUR e incluyen el IVA. Los posibles gastos de entrega se muestran antes del pedido."],
+        blocks: [SNIP.pricesText],
       },
       { heading: "Entrega", blocks: ["Las condiciones de entrega se describen en Condiciones de entrega."] },
       { heading: "Derecho de desistimiento", blocks: [`Los consumidores tienen un derecho de desistimiento de ${r.windowDays} días, descrito en Derecho de desistimiento y devoluciones.`] },
@@ -268,6 +273,7 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
         heading: "Resolución de litigios",
         blocks: ["Contacta primero con nosotros: la mayoría de las incidencias se resuelven en pocos días. No estamos obligados a participar, ni participamos, en procedimientos de resolución de litigios ante una entidad de arbitraje de consumo."],
       },
+      SNIP.termsSection,
     ],
   },
 
@@ -305,7 +311,7 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
       {
         heading: "Destinatarios",
         blocks: [
-          "Proveedores de pago, transportistas y nuestro almacén en la UE, proveedores de alojamiento y correo electrónico y — solo con tu consentimiento — Google para análisis y publicidad. Los encargados del tratamiento actúan según nuestras instrucciones en virtud de contratos de encargo del tratamiento.",
+          "Proveedores de pago, transportistas y nuestros socios logísticos en Estados Unidos, proveedores de alojamiento y correo electrónico y — solo con tu consentimiento — Google para análisis y publicidad. Los encargados del tratamiento actúan según nuestras instrucciones en virtud de contratos de encargo del tratamiento.",
         ],
       },
       {
@@ -390,11 +396,10 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
               ["Forma jurídica", `Limited liability company constituida conforme a la legislación de ${COMPANY.stateOfFormation}, EE. UU.`],
               ["Registro", `${COMPANY.stateOfFormation} Secretary of State, n.º ${COMPANY.registrationNumber}`],
               ["Domicilio", companyAddressLine],
-              ["Representada por", "[Nombre del managing member / manager]"],
+              ["Representada por", `${COMPANY.representative}, ${COMPANY.representativeRole}`],
               ["Correo electrónico", COMPANY.email],
               ["Teléfono", COMPANY.phoneDisplay],
-              ["IVA UE (OSS)", EU_PRESENCE.vatNumber],
-              ["EIN (EE. UU.)", COMPANY.ein],
+              ["Seller's permit (CDTFA)", COMPANY.sellerPermit],
             ],
           },
         ],
@@ -405,7 +410,7 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
       },
       {
         heading: "Responsable de los contenidos",
-        blocks: ["[Nombre], domicilio indicado arriba."],
+        blocks: [`${COMPANY.representative}, domicilio indicado arriba.`],
       },
     ],
   },

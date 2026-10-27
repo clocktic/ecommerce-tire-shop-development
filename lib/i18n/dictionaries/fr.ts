@@ -8,7 +8,7 @@ const [min, max] = deliveryDays("eu")
 const days = `${min} à ${max} jours ouvrés`
 const area = "les 27 États membres de l’UE"
 const exclusions = "les pays hors UE (dont le Royaume-Uni, la Suisse et la Norvège) et les régions ultrapériphériques de l’UE comme les îles Canaries"
-const duties = "Expédié depuis un entrepôt dans l’UE — TVA incluse, aucun frais de douane ni d’importation à la livraison."
+const duties = "Expédié depuis les États-Unis. Les prix excluent les droits de douane et la TVA à l’importation, que vous réglez au transporteur ou à la douane à la livraison. En cas de retour, nous vous remboursons la TVA à l’importation payée."
 const warranty = "Garantie légale de conformité de l’UE pendant 2 ans à compter de la livraison, en plus de toute garantie du fabricant."
 const bulky = "au maximum environ 25 € par pneu ou jante et 15 € par colis de freinage"
 const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "virement SEPA" : m)).join(", ")
@@ -17,7 +17,7 @@ export const euFr: Dictionary = {
   meta: {
     title: `${COMPANY.tradingName} — Pneus, jantes et freins | Boutique UE`,
     template: `%s | ${COMPANY.tradingName} UE`,
-    description: "Pneus, jantes alliage et systèmes de freinage livrés dans toute l’UE, TVA incluse. Étiquette pneumatique UE sur chaque pneu.",
+    description: "Pneus, jantes alliage et systèmes de freinage livrés dans toute l’UE depuis les États-Unis. Étiquette pneumatique UE sur chaque pneu.",
   },
   common: {
     skip: "Aller au contenu",
@@ -41,7 +41,7 @@ export const euFr: Dictionary = {
     no: "Non",
     free: "Gratuit",
   },
-  company: { hours: "Lun–ven, 9 h–18 h ET (heure de l’Est des États-Unis)" },
+  company: { hours: "Lun–ven, 9 h–18 h PT (heure du Pacifique, É.-U.)" },
   policy: { area, exclusions, duties, days, warranty },
   topbar: {
     shipsTo: "Livraison UE-27",
@@ -61,10 +61,10 @@ export const euFr: Dictionary = {
     policies: "Informations légales UE",
     store: "Boutique",
     language: "Langue",
-    bottom: "Prix en EUR · TVA incluse, sans droits d’importation",
+    bottom: "Prix en EUR · hors droits d’importation et TVA, à payer à la livraison",
     payments: `Moyens de paiement acceptés : ${payments}`,
     privacyLink: "Paramètres des cookies",
-    vat: "Guichet unique TVA de l’UE (OSS)",
+    vat: "",
   },
   categories: {
     tires: { name: "Pneus", blurb: "Été, hiver et toutes saisons. Recherchez par la dimension inscrite sur le flanc." },
@@ -91,7 +91,7 @@ export const euFr: Dictionary = {
   home: {
     eyebrow: "Boutique UE · Pneus · Jantes · Freins",
     title: "Tout ce qui se trouve entre votre voiture et la route.",
-    lead: "Pneus avec étiquette UE, jantes et freins homologués ECE — expédiés depuis un stock UE, TVA incluse.",
+    lead: "Pneus avec étiquette UE, jantes et freins homologués ECE — expédiés depuis les États-Unis.",
     heroAlt: "Jante alliage avec pneu sport et étrier de frein rouge",
     finder: {
       title: "Trouver la dimension",
@@ -226,7 +226,7 @@ export const euFr: Dictionary = {
     upc: "UPC",
     supplierPart: "Réf. fournisseur",
   },
-    priceNote: "TVA incluse, sans droits d’importation · prix à l’unité",
+    priceNote: "Hors droits d’importation et TVA · prix à l’unité",
     deliveryTitle: `${s.freeShipping ? "Livraison gratuite" : "Livraison"} en ${days}`,
     deliveryText: `Vers ${area}. Les commandes passées avant ${s.cutoff} partent sous ${s.handlingDays[0]} à ${s.handlingDays[1]} jours ouvrés.`,
     returnsTitle: `Droit de rétractation de ${eu.returns.windowDays} jours`,
@@ -269,7 +269,7 @@ export const euFr: Dictionary = {
     quantityFor: "Quantité pour {name}",
     aria: "Panier, articles : {n}",
     tax: null,
-    priceNote: "TVA incluse, sans droits d’importation.",
+    priceNote: "Hors droits d’importation et TVA.",
   },
   checkout: {
     title: "Commande",
@@ -392,7 +392,7 @@ export const euFr: Dictionary = {
     hours: "Horaires",
     address: "Adresse de la société",
     returnsAddress: "Adresse de retour",
-    returnsNote: "Merci de nous écrire avant tout retour.",
+    returnsNote: "Contactez-nous avant tout retour : nous vous envoyons un numéro de retour (RMA) et l’adresse de retour.",
     quickLinks: "Liens utiles",
     returns: "Rétractation",
     privacy: "Politique de confidentialité",
@@ -408,12 +408,12 @@ export const euFr: Dictionary = {
     details: "Informations sur la société",
     company: "Société",
     legalForm: "Forme juridique",
-    legalFormValue: `Limited liability company, ${COMPANY.stateOfFormation}, États-Unis`,
+    legalFormValue: `Limited liability company, ${COMPANY.stateOfFormation}, États-Unis · No. ${COMPANY.registrationNumber}`,
     address: "Adresse",
     email: "E-mail",
     phone: "Téléphone",
     hours: "Horaires",
     eyebrow: "Boutique Union européenne",
-    vat: "TVA UE (OSS)",
+    vat: "",
   },
 }

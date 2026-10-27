@@ -8,7 +8,7 @@ const [min, max] = deliveryDays("eu")
 const days = `${min}–${max} werkdagen`
 const area = "alle 27 EU-lidstaten"
 const exclusions = "landen buiten de EU (waaronder het Verenigd Koninkrijk, Zwitserland en Noorwegen) en ultraperifere EU-gebieden zoals de Canarische Eilanden"
-const duties = "Verzonden vanuit een EU-magazijn — btw inbegrepen, geen douane- of invoerkosten bij levering."
+const duties = "Verzonden vanuit de Verenigde Staten. De prijzen zijn exclusief invoerrechten en invoer-btw, die u bij levering aan de vervoerder of de douane betaalt. Bij een retour betalen wij de betaalde invoer-btw aan u terug."
 const warranty = "Wettelijke conformiteitsgarantie in de EU van 2 jaar na levering, naast een eventuele fabrieksgarantie."
 const bulky = "maximaal ongeveer € 25 per band of velg en € 15 per remmenpakket"
 const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "SEPA-overschrijving" : m)).join(", ")
@@ -17,7 +17,7 @@ export const euNl: Dictionary = {
   meta: {
     title: `${COMPANY.tradingName} — Banden, velgen & remmen | EU-winkel`,
     template: `%s | ${COMPANY.tradingName} EU`,
-    description: "Banden, lichtmetalen velgen en remsystemen geleverd in de hele EU, inclusief btw. EU-bandenlabel bij elke band.",
+    description: "Banden, lichtmetalen velgen en remsystemen vanuit de Verenigde Staten geleverd in de hele EU. EU-bandenlabel bij elke band.",
   },
   common: {
     skip: "Naar de inhoud",
@@ -41,7 +41,7 @@ export const euNl: Dictionary = {
     no: "Nee",
     free: "Gratis",
   },
-  company: { hours: "Ma–vr, 9.00–18.00 uur ET (Amerikaanse oostkusttijd)" },
+  company: { hours: "Ma–vr, 9.00–18.00 uur PT (Amerikaanse westkusttijd)" },
   policy: { area, exclusions, duties, days, warranty },
   topbar: {
     shipsTo: "Levering in EU-27",
@@ -61,10 +61,10 @@ export const euNl: Dictionary = {
     policies: "Juridisch EU",
     store: "Winkel",
     language: "Taal",
-    bottom: "Prijzen in EUR · inclusief btw, geen invoerrechten",
+    bottom: "Prijzen in EUR · exclusief invoerrechten en btw, te betalen bij levering",
     payments: `Geaccepteerde betaalmethoden: ${payments}`,
     privacyLink: "Cookie-instellingen",
-    vat: "EU-btw-éénloketsysteem (OSS)",
+    vat: "",
   },
   categories: {
     tires: { name: "Banden", blurb: "Zomer-, winter- en all-seasonbanden. Zoek op de maat op de zijkant van uw band." },
@@ -91,7 +91,7 @@ export const euNl: Dictionary = {
   home: {
     eyebrow: "EU-winkel · Banden · Velgen · Remmen",
     title: "Alles tussen uw auto en de weg.",
-    lead: "Banden met EU-bandenlabel, velgen en remmen met ECE-goedkeuring — verzonden uit EU-voorraad, inclusief btw.",
+    lead: "Banden met EU-bandenlabel, velgen en remmen met ECE-goedkeuring — verzonden vanuit de Verenigde Staten.",
     heroAlt: "Lichtmetalen velg met sportband en rode remklauw",
     finder: {
       title: "Bandenmaat zoeken",
@@ -226,9 +226,9 @@ export const euNl: Dictionary = {
     upc: "UPC",
     supplierPart: "Leveranciersnummer",
   },
-    priceNote: "inclusief btw, geen invoerrechten · prijs per stuk",
+    priceNote: "exclusief invoerrechten en btw · prijs per stuk",
     deliveryTitle: `${s.freeShipping ? "Gratis levering" : "Levering"} in ${days}`,
-    deliveryText: `Naar ${area}. Bestellingen vóór ${s.cutoff} verlaten het magazijn binnen ${s.handlingDays[0]}–${s.handlingDays[1]} werkdagen.`,
+    deliveryText: `Naar ${area}. Bestellingen vóór ${s.cutoff} verlaten ons magazijn in de VS binnen ${s.handlingDays[0]}–${s.handlingDays[1]} werkdagen.`,
     returnsTitle: `${eu.returns.windowDays} dagen herroepingsrecht`,
     returnsText: "Niet gemonteerd en ongebruikt.",
     warrantyTitle: "2 jaar wettelijke garantie",
@@ -269,7 +269,7 @@ export const euNl: Dictionary = {
     quantityFor: "Aantal voor {name}",
     aria: "Winkelwagen, artikelen: {n}",
     tax: null,
-    priceNote: "Inclusief btw, geen invoerrechten.",
+    priceNote: "Exclusief invoerrechten en btw.",
   },
   checkout: {
     title: "Afrekenen",
@@ -392,7 +392,7 @@ export const euNl: Dictionary = {
     hours: "Bereikbaarheid",
     address: "Bedrijfsadres",
     returnsAddress: "Retouradres",
-    returnsNote: "Stuur ons een e-mail voordat u een retour verzendt.",
+    returnsNote: "Neem eerst contact met ons op — wij sturen u een retourautorisatienummer (RMA) en het retouradres.",
     quickLinks: "Snelle links",
     returns: "Herroeping",
     privacy: "Privacybeleid",
@@ -408,12 +408,12 @@ export const euNl: Dictionary = {
     details: "Bedrijfsgegevens",
     company: "Bedrijf",
     legalForm: "Rechtsvorm",
-    legalFormValue: `Limited liability company, ${COMPANY.stateOfFormation}, VS`,
+    legalFormValue: `Limited liability company, ${COMPANY.stateOfFormation}, VS · No. ${COMPANY.registrationNumber}`,
     address: "Adres",
     email: "E-mail",
     phone: "Telefoon",
     hours: "Bereikbaarheid",
     eyebrow: "EU-winkel",
-    vat: "EU-btw (OSS)",
+    vat: "",
   },
 }

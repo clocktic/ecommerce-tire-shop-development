@@ -6,7 +6,7 @@ import { storePath, type Store } from "@/lib/i18n/config"
 // from the translated documents in lib/legal/<market>-<lang>.ts.
 export const POLICY_ORDER: Record<Market, string[]> = {
   us: ["shipping", "returns", "warranty", "payments", "terms", "privacy", "privacy-choices"],
-  eu: ["shipping", "returns", "withdrawal-form", "warranty", "payments", "terms", "privacy", "cookies", "legal-notice"],
+  eu: ["shipping", "customs", "returns", "withdrawal-form", "warranty", "payments", "terms", "privacy", "cookies", "legal-notice"],
 }
 
 export function policyHref(store: Store, slug: string) {
