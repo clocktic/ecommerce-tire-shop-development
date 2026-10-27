@@ -3,6 +3,7 @@ import { CONSENT_MAX_AGE_DAYS } from "@/components/legal/consent"
 import { POLICIES } from "@/lib/policies"
 import { euDe } from "@/lib/i18n/dictionaries/de"
 import type { PolicyDoc } from "@/lib/legal/types"
+import { EU_SNIPPETS } from "@/lib/legal/eu-customs"
 
 // German version of lib/legal/eu.ts. Same facts and numbers; update all EU
 // language files together. Withdrawal wording follows the official model
@@ -16,11 +17,13 @@ const seller = `${COMPANY.legalName}, ${companyAddressLine}, E-Mail ${COMPANY.em
 const bulky = "höchstens etwa 25 € pro Reifen oder Felge und 15 € pro Bremsenpaket"
 const payments = p.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "SEPA-Überweisung" : m))
 
+const SNIP = EU_SNIPPETS.de
+
 export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
   shipping: {
     title: "Lieferbedingungen",
-    description: `Kostenlose Lieferung in ${t.area}. MwSt. inklusive, keine Zollgebühren. ${t.days}.`,
-    intro: `Diese Bedingungen gelten für Bestellungen im EU-Shop von ${COMPANY.tradingName} (Preise in EUR inkl. MwSt.).`,
+    description: SNIP.shippingDescription,
+    intro: SNIP.shippingIntro,
     sections: [
       {
         heading: "Liefergebiet",
@@ -30,10 +33,11 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Kosten, MwSt. und Zoll",
+        heading: "Kosten, Zölle und Einfuhrumsatzsteuer",
         blocks: [
           s.freeShipping ? "Die Lieferung ist bei jeder Bestellung kostenlos, ohne Mindestbestellwert." : "Die Lieferkosten werden vor Abschluss der Bestellung angezeigt.",
-          `${t.duties} Die Preise enthalten die Mehrwertsteuer Ihres Landes, erhoben über den EU-One-Stop-Shop (OSS).`,
+          t.duties,
+          SNIP.paymentsVat.blocks[1],
         ],
       },
       {
@@ -46,7 +50,7 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
               ["Versandlaufzeit", `${s.transitDays[0]}–${s.transitDays[1]} Werktage`],
               ["Gesamte Lieferzeit", t.days],
               ["Versanddienstleister", s.carriers.join(", ")],
-              ["Versand aus", EU_PRESENCE.warehouseCountry],
+              ["Versand aus", EU_PRESENCE.dispatchCountry],
             ],
           },
           "Können wir nicht innerhalb von 30 Tagen nach Ihrer Bestellung liefern und vereinbaren wir keinen späteren Termin mit Ihnen, können Sie die Bestellung stornieren und erhalten den vollen Betrag zurück.",
@@ -87,7 +91,7 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
         blocks: [
           `Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen erhalten haben, einschließlich der Lieferkosten (mit Ausnahme der zusätzlichen Kosten, die sich daraus ergeben, dass Sie eine andere Art der Lieferung als die von uns angebotene, günstigste Standardlieferung gewählt haben), unverzüglich und spätestens binnen ${r.refundDays} Tagen ab dem Tag zurückzuzahlen, an dem die Mitteilung über Ihren Widerruf dieses Vertrags bei uns eingegangen ist. Für diese Rückzahlung verwenden wir dasselbe Zahlungsmittel, das Sie bei der ursprünglichen Transaktion eingesetzt haben, es sei denn, mit Ihnen wurde ausdrücklich etwas anderes vereinbart; in keinem Fall werden Ihnen wegen dieser Rückzahlung Entgelte berechnet.`,
           "Wir können die Rückzahlung verweigern, bis wir die Waren wieder zurückerhalten haben oder bis Sie den Nachweis erbracht haben, dass Sie die Waren zurückgesandt haben, je nachdem, welches der frühere Zeitpunkt ist.",
-          `Sie haben die Waren unverzüglich und in jedem Fall spätestens binnen ${r.windowDays} Tagen ab dem Tag, an dem Sie uns über den Widerruf dieses Vertrags unterrichten, an ${EU_PRESENCE.returnsAddress} zurückzusenden oder zu übergeben. Die Frist ist gewahrt, wenn Sie die Waren vor Ablauf der Frist von ${r.windowDays} Tagen absenden.`,
+          `Sie haben die Waren unverzüglich und in jedem Fall spätestens binnen ${r.windowDays} Tagen ab dem Tag, an dem Sie uns über den Widerruf dieses Vertrags unterrichten, an die Adresse, die wir Ihnen mit der Rücksendenummer (RMA) per E-Mail mitteilen, zurückzusenden oder zu übergeben. Die Frist ist gewahrt, wenn Sie die Waren vor Ablauf der Frist von ${r.windowDays} Tagen absenden.`,
           r.returnShippingPaidBy === "merchant"
             ? "Wir tragen die Kosten der Rücksendung der Waren."
             : `Sie tragen die unmittelbaren Kosten der Rücksendung der Waren. Reifen, Felgen und Bremsanlagen können wegen ihrer Beschaffenheit nicht normal mit der Post zurückgesandt werden; die Kosten werden auf ${bulky} geschätzt. Auf Wunsch senden wir Ihnen ein vorfrankiertes Etikett zu diesem Preis.`,
@@ -133,6 +137,7 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
         heading: "Mangelhafte oder falsche Artikel",
         blocks: ["Ist ein Artikel mangelhaft oder nicht der bestellte, gelten Ihre Rechte aus der gesetzlichen Gewährleistung und wir übernehmen alle Rücksendekosten. Siehe Gewährleistung & Garantie."],
       },
+      SNIP.returnsSection,
     ],
   },
 
@@ -207,8 +212,8 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
 
   payments: {
     title: "Zahlungsarten",
-    description: `Bezahlen Sie mit ${payments.join(", ")}. Preise in EUR inkl. MwSt.`,
-    intro: "Alle Preise im EU-Shop sind in Euro (EUR) angegeben und enthalten die Mehrwertsteuer.",
+    description: SNIP.paymentsDescription,
+    intro: SNIP.paymentsIntro,
     sections: [
       { heading: "Akzeptierte Zahlungsarten", blocks: [{ list: payments }] },
       {
@@ -222,7 +227,7 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
         blocks: ["Kartenzahlungen nutzen die starke Kundenauthentifizierung (3-D Secure) gemäß der EU-Zahlungsdiensterichtlinie. Vollständige Kartennummern speichern wir nicht."],
       },
       { heading: "Keine Zuschläge", blocks: ["Für keine Zahlungsart berechnen wir eine Gebühr."] },
-      { heading: "MwSt.", blocks: [`Die Mehrwertsteuer ist in jedem Preis enthalten und wird über den EU-One-Stop-Shop (OSS) erhoben, Identifikationsnummer ${EU_PRESENCE.vatNumber}. Sie erhalten eine Rechnung mit ausgewiesener MwSt. per E-Mail.`] },
+      SNIP.paymentsVat,
     ],
   },
 
@@ -231,7 +236,7 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
     description: `Allgemeine Geschäftsbedingungen für Käufe im EU-Shop von ${COMPANY.tradingName}.`,
     intro: `Diese Bedingungen gelten für Verträge, die über den EU-Shop von ${COMPANY.tradingName} zwischen Ihnen und ${COMPANY.legalName}, ${companyAddressLine} („wir“) geschlossen werden.`,
     sections: [
-      { heading: "Verkäufer", blocks: [seller, `EU-USt. (OSS): ${EU_PRESENCE.vatNumber}`] },
+      { heading: "Verkäufer", blocks: [seller, `${COMPANY.stateOfFormation} Secretary of State: ${COMPANY.registrationNumber}`] },
       {
         heading: "Vertragsschluss",
         blocks: [
@@ -241,7 +246,7 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
       },
       {
         heading: "Preise",
-        blocks: ["Alle Preise sind in EUR angegeben und enthalten die Mehrwertsteuer. Etwaige Lieferkosten werden vor der Bestellung angezeigt."],
+        blocks: [SNIP.pricesText],
       },
       { heading: "Lieferung", blocks: ["Die Lieferbedingungen sind in den Lieferbedingungen geregelt."] },
       { heading: "Widerrufsrecht", blocks: [`Verbrauchern steht ein ${r.windowDays}-tägiges Widerrufsrecht zu, wie in der Widerrufsbelehrung beschrieben.`] },
@@ -268,6 +273,7 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
         heading: "Streitbeilegung",
         blocks: ["Bitte wenden Sie sich zuerst an uns — die meisten Anliegen lösen wir innerhalb weniger Tage. Wir sind nicht verpflichtet und nicht bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen."],
       },
+      SNIP.termsSection,
     ],
   },
 
@@ -305,7 +311,7 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
       {
         heading: "Empfänger",
         blocks: [
-          "Zahlungsdienstleister, Versanddienstleister und unser EU-Lager, Hosting- und E-Mail-Anbieter sowie — nur mit Ihrer Einwilligung — Google für Analyse und Werbung. Auftragsverarbeiter handeln auf unsere Weisung auf Grundlage von Auftragsverarbeitungsverträgen.",
+          "Zahlungsdienstleister, Versanddienstleister und unsere Fulfillment-Partner in den USA, Hosting- und E-Mail-Anbieter sowie — nur mit Ihrer Einwilligung — Google für Analyse und Werbung. Auftragsverarbeiter handeln auf unsere Weisung auf Grundlage von Auftragsverarbeitungsverträgen.",
         ],
       },
       {
@@ -390,11 +396,10 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
               ["Rechtsform", `Limited Liability Company nach dem Recht von ${COMPANY.stateOfFormation}, USA`],
               ["Registrierung", `${COMPANY.stateOfFormation} Secretary of State, Nr. ${COMPANY.registrationNumber}`],
               ["Anschrift", companyAddressLine],
-              ["Vertreten durch", "[Name des Managing Member / Managers]"],
+              ["Vertreten durch", `${COMPANY.representative}, ${COMPANY.representativeRole}`],
               ["E-Mail", COMPANY.email],
               ["Telefon", COMPANY.phoneDisplay],
-              ["EU-USt. (OSS)", EU_PRESENCE.vatNumber],
-              ["US EIN", COMPANY.ein],
+              ["Seller's permit (CDTFA)", COMPANY.sellerPermit],
             ],
           },
         ],
@@ -405,7 +410,7 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
       },
       {
         heading: "Inhaltlich verantwortlich",
-        blocks: ["[Name], Anschrift wie oben."],
+        blocks: [`${COMPANY.representative}, Anschrift wie oben.`],
       },
     ],
   },

@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { COMPANY, EU_PRESENCE, companyAddressLine } from "@/lib/company"
+import { COMPANY, companyAddressLine } from "@/lib/company"
 import { getDictionary, parseStore, storePath } from "@/lib/i18n"
 import { storeAlternates } from "@/lib/seo"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
@@ -29,7 +29,6 @@ export default async function AboutPage({ params }: { params: Params }) {
     [a.email, COMPANY.email],
     [a.phone, COMPANY.phoneDisplay],
     [a.hours, t.company.hours],
-    ...(a.vat ? ([[a.vat, EU_PRESENCE.vatNumber]] as [string, string][]) : []),
   ]
 
   return (

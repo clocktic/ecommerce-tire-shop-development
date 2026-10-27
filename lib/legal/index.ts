@@ -10,6 +10,7 @@ import { EU_POLICIES_FR } from "@/lib/legal/eu-fr"
 import { EU_POLICIES_IT } from "@/lib/legal/eu-it"
 import { EU_POLICIES_ES } from "@/lib/legal/eu-es"
 import { EU_POLICIES_NL } from "@/lib/legal/eu-nl"
+import { EU_CUSTOMS } from "@/lib/legal/eu-customs"
 
 type Docs = Record<string, PolicyDoc>
 
@@ -19,6 +20,7 @@ const DOCS: Record<Market, Partial<Record<Lang, Docs>>> = {
 }
 
 export function getPolicy(store: Store, slug: string): PolicyDoc | undefined {
+  if (slug === "customs") return store.market === "eu" ? EU_CUSTOMS[store.lang] : undefined
   return DOCS[store.market][store.lang]?.[slug]
 }
 
@@ -34,4 +36,4 @@ export function policyLinks(store: Store): { slug: string; title: string }[] {
 }
 
 // Last material revision of the policy texts. Update when the wording changes.
-export const POLICIES_UPDATED = "2026-10-15"
+export const POLICIES_UPDATED = "2026-10-27"

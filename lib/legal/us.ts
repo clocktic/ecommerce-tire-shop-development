@@ -197,6 +197,20 @@ export const US_POLICIES: Record<string, PolicyDoc> = {
     intro: `These Terms of Service govern your use of the ${COMPANY.tradingName} US store and purchases you make there. The store is operated by ${COMPANY.legalName}, ${companyAddressLine} ("we", "us").`,
     sections: [
       {
+        heading: "Seller",
+        blocks: [
+          {
+            rows: [
+              ["Company", `${COMPANY.legalName}, a ${COMPANY.stateOfFormation} limited liability company`],
+              ["State file number", COMPANY.registrationNumber],
+              ["California seller's permit", `${COMPANY.sellerPermit} (${COMPANY.sellerPermitAuthority})`],
+              ["Address", companyAddressLine],
+              ["Contact", `${COMPANY.email} · ${COMPANY.phoneDisplay}`],
+            ],
+          },
+        ],
+      },
+      {
         heading: "Eligibility",
         blocks: ["You must be at least 18 years old and have a delivery address in the area we serve to place an order."],
       },

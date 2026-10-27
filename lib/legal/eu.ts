@@ -2,6 +2,7 @@ import { COMPANY, EU_PRESENCE, companyAddressLine } from "@/lib/company"
 import { CONSENT_MAX_AGE_DAYS } from "@/components/legal/consent"
 import { POLICIES, deliveryLabel } from "@/lib/policies"
 import type { PolicyDoc } from "@/lib/legal/types"
+import { EU_SNIPPETS } from "@/lib/legal/eu-customs"
 
 const p = POLICIES.eu
 const s = p.shipping
@@ -9,11 +10,13 @@ const r = p.returns
 const contactLine = `${COMPANY.email} · ${COMPANY.phoneDisplay} (${COMPANY.hours})`
 const seller = `${COMPANY.legalName}, ${companyAddressLine}, email ${COMPANY.email}, phone ${COMPANY.phoneDisplay}`
 
+const SNIP = EU_SNIPPETS.en
+
 export const EU_POLICIES: Record<string, PolicyDoc> = {
   shipping: {
     title: "Delivery Policy",
-    description: `Free delivery to ${s.area}. VAT included, no customs fees. ${deliveryLabel("eu")}.`,
-    intro: `This policy applies to orders placed in the ${COMPANY.tradingName} EU store (prices in EUR, VAT included).`,
+    description: SNIP.shippingDescription,
+    intro: SNIP.shippingIntro,
     sections: [
       {
         heading: "Delivery area",
@@ -23,10 +26,11 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Cost, VAT and customs",
+        heading: "Cost, duties and import VAT",
         blocks: [
           s.freeShipping ? "Delivery is free on every order, with no minimum order value." : "Delivery costs are shown before you place the order.",
-          `${s.duties} Prices include the VAT of your country, collected under the ${EU_PRESENCE.vatScheme}.`,
+          s.duties,
+          SNIP.paymentsVat.blocks[1],
         ],
       },
       {
@@ -39,7 +43,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
               ["Transit time", `${s.transitDays[0]}–${s.transitDays[1]} working days`],
               ["Total delivery time", deliveryLabel("eu").replace("business", "working")],
               ["Carriers", s.carriers.join(", ")],
-              ["Dispatched from", EU_PRESENCE.warehouseCountry],
+              ["Dispatched from", EU_PRESENCE.dispatchCountry],
             ],
           },
           "If we cannot deliver within 30 days of your order and do not agree a later date with you, you may cancel the order and receive a full refund.",
@@ -80,7 +84,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
         blocks: [
           `If you withdraw from this contract, we shall reimburse to you all payments received from you, including the costs of delivery (with the exception of supplementary costs resulting from your choice of a type of delivery other than the least expensive type of standard delivery offered by us), without undue delay and in any event not later than ${r.refundDays} days from the day on which we are informed about your decision to withdraw from this contract. We will carry out such reimbursement using the same means of payment as you used for the initial transaction, unless you have expressly agreed otherwise; in any event, you will not incur any fees as a result of such reimbursement.`,
           "We may withhold reimbursement until we have received the goods back or you have supplied evidence of having sent back the goods, whichever is the earliest.",
-          `You shall send back the goods to ${EU_PRESENCE.returnsAddress} without undue delay and in any event not later than ${r.windowDays} days from the day on which you communicate your withdrawal from this contract to us. The deadline is met if you send back the goods before the period of ${r.windowDays} days has expired.`,
+          `You shall send back the goods to the address given in your return authorisation (RMA) email without undue delay and in any event not later than ${r.windowDays} days from the day on which you communicate your withdrawal from this contract to us. The deadline is met if you send back the goods before the period of ${r.windowDays} days has expired.`,
           r.returnShippingPaidBy === "merchant"
             ? "We will bear the cost of returning the goods."
             : `You will have to bear the direct cost of returning the goods. Tyres, wheels and brake kits cannot normally be returned by ordinary post; the cost is estimated at ${r.bulkyReturnCostEstimate}. We can send you a prepaid label at that cost on request.`,
@@ -126,6 +130,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
         heading: "Faulty or wrong items",
         blocks: ["If an item is faulty or not what you ordered, your rights under the legal guarantee apply and we cover all return costs. See Legal Guarantee & Warranty."],
       },
+      SNIP.returnsSection,
     ],
   },
 
@@ -200,8 +205,8 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
 
   payments: {
     title: "Payment Methods",
-    description: `Pay with ${p.paymentMethods.join(", ")}. Prices in EUR, VAT included.`,
-    intro: "All prices in the EU store are in euro (EUR) and include VAT.",
+    description: SNIP.paymentsDescription,
+    intro: SNIP.paymentsIntro,
     sections: [
       { heading: "Accepted methods", blocks: [{ list: p.paymentMethods }] },
       {
@@ -215,7 +220,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
         blocks: ["Card payments use Strong Customer Authentication (3-D Secure) as required by the EU Payment Services Directive. We do not store full card numbers."],
       },
       { heading: "No surcharges", blocks: ["We do not charge any fee for any payment method."] },
-      { heading: "VAT", blocks: [`VAT is included in every price and collected under the ${EU_PRESENCE.vatScheme}, identification number ${EU_PRESENCE.vatNumber}. You receive a VAT invoice by email.`] },
+      SNIP.paymentsVat,
     ],
   },
 
@@ -224,7 +229,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
     description: `General terms and conditions for purchases from the ${COMPANY.tradingName} EU store.`,
     intro: `These terms apply to contracts concluded through the ${COMPANY.tradingName} EU store between you and ${COMPANY.legalName}, ${companyAddressLine} ("we").`,
     sections: [
-      { heading: "Seller", blocks: [seller, `EU VAT (OSS): ${EU_PRESENCE.vatNumber}`] },
+      { heading: "Seller", blocks: [seller, `${COMPANY.stateOfFormation} Secretary of State: ${COMPANY.registrationNumber}`] },
       {
         heading: "Conclusion of the contract",
         blocks: [
@@ -234,7 +239,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
       },
       {
         heading: "Prices",
-        blocks: ["All prices are in EUR and include VAT. Delivery costs, if any, are shown before you order."],
+        blocks: [SNIP.pricesText],
       },
       { heading: "Delivery", blocks: ["Delivery terms are set out in the Delivery Policy."] },
       { heading: "Right of withdrawal", blocks: [`Consumers have a ${r.windowDays}-day right of withdrawal as described in Right of Withdrawal & Returns.`] },
@@ -261,6 +266,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
         heading: "Dispute resolution",
         blocks: ["Please contact us first — most issues are solved within a few days. We are not obliged to participate, and do not participate, in dispute resolution proceedings before a consumer arbitration body."],
       },
+      SNIP.termsSection,
     ],
   },
 
@@ -298,7 +304,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
       {
         heading: "Recipients",
         blocks: [
-          "Payment providers, delivery carriers and our EU warehouse, hosting and email providers, and — only with your consent — Google for analytics and advertising. Processors act on our instructions under data processing agreements.",
+          "Payment providers, delivery carriers and our fulfilment partners in the United States, hosting and email providers, and — only with your consent — Google for analytics and advertising. Processors act on our instructions under data processing agreements.",
         ],
       },
       {
@@ -383,11 +389,10 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
               ["Legal form", `${COMPANY.entityType}, organised under the laws of ${COMPANY.stateOfFormation}, USA`],
               ["Registration", `${COMPANY.stateOfFormation} Secretary of State, file no. ${COMPANY.registrationNumber}`],
               ["Address", companyAddressLine],
-              ["Represented by", "[Managing member / manager name]"],
+              ["Represented by", `${COMPANY.representative}, ${COMPANY.representativeRole}`],
               ["Email", COMPANY.email],
               ["Phone", COMPANY.phoneDisplay],
-              ["EU VAT (OSS)", EU_PRESENCE.vatNumber],
-              ["US EIN", COMPANY.ein],
+              ["Seller's permit (CDTFA)", COMPANY.sellerPermit],
             ],
           },
         ],
@@ -398,7 +403,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
       },
       {
         heading: "Responsible for content",
-        blocks: ["[Name], address as above."],
+        blocks: [`${COMPANY.representative}, address as above.`],
       },
     ],
   },

@@ -3,7 +3,7 @@ import { Logo } from "@/components/layout/logo"
 import { LanguageSwitcher, RegionSwitcher } from "@/components/layout/region-switcher"
 import { CookieSettingsButton } from "@/components/legal/cookie-settings-button"
 import { CATEGORIES } from "@/lib/catalog"
-import { COMPANY, EU_PRESENCE, companyAddressLine } from "@/lib/company"
+import { COMPANY, companyAddressLine } from "@/lib/company"
 import { getDictionary, storePath, type Store } from "@/lib/i18n"
 import { getExtras } from "@/lib/i18n/extras"
 import { policyLinks } from "@/lib/legal"
@@ -51,14 +51,6 @@ export function Footer({ store }: { store: Store }) {
             </a>
             <span aria-hidden="true">{"·"}</span>
             <span>{t.company.hours}</span>
-            {t.footer.vat && (
-              <>
-                <span aria-hidden="true">{"·"}</span>
-                <span>
-                  {t.footer.vat}: {EU_PRESENCE.vatNumber}
-                </span>
-              </>
-            )}
           </address>
         </div>
 

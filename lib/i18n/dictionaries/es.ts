@@ -9,7 +9,7 @@ const [min, max] = deliveryDays("eu")
 const days = `${min}–${max} días laborables`
 const area = "los 27 Estados miembros de la UE"
 const exclusions = "países de fuera de la UE (incluidos Reino Unido, Suiza y Noruega) y regiones ultraperiféricas de la UE como las Islas Canarias"
-const duties = "Enviado desde un almacén en la UE: IVA incluido, sin aranceles ni gastos de importación en la entrega."
+const duties = "Enviado desde Estados Unidos. Los precios no incluyen aranceles ni IVA de importación, que pagas al transportista o a la aduana en la entrega. Una vez recibido tu pedido, te reembolsamos el IVA de importación abonado."
 const warranty = "Garantía legal de conformidad de la UE durante 2 años desde la entrega, además de cualquier garantía del fabricante."
 const bulky = "como máximo unos 25 € por neumático o llanta y 15 € por bulto de frenos"
 const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "transferencia SEPA" : m)).join(", ")
@@ -18,7 +18,7 @@ export const euEs: Dictionary = {
   meta: {
     title: `${COMPANY.tradingName} — Neumáticos, llantas y frenos | Tienda UE`,
     template: `%s | ${COMPANY.tradingName} UE`,
-    description: "Neumáticos, llantas de aleación y sistemas de frenos con entrega en toda la UE, IVA incluido. Etiqueta europea en cada neumático.",
+    description: "Neumáticos, llantas de aleación y sistemas de frenos con entrega en toda la UE desde Estados Unidos. Etiqueta europea en cada neumático.",
   },
   common: {
     skip: "Saltar al contenido",
@@ -42,7 +42,7 @@ export const euEs: Dictionary = {
     no: "No",
     free: "Gratis",
   },
-  company: { hours: "Lun–vie, 9:00–18:00 ET (hora del este de EE. UU.)" },
+  company: { hours: "Lun–vie, 9:00–18:00 PT (hora del Pacífico de EE. UU.)" },
   policy: { area, exclusions, duties, days, warranty },
   topbar: {
     shipsTo: "Envíos a la UE-27",
@@ -62,10 +62,10 @@ export const euEs: Dictionary = {
     policies: "Información legal UE",
     store: "Tienda",
     language: "Idioma",
-    bottom: "Precios en EUR · IVA incluido, sin aranceles de importación",
+    bottom: "Precios en EUR · sin aranceles ni IVA de importación, a pagar en la entrega",
     payments: `Métodos de pago aceptados: ${payments}`,
     privacyLink: "Configuración de cookies",
-    vat: "Ventanilla única del IVA de la UE (OSS)",
+    vat: "",
   },
   categories: {
     tires: { name: "Neumáticos", blurb: "De verano, de invierno y todo tiempo. Busca por la medida que aparece en el flanco." },
@@ -92,7 +92,7 @@ export const euEs: Dictionary = {
   home: {
     eyebrow: "Tienda UE · Neumáticos · Llantas · Frenos",
     title: "Todo lo que hay entre tu coche y la carretera.",
-    lead: "Neumáticos con etiqueta europea, llantas y frenos homologados ECE: enviados desde stock en la UE, IVA incluido.",
+    lead: "Neumáticos con etiqueta europea, llantas y frenos homologados ECE: enviados desde Estados Unidos.",
     heroAlt: "Llanta de aleación con neumático deportivo y pinza de freno roja",
     finder: {
       title: "Buscador de medida",
@@ -227,7 +227,7 @@ export const euEs: Dictionary = {
     upc: "UPC",
     supplierPart: "Ref. proveedor",
   },
-    priceNote: "IVA incluido, sin aranceles de importación · precio por unidad",
+    priceNote: "Sin aranceles ni IVA de importación · precio por unidad",
     deliveryTitle: `${s.freeShipping ? "Entrega gratuita" : "Entrega"} en ${days}`,
     deliveryText: `A ${area}. Los pedidos realizados antes de las ${s.cutoff} salen en ${s.handlingDays[0]}–${s.handlingDays[1]} días laborables.`,
     returnsTitle: `Desistimiento en ${eu.returns.windowDays} días`,
@@ -270,7 +270,7 @@ export const euEs: Dictionary = {
     quantityFor: "Cantidad de {name}",
     aria: "Cesta, artículos: {n}",
     tax: null,
-    priceNote: "IVA incluido, sin aranceles de importación.",
+    priceNote: "Sin aranceles ni IVA de importación.",
   },
   checkout: {
     title: "Finalizar compra",
@@ -393,7 +393,7 @@ export const euEs: Dictionary = {
     hours: "Horario",
     address: "Domicilio de la empresa",
     returnsAddress: "Dirección de devolución",
-    returnsNote: "Escríbenos antes de enviar una devolución.",
+    returnsNote: "Contáctanos antes de enviar una devolución: te enviamos un número de autorización (RMA) y la dirección de devolución.",
     quickLinks: "Enlaces rápidos",
     returns: "Desistimiento",
     privacy: "Política de privacidad",
@@ -409,12 +409,12 @@ export const euEs: Dictionary = {
     details: "Datos de la empresa",
     company: "Empresa",
     legalForm: "Forma jurídica",
-    legalFormValue: `Limited liability company, ${COMPANY.stateOfFormation}, EE. UU.`,
+    legalFormValue: `Limited liability company, ${COMPANY.stateOfFormation}, EE. UU. · No. ${COMPANY.registrationNumber}`,
     address: "Domicilio",
     email: "Correo electrónico",
     phone: "Teléfono",
     hours: "Horario",
     eyebrow: "Tienda Unión Europea",
-    vat: "IVA UE (OSS)",
+    vat: "",
   },
 }

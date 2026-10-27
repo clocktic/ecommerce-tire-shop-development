@@ -12,7 +12,7 @@ const exclusions = "Alaska, Hawái, territorios de EE. UU. y direcciones APO/FPO
 const duties = "Se envía desde un almacén en EE. UU., sin cargos de importación."
 const warranty = "Aplica la garantía del fabricante; las condiciones varían según la marca y se indican en cada producto."
 const bulky = "aprox. US$25 por llanta o rin y US$15 por paquete de frenos"
-const cutoff = "2:00 p. m. ET"
+const cutoff = "2:00 p. m. PT"
 const payments = us.paymentMethods.join(", ")
 
 export const usEs: Dictionary = {
@@ -44,7 +44,7 @@ export const usEs: Dictionary = {
     no: "No",
     free: "Gratis",
   },
-  company: { hours: "Lun–Vie, 9:00 a. m. – 6:00 p. m. ET" },
+  company: { hours: "Lun–Vie, 9:00 a. m. – 6:00 p. m. PT" },
   policy: { area, exclusions, duties, days, warranty },
   topbar: {
     shipsTo: "Envíos en EE. UU.",
@@ -386,7 +386,7 @@ export const usEs: Dictionary = {
     hours: "Horario",
     address: "Domicilio de la empresa",
     returnsAddress: "Dirección para devoluciones",
-    returnsNote: "Escríbenos antes de enviar una devolución.",
+    returnsNote: "Contáctanos antes de enviar una devolución: te enviamos un número de autorización (RMA) y la dirección de devolución.",
     quickLinks: "Enlaces rápidos",
     returns: "Devoluciones",
     privacy: "Aviso de privacidad",
@@ -402,7 +402,7 @@ export const usEs: Dictionary = {
     details: "Datos de la empresa",
     company: "Empresa",
     legalForm: "Forma jurídica",
-    legalFormValue: `Sociedad de responsabilidad limitada (LLC), ${COMPANY.stateOfFormation}, EE. UU.`,
+    legalFormValue: `Sociedad de responsabilidad limitada (LLC), ${COMPANY.stateOfFormation}, EE. UU. · No. ${COMPANY.registrationNumber}`,
     address: "Domicilio",
     email: "Correo electrónico",
     phone: "Teléfono",

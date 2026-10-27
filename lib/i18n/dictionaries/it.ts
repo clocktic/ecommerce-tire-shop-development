@@ -8,7 +8,7 @@ const [min, max] = deliveryDays("eu")
 const days = `${min}–${max} giorni lavorativi`
 const area = "tutti i 27 Stati membri dell’UE"
 const exclusions = "i paesi extra UE (tra cui Regno Unito, Svizzera e Norvegia) e le regioni ultraperiferiche dell’UE come le Isole Canarie"
-const duties = "Spedito da un magazzino nell’UE — IVA inclusa, nessun dazio o costo d’importazione alla consegna."
+const duties = "Spedito dagli Stati Uniti. I prezzi non includono dazi e IVA all’importazione, che paghi al corriere o alla dogana alla consegna. Dopo che hai ricevuto l’ordine, ti rimborsiamo l’IVA all’importazione pagata."
 const warranty = "Garanzia legale di conformità UE di 2 anni dalla consegna, in aggiunta all’eventuale garanzia del produttore."
 const bulky = "al massimo circa 25 € per pneumatico o cerchio e 15 € per collo di freni"
 const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "bonifico SEPA" : m)).join(", ")
@@ -17,7 +17,7 @@ export const euIt: Dictionary = {
   meta: {
     title: `${COMPANY.tradingName} — Pneumatici, cerchi e freni | Negozio UE`,
     template: `%s | ${COMPANY.tradingName} UE`,
-    description: "Pneumatici, cerchi in lega e impianti frenanti con consegna in tutta l’UE, IVA inclusa. Etichetta UE su ogni pneumatico.",
+    description: "Pneumatici, cerchi in lega e impianti frenanti con consegna dagli Stati Uniti in tutta l’UE. Etichetta UE su ogni pneumatico.",
   },
   common: {
     skip: "Vai al contenuto",
@@ -41,7 +41,7 @@ export const euIt: Dictionary = {
     no: "No",
     free: "Gratis",
   },
-  company: { hours: "Lun–ven, 9:00–18:00 ET (ora della costa est USA)" },
+  company: { hours: "Lun–ven, 9:00–18:00 PT (ora del Pacifico USA)" },
   policy: { area, exclusions, duties, days, warranty },
   topbar: {
     shipsTo: "Spedizioni UE-27",
@@ -61,10 +61,10 @@ export const euIt: Dictionary = {
     policies: "Note legali UE",
     store: "Negozio",
     language: "Lingua",
-    bottom: "Prezzi in EUR · IVA inclusa, nessun dazio d’importazione",
+    bottom: "Prezzi in EUR · esclusi dazi e IVA all’importazione, da pagare alla consegna",
     payments: `Metodi di pagamento accettati: ${payments}`,
     privacyLink: "Impostazioni cookie",
-    vat: "Sportello unico IVA UE (OSS)",
+    vat: "",
   },
   categories: {
     tires: { name: "Pneumatici", blurb: "Estivi, invernali e quattro stagioni. Cerca con la misura riportata sul fianco." },
@@ -91,7 +91,7 @@ export const euIt: Dictionary = {
   home: {
     eyebrow: "Negozio UE · Pneumatici · Cerchi · Freni",
     title: "Tutto ciò che sta tra la tua auto e la strada.",
-    lead: "Pneumatici con etichetta UE, cerchi e freni omologati ECE — spediti da magazzino UE, IVA inclusa.",
+    lead: "Pneumatici con etichetta UE, cerchi e freni omologati ECE — spediti dagli Stati Uniti.",
     heroAlt: "Cerchio in lega con pneumatico sportivo e pinza freno rossa",
     finder: {
       title: "Trova la misura",
@@ -226,7 +226,7 @@ export const euIt: Dictionary = {
     upc: "UPC",
     supplierPart: "Codice fornitore",
   },
-    priceNote: "IVA inclusa, nessun dazio d’importazione · prezzo cadauno",
+    priceNote: "Esclusi dazi e IVA all’importazione · prezzo cadauno",
     deliveryTitle: `${s.freeShipping ? "Consegna gratuita" : "Consegna"} in ${days}`,
     deliveryText: `In ${area}. Gli ordini effettuati entro le ${s.cutoff} partono entro ${s.handlingDays[0]}–${s.handlingDays[1]} giorni lavorativi.`,
     returnsTitle: `Diritto di recesso di ${eu.returns.windowDays} giorni`,
@@ -269,7 +269,7 @@ export const euIt: Dictionary = {
     quantityFor: "Quantità per {name}",
     aria: "Carrello, articoli: {n}",
     tax: null,
-    priceNote: "IVA inclusa, nessun dazio d’importazione.",
+    priceNote: "Esclusi dazi e IVA all’importazione.",
   },
   checkout: {
     title: "Cassa",
@@ -392,7 +392,7 @@ export const euIt: Dictionary = {
     hours: "Orari",
     address: "Sede della società",
     returnsAddress: "Indirizzo per i resi",
-    returnsNote: "Scrivici prima di spedire un reso.",
+    returnsNote: "Contattaci prima di spedire un reso: ti inviamo un numero di autorizzazione (RMA) e l’indirizzo per il reso.",
     quickLinks: "Link rapidi",
     returns: "Recesso",
     privacy: "Informativa sulla privacy",
@@ -408,12 +408,12 @@ export const euIt: Dictionary = {
     details: "Dati societari",
     company: "Società",
     legalForm: "Forma giuridica",
-    legalFormValue: `Limited liability company, ${COMPANY.stateOfFormation}, USA`,
+    legalFormValue: `Limited liability company, ${COMPANY.stateOfFormation}, USA · No. ${COMPANY.registrationNumber}`,
     address: "Indirizzo",
     email: "E-mail",
     phone: "Telefono",
     hours: "Orari",
     eyebrow: "Negozio Unione europea",
-    vat: "IVA UE (OSS)",
+    vat: "",
   },
 }

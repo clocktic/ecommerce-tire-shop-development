@@ -154,7 +154,7 @@ const contactShared = {
   hours: "Hours",
   address: "Company address",
   returnsAddress: "Returns address",
-  returnsNote: "Please email us before sending a return.",
+  returnsNote: "Please email or call us first — we issue a return authorization (RMA) number and the return address for your parcel.",
   quickLinks: "Quick links",
   returns: "Returns",
   privacy: "Privacy Policy",
@@ -168,7 +168,7 @@ const aboutShared = {
   details: "Company details",
   company: "Company",
   legalForm: "Legal form",
-  legalFormValue: `Limited liability company, ${COMPANY.stateOfFormation}, USA`,
+  legalFormValue: `Limited liability company, ${COMPANY.stateOfFormation}, USA · No. ${COMPANY.registrationNumber}`,
   address: "Address",
   email: "Email",
   phone: "Phone",
@@ -190,7 +190,7 @@ export const usEn = {
       "Tires, alloy wheels and brake systems shipped across the contiguous United States. Search tires by size, wheels by bolt pattern.",
   },
   common,
-  company: { hours: "Mon–Fri, 9:00 AM – 6:00 PM ET" },
+  company: { hours: "Mon–Fri, 9:00 AM – 6:00 PM PT" },
   policy: {
     area: us.shipping.area,
     exclusions: us.shipping.exclusions,
@@ -461,10 +461,10 @@ export const euEn: Dictionary = {
     title: `${COMPANY.tradingName} — Tyres, Wheels & Brakes | EU Store`,
     template: `%s | ${COMPANY.tradingName} EU`,
     description:
-      "Tyres, alloy wheels and brake systems delivered across the EU with VAT included. EU tyre label on every tyre.",
+      "Tyres, alloy wheels and brake systems delivered across the EU from the United States. EU tyre label on every tyre.",
   },
   common,
-  company: { hours: "Mon–Fri, 9:00–18:00 ET (US Eastern Time)" },
+  company: { hours: "Mon–Fri, 9:00–18:00 PT (US Pacific Time)" },
   policy: {
     area: eu.shipping.area,
     exclusions: eu.shipping.exclusions,
@@ -490,10 +490,10 @@ export const euEn: Dictionary = {
     policies: "EU policies",
     store: "Store",
     language: "Language",
-    bottom: "Prices in EUR · VAT included, no import duties",
+    bottom: "Prices in EUR · excl. import duties and VAT, payable on delivery",
     payments: `Accepted payment methods: ${eu.paymentMethods.join(", ")}`,
     privacyLink: "Cookie settings",
-    vat: "EU VAT One-Stop Shop (OSS)",
+    vat: "",
   },
   categories: {
     tires: { name: "Tyres", blurb: "Summer, winter and all-season. Search by the size on your sidewall." },
@@ -504,7 +504,7 @@ export const euEn: Dictionary = {
   home: {
     eyebrow: "EU store · Tyres · Wheels · Brakes",
     title: "Everything between your car and the road.",
-    lead: "Tyres with the EU tyre label, ECE-approved wheels and brakes — shipped from EU stock, VAT included.",
+    lead: "Tyres with the EU tyre label, ECE-approved wheels and brakes — shipped from the United States.",
     heroAlt: "Alloy wheel with a performance tyre and a red brake caliper",
     finder: {
       title: "Tyre size finder",
@@ -605,7 +605,7 @@ export const euEn: Dictionary = {
   },
   product: {
     ...product,
-    priceNote: "VAT included, no import duties · price per unit",
+    priceNote: "Excl. import duties and VAT · price per unit",
     deliveryTitle: `${eu.shipping.freeShipping ? "Free delivery" : "Delivery"} in ${euDays}`,
     deliveryText: `To ${eu.shipping.area}. Orders before ${eu.shipping.cutoff} leave within ${eu.shipping.handlingDays[0]}–${eu.shipping.handlingDays[1]} working days.`,
     returnsTitle: `${eu.returns.windowDays}-day right of withdrawal`,
@@ -648,7 +648,7 @@ export const euEn: Dictionary = {
     quantityFor: "Quantity for {name}",
     aria: "Cart, items: {n}",
     tax: null,
-    priceNote: "VAT included, no import duties.",
+    priceNote: "Excl. import duties and VAT.",
   },
   checkout: {
     ...checkoutFields,
@@ -739,5 +739,5 @@ export const euEn: Dictionary = {
     eyebrow: "European Union store",
     euRep: "EU representative (GDPR)",
   },
-  about: { ...aboutShared, eyebrow: "European Union store", vat: "EU VAT (OSS)" },
+  about: { ...aboutShared, eyebrow: "European Union store", vat: "" },
 }

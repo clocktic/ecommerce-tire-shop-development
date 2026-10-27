@@ -8,7 +8,7 @@ const [min, max] = deliveryDays("eu")
 const days = `${min}–${max} Werktage`
 const area = "alle 27 EU-Mitgliedstaaten"
 const exclusions = "Länder außerhalb der EU (u. a. Vereinigtes Königreich, Schweiz, Norwegen) und EU-Gebiete in äußerster Randlage wie die Kanarischen Inseln"
-const duties = "Versand aus einem EU-Lager — MwSt. inklusive, keine Zoll- oder Einfuhrgebühren bei Lieferung."
+const duties = "Versand aus den USA. Die Preise enthalten keine Einfuhrzölle und keine Einfuhrumsatzsteuer — diese zahlen Sie bei Lieferung an den Zusteller bzw. den Zoll. Nachdem Sie Ihre Bestellung erhalten haben, erstatten wir Ihnen die gezahlte Einfuhrumsatzsteuer."
 const warranty = "Gesetzliche Gewährleistung in der EU: 2 Jahre ab Lieferung, zusätzlich zu einer etwaigen Herstellergarantie."
 const bulky = "höchstens ca. 25 € pro Reifen oder Felge und 15 € pro Bremsenpaket"
 const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "SEPA-Überweisung" : m)).join(", ")
@@ -17,7 +17,7 @@ export const euDe: Dictionary = {
   meta: {
     title: `${COMPANY.tradingName} — Reifen, Felgen & Bremsen | EU-Shop`,
     template: `%s | ${COMPANY.tradingName} EU`,
-    description: "Reifen, Alufelgen und Bremsanlagen mit Lieferung in die gesamte EU, inklusive MwSt. EU-Reifenlabel bei jedem Reifen.",
+    description: "Reifen, Alufelgen und Bremsanlagen mit Lieferung aus den USA in die gesamte EU. EU-Reifenlabel bei jedem Reifen.",
   },
   common: {
     skip: "Zum Inhalt springen",
@@ -41,7 +41,7 @@ export const euDe: Dictionary = {
     no: "Nein",
     free: "Kostenlos",
   },
-  company: { hours: "Mo–Fr, 9:00–18:00 Uhr ET (US-Ostküstenzeit)" },
+  company: { hours: "Mo–Fr, 9:00–18:00 Uhr PT (US-Pazifikzeit)" },
   policy: { area, exclusions, duties, days, warranty },
   topbar: {
     shipsTo: "Versand in die EU-27",
@@ -61,10 +61,10 @@ export const euDe: Dictionary = {
     policies: "Rechtliches EU",
     store: "Shop",
     language: "Sprache",
-    bottom: "Preise in EUR · inkl. MwSt., keine Einfuhrabgaben",
+    bottom: "Preise in EUR · ohne Einfuhrabgaben und MwSt., zahlbar bei Lieferung",
     payments: `Akzeptierte Zahlungsarten: ${payments}`,
     privacyLink: "Cookie-Einstellungen",
-    vat: "EU-MwSt. One-Stop-Shop (OSS)",
+    vat: "",
   },
   categories: {
     tires: { name: "Reifen", blurb: "Sommer-, Winter- und Ganzjahresreifen. Suche nach der Größe auf Ihrer Reifenflanke." },
@@ -91,7 +91,7 @@ export const euDe: Dictionary = {
   home: {
     eyebrow: "EU-Shop · Reifen · Felgen · Bremsen",
     title: "Alles zwischen Ihrem Auto und der Straße.",
-    lead: "Reifen mit EU-Reifenlabel, Felgen und Bremsen mit ECE-Zulassung — Versand aus EU-Lager, MwSt. inklusive.",
+    lead: "Reifen mit EU-Reifenlabel, Felgen und Bremsen mit ECE-Zulassung — Versand aus den USA.",
     heroAlt: "Alufelge mit Sportreifen und rotem Bremssattel",
     finder: {
       title: "Reifengröße finden",
@@ -226,9 +226,9 @@ export const euDe: Dictionary = {
     upc: "UPC",
     supplierPart: "Lieferantennummer",
   },
-    priceNote: "inkl. MwSt., keine Einfuhrabgaben · Preis pro Stück",
+    priceNote: "ohne Einfuhrabgaben und MwSt. · Preis pro Stück",
     deliveryTitle: `${s.freeShipping ? "Kostenlose Lieferung" : "Lieferung"} in ${days}`,
-    deliveryText: `In ${area}. Bestellungen bis ${s.cutoff} verlassen das Lager innerhalb von ${s.handlingDays[0]}–${s.handlingDays[1]} Werktagen.`,
+    deliveryText: `In ${area}. Bestellungen bis ${s.cutoff} verlassen unser Lager in den USA innerhalb von ${s.handlingDays[0]}–${s.handlingDays[1]} Werktagen.`,
     returnsTitle: `${eu.returns.windowDays} Tage Widerrufsrecht`,
     returnsText: "Nicht montiert und unbenutzt.",
     warrantyTitle: "2 Jahre gesetzliche Gewährleistung",
@@ -269,7 +269,7 @@ export const euDe: Dictionary = {
     quantityFor: "Menge für {name}",
     aria: "Warenkorb, Artikel: {n}",
     tax: null,
-    priceNote: "inkl. MwSt., keine Einfuhrabgaben.",
+    priceNote: "ohne Einfuhrabgaben und MwSt.",
   },
   checkout: {
     title: "Kasse",
@@ -392,7 +392,7 @@ export const euDe: Dictionary = {
     hours: "Erreichbarkeit",
     address: "Firmenanschrift",
     returnsAddress: "Rücksendeadresse",
-    returnsNote: "Bitte schreiben Sie uns vor einer Rücksendung eine E-Mail.",
+    returnsNote: "Bitte kontaktieren Sie uns vor einer Rücksendung — wir senden Ihnen eine Rücksendenummer (RMA) und die Rücksendeadresse.",
     quickLinks: "Schnellzugriff",
     returns: "Widerruf",
     privacy: "Datenschutzerklärung",
@@ -408,12 +408,12 @@ export const euDe: Dictionary = {
     details: "Unternehmensangaben",
     company: "Unternehmen",
     legalForm: "Rechtsform",
-    legalFormValue: `Limited Liability Company, ${COMPANY.stateOfFormation}, USA`,
+    legalFormValue: `Limited Liability Company, ${COMPANY.stateOfFormation}, USA · No. ${COMPANY.registrationNumber}`,
     address: "Anschrift",
     email: "E-Mail",
     phone: "Telefon",
     hours: "Erreichbarkeit",
     eyebrow: "EU-Shop",
-    vat: "EU-USt. (OSS)",
+    vat: "",
   },
 }
