@@ -154,14 +154,16 @@ export function FitmentModal({ trigger }: { trigger: React.ReactElement }) {
 
           <div className="flex flex-col gap-5 p-5 md:p-6">
             <div className="flex items-center gap-4">
-              <Image
-                src={tab === "vehicle" ? "/images/garage/vehicle-illustration.png" : "/images/garage/tire-diagram.png"}
-                alt=""
-                aria-hidden="true"
-                width={72}
-                height={72}
-                className="size-16 shrink-0 object-contain"
-              />
+              <div className="flex size-16 shrink-0 items-center justify-center bg-muted">
+                <Image
+                  src={tab === "vehicle" ? "/images/garage/vehicle-illustration.png" : "/images/garage/tire-diagram.png"}
+                  alt=""
+                  aria-hidden="true"
+                  width={72}
+                  height={72}
+                  className="size-11 object-contain"
+                />
+              </div>
               <h2 className="font-expanded text-xl font-extrabold uppercase leading-tight">
                 {tab === "vehicle" ? g.vehicleTitle : g.sizeTitle}
               </h2>
