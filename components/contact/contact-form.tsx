@@ -3,9 +3,10 @@
 import { useActionState } from "react"
 import { Button } from "@/components/ui/button"
 import { useI18n } from "@/components/i18n/i18n-provider"
+import { CaptchaField } from "@/components/captcha/captcha-field"
 import { sendContactMessage, type ContactState } from "@/lib/actions/contact"
 
-const initial: ContactState = { status: "idle" }
+const initial: ContactState = { status: "idle", attempt: 0 }
 
 export function ContactForm() {
   const { store, x } = useI18n()
@@ -50,6 +51,12 @@ export function ContactForm() {
           className="border border-border bg-background px-3 py-2 text-sm leading-relaxed"
         />
       </div>
+      <CaptchaField
+        label={x.captcha.label}
+        refreshLabel={x.captcha.refresh}
+        errorText={state.status === "captcha-error" ? x.captcha.error : undefined}
+        resetSignal={state.attempt}
+      />
       {state.status === "error" && (
         <p role="alert" className="text-sm text-primary">
           {c.error}

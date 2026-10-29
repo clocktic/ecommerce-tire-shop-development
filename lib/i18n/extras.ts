@@ -24,7 +24,21 @@ export type Extras = {
     status: string
     total: string
     error: string
+    orEmail: string
+    name: string
+    email: string
+    password: string
+    confirmPassword: string
+    signUpTitle: string
+    createAccount: string
+    signInSubmit: string
+    switchToSignUp: string
+    switchToSignIn: string
+    emailExists: string
+    weakPassword: string
+    passwordMismatch: string
   }
+  captcha: { label: string; refresh: string; error: string }
   garage: {
     addVehicle: string
     addFitment: string
@@ -140,6 +154,24 @@ const en: Extras = {
     status: "Status",
     total: "Total",
     error: "Sign-in failed. Please try again.",
+    orEmail: "Or continue with email",
+    name: "Full name",
+    email: "Email",
+    password: "Password",
+    confirmPassword: "Confirm password",
+    signUpTitle: "Create your account",
+    createAccount: "Create account",
+    signInSubmit: "Sign in",
+    switchToSignUp: "Need an account? Create one",
+    switchToSignIn: "Already have an account? Sign in",
+    emailExists: "An account with that email already exists.",
+    weakPassword: "Password must be at least 8 characters.",
+    passwordMismatch: "Passwords do not match.",
+  },
+  captcha: {
+    label: "Enter the code shown",
+    refresh: "New code",
+    error: "That code didn't match. Try the new one.",
   },
   garage: {
     addVehicle: "Add Vehicle",
@@ -269,6 +301,24 @@ const es419: Extras = {
     status: "Estado",
     total: "Total",
     error: "No se pudo iniciar sesión. Inténtalo de nuevo.",
+    orEmail: "O continúa con tu correo",
+    name: "Nombre completo",
+    email: "Correo electrónico",
+    password: "Contraseña",
+    confirmPassword: "Confirmar contraseña",
+    signUpTitle: "Crea tu cuenta",
+    createAccount: "Crear cuenta",
+    signInSubmit: "Iniciar sesión",
+    switchToSignUp: "¿No tienes cuenta? Crea una",
+    switchToSignIn: "¿Ya tienes cuenta? Inicia sesión",
+    emailExists: "Ya existe una cuenta con ese correo.",
+    weakPassword: "La contraseña debe tener al menos 8 caracteres.",
+    passwordMismatch: "Las contraseñas no coinciden.",
+  },
+  captcha: {
+    label: "Escribe el código mostrado",
+    refresh: "Nuevo código",
+    error: "El código no coincide. Prueba con el nuevo.",
   },
   garage: {
     addVehicle: "Agregar vehículo",
@@ -445,6 +495,24 @@ const de: Extras = {
     status: "Status",
     total: "Summe",
     error: "Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    orEmail: "Oder mit E-Mail fortfahren",
+    name: "Vollständiger Name",
+    email: "E-Mail",
+    password: "Passwort",
+    confirmPassword: "Passwort bestätigen",
+    signUpTitle: "Konto erstellen",
+    createAccount: "Konto erstellen",
+    signInSubmit: "Anmelden",
+    switchToSignUp: "Noch kein Konto? Jetzt erstellen",
+    switchToSignIn: "Bereits ein Konto? Anmelden",
+    emailExists: "Für diese E-Mail-Adresse besteht bereits ein Konto.",
+    weakPassword: "Das Passwort muss mindestens 8 Zeichen lang sein.",
+    passwordMismatch: "Die Passwörter stimmen nicht überein.",
+  },
+  captcha: {
+    label: "Geben Sie den angezeigten Code ein",
+    refresh: "Neuer Code",
+    error: "Der Code war nicht korrekt. Versuchen Sie es mit dem neuen.",
   },
   garage: {
     addVehicle: "Fahrzeug hinzufügen",
@@ -574,6 +642,24 @@ const fr: Extras = {
     status: "Statut",
     total: "Total",
     error: "La connexion a échoué. Veuillez réessayer.",
+    orEmail: "Ou continuez avec votre e-mail",
+    name: "Nom complet",
+    email: "E-mail",
+    password: "Mot de passe",
+    confirmPassword: "Confirmer le mot de passe",
+    signUpTitle: "Créer votre compte",
+    createAccount: "Créer un compte",
+    signInSubmit: "Se connecter",
+    switchToSignUp: "Pas de compte ? Créez-en un",
+    switchToSignIn: "Déjà un compte ? Connectez-vous",
+    emailExists: "Un compte existe déjà avec cet e-mail.",
+    weakPassword: "Le mot de passe doit contenir au moins 8 caractères.",
+    passwordMismatch: "Les mots de passe ne correspondent pas.",
+  },
+  captcha: {
+    label: "Saisissez le code affiché",
+    refresh: "Nouveau code",
+    error: "Le code ne correspond pas. Essayez le nouveau.",
   },
   garage: {
     addVehicle: "Ajouter un véhicule",
@@ -703,6 +789,24 @@ const it: Extras = {
     status: "Stato",
     total: "Totale",
     error: "Accesso non riuscito. Riprova.",
+    orEmail: "Oppure continua con l'e-mail",
+    name: "Nome completo",
+    email: "E-mail",
+    password: "Password",
+    confirmPassword: "Conferma password",
+    signUpTitle: "Crea il tuo account",
+    createAccount: "Crea account",
+    signInSubmit: "Accedi",
+    switchToSignUp: "Non hai un account? Creane uno",
+    switchToSignIn: "Hai già un account? Accedi",
+    emailExists: "Esiste già un account con questa e-mail.",
+    weakPassword: "La password deve contenere almeno 8 caratteri.",
+    passwordMismatch: "Le password non coincidono.",
+  },
+  captcha: {
+    label: "Inserisci il codice mostrato",
+    refresh: "Nuovo codice",
+    error: "Il codice non corrisponde. Prova con quello nuovo.",
   },
   garage: {
     addVehicle: "Aggiungi veicolo",
@@ -832,6 +936,24 @@ const nl: Extras = {
     status: "Status",
     total: "Totaal",
     error: "Inloggen mislukt. Probeer het opnieuw.",
+    orEmail: "Of ga verder met e-mail",
+    name: "Volledige naam",
+    email: "E-mail",
+    password: "Wachtwoord",
+    confirmPassword: "Wachtwoord bevestigen",
+    signUpTitle: "Account aanmaken",
+    createAccount: "Account aanmaken",
+    signInSubmit: "Inloggen",
+    switchToSignUp: "Nog geen account? Maak er een aan",
+    switchToSignIn: "Al een account? Inloggen",
+    emailExists: "Er bestaat al een account met dit e-mailadres.",
+    weakPassword: "Het wachtwoord moet minstens 8 tekens lang zijn.",
+    passwordMismatch: "Wachtwoorden komen niet overeen.",
+  },
+  captcha: {
+    label: "Voer de getoonde code in",
+    refresh: "Nieuwe code",
+    error: "Die code klopte niet. Probeer de nieuwe.",
   },
   garage: {
     addVehicle: "Voertuig toevoegen",
