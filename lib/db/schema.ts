@@ -112,6 +112,27 @@ export const shipmentEvents = pgTable("shipment_events", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 })
 
+// A user's garage: vehicles or bare tire sizes they've looked up, kept across
+// visits so the fitment bar in the header can offer them again.
+export const savedVehicles = pgTable("saved_vehicles", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  market: text("market").notNull(),
+  kind: text("kind").notNull(), // "vehicle" | "size"
+  label: text("label").notNull(),
+  make: text("make"),
+  model: text("model"),
+  year: integer("year"),
+  vehicleId: text("vehicle_id"),
+  width: integer("width").notNull(),
+  aspect: integer("aspect").notNull(),
+  rim: integer("rim").notNull(),
+  isActive: boolean("is_active").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+})
+
 export const contactMessages = pgTable("contact_messages", {
   id: text("id").primaryKey(),
   market: text("market").notNull(),
@@ -147,6 +168,7 @@ export const chatMessages = pgTable("chat_messages", {
 
 export type OrderRow = typeof orders.$inferSelect
 export type OrderItemRow = typeof orderItems.$inferSelect
+export type SavedVehicleRow = typeof savedVehicles.$inferSelect
 export type ShipmentEventRow = typeof shipmentEvents.$inferSelect
 export type ContactMessageRow = typeof contactMessages.$inferSelect
 export type ChatConversationRow = typeof chatConversations.$inferSelect

@@ -13,6 +13,7 @@ import { statusLabel, type OrderStatus } from "@/lib/shipping/tracking"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
 import { SocialSignIn } from "@/components/account/social-sign-in"
 import { SignOutButton } from "@/components/account/sign-out-button"
+import { GarageManager } from "@/components/garage/garage-manager"
 
 type Params = Promise<{ market: string; lang: string }>
 
@@ -71,6 +72,8 @@ export default async function AccountPage({ params }: { params: Params }) {
         </div>
         <SignOutButton />
       </header>
+
+      <GarageManager />
 
       <section aria-labelledby="orders-title" className="flex flex-col gap-4 py-10">
         <h2 id="orders-title" className="label-caps">

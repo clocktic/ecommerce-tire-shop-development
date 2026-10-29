@@ -24,6 +24,7 @@ import { storeAlternates } from "@/lib/seo"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
 import { ProductCard } from "@/components/product/product-card"
 import { FilterSelect } from "@/components/catalog/filter-select"
+import { FitmentBanner } from "@/components/garage/fitment-banner"
 import { Button } from "@/components/ui/button"
 
 type Params = Promise<{ market: string; lang: string; category: string }>
@@ -75,6 +76,8 @@ export default async function CategoryPage({ params, searchParams }: { params: P
           {fmt(t.catalog.count, { shown: products.length, total: all.length })}
         </p>
       </header>
+
+      {category === "tires" && <FitmentBanner currentWidth={filters.width} />}
 
       <form method="get" className="flex flex-col gap-4 border-b border-border py-6 md:flex-row md:items-end">
         <fieldset className="grid flex-1 grid-cols-2 gap-3 lg:grid-cols-4">

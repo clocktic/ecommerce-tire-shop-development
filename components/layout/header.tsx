@@ -4,6 +4,7 @@ import { Logo } from "@/components/layout/logo"
 import { LanguageMenu, RegionSwitcher } from "@/components/layout/region-switcher"
 import { CartButton } from "@/components/cart/cart-button"
 import { AccountButton } from "@/components/account/account-button"
+import { FitmentBar } from "@/components/garage/fitment-bar"
 import { ThemeToggle } from "@/components/layout/theme-toggle"
 import { CATEGORIES } from "@/lib/catalog"
 import { getDictionary, storePath, type Store } from "@/lib/i18n"
@@ -88,6 +89,8 @@ export function Header({ store }: { store: Store }) {
           </div>
         </div>
       </div>
+
+      <FitmentBar />
     </header>
   )
 }

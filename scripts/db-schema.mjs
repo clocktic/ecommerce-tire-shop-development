@@ -137,9 +137,26 @@ const statements = [
     body text NOT NULL,
     created_at timestamp NOT NULL DEFAULT now()
   )`,
+  `CREATE TABLE IF NOT EXISTS saved_vehicles (
+    id text PRIMARY KEY,
+    user_id text NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+    market text NOT NULL,
+    kind text NOT NULL,
+    label text NOT NULL,
+    make text,
+    model text,
+    year integer,
+    vehicle_id text,
+    width integer NOT NULL,
+    aspect integer NOT NULL,
+    rim integer NOT NULL,
+    is_active boolean NOT NULL DEFAULT false,
+    created_at timestamp NOT NULL DEFAULT now()
+  )`,
   `CREATE INDEX IF NOT EXISTS products_category_idx ON products (category)`,
   `CREATE INDEX IF NOT EXISTS orders_email_idx ON orders (email)`,
   `CREATE INDEX IF NOT EXISTS order_items_order_idx ON order_items (order_id)`,
+  `CREATE INDEX IF NOT EXISTS saved_vehicles_user_idx ON saved_vehicles (user_id, market)`,
 ]
 
 for (const sql of statements) await pool.query(sql)

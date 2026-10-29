@@ -25,6 +25,41 @@ export type Extras = {
     total: string
     error: string
   }
+  garage: {
+    addVehicle: string
+    addFitment: string
+    change: string
+    remove: string
+    vehicleTab: string
+    vehicleTabHint: string
+    sizeTab: string
+    sizeTabHint: string
+    vehicleTitle: string
+    sizeTitle: string
+    make: string
+    model: string
+    year: string
+    size: string
+    width: string
+    ratio: string
+    diameter: string
+    orType: string
+    typedPlaceholder: string
+    error: string
+    shopTires: string
+    useThisSize: string
+    yourGarage: string
+    signInToSave: string
+    savedHint: string
+    active: string
+    setActive: string
+    noVehicles: string
+    addAnother: string
+    pageTitle: string
+    pageLead: string
+    inStock: string
+    listed: string
+  }
   orderStatus: Record<OrderStatus, string>
   order: {
     title: string
@@ -105,6 +140,41 @@ const en: Extras = {
     status: "Status",
     total: "Total",
     error: "Sign-in failed. Please try again.",
+  },
+  garage: {
+    addVehicle: "Add Vehicle",
+    addFitment: "Add Vehicle / Tire Size",
+    change: "Change",
+    remove: "Remove",
+    vehicleTab: "Vehicle",
+    vehicleTabHint: "For tires & parts",
+    sizeTab: "Tire Size",
+    sizeTabHint: "Tires only",
+    vehicleTitle: "Tell us about your vehicle",
+    sizeTitle: "Let's get your tire size",
+    make: "Make",
+    model: "Model",
+    year: "Year",
+    size: "Factory size",
+    width: "Width",
+    ratio: "Ratio",
+    diameter: "Diameter",
+    orType: "Or type the size",
+    typedPlaceholder: "225/45 R17",
+    error: "Enter the size as width/ratio R diameter, e.g. 225/45R17.",
+    shopTires: "Shop tires for this vehicle",
+    useThisSize: "Shop this size",
+    yourGarage: "Your garage",
+    signInToSave: "Sign in to save this to your account",
+    savedHint: "Saved to your account",
+    active: "Active",
+    setActive: "Use this",
+    noVehicles: "No saved vehicles yet.",
+    addAnother: "Add another vehicle",
+    pageTitle: "My garage",
+    pageLead: "Vehicles and tire sizes you've looked up. The active one shows under the header everywhere you shop.",
+    inStock: "In stock",
+    listed: "Size saved — matching tires coming soon",
   },
   orderStatus: {
     pending: "Awaiting payment",
@@ -199,6 +269,41 @@ const es419: Extras = {
     status: "Estado",
     total: "Total",
     error: "No se pudo iniciar sesión. Inténtalo de nuevo.",
+  },
+  garage: {
+    addVehicle: "Agregar vehículo",
+    addFitment: "Agregar vehículo / medida de llanta",
+    change: "Cambiar",
+    remove: "Quitar",
+    vehicleTab: "Vehículo",
+    vehicleTabHint: "Para llantas y refacciones",
+    sizeTab: "Medida de llanta",
+    sizeTabHint: "Solo para llantas",
+    vehicleTitle: "Cuéntanos sobre tu vehículo",
+    sizeTitle: "Busquemos tu medida de llanta",
+    make: "Marca",
+    model: "Modelo",
+    year: "Año",
+    size: "Medida de fábrica",
+    width: "Ancho",
+    ratio: "Perfil",
+    diameter: "Rin",
+    orType: "O escribe la medida",
+    typedPlaceholder: "225/45 R17",
+    error: "Escribe la medida como ancho/perfil R rin, por ejemplo 225/45R17.",
+    shopTires: "Ver llantas para este vehículo",
+    useThisSize: "Ver esta medida",
+    yourGarage: "Tu garage",
+    signInToSave: "Inicia sesión para guardar esto en tu cuenta",
+    savedHint: "Guardado en tu cuenta",
+    active: "Activo",
+    setActive: "Usar este",
+    noVehicles: "Aún no tienes vehículos guardados.",
+    addAnother: "Agregar otro vehículo",
+    pageTitle: "Mi garage",
+    pageLead: "Vehículos y medidas de llanta que has buscado. El activo aparece bajo el encabezado en todo el sitio.",
+    inStock: "En existencia",
+    listed: "Medida guardada — llantas disponibles pronto",
   },
   orderStatus: {
     pending: "Pendiente de pago",
@@ -302,6 +407,21 @@ const es: Extras = {
   },
   chat: { ...es419.chat, greeting: "¡Hola! Pregúntanos por medidas, compatibilidad o un pedido; una persona de nuestro equipo te responderá aquí." },
   email: { ...es419.email, trackCta: "Seguir tu paquete" },
+  garage: {
+    ...es419.garage,
+    addVehicle: "Añadir vehículo",
+    addFitment: "Añadir vehículo / medida de neumático",
+    remove: "Eliminar",
+    sizeTab: "Medida de neumático",
+    sizeTabHint: "Solo para neumáticos",
+    sizeTitle: "Vamos a buscar tu medida de neumático",
+    diameter: "Llanta",
+    shopTires: "Ver neumáticos para este vehículo",
+    yourGarage: "Tu garaje",
+    pageTitle: "Mi garaje",
+    pageLead: "Vehículos y medidas de neumático que has buscado. El activo aparece bajo la cabecera en todo el sitio.",
+    listed: "Medida guardada — neumáticos disponibles próximamente",
+  },
 }
 
 const de: Extras = {
@@ -325,6 +445,41 @@ const de: Extras = {
     status: "Status",
     total: "Summe",
     error: "Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+  },
+  garage: {
+    addVehicle: "Fahrzeug hinzufügen",
+    addFitment: "Fahrzeug / Reifengröße hinzufügen",
+    change: "Ändern",
+    remove: "Entfernen",
+    vehicleTab: "Fahrzeug",
+    vehicleTabHint: "Für Reifen & Teile",
+    sizeTab: "Reifengröße",
+    sizeTabHint: "Nur für Reifen",
+    vehicleTitle: "Erzählen Sie uns von Ihrem Fahrzeug",
+    sizeTitle: "Lassen Sie uns Ihre Reifengröße finden",
+    make: "Marke",
+    model: "Modell",
+    year: "Baujahr",
+    size: "Seriengröße",
+    width: "Breite",
+    ratio: "Querschnitt",
+    diameter: "Durchmesser",
+    orType: "Oder Größe eingeben",
+    typedPlaceholder: "225/45 R17",
+    error: "Geben Sie die Größe als Breite/Querschnitt R Durchmesser ein, z. B. 225/45R17.",
+    shopTires: "Reifen für dieses Fahrzeug ansehen",
+    useThisSize: "Diese Größe ansehen",
+    yourGarage: "Ihre Garage",
+    signInToSave: "Melden Sie sich an, um dies in Ihrem Konto zu speichern",
+    savedHint: "In Ihrem Konto gespeichert",
+    active: "Aktiv",
+    setActive: "Dieses verwenden",
+    noVehicles: "Noch keine gespeicherten Fahrzeuge.",
+    addAnother: "Weiteres Fahrzeug hinzufügen",
+    pageTitle: "Meine Garage",
+    pageLead: "Fahrzeuge und Reifengrößen, die Sie gesucht haben. Das aktive erscheint überall unter der Kopfzeile.",
+    inStock: "Auf Lager",
+    listed: "Größe gespeichert — passende Reifen folgen in Kürze",
   },
   orderStatus: {
     pending: "Zahlung ausstehend",
@@ -420,6 +575,41 @@ const fr: Extras = {
     total: "Total",
     error: "La connexion a échoué. Veuillez réessayer.",
   },
+  garage: {
+    addVehicle: "Ajouter un véhicule",
+    addFitment: "Ajouter véhicule / dimension de pneu",
+    change: "Modifier",
+    remove: "Retirer",
+    vehicleTab: "Véhicule",
+    vehicleTabHint: "Pour pneus et pièces",
+    sizeTab: "Dimension de pneu",
+    sizeTabHint: "Pneus uniquement",
+    vehicleTitle: "Parlez-nous de votre véhicule",
+    sizeTitle: "Trouvons votre dimension de pneu",
+    make: "Marque",
+    model: "Modèle",
+    year: "Année",
+    size: "Dimension d'origine",
+    width: "Largeur",
+    ratio: "Série",
+    diameter: "Diamètre",
+    orType: "Ou saisissez la dimension",
+    typedPlaceholder: "225/45 R17",
+    error: "Saisissez la dimension sous la forme largeur/série R diamètre, par ex. 225/45R17.",
+    shopTires: "Voir les pneus pour ce véhicule",
+    useThisSize: "Voir cette dimension",
+    yourGarage: "Votre garage",
+    signInToSave: "Connectez-vous pour enregistrer ceci dans votre compte",
+    savedHint: "Enregistré dans votre compte",
+    active: "Actif",
+    setActive: "Utiliser celui-ci",
+    noVehicles: "Aucun véhicule enregistré pour l'instant.",
+    addAnother: "Ajouter un autre véhicule",
+    pageTitle: "Mon garage",
+    pageLead: "Véhicules et dimensions de pneus que vous avez recherchés. Le véhicule actif s'affiche sous l'en-tête sur tout le site.",
+    inStock: "En stock",
+    listed: "Dimension enregistrée — pneus correspondants bientôt disponibles",
+  },
   orderStatus: {
     pending: "En attente de paiement",
     paid: "Payée",
@@ -514,6 +704,41 @@ const it: Extras = {
     total: "Totale",
     error: "Accesso non riuscito. Riprova.",
   },
+  garage: {
+    addVehicle: "Aggiungi veicolo",
+    addFitment: "Aggiungi veicolo / misura pneumatico",
+    change: "Modifica",
+    remove: "Rimuovi",
+    vehicleTab: "Veicolo",
+    vehicleTabHint: "Per pneumatici e ricambi",
+    sizeTab: "Misura pneumatico",
+    sizeTabHint: "Solo pneumatici",
+    vehicleTitle: "Raccontaci del tuo veicolo",
+    sizeTitle: "Troviamo la tua misura di pneumatico",
+    make: "Marca",
+    model: "Modello",
+    year: "Anno",
+    size: "Misura di serie",
+    width: "Larghezza",
+    ratio: "Serie",
+    diameter: "Diametro",
+    orType: "Oppure digita la misura",
+    typedPlaceholder: "225/45 R17",
+    error: "Inserisci la misura come larghezza/serie R diametro, ad es. 225/45R17.",
+    shopTires: "Vedi pneumatici per questo veicolo",
+    useThisSize: "Vedi questa misura",
+    yourGarage: "Il tuo garage",
+    signInToSave: "Accedi per salvarlo nel tuo account",
+    savedHint: "Salvato nel tuo account",
+    active: "Attivo",
+    setActive: "Usa questo",
+    noVehicles: "Nessun veicolo salvato.",
+    addAnother: "Aggiungi un altro veicolo",
+    pageTitle: "Il mio garage",
+    pageLead: "Veicoli e misure di pneumatici che hai cercato. Quello attivo compare sotto l'intestazione in tutto il sito.",
+    inStock: "Disponibile",
+    listed: "Misura salvata — pneumatici corrispondenti in arrivo",
+  },
   orderStatus: {
     pending: "In attesa di pagamento",
     paid: "Pagato",
@@ -607,6 +832,41 @@ const nl: Extras = {
     status: "Status",
     total: "Totaal",
     error: "Inloggen mislukt. Probeer het opnieuw.",
+  },
+  garage: {
+    addVehicle: "Voertuig toevoegen",
+    addFitment: "Voertuig / bandenmaat toevoegen",
+    change: "Wijzigen",
+    remove: "Verwijderen",
+    vehicleTab: "Voertuig",
+    vehicleTabHint: "Voor banden & onderdelen",
+    sizeTab: "Bandenmaat",
+    sizeTabHint: "Alleen banden",
+    vehicleTitle: "Vertel ons over je voertuig",
+    sizeTitle: "Laten we je bandenmaat vinden",
+    make: "Merk",
+    model: "Model",
+    year: "Bouwjaar",
+    size: "Fabrieksmaat",
+    width: "Breedte",
+    ratio: "Hoogte/breedteverhouding",
+    diameter: "Diameter",
+    orType: "Of typ de maat",
+    typedPlaceholder: "225/45 R17",
+    error: "Voer de maat in als breedte/verhouding R diameter, bijv. 225/45R17.",
+    shopTires: "Bekijk banden voor dit voertuig",
+    useThisSize: "Deze maat bekijken",
+    yourGarage: "Jouw garage",
+    signInToSave: "Log in om dit op te slaan in je account",
+    savedHint: "Opgeslagen in je account",
+    active: "Actief",
+    setActive: "Dit gebruiken",
+    noVehicles: "Nog geen opgeslagen voertuigen.",
+    addAnother: "Nog een voertuig toevoegen",
+    pageTitle: "Mijn garage",
+    pageLead: "Voertuigen en bandenmaten die je hebt opgezocht. De actieve verschijnt overal onder de header.",
+    inStock: "Op voorraad",
+    listed: "Maat opgeslagen — passende banden volgen binnenkort",
   },
   orderStatus: {
     pending: "Wacht op betaling",

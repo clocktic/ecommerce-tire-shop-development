@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next"
-import { cookies } from "next/headers"
+import { cookies, headers } from "next/headers"
 import { Archivo, JetBrains_Mono } from "next/font/google"
 import { notFound } from "next/navigation"
 import { Analytics } from "@vercel/analytics/next"
@@ -7,7 +7,11 @@ import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { GeoBanner } from "@/components/layout/geo-banner"
 import { CartProvider } from "@/components/cart/cart-provider"
+import { GarageProvider } from "@/components/garage/garage-provider"
 import { I18nProvider } from "@/components/i18n/i18n-provider"
+import { getSessionUser } from "@/lib/auth"
+import { getSavedVehicles, rowToSelection } from "@/lib/garage"
+import { GARAGE_COOKIE, parseGarageCookie } from "@/lib/garage-cookie"
 import { ConsentDefaults } from "@/components/legal/consent-defaults"
 import { CookieConsent } from "@/components/legal/cookie-consent"
 import { OrganizationJsonLd } from "@/components/legal/organization-jsonld"
@@ -61,7 +65,12 @@ export default async function StoreLayout({ children, params }: { children: Reac
   if (!store) notFound()
   const t = getDictionary(store)
   const meta = localeMeta(store)
-  const theme = themeClassName((await cookies()).get(THEME_COOKIE)?.value)
+  const cookieStore = await cookies()
+  const theme = themeClassName(cookieStore.get(THEME_COOKIE)?.value)
+  const user = await getSessionUser(await headers())
+  const savedVehicleRows = user ? await getSavedVehicles(user.id, store.market) : []
+  const activeFromDb = savedVehicleRows.find((row) => row.isActive)
+  const initialActive = activeFromDb ? rowToSelection(activeFromDb) : parseGarageCookie(cookieStore.get(GARAGE_COOKIE)?.value)
 
   return (
     <html
@@ -74,20 +83,22 @@ export default async function StoreLayout({ children, params }: { children: Reac
         <ConsentDefaults market={store.market} />
         <I18nProvider store={store} t={t} x={getExtras(store)} intl={meta.intlLocale}>
           <CartProvider market={store.market}>
-            <a
-              href="#main"
-              className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-secondary focus:px-4 focus:py-2 focus:text-secondary-foreground"
-            >
-              {t.common.skip}
-            </a>
-            <GeoBanner />
-            <Header store={store} />
-            <main id="main" className="flex-1">
-              {children}
-            </main>
-            <Footer store={store} />
-            <CookieConsent />
-            <ChatWidget />
+            <GarageProvider market={store.market} initialActive={initialActive} initialSaved={savedVehicleRows}>
+              <a
+                href="#main"
+                className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-secondary focus:px-4 focus:py-2 focus:text-secondary-foreground"
+              >
+                {t.common.skip}
+              </a>
+              <GeoBanner />
+              <Header store={store} />
+              <main id="main" className="flex-1">
+                {children}
+              </main>
+              <Footer store={store} />
+              <CookieConsent />
+              <ChatWidget />
+            </GarageProvider>
           </CartProvider>
         </I18nProvider>
         <OrganizationJsonLd />
