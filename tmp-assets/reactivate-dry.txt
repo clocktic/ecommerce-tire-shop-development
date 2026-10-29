@@ -1,0 +1,9 @@
+{
+  totalCandidates: 211,
+  excluded: 21,
+  toActivateUs: 89,
+  toActivateEu: 101,
+  willActivate: 190,
+  stillLowImg: 27,
+  dryRun: true
+}
