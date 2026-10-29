@@ -128,20 +128,27 @@ export function FitmentModal({ trigger }: { trigger: React.ReactElement }) {
       <DialogContent className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-none! p-0 sm:max-w-xl" showCloseButton>
         <DialogTitle className="sr-only">{g.addFitment}</DialogTitle>
         <Tabs value={tab} onValueChange={(v) => setTab(v as "vehicle" | "size")} className="gap-0">
-          <TabsList variant="line" className="h-auto w-full justify-start gap-0 rounded-none border-b border-border bg-transparent p-0">
+          <TabsList
+            variant="line"
+            className="h-auto! w-full justify-start gap-0 rounded-none border-b border-border bg-transparent p-0"
+          >
             <TabsTrigger
               value="vehicle"
-              className="h-auto flex-1 flex-col gap-0.5 rounded-none border-b-2 border-transparent px-4 py-3 text-base font-semibold data-active:border-primary data-active:bg-transparent data-active:text-foreground"
+              className="h-auto! flex-1 flex-col items-center justify-center gap-0.5 whitespace-normal rounded-none border-0 border-b-2 border-transparent px-4 py-3 text-center text-base font-semibold leading-tight after:opacity-0! data-active:border-primary data-active:bg-transparent data-active:text-foreground"
             >
               {g.vehicleTab}
-              <span className="text-xs font-normal normal-case text-muted-foreground">{g.vehicleTabHint}</span>
+              <span className="text-xs font-normal normal-case leading-tight text-muted-foreground">
+                {g.vehicleTabHint}
+              </span>
             </TabsTrigger>
             <TabsTrigger
               value="size"
-              className="h-auto flex-1 flex-col gap-0.5 rounded-none border-b-2 border-transparent px-4 py-3 text-base font-semibold data-active:border-primary data-active:bg-transparent data-active:text-foreground"
+              className="h-auto! flex-1 flex-col items-center justify-center gap-0.5 whitespace-normal rounded-none border-0 border-b-2 border-transparent px-4 py-3 text-center text-base font-semibold leading-tight after:opacity-0! data-active:border-primary data-active:bg-transparent data-active:text-foreground"
             >
               {g.sizeTab}
-              <span className="text-xs font-normal normal-case text-muted-foreground">{g.sizeTabHint}</span>
+              <span className="text-xs font-normal normal-case leading-tight text-muted-foreground">
+                {g.sizeTabHint}
+              </span>
             </TabsTrigger>
           </TabsList>
 
