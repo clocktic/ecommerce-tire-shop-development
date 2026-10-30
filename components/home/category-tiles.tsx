@@ -3,6 +3,7 @@ import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 import { CATEGORIES } from "@/lib/catalog"
 import { readProducts } from "@/lib/catalog/queries"
+import { tireModelKey } from "@/lib/catalog/tire-variants"
 import { fmt, getDictionary, storePath, type Store } from "@/lib/i18n"
 
 export async function CategoryTiles({ store }: { store: Store }) {
@@ -17,7 +18,13 @@ export async function CategoryTiles({ store }: { store: Store }) {
       </div>
       <ul className="grid gap-3 sm:grid-cols-3">
         {CATEGORIES.map((c) => {
-          const count = catalog.ok ? catalog.data.filter((p) => p.category === c.slug).length : null
+          const count = catalog.ok
+            ? new Set(
+                catalog.data
+                  .filter((p) => p.category === c.slug)
+                  .map((p) => (p.category === "tires" ? tireModelKey(p) : p.id)),
+              ).size
+            : null
           const copy = t.categories[c.slug]
           return (
             <li key={c.slug}>
