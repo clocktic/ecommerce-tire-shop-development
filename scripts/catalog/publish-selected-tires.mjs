@@ -4,6 +4,7 @@ import { Pool } from 'pg'
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { pgTable, text, jsonb, boolean, timestamp } from 'drizzle-orm/pg-core'
 import { eq, inArray, sql } from 'drizzle-orm'
+import { sourcePriceIssue } from './tire-price-confirmation.mjs'
 
 const { values } = parseArgs({ options: { apply: { type: 'boolean', default: false } } })
 const batches = JSON.parse(readFileSync('.v0/refs/verified-tires/catalog-selection.json', 'utf8'))
@@ -38,7 +39,8 @@ try {
     sourceById.set(row.id, source)
     return row
   })
-  const updates = targets.map(row => {
+  const publishableTargets = targets.filter(row => !sourcePriceIssue(sourceById.get(row.id)))
+  const updates = publishableTargets.map(row => {
     const source = sourceById.get(row.id)
     if (!['verified-tire-drafts-v1', 'opening-catalog'].includes(row.data.source) || row.data.mpn !== source.mpn || row.data.brand !== source.brand) throw new Error(`Unexpected database article: ${row.id}`)
     const conflicts = ['width', 'aspect', 'rim', 'loadIndex', 'speedRating', 'extraLoad', 'runFlat'].filter(field => row.data.tire[field] !== source.tire[field])
@@ -63,7 +65,7 @@ try {
     }, verification: { ...base.verification, publicationPricing: pricing, status: 'published-source-priced', inventoryConfirmed: false } }
     return { row, data }
   }).filter(({ row, data }) => row.archived || !isDeepStrictEqual(row.data, data))
-  console.log(JSON.stringify({ selected: targets.length, updates: updates.length, usdPerEur: rate, rateDate: date, apply: values.apply, inventory: 'out_of_stock', unrelatedProductsModified: 0 }))
+  console.log(JSON.stringify({ selected: targets.length, eligible: publishableTargets.length, skippedUnconfirmed: targets.length - publishableTargets.length, updates: updates.length, usdPerEur: rate, rateDate: date, apply: values.apply, inventory: 'out_of_stock', unrelatedProductsModified: 0 }))
   if (values.apply) {
     await db.transaction(async tx => {
       if (!updates.length) return
@@ -78,6 +80,6 @@ try {
           .onConflictDoUpdate({ target: table.id, set: { data: sql`excluded.data`, archived: false, updatedAt: new Date() } })
       }
     })
-    console.log(JSON.stringify({ publishedUpdated: updates.length, us: targets.length, eu: targets.length }))
+    console.log(JSON.stringify({ publishedUpdated: updates.length, us: publishableTargets.length, eu: publishableTargets.length }))
   }
 } finally { await pool.end() }
