@@ -9,12 +9,14 @@ import { ThemeToggle } from "@/components/layout/theme-toggle"
 import { CATEGORIES } from "@/lib/catalog"
 import { getDictionary, storePath, type Store } from "@/lib/i18n"
 import { getExtras } from "@/lib/i18n/extras"
+import { tireReferenceCopy } from "@/lib/i18n/tire-reference"
 
 export function Header({ store }: { store: Store }) {
   const t = getDictionary(store)
   const x = getExtras(store)
   const nav = [
     ...CATEGORIES.map((c) => ({ href: storePath(store, `/${c.slug}`), label: t.categories[c.slug].name })),
+    { href: storePath(store, "/tire-catalog"), label: tireReferenceCopy(store.lang).nav },
     { href: storePath(store, "/track"), label: x.track.nav },
     { href: storePath(store, "/faq"), label: t.common.help },
     { href: storePath(store, "/contact"), label: t.common.contact },

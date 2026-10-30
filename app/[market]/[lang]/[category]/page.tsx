@@ -26,6 +26,7 @@ import { ProductCard } from "@/components/product/product-card"
 import { FilterSelect } from "@/components/catalog/filter-select"
 import { FitmentBanner } from "@/components/garage/fitment-banner"
 import { Button } from "@/components/ui/button"
+import { tireReferenceCopy } from "@/lib/i18n/tire-reference"
 
 type Params = Promise<{ market: string; lang: string; category: string }>
 type Search = Promise<Record<string, string | string[] | undefined>>
@@ -77,6 +78,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
         </p>
       </header>
 
+      {category === "tires" && <Link href={storePath(store, '/tire-catalog')} className="mt-6 flex items-center justify-between gap-4 border border-border bg-muted p-5 font-semibold hover:text-primary"><span>{tireReferenceCopy(store.lang).title}</span><span aria-hidden="true">→</span></Link>}
       {category === "tires" && <FitmentBanner currentWidth={filters.width} />}
 
       <form method="get" className="flex flex-col gap-4 border-b border-border py-6 md:flex-row md:items-end">
