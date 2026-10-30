@@ -10,6 +10,8 @@ import { CartProvider } from "@/components/cart/cart-provider"
 import { GarageProvider } from "@/components/garage/garage-provider"
 import { I18nProvider } from "@/components/i18n/i18n-provider"
 import { getSessionUser } from "@/lib/auth"
+import { readDatabase } from "@/lib/db/availability"
+import { CatalogUnavailable } from "@/components/catalog/catalog-unavailable"
 import { getSavedVehicles, rowToSelection } from "@/lib/garage"
 import { GARAGE_COOKIE, parseGarageCookie } from "@/lib/garage-cookie"
 import { ConsentDefaults } from "@/components/legal/consent-defaults"
@@ -67,8 +69,12 @@ export default async function StoreLayout({ children, params }: { children: Reac
   const meta = localeMeta(store)
   const cookieStore = await cookies()
   const theme = themeClassName(cookieStore.get(THEME_COOKIE)?.value)
-  const user = await getSessionUser(await headers())
-  const savedVehicleRows = user ? await getSavedVehicles(user.id, store.market) : []
+  const requestHeaders = await headers()
+  const garage = await readDatabase(async () => {
+    const user = await getSessionUser(requestHeaders)
+    return user ? await getSavedVehicles(user.id, store.market) : []
+  })
+  const savedVehicleRows = garage.ok ? garage.data : []
   const activeFromDb = savedVehicleRows.find((row) => row.isActive)
   const initialActive = activeFromDb ? rowToSelection(activeFromDb) : parseGarageCookie(cookieStore.get(GARAGE_COOKIE)?.value)
 
@@ -93,6 +99,7 @@ export default async function StoreLayout({ children, params }: { children: Reac
               <GeoBanner />
               <Header store={store} />
               <main id="main" className="flex-1">
+                {!garage.ok && <div className="px-4 md:px-6"><CatalogUnavailable store={store} scope="account" /></div>}
                 {children}
               </main>
               <Footer store={store} />
