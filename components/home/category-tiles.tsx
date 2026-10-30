@@ -2,12 +2,12 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 import { CATEGORIES } from "@/lib/catalog"
-import { readProducts } from "@/lib/catalog/queries"
+import { getProducts } from "@/lib/catalog/queries"
 import { fmt, getDictionary, storePath, type Store } from "@/lib/i18n"
 
 export async function CategoryTiles({ store }: { store: Store }) {
   const t = getDictionary(store)
-  const catalog = await readProducts(store.market)
+  const products = await getProducts(store.market)
   return (
     <section aria-labelledby="categories-title" className="mx-auto max-w-7xl px-4 pt-20 md:px-6">
       <div className="mb-8 flex items-end justify-between gap-4">
@@ -17,7 +17,7 @@ export async function CategoryTiles({ store }: { store: Store }) {
       </div>
       <ul className="grid gap-3 sm:grid-cols-3">
         {CATEGORIES.map((c) => {
-          const count = catalog.ok ? catalog.data.filter((p) => p.category === c.slug).length : null
+          const count = products.filter((p) => p.category === c.slug).length
           const copy = t.categories[c.slug]
           return (
             <li key={c.slug}>
@@ -38,11 +38,9 @@ export async function CategoryTiles({ store }: { store: Store }) {
                   <div className="flex flex-col gap-2">
                     <h3 className="font-expanded text-xl font-extrabold uppercase">{copy.name}</h3>
                     <p className="text-pretty text-sm leading-relaxed text-muted-foreground">{copy.blurb}</p>
-                    {count !== null && (
-                      <p className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
-                        {fmt(t.home.listed, { n: count })}
-                      </p>
-                    )}
+                    <p className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
+                      {fmt(t.home.listed, { n: count })}
+                    </p>
                   </div>
                   <ArrowUpRight
                     className="size-5 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary"

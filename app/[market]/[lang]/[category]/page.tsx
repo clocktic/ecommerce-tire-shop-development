@@ -16,8 +16,7 @@ import {
   type Category,
   type Product,
 } from "@/lib/catalog"
-import { readProductsByCategory } from "@/lib/catalog/queries"
-import { CatalogUnavailable } from "@/components/catalog/catalog-unavailable"
+import { getProductsByCategory } from "@/lib/catalog/queries"
 import { ALL_STORES, fmt, getDictionary, parseStore, storePath, type Dictionary, type Store } from "@/lib/i18n"
 import { storeAlternates } from "@/lib/seo"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
@@ -59,9 +58,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
     Object.entries(raw).map(([k, v]) => [k, typeof v === "string" && v !== "" ? v : undefined]),
   )
   const copy = t.categories[category]
-  const catalog = await readProductsByCategory(store.market, category)
-  if (!catalog.ok) return <div className="mx-auto max-w-7xl px-4 md:px-6"><CatalogUnavailable store={store} /></div>
-  const all = catalog.data.map((p) => localizeProduct(p, store))
+  const all = (await getProductsByCategory(store.market, category)).map((p) => localizeProduct(p, store))
   const products = filterProducts(all, filters, store.market)
   const active = Object.values(filters).some(Boolean)
   const grouped = new Map<string, Product[]>()

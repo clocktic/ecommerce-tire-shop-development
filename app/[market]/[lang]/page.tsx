@@ -1,8 +1,7 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { localizeProduct } from "@/lib/catalog"
-import { readProducts } from "@/lib/catalog/queries"
-import { CatalogUnavailable } from "@/components/catalog/catalog-unavailable"
+import { getProducts } from "@/lib/catalog/queries"
 import { getDictionary, parseStore, storePath } from "@/lib/i18n"
 import { Hero } from "@/components/home/hero"
 import { CategoryTiles } from "@/components/home/category-tiles"
@@ -15,8 +14,8 @@ export default async function HomePage({ params }: { params: Promise<{ market: s
   const store = parseStore(market, lang)
   if (!store) notFound()
   const t = getDictionary(store)
-  const catalog = await readProducts(store.market)
-  const featured = catalog.ok ? catalog.data.slice(0, 4).map((p) => localizeProduct(p, store)) : []
+  const listed = await getProducts(store.market)
+  const featured = listed.slice(0, 4).map((p) => localizeProduct(p, store))
 
   return (
     <>
@@ -36,15 +35,11 @@ export default async function HomePage({ params }: { params: Promise<{ market: s
             {t.home.allTires}
           </Link>
         </div>
-        {catalog.ok ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {featured.map((p) => (
-              <ProductCard key={p.slug} product={p} store={store} />
-            ))}
-          </div>
-        ) : (
-          <CatalogUnavailable store={store} />
-        )}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {featured.map((p) => (
+            <ProductCard key={p.slug} product={p} store={store} />
+          ))}
+        </div>
       </section>
 
       <MarketPromise store={store} />
