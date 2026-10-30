@@ -1,0 +1,34 @@
+{
+  "checkedAt": "2026-10-30",
+  "policy": "Formatting aliases are candidate lookup keys only. Published label still requires matching brand, commercial model, dimensions, load and speed; conflicts in GTIN, XL or declared run-flat reject the match. No name-and-size-only fallback.",
+  "examples": [
+    {
+      "brand": "Pirelli",
+      "catalogCode": "2494300",
+      "eprelManufacturerCode": "24943",
+      "eprelId": "595030",
+      "source": "https://oponyialufelgi.pl/9933,opona-pirelli-235-60r18-scorpion-verde-103w-fr-n0.html"
+    },
+    {
+      "brand": "Pirelli",
+      "catalogCode": "2417900",
+      "eprelManufacturerCode": "24179",
+      "eprelId": "594889",
+      "source": "https://www.mojepneu.cz/pirelli-cinturato-p7-ao-225-50-r17-98y-xl"
+    },
+    {
+      "brand": "Continental",
+      "catalogCode": "03135770000",
+      "eprelManufacturerCode": "0313577",
+      "eprelId": "1183454",
+      "source": "https://www.butikumi.at/reifen-continental-ecocontact-6-q-245-35-r-21-96-1"
+    },
+    {
+      "brand": "Nexen",
+      "catalogCode": "15487NXK",
+      "eprelManufacturerCode": "15487",
+      "eprelId": "432999",
+      "source": "https://thmotorsports.com/12674801-nexen-15487nxk"
+    }
+  ]
+}

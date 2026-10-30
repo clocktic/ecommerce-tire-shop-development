@@ -1,11 +1,33 @@
 export function brandKey(value) {
-  const key = String(value || '').toUpperCase().replace(/[^A-Z0-9]/g, '')
-  return ({ TOYOTIRES: 'TOYO', NOKIANTYRES: 'NOKIAN' })[key] || key
+  const text = String(value || '').trim().toUpperCase()
+  const trademarkWithPattern = text.match(/^(FALKEN|KUMHO|DUNLOP)(?:\s|$)/)
+  if (trademarkWithPattern) return trademarkWithPattern[1]
+  const key = text.replace(/[^A-Z0-9]/g, '')
+  return ({ TOYOTIRES: 'TOYO', NOKIANTYRES: 'NOKIAN', HANKOOKTIRE: 'HANKOOK', NEXENTIRE: 'NEXEN' })[key] || key
 }
 
 export function mpnKey(value) {
   const key = String(value || '').trim().toUpperCase()
   return /^\d+$/.test(key) ? key.replace(/^0+(?=\d)/, '') : key
+}
+
+export function manufacturerKeys(brand, value) {
+  const text = String(value || '').trim().toUpperCase()
+  const keys = [mpnKey(text)]
+  if (brand === 'PIRELLI' && /^\d{5}00$/.test(text)) keys.push(mpnKey(text.slice(0, 5)))
+  if (brand === 'NEXEN' && /^[A-Z0-9]{5}NXK$/.test(text)) keys.push(mpnKey(text.slice(0, 5)))
+  if (brand === 'CONTINENTAL' && /^\d{7}0000$/.test(text)) keys.push(mpnKey(text.slice(0, 7)))
+  return [...new Set(keys.filter(Boolean))]
+}
+
+export function modelKey(brand, value) {
+  const key = String(value || '').toUpperCase().replaceAll('+', 'PLUS').replace(/[^A-Z0-9]/g, '')
+  const aliases = {
+    KUMHO: { CRUGENHP71: 'HP71', CRUGENHP91: 'HP91', CRUGENHT51: 'HT51', ECOWINGES31: 'ES31', ECOWINGES01KH27: 'KH27', ECSTASPORTPS72: 'ECSTASPORT', ROADVENTUREAT52: 'AT52', SOLUS4SHA32: 'HA32' },
+    CONTINENTAL: { CONTISPORTCONTACT2: 'SPORTCONTACT2', CONTISPORTCONTACT5SUV: 'CONTISPORTCONTACT5' },
+    PIRELLI: { PZEROPZ4SPORT: 'PZERO', PZEROCORSAPZC4: 'PZEROCORSA', PZEROROSSOASIMMETRICO: 'PZEROROSSO' },
+  }
+  return aliases[brand]?.[key] || key
 }
 
 function gtinKey(value) {
@@ -22,7 +44,7 @@ export function buildEprelIndex(records) {
   for (const record of records) {
     if (record.status !== 'PUBLISHED' || record.blocked || !/^\d+$/.test(String(record.eprelRegistrationNumber))) continue
     const brand = brandKey(record.supplierOrTrademark)
-    const keys = [record.modelIdentifier ? `${brand}:mpn:${mpnKey(record.modelIdentifier)}` : '', ...gtins(record).map(gtin => `${brand}:gtin:${gtin}`)].filter(Boolean)
+    const keys = [...manufacturerKeys(brand, record.modelIdentifier).map(code => `${brand}:mpn:${code}`), ...gtins(record).map(gtin => `${brand}:gtin:${gtin}`)]
     for (const key of keys) {
       const bucket = index.get(key) || new Map()
       const id = String(record.eprelRegistrationNumber)
@@ -36,9 +58,9 @@ export function buildEprelIndex(records) {
 
 function specificationsMatch(product, record) {
   const t = product.tire
-  const modelKey = value => String(value || '').toUpperCase().replaceAll('+', 'PLUS').replace(/[^A-Z0-9]/g, '')
-  const model = modelKey(t.model || String(product.name || '').split(/\s+(?:LT|P)?\d{2,3}\//)[0])
-  const officialModel = modelKey(record.additionalDetails?.commercialName)
+  const brand = brandKey(product.brand)
+  const model = modelKey(brand, t.model || String(product.name || '').split(/\s+(?:LT|P)?\d{2,3}\//)[0])
+  const officialModel = modelKey(brand, record.additionalDetails?.commercialName)
   if (!model || !officialModel || model !== officialModel) return false
   if (![record.tyreSection, record.aspectRatio, record.rimDiameter, record.loadCapacityIndex].every(v => v !== null && v !== undefined)) return false
   if (Number(record.tyreSection) !== t.width || Number(record.aspectRatio) !== t.aspect || Number(record.rimDiameter) !== t.rim || Number(record.loadCapacityIndex) !== t.loadIndex) return false
@@ -61,7 +83,7 @@ export function labelFromRecord(record) {
 export function matchEprel(product, index) {
   const brand = brandKey(product.brand)
   const candidates = new Map()
-  const keys = [product.mpn ? `${brand}:mpn:${mpnKey(product.mpn)}` : '', gtinKey(product.gtin) ? `${brand}:gtin:${gtinKey(product.gtin)}` : ''].filter(Boolean)
+  const keys = [...manufacturerKeys(brand, product.mpn).map(code => `${brand}:mpn:${code}`), gtinKey(product.gtin) ? `${brand}:gtin:${gtinKey(product.gtin)}` : ''].filter(Boolean)
   for (const key of keys) for (const [id, record] of index.get(key) || []) candidates.set(id, record)
   if (!candidates.size) return { status: 'unmatched', candidateIds: [] }
   const exact = [...candidates.values()].filter(record => specificationsMatch(product, record))

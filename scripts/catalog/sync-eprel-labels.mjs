@@ -34,13 +34,17 @@ try {
       registrationNumber: result.label.eprelId, versionNumber: result.record.versionNumber,
       manufacturerIdentifier: result.record.modelIdentifier,
       commercialName: result.record.additionalDetails?.commercialName,
-      match: 'brand + manufacturer identifier or GTIN + model + size + load + speed; XL and run-flat checked when declared',
+      catalogManufacturerIdentifier: product.mpn || '',
+      match: 'brand + manufacturer identifier (including verified brand-specific formatting) or GTIN + commercial model aliases + size + load + speed; conflicting GTIN, XL and declared run-flat rejected',
     }
     const data = { ...product, tire: { ...product.tire, euLabel: result.label }, verification: { ...product.verification, eprel: evidence } }
     if (!isDeepStrictEqual(product, data)) updates.push({ row, data })
   }
   const statuses = report.reduce((counts, row) => ({ ...counts, [row.status]: (counts[row.status] || 0) + 1 }), {})
-  const summary = { checkedAt: register.checkedAt, records: register.records.length, euArticles: rows.length, statuses, updates: updates.length, apply: values.apply }
+  const modelName = article => `${article.brand} ${article.model}`
+  const allModels = new Set(report.map(modelName))
+  const labelledModels = new Set(report.filter(r => r.status === 'verified').map(modelName))
+  const summary = { checkedAt: register.checkedAt, records: register.records.length, euArticles: rows.length, models: allModels.size, labelledModels: labelledModels.size, modelsStillUnconfirmed: [...allModels].filter(name => !labelledModels.has(name)), newLabels: report.filter(r => r.status === 'verified' && !r.existingEprelId).length, statuses, updates: updates.length, apply: values.apply }
   mkdirSync(root, { recursive: true })
   writeFileSync(`${root}/report.json`, JSON.stringify({ summary, articles: report }, null, 2))
   const columns = ['id', 'brand', 'model', 'mpn', 'gtin', 'size', 'service', 'status', 'eprelIds', 'existingEprelId']

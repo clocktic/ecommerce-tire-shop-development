@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { buildEprelIndex, matchEprel } from './eprel-matching.mjs'
+import { buildEprelIndex, matchEprel, brandKey, manufacturerKeys, modelKey } from './eprel-matching.mjs'
 
 const record = { supplierOrTrademark: 'MICHELIN', modelIdentifier: '000832', eprelRegistrationNumber: '408232', versionNumber: 1, status: 'PUBLISHED', blocked: false, tyreSection: 205, aspectRatio: 55, rimDiameter: 17, loadCapacityIndex: 91, speedCategorySymbol: 'W', loadCapacityIndicator: 'SL', energyClass: 'A', wetGripClass: 'B', externalRollingNoiseClass: 'A', externalRollingNoiseValue: 68, severeSnowTyre: false, iceTyre: false, additionalDetails: { commercialName: 'E PRIMACY', unrestrictedMobility: null, gtinIdentifier: null } }
 const product = { brand: 'Michelin', mpn: '832', tire: { model: 'E Primacy', width: 205, aspect: 55, rim: 17, loadIndex: 91, speedRating: 'W', extraLoad: false, runFlat: false } }
@@ -27,3 +27,44 @@ test('ignores blocked and unpublished records', () => {
   assert.equal(match(product, [{ ...record, status: 'DRAFT' }]).status, 'unmatched')
 })
 test('matches exact GTIN when manufacturer identifiers differ', () => assert.equal(match({ ...product, mpn: 'local-format', gtin: '123456789012' }, [{ ...record, additionalDetails: { ...record.additionalDetails, gtinIdentifier: '0123456789012' } }]).status, 'verified'))
+
+for (const [brand, catalog, official, invalid] of [
+  ['Pirelli', '2494300', '24943', '2494399'],
+  ['Continental', '03135770000', '0313577', '03135771000'],
+  ['Nexen', '15487NXK', '15487', '15487XYZ'],
+]) {
+  test(`${brand}: matches documented article formatting, not other suffixes`, () => {
+    const rows = [{ ...record, supplierOrTrademark: brand, modelIdentifier: official }]
+    assert.equal(match({ ...product, brand, mpn: catalog }, rows).status, 'verified')
+    assert.equal(match({ ...product, brand, mpn: invalid }, rows).status, 'unmatched')
+    assert.equal(match({ ...product, brand, mpn: catalog, tire: { ...product.tire, loadIndex: 99 } }, rows).status, 'specification-conflict')
+  })
+}
+
+test('normalizes registry trademarks without conflating manufacturers', () => {
+  assert.equal(brandKey('KUMHO HP71'), 'KUMHO')
+  assert.equal(brandKey('FALKEN HS01'), 'FALKEN')
+  assert.equal(brandKey('NEXENTIRE'), 'NEXEN')
+  assert.notEqual(brandKey('FALKENSTEIN'), 'FALKEN')
+})
+test('commercial aliases still require exact article and specifications', () => {
+  const rows = [{ ...record, supplierOrTrademark: 'KUMHO HP71', additionalDetails: { ...record.additionalDetails, commercialName: 'HP71' } }]
+  const tyre = { ...product, brand: 'Kumho', tire: { ...product.tire, model: 'Crugen HP71' } }
+  assert.equal(match(tyre, rows).status, 'verified')
+  assert.equal(match({ ...tyre, mpn: 'another-code' }, rows).status, 'unmatched')
+  assert.equal(match({ ...tyre, tire: { ...tyre.tire, model: 'Crugen HP91' } }, rows).status, 'specification-conflict')
+})
+test('does not collapse different Bridgestone patterns or generations', () => {
+  assert.notEqual(modelKey('BRIDGESTONE', 'Turanza T005'), modelKey('BRIDGESTONE', 'Turanza T005A'))
+  assert.notEqual(modelKey('PIRELLI', 'Scorpion Winter'), modelKey('PIRELLI', 'Scorpion Winter 2'))
+})
+test('code formatting is brand-specific', () => {
+  assert.deepEqual(manufacturerKeys('MICHELIN', '2494300'), ['2494300'])
+  assert.deepEqual(manufacturerKeys('FALKEN', '15487NXK'), ['15487NXK'])
+})
+test('normalized identifiers still reject incompatible GTIN and ambiguous registrations', () => {
+  const tyre = { ...product, brand: 'Pirelli', mpn: '2494300', gtin: '1234567890123' }
+  const row = { ...record, supplierOrTrademark: 'PIRELLI', modelIdentifier: '24943' }
+  assert.equal(match(tyre, [{ ...row, additionalDetails: { ...row.additionalDetails, gtinIdentifier: '1234567890124' } }]).status, 'specification-conflict')
+  assert.equal(match(tyre, [row, { ...row, eprelRegistrationNumber: '999999' }]).status, 'ambiguous')
+})
