@@ -298,7 +298,7 @@ export function FitmentModal({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={trigger} />
       <DialogContent
-        className="flex max-h-[92vh] w-full max-w-2xl flex-col gap-0 overflow-hidden rounded-none! border border-foreground/30 bg-card p-0 shadow-2xl sm:max-w-2xl"
+        className="flex max-h-[92dvh] w-[calc(100vw-1rem)] max-w-2xl flex-col gap-0 overflow-hidden rounded-none! border border-foreground/30 bg-card p-0 shadow-2xl sm:max-w-2xl"
         showCloseButton
       >
         <DialogTitle className="sr-only">{g.addFitment}</DialogTitle>
@@ -315,23 +315,23 @@ export function FitmentModal({
           >
             <TabsTrigger
               value="vehicle"
-              className="group/tab relative flex h-auto! items-center justify-start gap-3 whitespace-normal rounded-none border-0 border-b-2 border-r border-border/60 border-b-transparent px-4 py-3 text-left transition-colors after:opacity-0! hover:bg-muted/50 data-active:border-b-primary data-active:bg-card data-active:text-foreground"
+              className="group/tab relative flex h-auto! items-center justify-start gap-2 whitespace-normal rounded-none border-0 border-b-2 border-r border-border/60 border-b-transparent px-3 py-2.5 text-left transition-colors after:opacity-0! hover:bg-muted/50 data-active:border-b-primary data-active:bg-card data-active:text-foreground sm:gap-3 sm:px-4 sm:py-3"
             >
               <span
                 className={cn(
-                  "flex size-10 shrink-0 items-center justify-center border transition-colors",
+                  "flex size-8 shrink-0 items-center justify-center border transition-colors sm:size-10",
                   tab === "vehicle"
                     ? "border-primary/50 bg-primary/10 text-foreground"
                     : "border-border bg-background/60 text-muted-foreground group-hover/tab:text-foreground",
                 )}
               >
-                <VehicleIcon className="size-7 w-9" />
+                <VehicleIcon className="size-6 w-7 sm:size-7 sm:w-9" />
               </span>
               <span className="flex min-w-0 flex-col">
-                <span className="font-expanded text-sm font-extrabold uppercase tracking-wide sm:text-base">
+                <span className="truncate font-expanded text-xs font-extrabold uppercase tracking-wide sm:text-base">
                   {g.vehicleTab}
                 </span>
-                <span className="truncate text-[11px] font-normal normal-case leading-tight text-muted-foreground">
+                <span className="truncate text-[10px] font-normal normal-case leading-tight text-muted-foreground sm:text-[11px]">
                   {g.vehicleTabHint}
                 </span>
               </span>
@@ -339,23 +339,23 @@ export function FitmentModal({
 
             <TabsTrigger
               value="size"
-              className="group/tab relative flex h-auto! items-center justify-start gap-3 whitespace-normal rounded-none border-0 border-b-2 border-transparent px-4 py-3 text-left transition-colors after:opacity-0! hover:bg-muted/50 data-active:border-b-primary data-active:bg-card data-active:text-foreground"
+              className="group/tab relative flex h-auto! items-center justify-start gap-2 whitespace-normal rounded-none border-0 border-b-2 border-transparent px-3 py-2.5 text-left transition-colors after:opacity-0! hover:bg-muted/50 data-active:border-b-primary data-active:bg-card data-active:text-foreground sm:gap-3 sm:px-4 sm:py-3"
             >
               <span
                 className={cn(
-                  "flex size-10 shrink-0 items-center justify-center border transition-colors",
+                  "flex size-8 shrink-0 items-center justify-center border transition-colors sm:size-10",
                   tab === "size"
                     ? "border-primary/50 bg-primary/10 text-foreground"
                     : "border-border bg-background/60 text-muted-foreground group-hover/tab:text-foreground",
                 )}
               >
-                <TireSizeIcon className="size-7" />
+                <TireSizeIcon className="size-6 sm:size-7" />
               </span>
               <span className="flex min-w-0 flex-col">
-                <span className="font-expanded text-sm font-extrabold uppercase tracking-wide sm:text-base">
+                <span className="truncate font-expanded text-xs font-extrabold uppercase tracking-wide sm:text-base">
                   {g.sizeTab}
                 </span>
-                <span className="truncate text-[11px] font-normal normal-case leading-tight text-muted-foreground">
+                <span className="truncate text-[10px] font-normal normal-case leading-tight text-muted-foreground sm:text-[11px]">
                   {g.sizeTabHint}
                 </span>
               </span>
@@ -464,7 +464,7 @@ export function FitmentModal({
                     </button>
                   )}
                 </div>
-                <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-4">
+                <div className="grid grid-cols-2 gap-1.5 min-[480px]:grid-cols-3 sm:grid-cols-4">
                   {visibleMakes.map((item) => {
                     const selected = item === make
                     const count = allVehicles.filter((v) => v.make === item).length

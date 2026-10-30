@@ -17,8 +17,8 @@ export function FilterSelect({
 }) {
   const id = `filter-${name}`
   return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="label-caps text-muted-foreground">
+    <div className="flex min-w-0 flex-col justify-between gap-1.5">
+      <label htmlFor={id} className="label-caps truncate text-muted-foreground">
         {label}
       </label>
       <div className="relative">
@@ -26,7 +26,7 @@ export function FilterSelect({
           id={id}
           name={name}
           defaultValue={value ?? ""}
-          className="h-12 w-full appearance-none border border-border bg-card pl-3 pr-9 font-mono text-sm shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-ring"
+          className="h-10 w-full appearance-none border border-border bg-card pl-3 pr-8 font-mono text-xs shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-ring sm:h-12 sm:pr-9 sm:text-sm"
         >
           <option value="">{any}</option>
           {options.map((o) => (

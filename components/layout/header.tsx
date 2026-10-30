@@ -26,11 +26,13 @@ export function Header({ store }: { store: Store }) {
   return (
     <header className="sticky top-0 z-40 shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)]">
       <div className="bg-secondary text-secondary-foreground">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-1.5 md:px-6">
-          <p className="min-w-0 font-mono text-[10px] uppercase leading-relaxed tracking-[0.14em] text-secondary-foreground/80 sm:truncate sm:text-xs sm:tracking-[0.18em]">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-1 sm:px-4 sm:py-1.5 md:px-6">
+          <p className="min-w-0 truncate font-mono text-[10px] uppercase leading-relaxed tracking-[0.12em] text-secondary-foreground/80 sm:text-xs sm:tracking-[0.18em]">
             <span className="text-secondary-foreground">{t.topbar.shipsTo}</span>
-            <span aria-hidden="true"> · </span>
-            {t.topbar.shipping}
+            <span className="hidden min-[420px]:inline">
+              <span aria-hidden="true"> · </span>
+              {t.topbar.shipping}
+            </span>
             <span className="hidden lg:inline">
               <span aria-hidden="true"> · </span>
               {t.policy.days}
@@ -38,18 +40,18 @@ export function Header({ store }: { store: Store }) {
               {t.topbar.returns}
             </span>
           </p>
-          <div className="flex shrink-0 items-center gap-3">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <ThemeToggle />
-            <span aria-hidden="true" className="h-4 w-px bg-secondary-foreground/25" />
+            <span aria-hidden="true" className="h-3.5 w-px bg-secondary-foreground/25" />
             <LanguageMenu />
-            <span aria-hidden="true" className="h-4 w-px bg-secondary-foreground/25" />
+            <span aria-hidden="true" className="h-3.5 w-px bg-secondary-foreground/25" />
             <RegionSwitcher />
           </div>
         </div>
       </div>
 
       <div className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-        <div className="@container/header mx-auto flex max-w-7xl items-center justify-between gap-2 px-4 py-3 md:px-6">
+        <div className="@container/header mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:px-4 sm:py-3 md:px-6">
           <Logo store={store} label={t.common.logoHome} />
 
           <nav aria-label={t.common.mainNav} className="hidden min-w-0 @min-[1100px]/header:block">

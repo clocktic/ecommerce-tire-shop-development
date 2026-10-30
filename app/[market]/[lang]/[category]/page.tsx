@@ -130,7 +130,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
           <CategoryFilters category={category} products={all} filters={filters} store={store} t={t} />
         </fieldset>
         <div className="flex items-center gap-3">
-          <Button type="submit" size="lg">
+          <Button type="submit" size="lg" className="flex-1 md:flex-initial">
             {t.catalog.apply}
           </Button>
           {active && (
@@ -183,20 +183,26 @@ export default async function CategoryPage({ params, searchParams }: { params: P
               ←
             </Link>
           )}
-          {Array.from({ length: pages }, (_, i) => i + 1).map((n) => (
-            <Link
-              key={n}
-              href={pageHref(n)}
-              aria-current={n === page ? "page" : undefined}
-              className={
-                n === page
-                  ? "flex h-9 min-w-9 items-center justify-center border border-primary bg-primary px-2.5 font-semibold text-primary-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5"
-                  : "flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-foreground hover:text-foreground"
-              }
-            >
-              {n}
-            </Link>
-          ))}
+          {visiblePageNumbers(page, pages).map((item, idx) =>
+            item === "ellipsis" ? (
+              <span key={`ellipsis-${idx}`} className="flex h-9 min-w-7 items-center justify-center text-muted-foreground">
+                …
+              </span>
+            ) : (
+              <Link
+                key={item}
+                href={pageHref(item)}
+                aria-current={item === page ? "page" : undefined}
+                className={
+                  item === page
+                    ? "flex h-9 min-w-9 items-center justify-center border border-primary bg-primary px-2.5 font-semibold text-primary-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5"
+                    : "flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-foreground hover:text-foreground"
+                }
+              >
+                {item}
+              </Link>
+            ),
+          )}
           {page < pages && (
             <Link
               href={pageHref(page + 1)}
@@ -340,6 +346,20 @@ function priceLabels(store: Store, t: Dictionary): Record<string, string> {
 
 function unique(values: string[]) {
   return [...new Set(values.filter(Boolean))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+}
+
+function visiblePageNumbers(current: number, total: number): Array<number | "ellipsis"> {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+  const pages = new Set<number>([1, total, current, current - 1, current + 1])
+  const sorted = [...pages].filter((n) => n >= 1 && n <= total).sort((a, b) => a - b)
+  const result: Array<number | "ellipsis"> = []
+  for (let i = 0; i < sorted.length; i++) {
+    if (i > 0 && sorted[i]! - sorted[i - 1]! > 1) {
+      result.push("ellipsis")
+    }
+    result.push(sorted[i]!)
+  }
+  return result
 }
 
 function EmptyState({ store, category, t }: { store: Store; category: Category; t: Dictionary }) {

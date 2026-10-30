@@ -48,7 +48,7 @@ export function ChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-3">
+    <div className="fixed bottom-3 right-3 z-40 flex flex-col items-end gap-3 sm:bottom-4 sm:right-4">
       {open && (
         <section
           aria-label={x.chat.title}
@@ -131,7 +131,7 @@ export function ChatWidget() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-label={open ? x.chat.close : x.chat.open}
-        className="flex items-center gap-2 bg-secondary px-4 py-3 text-sm font-semibold uppercase tracking-wide text-secondary-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary hover:text-primary-foreground"
+        className="flex size-11 items-center justify-center gap-2 border border-secondary-foreground/15 bg-secondary p-0 text-sm font-semibold uppercase tracking-wide text-secondary-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary hover:text-primary-foreground sm:size-auto sm:px-4 sm:py-3"
       >
         {open ? <X className="size-5" aria-hidden="true" /> : <MessageCircle className="size-5" aria-hidden="true" />}
         <span className="hidden sm:inline">{open ? x.chat.close : x.chat.open}</span>

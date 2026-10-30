@@ -104,9 +104,11 @@ export default async function ProductPage({ params }: { params: Params }) {
             <Identifiers product={product} labels={t.product.spec} />
           </div>
 
-          <div className="flex items-end justify-between gap-4 border-y border-border py-4">
-            <Price offer={offer} store={store} size="lg" showNote />
-            <span className="text-right font-mono text-xs uppercase tracking-[0.12em]">
+          <div className="flex flex-wrap items-start justify-between gap-3 border-y border-border py-4">
+            <div className="min-w-0 flex-1">
+              <Price offer={offer} store={store} size="lg" showNote />
+            </div>
+            <span className="shrink-0 border border-border bg-muted/40 px-2.5 py-1 text-right font-mono text-xs font-semibold uppercase tracking-[0.12em]">
               {t.labels.availability[offer.availability]}
             </span>
           </div>

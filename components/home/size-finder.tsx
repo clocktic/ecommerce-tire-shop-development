@@ -151,8 +151,8 @@ function Segment({
 }) {
   const id = `seg-${name}`
   return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="label-caps text-balance text-muted-foreground">
+    <div className="flex min-w-0 flex-col justify-between gap-1.5">
+      <label htmlFor={id} className="truncate font-mono text-[10px] uppercase tracking-wider text-muted-foreground sm:text-xs sm:tracking-[0.16em]">
         {label} <span className="normal-case tracking-normal">({unit})</span>
       </label>
       <select
@@ -160,7 +160,7 @@ function Segment({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          "h-12 w-full appearance-none border border-border bg-background px-3 font-mono text-base font-semibold shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5",
+          "h-12 w-full appearance-none border border-border bg-background px-2.5 font-mono text-base font-semibold shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 sm:px-3",
           "focus-visible:outline-2 focus-visible:outline-ring",
         )}
       >

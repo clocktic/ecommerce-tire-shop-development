@@ -38,30 +38,30 @@ export function FitmentBar() {
 
   return (
     <div className="border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/85">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-1.5 md:px-6">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-1 sm:px-4 sm:py-1.5 md:px-6">
         {active ? (
-          <div className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-2">
-            <div className="flex min-w-0 items-center gap-1.5">
+          <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
+            <div className="flex min-w-0 flex-1 items-center gap-1 sm:flex-initial sm:gap-1.5">
               <FitmentModal
                 defaultTab={active.kind === "size" ? "size" : "vehicle"}
                 trigger={
                   <button
                     type="button"
-                    className="group flex min-w-0 items-center gap-2.5 py-1 pr-2 text-left text-sm font-semibold transition-colors hover:text-primary"
+                    className="group flex min-w-0 flex-1 items-center gap-2 py-0.5 pr-1 text-left text-xs font-semibold transition-colors hover:text-primary sm:flex-initial sm:gap-2.5 sm:py-1 sm:pr-2 sm:text-sm"
                   >
-                    <span className="flex size-7 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 text-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 group-hover:-translate-y-0.5">
+                    <span className="flex size-6 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 text-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 group-hover:-translate-y-0.5 sm:size-7">
                       {active.kind === "vehicle" ? (
-                        <VehicleIcon className="size-5 w-6" />
+                        <VehicleIcon className="size-4 w-5 sm:size-5 sm:w-6" />
                       ) : (
-                        <TireSizeIcon className="size-5" />
+                        <TireSizeIcon className="size-4 sm:size-5" />
                       )}
                     </span>
-                    <span className="truncate">{active.label}</span>
-                    <span className="border border-border bg-background px-1.5 py-0.5 font-mono text-xs text-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5">
+                    <span className="min-w-0 flex-1 truncate sm:flex-initial">{active.label}</span>
+                    <span className="shrink-0 border border-border bg-background px-1.5 py-0.5 font-mono text-[11px] text-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 sm:text-xs">
                       {active.width}/{active.aspect}R{active.rim}
                     </span>
                     {boltPattern && (
-                      <span className="hidden border border-border bg-background px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 md:inline">
+                      <span className="hidden shrink-0 border border-border bg-background px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 md:inline">
                         {boltPattern.replace("x", "×")}
                       </span>
                     )}
@@ -74,13 +74,13 @@ export function FitmentBar() {
                 onClick={clearActive}
                 aria-label={g.remove}
                 title={g.remove}
-                className="p-1.5 text-muted-foreground transition-colors hover:text-primary"
+                className="shrink-0 p-1 text-muted-foreground transition-colors hover:text-primary sm:p-1.5"
               >
                 <X aria-hidden="true" className="size-3.5" />
               </button>
             </div>
 
-            <div className="flex items-center gap-3 font-mono text-xs">
+            <div className="hidden shrink-0 items-center gap-3 font-mono text-xs sm:flex">
               <Link
                 href={tiresHref}
                 className="flex items-center gap-1.5 font-semibold text-foreground transition-colors hover:text-primary"

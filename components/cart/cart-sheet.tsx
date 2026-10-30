@@ -32,21 +32,21 @@ export function CartSheet() {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent
         side="right"
-        className="flex w-full flex-col gap-0 border-l border-border bg-background p-0 sm:max-w-md"
+        className="flex h-dvh w-full max-w-[calc(100vw-0.75rem)] flex-col gap-0 overflow-y-auto border-l border-border bg-background p-0 sm:max-w-md"
       >
-        <SheetHeader className="border-b border-border bg-card px-5 py-4">
+        <SheetHeader className="shrink-0 border-b border-border bg-card px-4 py-3 sm:px-5 sm:py-4">
           <div className="flex items-center gap-2.5 pr-8">
-            <ShoppingBag className="size-5 text-primary" aria-hidden="true" />
-            <SheetTitle className="font-expanded text-lg font-extrabold uppercase tracking-tight">
+            <ShoppingBag className="size-5 shrink-0 text-primary" aria-hidden="true" />
+            <SheetTitle className="font-expanded text-base font-extrabold uppercase tracking-tight sm:text-lg">
               {t.cart.title}
             </SheetTitle>
             <Badge variant="secondary" className="font-mono text-xs tabular-nums">
               {count}
             </Badge>
           </div>
-          <SheetDescription className="flex items-center gap-1.5 pt-1 text-xs text-muted-foreground">
+          <SheetDescription className="flex items-center gap-1.5 pt-0.5 text-xs text-muted-foreground">
             <Truck className="size-3.5 shrink-0 text-primary" aria-hidden="true" />
-            <span>{t.topbar.shipping} · {t.policy.days}</span>
+            <span className="truncate">{t.topbar.shipping} · {t.policy.days}</span>
           </SheetDescription>
         </SheetHeader>
 
@@ -85,13 +85,13 @@ export function CartSheet() {
           </div>
         ) : (
           <>
-            <ul className="flex flex-1 flex-col divide-y divide-border overflow-y-auto px-5">
+            <ul className="flex min-h-[10rem] flex-1 flex-col divide-y divide-border overflow-y-auto px-4 sm:px-5">
               {lines.map((line) => (
-                <li key={line.slug} className="flex gap-3.5 py-4">
+                <li key={line.slug} className="flex gap-3 py-3.5 sm:gap-3.5 sm:py-4">
                   <Link
                     href={storePath(store, `/product/${line.slug}`)}
                     onClick={() => setOpen(false)}
-                    className="relative size-20 shrink-0 overflow-hidden border border-border bg-photo"
+                    className="relative size-16 shrink-0 overflow-hidden border border-border bg-photo sm:size-20"
                   >
                     <Image
                       src={line.image || "/placeholder.svg"}
@@ -106,23 +106,23 @@ export function CartSheet() {
                       <Link
                         href={storePath(store, `/product/${line.slug}`)}
                         onClick={() => setOpen(false)}
-                        className="line-clamp-2 text-sm font-semibold leading-snug hover:text-primary"
+                        className="line-clamp-2 text-xs font-semibold leading-snug hover:text-primary sm:text-sm"
                       >
                         {line.name}
                       </Link>
                       <button
                         type="button"
                         onClick={() => remove(line.slug)}
-                        className="shrink-0 p-1 text-muted-foreground transition-colors hover:text-destructive"
+                        className="-mr-1 -mt-0.5 shrink-0 p-1 text-muted-foreground transition-colors hover:text-destructive"
                         aria-label={fmt(t.cart.remove, { name: line.name })}
                       >
                         <Trash2 className="size-4" aria-hidden="true" />
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between gap-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <div
-                        className="flex items-center border border-border bg-card"
+                        className="flex shrink-0 items-center border border-border bg-card"
                         role="group"
                         aria-label={fmt(t.cart.quantityFor, { name: line.name })}
                       >
@@ -148,12 +148,12 @@ export function CartSheet() {
                         </button>
                       </div>
 
-                      <div className="text-right">
-                        <span className="font-mono text-sm font-semibold tabular-nums">
+                      <div className="ml-auto text-right">
+                        <span className="block whitespace-nowrap font-mono text-sm font-semibold tabular-nums">
                           {formatPrice(line.priceCents * line.quantity, market, intl)}
                         </span>
                         {line.quantity > 1 && (
-                          <span className="block font-mono text-[11px] text-muted-foreground tabular-nums">
+                          <span className="block whitespace-nowrap font-mono text-[11px] text-muted-foreground tabular-nums">
                             {line.quantity} × {formatPrice(line.priceCents, market, intl)}
                           </span>
                         )}
@@ -164,7 +164,7 @@ export function CartSheet() {
               ))}
             </ul>
 
-            <SheetFooter className="border-t border-border bg-card px-5 py-4">
+            <SheetFooter className="shrink-0 border-t border-border bg-card px-4 py-3 sm:px-5 sm:py-4">
               <SummaryRows subtotalCents={subtotalCents} />
               <Separator className="my-1" />
               <div className="flex flex-col gap-2">
@@ -174,13 +174,16 @@ export function CartSheet() {
                   className={cn(buttonVariants({ size: "lg" }), "w-full justify-between font-bold uppercase tracking-wide")}
                 >
                   <span>{t.cart.checkout}</span>
-                  <ArrowRight className="size-4" aria-hidden="true" />
+                  <ArrowRight className="size-4 shrink-0" aria-hidden="true" />
                 </Link>
                 <div className="grid grid-cols-2 gap-2">
                   <Link
                     href={storePath(store, "/cart")}
                     onClick={() => setOpen(false)}
-                    className={cn(buttonVariants({ variant: "outline", size: "sm" }), "w-full")}
+                    className={cn(
+                      buttonVariants({ variant: "outline", size: "sm" }),
+                      "h-auto min-h-9 w-full min-w-0 whitespace-normal px-2.5 py-1.5 text-center text-xs leading-tight",
+                    )}
                   >
                     {t.product.viewCart}
                   </Link>
@@ -189,18 +192,18 @@ export function CartSheet() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setOpen(false)}
-                    className="w-full"
+                    className="h-auto min-h-9 w-full min-w-0 whitespace-normal border border-border/60 px-2.5 py-1.5 text-center text-xs leading-tight"
                   >
                     {t.product.notSold.back}
                   </Button>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between gap-2 pt-2">
-                <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-                  <ShieldCheck className="size-3.5 text-primary" aria-hidden="true" />
-                  {t.policy.warranty}
-                </span>
+              <div className="flex flex-col gap-2 border-t border-border/60 pt-2.5 [@media(max-height:560px)]:hidden">
+                <div className="flex items-start gap-1.5 text-[11px] leading-snug text-muted-foreground">
+                  <ShieldCheck className="mt-0.5 size-3.5 shrink-0 text-primary" aria-hidden="true" />
+                  <span>{t.policy.warranty}</span>
+                </div>
                 <PaymentBadges size="sm" limit={5} />
               </div>
             </SheetFooter>

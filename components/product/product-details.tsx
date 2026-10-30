@@ -45,9 +45,9 @@ export function ProductDetails({ product, store }: { product: Product; store: St
             </ul>
             <dl className="divide-y divide-border border-y border-border">
               {specs.map((s) => (
-                <div key={s.label} className="flex justify-between gap-4 py-2 text-sm">
-                  <dt className="text-muted-foreground">{s.label}</dt>
-                  <dd className="text-right font-mono">{s.value}</dd>
+                <div key={s.label} className="flex items-baseline justify-between gap-4 py-2 text-sm">
+                  <dt className="shrink-0 text-muted-foreground">{s.label}</dt>
+                  <dd className="min-w-0 break-words text-right font-mono">{s.value}</dd>
                 </div>
               ))}
             </dl>
