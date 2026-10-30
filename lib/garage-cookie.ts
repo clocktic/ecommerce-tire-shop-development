@@ -10,6 +10,9 @@ export type GarageSelection = {
   model?: string
   year?: number
   vehicleId?: string
+  boltPattern?: string
+  centerBore?: number
+  sizeLabel?: string
   width: number
   aspect: number
   rim: number

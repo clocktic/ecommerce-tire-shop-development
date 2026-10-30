@@ -1,4 +1,5 @@
 import type { Category, Offer, Product } from "@/lib/catalog/types"
+import { findVehicleById } from "@/lib/catalog/vehicles"
 import type { Market } from "@/lib/markets"
 import { localeMeta, type Store } from "@/lib/i18n/config"
 
@@ -97,6 +98,8 @@ export function offsetBand(offset: number): (typeof OFFSET_BANDS)[number] {
 }
 
 export function filterProducts(products: Product[], filters: CatalogFilters, market?: Market): Product[] {
+  const vehicle = findVehicleById(filters.vehicle)
+
   return products.filter((p) => {
     if (filters.brand && p.brand !== filters.brand) return false
     if (market && filters.stock && p.offers[market]?.availability !== filters.stock) return false
@@ -110,6 +113,12 @@ export function filterProducts(products: Product[], filters: CatalogFilters, mar
       if (filters.width && String(t.width) !== filters.width) return false
       if (filters.aspect && String(t.aspect) !== filters.aspect) return false
       if (filters.rim && String(t.rim) !== filters.rim) return false
+      if (vehicle && !filters.width && !filters.aspect && !filters.rim) {
+        const matchesVehicleSize = vehicle.sizes.some(
+          (s) => s.width === t.width && s.aspect === t.aspect && s.rim === t.rim,
+        )
+        if (!matchesVehicleSize) return false
+      }
       if (filters.season && t.season !== filters.season) return false
       if (filters.speed && t.speedRating !== filters.speed) return false
       if (filters.load && String(t.loadIndex) !== filters.load) return false
@@ -123,6 +132,18 @@ export function filterProducts(products: Product[], filters: CatalogFilters, mar
       if (filters.diameter && String(w.diameter) !== filters.diameter) return false
       if (filters.width && String(w.width) !== filters.width) return false
       if (filters.bolt && w.boltPattern !== filters.bolt) return false
+      if (vehicle) {
+        if (!filters.bolt && w.boltPattern !== vehicle.boltPattern) return false
+        if (!filters.diameter) {
+          const rims = vehicle.sizes.map((s) => s.rim)
+          const minRim = Math.min(...rims)
+          const maxRim = Math.max(...rims) + 1
+          if (w.diameter < minRim || w.diameter > maxRim) return false
+        }
+        if (!filters.bore && w.centerBore > 0 && vehicle.centerBore > 0 && w.centerBore + 0.5 < vehicle.centerBore) {
+          return false
+        }
+      }
       if (filters.offset && offsetBand(w.offset) !== filters.offset) return false
       if (filters.bore && String(w.centerBore) !== filters.bore) return false
       if (filters.finish && finishFamily(w.finish) !== filters.finish) return false
@@ -134,15 +155,24 @@ export function filterProducts(products: Product[], filters: CatalogFilters, mar
       if (filters.axle && b.axle !== filters.axle) return false
       if (filters.pistons && String(b.pistons ?? "") !== filters.pistons) return false
       if (filters.disc && String(b.discDiameterMm ?? "") !== filters.disc) return false
+      if (vehicle && b.fitment.length > 0) {
+        const needleMake = vehicle.make.toLowerCase()
+        const needleModel = vehicle.model.split("/")[0]!.trim().toLowerCase()
+        const matchesFitment = b.fitment.some((entry) => {
+          const text = entry.toLowerCase()
+          return text.includes(needleMake) || (needleModel.length >= 2 && text.includes(needleModel))
+        })
+        if (!matchesFitment) return false
+      }
     }
     return true
   })
 }
 
 export const TIRE_OPTIONS = {
-  width: [175, 185, 195, 205, 215, 225, 235, 245, 255, 265, 275, 285],
-  aspect: [30, 35, 40, 45, 50, 55, 60, 65, 70],
-  rim: [14, 15, 16, 17, 18, 19, 20, 21, 22],
+  width: [175, 185, 195, 205, 215, 225, 235, 245, 255, 265, 275, 285, 295, 305, 315],
+  aspect: [25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75],
+  rim: [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
 }
 
 export const SEASON_LABEL = { summer: "Summer", winter: "Winter", "all-season": "All-season" } as const

@@ -96,9 +96,10 @@ export default async function CategoryPage({ params, searchParams }: { params: P
         </p>
       </header>
 
-      {category === "tires" && <FitmentBanner currentWidth={filters.width} />}
+      <FitmentBanner category={category} filters={filters} matchingCount={products.length} />
 
       <form method="get" className="flex flex-col gap-4 border-b border-border py-6 md:flex-row md:items-end">
+        {filters.vehicle && <input type="hidden" name="vehicle" value={filters.vehicle} />}
         <fieldset className="grid flex-1 grid-cols-2 gap-3 lg:grid-cols-4">
           <legend className="sr-only">{fmt(t.catalog.filter, { category: copy.name })}</legend>
           <CategoryFilters category={category} products={all} filters={filters} store={store} t={t} />

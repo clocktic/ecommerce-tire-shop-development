@@ -5,6 +5,9 @@ import { useState } from "react"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useI18n } from "@/components/i18n/i18n-provider"
+import { useGarage } from "@/components/garage/garage-provider"
+import { FitmentModal } from "@/components/garage/fitment-modal"
+import { TireSizeIcon, VehicleIcon } from "@/components/garage/fitment-icons"
 import { TIRE_OPTIONS } from "@/lib/catalog"
 import { storePath } from "@/lib/i18n/config"
 import { cn } from "@/lib/utils"
@@ -15,13 +18,26 @@ const SIZE_PATTERN = /^\s*(\d{3})\s*[/\s-]?\s*(\d{2})\s*[zZ]?[rR]?\s*(\d{2})\s*$
 
 export function SizeFinder() {
   const router = useRouter()
-  const { store, t } = useI18n()
+  const { store, t, x } = useI18n()
   const f = t.home.finder
-  const [size, setSize] = useState<Size>({ width: "225", aspect: "45", rim: "17" })
+  const g = x.garage
+  const { active, applySelection } = useGarage()
+  const [size, setSize] = useState<Size>(() => ({
+    width: String(active?.width ?? 225),
+    aspect: String(active?.aspect ?? 45),
+    rim: String(active?.rim ?? 17),
+  }))
   const [typed, setTyped] = useState("")
   const [error, setError] = useState<string | null>(null)
 
   const submit = (s: Size) => {
+    applySelection({
+      kind: "size",
+      label: `${s.width}/${s.aspect}R${s.rim}`,
+      width: Number(s.width),
+      aspect: Number(s.aspect),
+      rim: Number(s.rim),
+    })
     const params = new URLSearchParams({ width: s.width, aspect: s.aspect, rim: s.rim })
     router.push(`${storePath(store, "/tires")}?${params.toString()}`)
   }
@@ -49,11 +65,25 @@ export function SizeFinder() {
       aria-labelledby="size-finder-title"
     >
       <CornerMarks />
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h2 id="size-finder-title" className="label-caps">
-          {f.title}
-        </h2>
-        <span className="label-caps text-muted-foreground">{f.hint}</span>
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
+        <div className="flex items-center gap-2">
+          <TireSizeIcon className="size-5 text-primary" />
+          <h2 id="size-finder-title" className="label-caps">
+            {f.title}
+          </h2>
+        </div>
+        <FitmentModal
+          defaultTab="vehicle"
+          trigger={
+            <button
+              type="button"
+              className="inline-flex items-center gap-1.5 border border-border bg-muted/40 px-2.5 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-foreground transition-colors hover:border-primary hover:text-primary"
+            >
+              <VehicleIcon className="size-4 w-5 text-primary" />
+              {g.vehicleTab}
+            </button>
+          }
+        />
       </div>
 
       <p

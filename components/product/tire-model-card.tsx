@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { tireSize, tireServiceDescription, type TireProduct } from '@/lib/catalog/types'
 import { getDictionary, storePath, type Store } from '@/lib/i18n'
 import { tireReferenceCopy } from '@/lib/i18n/tire-reference'
+import { useGarage } from '@/components/garage/garage-provider'
 import { Price } from './price'
 import { EuTyreLabel } from './eu-tyre-label'
 import { EprelReference } from './eprel-reference'
@@ -13,7 +14,16 @@ import { EprelReference } from './eprel-reference'
 export type TireCardVariant = Pick<TireProduct, 'id' | 'slug' | 'brand' | 'name' | 'mpn' | 'gtin' | 'images' | 'offers' | 'tire'>
 export function TireModelCard({ variants, store }: { variants: TireCardVariant[]; store: Store }) {
   const id = useId()
-  const defaultProduct = (store.market === 'eu' && (variants.find(p => p.tire.euLabel?.eprelId) || variants.find(p => p.tire.euLabel))) || variants[0]
+  const { active } = useGarage()
+  const garageMatch = active
+    ? variants.find(
+        p => p.tire.width === active.width && p.tire.aspect === active.aspect && p.tire.rim === active.rim,
+      )
+    : undefined
+  const defaultProduct =
+    garageMatch ||
+    (store.market === 'eu' && (variants.find(p => p.tire.euLabel?.eprelId) || variants.find(p => p.tire.euLabel))) ||
+    variants[0]
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const product = variants.find(p => p.id === selectedId) || defaultProduct
   const offer = product.offers[store.market]!

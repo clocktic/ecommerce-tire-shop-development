@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useMemo, useState, useTransitio
 import { useRouter } from "next/navigation"
 import { useSession } from "@/lib/auth-client"
 import { deleteGarageVehicle, saveVehicleToGarage, setActiveGarageVehicle } from "@/lib/actions/garage"
+import { findVehicleById } from "@/lib/catalog/vehicles"
 import { encodeGarageCookie, GARAGE_COOKIE, type GarageSelection } from "@/lib/garage-cookie"
 import type { SavedVehicleRow } from "@/lib/db/schema"
 import type { Market } from "@/lib/markets"
@@ -74,6 +75,7 @@ export function GarageProvider({
 
   const selectSaved = useCallback(
     (row: SavedVehicleRow) => {
+      const vehicle = findVehicleById(row.vehicleId)
       const selection: GarageSelection = {
         kind: row.kind === "vehicle" ? "vehicle" : "size",
         label: row.label,
@@ -81,6 +83,8 @@ export function GarageProvider({
         model: row.model ?? undefined,
         year: row.year ?? undefined,
         vehicleId: row.vehicleId ?? undefined,
+        boltPattern: vehicle?.boltPattern,
+        centerBore: vehicle?.centerBore,
         width: row.width,
         aspect: row.aspect,
         rim: row.rim,
