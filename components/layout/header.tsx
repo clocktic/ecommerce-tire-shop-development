@@ -1,11 +1,12 @@
 import Link from "next/link"
-import { Menu } from "lucide-react"
 import { Logo } from "@/components/layout/logo"
 import { LanguageMenu, RegionSwitcher } from "@/components/layout/region-switcher"
+import { MobileNavSheet } from "@/components/layout/mobile-nav-sheet"
 import { CartButton } from "@/components/cart/cart-button"
 import { AccountButton } from "@/components/account/account-button"
 import { FitmentBar } from "@/components/garage/fitment-bar"
 import { ThemeToggle } from "@/components/layout/theme-toggle"
+import { SearchModal } from "@/components/search/search-modal"
 import { CATEGORIES } from "@/lib/catalog"
 import { getDictionary, storePath, type Store } from "@/lib/i18n"
 import { getExtras } from "@/lib/i18n/extras"
@@ -67,27 +68,10 @@ export function Header({ store }: { store: Store }) {
           </nav>
 
           <div className="flex shrink-0 items-center gap-0.5">
+            <SearchModal />
             <AccountButton />
             <CartButton />
-            <details className="group relative @min-[1100px]/header:hidden">
-              <summary className="cursor-pointer p-2" aria-label={t.common.openMenu}>
-                <Menu className="size-5" aria-hidden="true" />
-              </summary>
-              <nav
-                aria-label={t.common.mobileNav}
-                className="absolute right-0 top-full mt-3 w-64 border border-border bg-card p-2 shadow-lg"
-              >
-                <ul className="flex flex-col">
-                  {nav.map((item) => (
-                    <li key={item.href}>
-                      <Link href={item.href} className="block px-3 py-3 text-sm font-semibold uppercase tracking-wide">
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </details>
+            <MobileNavSheet nav={nav} openLabel={t.common.openMenu} navLabel={t.common.mobileNav} />
           </div>
         </div>
       </div>

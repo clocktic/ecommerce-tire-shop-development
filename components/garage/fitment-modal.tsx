@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useI18n } from "@/components/i18n/i18n-provider"
 import { useGarage } from "@/components/garage/garage-provider"
 import { TireSizeIcon, VehicleIcon, WheelRimIcon } from "@/components/garage/fitment-icons"
+import { getVehicleMakeIconUrl } from "@/lib/brand-icons"
 import {
   findVehicleById,
   isCatalogTireSize,
@@ -34,9 +35,11 @@ const PRIORITY_MAKES: Record<"us" | "eu", string[]> = {
 export function FitmentModal({
   trigger,
   defaultTab,
+  initialMake,
 }: {
   trigger: React.ReactElement
   defaultTab?: "vehicle" | "size"
+  initialMake?: string
 }) {
   const [open, setOpen] = useState(false)
   const { store, t, x } = useI18n()
@@ -60,13 +63,17 @@ export function FitmentModal({
   }, [store.market])
 
   const initialVehicle = useMemo(() => {
+    if (initialMake) {
+      const byInitialMake = allVehicles.find((v) => v.make === initialMake)
+      if (byInitialMake) return byInitialMake
+    }
     if (active?.vehicleId) {
       const found = findVehicleById(active.vehicleId)
       if (found && found.markets.includes(store.market)) return found
     }
     const firstMake = makes[0]
     return allVehicles.find((v) => v.make === firstMake) ?? allVehicles[0]
-  }, [active?.vehicleId, allVehicles, makes, store.market])
+  }, [active?.vehicleId, allVehicles, initialMake, makes, store.market])
 
   const [tab, setTab] = useState<"vehicle" | "size">(
     defaultTab ?? (active?.kind === "size" ? "size" : "vehicle"),
@@ -467,6 +474,7 @@ export function FitmentModal({
                       .join("")
                       .slice(0, 2)
                       .toUpperCase()
+                    const makeIcon = getVehicleMakeIconUrl(item)
                     return (
                       <button
                         key={item}
@@ -483,12 +491,25 @@ export function FitmentModal({
                         <span
                           className={cn(
                             "flex size-5 shrink-0 items-center justify-center font-mono text-[10px] font-bold",
-                            selected
-                              ? "bg-primary-foreground/20 text-primary-foreground"
-                              : "bg-muted text-muted-foreground group-hover:text-foreground",
+                            makeIcon
+                              ? "bg-white p-0.5"
+                              : selected
+                                ? "bg-primary-foreground/20 text-primary-foreground"
+                                : "bg-muted text-muted-foreground group-hover:text-foreground",
                           )}
                         >
-                          {monogram}
+                          {makeIcon ? (
+                            <img
+                              src={makeIcon}
+                              alt=""
+                              width={14}
+                              height={14}
+                              loading="lazy"
+                              className="size-3.5 object-contain"
+                            />
+                          ) : (
+                            monogram
+                          )}
                         </span>
                         <span className="min-w-0 flex-1 truncate">{item}</span>
                         <span

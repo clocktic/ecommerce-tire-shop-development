@@ -6,6 +6,7 @@ import { CatalogUnavailable } from "@/components/catalog/catalog-unavailable"
 import { getDictionary, parseStore, storePath } from "@/lib/i18n"
 import { Hero } from "@/components/home/hero"
 import { CategoryTiles } from "@/components/home/category-tiles"
+import { VehicleBrandGrid } from "@/components/home/vehicle-brand-grid"
 import { SidewallDecoder } from "@/components/home/sidewall-decoder"
 import { MarketPromise } from "@/components/home/market-promise"
 import { ProductCard } from "@/components/product/product-card"
@@ -22,6 +23,7 @@ export default async function HomePage({ params }: { params: Promise<{ market: s
     <>
       <Hero store={store} />
       <CategoryTiles store={store} />
+      <VehicleBrandGrid />
       <SidewallDecoder t={t} />
 
       <section aria-labelledby="featured-title" className="mx-auto max-w-7xl px-4 pt-24 md:px-6">

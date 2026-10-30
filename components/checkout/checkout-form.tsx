@@ -13,6 +13,7 @@ import { fmt } from "@/lib/i18n/fmt"
 import { storePath } from "@/lib/i18n/config"
 import { MARKETS, formatPrice } from "@/lib/markets"
 import { policyHref } from "@/lib/legal/pages"
+import { PAYMENT_BRAND_ICONS, theSvgUrl } from "@/lib/brand-icons"
 
 export function CheckoutForm() {
   const { lines, subtotalCents, clear } = useCart()
@@ -149,6 +150,24 @@ export function CheckoutForm() {
           <p className="text-sm leading-relaxed text-muted-foreground">
             {t.accepted}
           </p>
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            {PAYMENT_BRAND_ICONS.map((icon) => (
+              <span
+                key={icon.slug}
+                title={icon.name}
+                className="flex h-8 items-center justify-center border border-border bg-white px-2.5"
+              >
+                <img
+                  src={theSvgUrl(icon.slug, "default")}
+                  alt={icon.name}
+                  width={28}
+                  height={18}
+                  loading="lazy"
+                  className="h-4 w-auto object-contain"
+                />
+              </span>
+            ))}
+          </div>
         </fieldset>
       </div>
 

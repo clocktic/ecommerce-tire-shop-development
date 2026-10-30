@@ -24,9 +24,11 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs"
 import { ProductCard } from "@/components/product/product-card"
 import { FilterSelect } from "@/components/catalog/filter-select"
 import { FitmentBanner } from "@/components/garage/fitment-banner"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { TireModelCard } from "@/components/product/tire-model-card"
 import type { TireProduct } from "@/lib/catalog/types"
+import { X } from "lucide-react"
 
 type Params = Promise<{ market: string; lang: string; category: string }>
 type Search = Promise<Record<string, string | string[] | undefined>>
@@ -62,8 +64,31 @@ export default async function CategoryPage({ params, searchParams }: { params: P
   const catalog = await readProductsByCategory(store.market, category)
   if (!catalog.ok) return <div className="mx-auto max-w-7xl px-4 md:px-6"><CatalogUnavailable store={store} /></div>
   const all = catalog.data.map((p) => localizeProduct(p, store))
-  const products = filterProducts(all, filters, store.market)
-  const active = Object.values(filters).some(Boolean)
+  const filtered = filterProducts(all, filters, store.market)
+  const sortMode = filters.sort ?? "featured"
+  const products = [...filtered].sort((a, b) => {
+    const priceA = a.offers[store.market]?.priceCents ?? 0
+    const priceB = b.offers[store.market]?.priceCents ?? 0
+    if (sortMode === "price-asc") return priceA - priceB
+    if (sortMode === "price-desc") return priceB - priceA
+    if (sortMode === "brand-asc") return a.brand.localeCompare(b.brand)
+    return 0
+  })
+  const activeEntries = Object.entries(filters).filter(
+    (entry): entry is [string, string] =>
+      Boolean(entry[1]) && entry[0] !== "page" && entry[0] !== "sort",
+  )
+  const active = activeEntries.length > 0 || Boolean(filters.sort)
+  const removeFilterHref = (keyToRemove: string) => {
+    const query = new URLSearchParams(
+      Object.entries(filters).filter(
+        (e): e is [string, string] =>
+          typeof e[1] === "string" && e[0] !== keyToRemove && e[0] !== "page",
+      ),
+    )
+    const qs = query.toString()
+    return qs ? `${storePath(store, `/${category}`)}?${qs}` : storePath(store, `/${category}`)
+  }
   const grouped = new Map<string, Product[]>()
   for (const product of products) {
     const key = product.category === 'tires' ? `${product.brand}:${product.tire.model || product.name}` : product.id
@@ -115,6 +140,23 @@ export default async function CategoryPage({ params, searchParams }: { params: P
           )}
         </div>
       </form>
+
+      {activeEntries.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 pt-4">
+          {activeEntries.map(([key, val]) => (
+            <Link key={key} href={removeFilterHref(key)}>
+              <Badge
+                variant="secondary"
+                className="h-7 gap-1.5 rounded-none border border-border px-2.5 font-mono text-xs uppercase hover:border-primary"
+              >
+                <span className="text-muted-foreground">{key}:</span>
+                <span className="font-semibold text-foreground">{val}</span>
+                <X className="size-3 text-muted-foreground" aria-hidden="true" />
+              </Badge>
+            </Link>
+          ))}
+        </div>
+      )}
 
       {products.length > 0 ? (
         <div className="grid gap-4 py-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -205,6 +247,18 @@ function CategoryFilters({
         value={filters.stock}
         options={Object.keys(t.labels.availability)}
         labels={t.labels.availability}
+      />
+      <FilterSelect
+        name="sort"
+        label="Sort"
+        any="Featured"
+        value={filters.sort}
+        options={["price-asc", "price-desc", "brand-asc"]}
+        labels={{
+          "price-asc": "Price: Low → High",
+          "price-desc": "Price: High → Low",
+          "brand-asc": "Brand: A → Z",
+        }}
       />
     </>
   )

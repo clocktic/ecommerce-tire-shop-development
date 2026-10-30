@@ -37,7 +37,7 @@ export function FitmentBar() {
       : null
 
   return (
-    <div className="border-b border-border bg-muted/40">
+    <div className="border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/85">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-1.5 md:px-6">
         {active ? (
           <div className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-2">

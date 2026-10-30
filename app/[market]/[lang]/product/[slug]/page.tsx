@@ -20,6 +20,7 @@ import { ProductDetails } from "@/components/product/product-details"
 import { ProductGallery } from "@/components/product/product-gallery"
 import { Utqg } from "@/components/product/utqg"
 import { TireVariants } from "@/components/product/tire-variants"
+import { ProductFitmentBadge } from "@/components/garage/product-fitment-badge"
 import { tireVariants } from "@/lib/catalog/tire-variants"
 
 type Params = Promise<{ market: string; lang: string; slug: string }>
@@ -109,6 +110,29 @@ export default async function ProductPage({ params }: { params: Params }) {
               {t.labels.availability[offer.availability]}
             </span>
           </div>
+
+          <ProductFitmentBadge
+            target={
+              product.category === "tires"
+                ? {
+                    category: "tires",
+                    width: product.tire.width,
+                    aspect: product.tire.aspect,
+                    rim: product.tire.rim,
+                  }
+                : product.category === "wheels"
+                  ? {
+                      category: "wheels",
+                      diameter: product.wheel.diameter,
+                      boltPattern: product.wheel.boltPattern,
+                      centerBore: product.wheel.centerBore,
+                    }
+                  : {
+                      category: "brakes",
+                      fitment: product.brake.fitment,
+                    }
+            }
+          />
 
           {product.category === "tires" && t.product.euLabel && product.tire.euLabel && (
             <EuTyreLabel label={product.tire.euLabel} text={t.product.euLabel} />
