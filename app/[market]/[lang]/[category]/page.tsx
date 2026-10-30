@@ -27,6 +27,8 @@ import { FilterSelect } from "@/components/catalog/filter-select"
 import { FitmentBanner } from "@/components/garage/fitment-banner"
 import { Button } from "@/components/ui/button"
 import { tireReferenceCopy } from "@/lib/i18n/tire-reference"
+import { TireModelsSection } from "@/components/catalog/tire-models-section"
+import { referenceBrands } from "@/lib/catalog/reference"
 
 type Params = Promise<{ market: string; lang: string; category: string }>
 type Search = Promise<Record<string, string | string[] | undefined>>
@@ -104,9 +106,10 @@ export default async function CategoryPage({ params, searchParams }: { params: P
             <ProductCard key={p.slug} product={p} store={store} />
           ))}
         </div>
-      ) : (
+      ) : category !== 'tires' || filters.price || filters.stock ? (
         <EmptyState store={store} category={category} t={t} />
-      )}
+      ) : null}
+      {category === 'tires' && <TireModelsSection store={store} filters={filters} />}
     </div>
   )
 }
@@ -126,7 +129,7 @@ function CategoryFilters({
 }) {
   const c = t.catalog
   const any = c.any
-  const brands = unique(products.map((p) => p.brand))
+  const brands = unique([...products.map((p) => p.brand), ...(category === 'tires' ? referenceBrands : [])])
   const yesNo = { yes: c.yes, no: c.no }
   const shared = (
     <>

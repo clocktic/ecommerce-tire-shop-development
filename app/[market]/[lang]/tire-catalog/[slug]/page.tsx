@@ -8,7 +8,7 @@ import { referenceModels, referenceSize, referenceSizes } from '@/lib/catalog/re
 import { storeAlternates } from '@/lib/seo'
 import { FilterSelect } from '@/components/catalog/filter-select'
 
-type Props = { params: Promise<{ market: string; lang: string; slug: string }>; searchParams: Promise<{ size?: string | string[] }> }
+type Props = { params: Promise<{ market: string; lang: string; slug: string }>; searchParams: Promise<{ size?: string | string[]; mpn?: string | string[]; gtin?: string | string[] }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const p = await params; const store = parseStore(p.market, p.lang); const model = referenceModels.find(m => m.slug === p.slug)
   if (!store || !model) return {}
@@ -21,7 +21,9 @@ export default async function ReferenceModelPage({ params, searchParams }: Props
   const t = tireReferenceCopy(store.lang)
   const query = await searchParams
   const size = typeof query.size === 'string' ? query.size : ''
-  const variants = model.variants.filter(v => !size || referenceSize(v) === size)
+  const mpn = typeof query.mpn === 'string' ? query.mpn : ''
+  const gtin = typeof query.gtin === 'string' ? query.gtin : ''
+  const variants = model.variants.filter(v => (!size || referenceSize(v) === size) && (!mpn || v.mpn === mpn) && (!gtin || v.gtin === gtin))
   return <div className="mx-auto max-w-7xl px-4 py-8 md:px-6">
     <Link href={storePath(store, `/tire-catalog?brand=${encodeURIComponent(model.brand)}`)} className="text-sm text-muted-foreground underline underline-offset-4">← {t.back}</Link>
     <header className="my-8 flex flex-col gap-3"><p className="label-caps text-primary">{model.brand}</p><h1 className="font-expanded break-words text-3xl font-extrabold uppercase sm:text-4xl md:text-6xl">{model.name}</h1><p className="font-mono text-sm text-muted-foreground">{referenceSizes(model).length} {t.sizes} · {model.variants.length} {t.variants}</p></header>
