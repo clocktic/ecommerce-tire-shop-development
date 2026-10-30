@@ -50,6 +50,45 @@ class CollectorTests(unittest.TestCase):
         self.variant['image'] = ['https://example.org/1.jpg'] * 2
         self.assertEqual(self.collect([self.variant])['products'], [])
 
+    def test_winter_without_utqg_remains_pending(self):
+        self.variant['additionalProperty'].pop()
+        next(a for a in self.variant['additionalProperty'] if a['name'] == 'Season')['value'] = 'Winter'
+        product = self.collect([self.variant])['products'][0]
+        self.assertNotIn('utqg', product['tire'])
+        self.assertEqual(product['verification']['utqgStatus'], 'winter-applicability-pending')
+
+    def test_invalid_winter_grade_is_rejected(self):
+        self.variant['additionalProperty'][-1]['value'] = '300ZZ'
+        next(a for a in self.variant['additionalProperty'] if a['name'] == 'Season')['value'] = 'Winter'
+        self.assertEqual(self.collect([self.variant])['products'], [])
+
+    def test_us_only_model_does_not_claim_eu_verification(self):
+        self.model['euUrl'] = None
+        product = self.collect([self.variant])['products'][0]
+        self.assertNotIn(None, product['verification']['sources'])
+        self.assertIn('EU model and regional article confirmation', product['verification']['pending'])
+
+    def test_model_gallery_can_supply_a_missing_variant_photo(self):
+        other = copy.deepcopy(self.variant)
+        other.update(mpn='67890', sku='N67890', image=['https://example.org/1.jpg'])
+        products = self.collect([self.variant, other])['products']
+        self.assertEqual(len(products), 2)
+        self.assertEqual(len(products[1]['images']), 2)
+        self.assertIn('photoScope', products[1]['verification'])
+
+    def test_other_model_gallery_is_not_borrowed(self):
+        other = copy.deepcopy(self.variant)
+        other.update(mpn='67890', model='Pilot Sport 5')
+        self.variant['image'] = ['https://example.org/1.jpg']
+        self.assertEqual(self.collect([self.variant, other])['products'], [])
+
+    def test_nokian_official_brand_alias(self):
+        self.model['brand'] = 'Nokian'
+        self.variant['brand'] = 'Nokian Tyres'
+        self.assertEqual(len(self.collect([self.variant])['products']), 1)
+        self.variant['brand'] = 'Nexen'
+        self.assertEqual(self.collect([self.variant])['products'], [])
+
     def test_gtin_checksum(self):
         self.assertTrue(collector.valid_gtin('086699208965'))
         self.assertFalse(collector.valid_gtin('086699208966'))

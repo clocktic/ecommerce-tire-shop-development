@@ -49,3 +49,8 @@ def slug(text):
 
 def normalized(text):
     return re.sub(r'[^a-z0-9]', '', text.lower())
+
+
+def brand_key(text):
+    key = normalized(text)
+    return {'nokiantyres': 'nokian'}.get(key, key)
