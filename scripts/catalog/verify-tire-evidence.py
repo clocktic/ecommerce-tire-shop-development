@@ -1,4 +1,5 @@
 """Recheck identifier matches against the direct EPREL record, retaining provenance."""
+import argparse
 import concurrent.futures
 import datetime
 import hashlib
@@ -40,7 +41,11 @@ def verify(match):
 
 
 def main():
-    source = json.loads((OUT / 'crosswalk.json').read_text())
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--input', type=Path, default=OUT / 'crosswalk.json')
+    parser.add_argument('--output', type=Path, default=OUT / 'verified-crosswalk.json')
+    args = parser.parse_args()
+    source = json.loads(args.input.read_text())
     verified, failed = [], []
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
         jobs = {pool.submit(verify, match): match['productId'] for match in source['matches']}
@@ -51,7 +56,7 @@ def main():
                 result = {'productId': jobs[future], 'error': str(exc)}
             (failed if 'error' in result else verified).append(result)
     result = {'matches': sorted(verified, key=lambda row: row['productId']), 'failed': failed, 'summary': {**source['summary'], 'directlyVerified': len(verified), 'directCheckFailed': len(failed)}, 'registryCoverage': source['registryCoverage']}
-    (OUT / 'verified-crosswalk.json').write_text(json.dumps(result, indent=2, ensure_ascii=False))
+    args.output.write_text(json.dumps(result, indent=2, ensure_ascii=False))
     print(json.dumps(result['summary']), flush=True)
 
 

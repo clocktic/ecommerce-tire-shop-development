@@ -5,7 +5,7 @@ import datetime
 import json
 import re
 from pathlib import Path
-from tire_sources import normalized
+from tire_sources import brand_key, normalized
 
 OUT = Path('.v0/refs/verified-tires')
 
@@ -24,7 +24,8 @@ def disagreements(product, record):
     tire = product['tire']
     errors = []
     for us, eu, label in [(product['brand'], record.get('supplierOrTrademark'), 'brand'), (tire.get('model'), record.get('commercialName'), 'model')]:
-        if not us or not eu or normalized(us) != normalized(eu):
+        normalize = brand_key if label == 'brand' else normalized
+        if not us or not eu or normalize(us) != normalize(eu):
             errors.append(label)
     for us, eu in [('width', 'tyreSection'), ('aspect', 'aspectRatio'), ('rim', 'rimDiameter'), ('loadIndex', 'loadCapacityIndex'), ('speedRating', 'speedCategorySymbol')]:
         if str(tire.get(us)) != str(record.get(eu)):
@@ -95,9 +96,12 @@ def match_products(products, registry):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--directory', type=Path, default=OUT)
+    parser.add_argument('--us-file', type=Path)
+    parser.add_argument('--eu-file', type=Path)
+    parser.add_argument('--output', type=Path)
     args = parser.parse_args()
-    us = json.loads((args.directory / 'us-variants.json').read_text())
-    eu = json.loads((args.directory / 'eu-registry.json').read_text())
+    us = json.loads((args.us_file or args.directory / 'us-variants.json').read_text())
+    eu = json.loads((args.eu_file or args.directory / 'eu-registry.json').read_text())
     products = list({p['id']: p for row in us for p in row['products']}.values())
     registry = [r for row in eu for r in row['records']]
     result = match_products(products, registry)
@@ -105,7 +109,7 @@ def main():
     result['generatedAt'] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     result['summary'] = {'usCandidates': len(products), 'euRecords': len(registry), 'exactMatches': len(result['matches']), 'rejectedMatches': len(result['rejected']), 'unmatched': len(result['unmatched']), 'publicationReady': 0}
     result['registryCoverage'] = [{k: row.get(k) for k in ['brand', 'scannedRecords', 'totalRegistryRecords', 'scanComplete', 'error']} for row in eu]
-    (args.directory / 'crosswalk.json').write_text(json.dumps(result, ensure_ascii=False, indent=2))
+    (args.output or args.directory / 'crosswalk.json').write_text(json.dumps(result, ensure_ascii=False, indent=2))
     print(json.dumps(result['summary']))
 
 

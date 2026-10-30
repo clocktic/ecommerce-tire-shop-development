@@ -49,8 +49,22 @@ def harvest(row, max_pages):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--pages', type=int, default=1000)
+    parser.add_argument('--selection', type=Path)
+    parser.add_argument('--output', type=Path, default=OUT / 'eu-registry.json')
     args = parser.parse_args()
-    rows = [r for r in json.loads((OUT / 'models.json').read_text()) if r['models']]
+    if args.pages < 1:
+        parser.error('--pages must be positive')
+    if args.selection:
+        by_brand = {}
+        for batch in json.loads(args.selection.read_text()):
+            brand = batch['model']['brand']
+            models = by_brand.setdefault(brand, {})
+            for product in batch['products']:
+                key = normalized(product['tire']['model'])
+                models[key] = {'modelKey': key}
+        rows = [{'brand': brand, 'models': list(models.values())} for brand, models in by_brand.items()]
+    else:
+        rows = [r for r in json.loads((OUT / 'models.json').read_text()) if r['models']]
     results = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
         jobs = {pool.submit(harvest, row, args.pages): row['brand'] for row in rows}
@@ -61,7 +75,9 @@ def main():
             except Exception as exc:
                 result = {'brand': brand, 'records': [], 'error': str(exc)}
             results.append(result)
-            (OUT / 'eu-registry.json').write_text(json.dumps(results, ensure_ascii=False))
+            temporary = args.output.with_suffix('.tmp')
+            temporary.write_text(json.dumps(results, ensure_ascii=False))
+            temporary.replace(args.output)
             print(brand, 'matches', len(result['records']), 'scanned', result.get('scannedRecords'), result.get('error', ''), flush=True)
 
 

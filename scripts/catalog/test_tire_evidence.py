@@ -54,6 +54,13 @@ class EvidenceTests(unittest.TestCase):
     def test_zero_gtin_is_invalid(self):
         self.assertIsNone(matcher.gtin_key('0000000000000'))
 
+    def test_official_nokian_alias_does_not_change_model_matching(self):
+        self.product['brand'] = 'Nokian'
+        self.record['supplierOrTrademark'] = 'NOKIAN TYRES'
+        self.assertEqual(len(self.match()['matches']), 1)
+        self.record['commercialName'] = 'Another model'
+        self.assertIn('model', self.match()['rejected'][0]['fields'])
+
     def test_runflat_disagreement_is_rejected(self):
         self.record['unrestrictedMobility'] = True
         self.assertIn('runFlat', self.match()['rejected'][0]['fields'])

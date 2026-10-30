@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { isDeepStrictEqual } from 'node:util'
+import { isDeepStrictEqual, parseArgs } from 'node:util'
 import { Pool } from 'pg'
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { boolean, jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
@@ -9,7 +9,8 @@ const table = pgTable('products', {
   id: text('id').primaryKey(), data: jsonb('data').notNull(), archived: boolean('archived').notNull(),
   updatedAt: timestamp('updated_at').notNull(),
 })
-const report = JSON.parse(readFileSync('.v0/refs/verified-tires/verified-crosswalk.json', 'utf8'))
+const { values: options } = parseArgs({ options: { input: { type: 'string', default: '.v0/refs/verified-tires/verified-crosswalk.json' }, apply: { type: 'boolean', default: false } } })
+const report = JSON.parse(readFileSync(options.input, 'utf8'))
 const matches = report.matches
 if (new Set(matches.map(m => m.productId)).size !== matches.length) throw new Error('Duplicate evidence target')
 for (const match of matches) {
@@ -40,8 +41,8 @@ try {
     if (isDeepStrictEqual(row.data.verification?.euEvidence, evidence)) continue
     updates.push({ row, data: { ...row.data, verification: { ...row.data.verification, euEvidence: evidence } } })
   }
-  console.log(JSON.stringify({ matched: matches.length, archivedDraftsToEnrich: updates.length, skipped, apply: process.argv.includes('--apply') }))
-  if (process.argv.includes('--apply')) {
+  console.log(JSON.stringify({ matched: matches.length, archivedDraftsToEnrich: updates.length, skipped, apply: options.apply }))
+  if (options.apply) {
     await db.transaction(async tx => {
       for (const { row, data } of updates) {
         const changed = await tx.update(table).set({ data, updatedAt: new Date() })
