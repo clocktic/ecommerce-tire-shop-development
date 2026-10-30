@@ -3,7 +3,8 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Truck, RotateCcw, ShieldCheck } from "lucide-react"
 import { localizeProduct, offerFor, type Product } from "@/lib/catalog"
-import { getProductBySlug, getProductsByCategory } from "@/lib/catalog/queries"
+import { readProductBySlug, readProductsByCategory } from "@/lib/catalog/queries"
+import { CatalogUnavailable } from "@/components/catalog/catalog-unavailable"
 import { counterpart, fmt, getDictionary, parseStore, storePath, type Dictionary, type Store } from "@/lib/i18n"
 import { markets } from "@/lib/markets"
 import { storeAlternates } from "@/lib/seo"
@@ -29,8 +30,11 @@ export const dynamicParams = true
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { market, lang, slug } = await params
   const store = parseStore(market, lang)
-  const base = await getProductBySlug(slug)
-  if (!base || !store) return {}
+  if (!store) return {}
+  const result = await readProductBySlug(slug)
+  if (!result.ok) return { robots: { index: false, follow: true } }
+  const base = result.data
+  if (!base) return {}
   const product = localizeProduct(base, store)
   const availableIn = markets.filter((m) => product.offers[m])
   return {
@@ -46,7 +50,9 @@ export default async function ProductPage({ params }: { params: Params }) {
   const { market, lang, slug } = await params
   const store = parseStore(market, lang)
   if (!store) notFound()
-  const base = await getProductBySlug(slug)
+  const result = await readProductBySlug(slug)
+  if (!result.ok) return <div className="mx-auto max-w-7xl px-4 md:px-6"><CatalogUnavailable store={store} /></div>
+  const base = result.data
   if (!base) notFound()
 
   const t = getDictionary(store)
@@ -58,7 +64,9 @@ export default async function ProductPage({ params }: { params: Params }) {
   const { code, meta } = productCode(product, t)
   const categoryName = t.categories[product.category].name
   const jsonLd = productJsonLd(product, store)
-  const categoryProducts = await getProductsByCategory(store.market, product.category)
+  const relatedResult = await readProductsByCategory(store.market, product.category)
+  if (!relatedResult.ok) return <div className="mx-auto max-w-7xl px-4 md:px-6"><CatalogUnavailable store={store} /></div>
+  const categoryProducts = relatedResult.data
   const variants = base.category === "tires" ? tireVariants(base, categoryProducts) : []
   const related = categoryProducts
     .filter((p) => p.slug !== product.slug)
