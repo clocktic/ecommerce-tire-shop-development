@@ -1,7 +1,7 @@
 import "server-only"
 
 import { cache } from "react"
-import { asc, eq } from "drizzle-orm"
+import { and, asc, eq } from "drizzle-orm"
 import { db } from "@/lib/db"
 import { products } from "@/lib/db/schema"
 import type { Category, Product } from "@/lib/catalog/types"
@@ -26,5 +26,7 @@ export async function getProductsByCategory(market: Market, category: Category):
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
-  return (await activeProducts()).find((p) => p.slug === slug)
+  const [row] = await db.select({ data: products.data }).from(products)
+    .where(and(eq(products.archived, false), eq(products.slug, slug))).limit(1)
+  return row?.data
 }

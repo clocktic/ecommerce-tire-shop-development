@@ -8,8 +8,6 @@ import {
   OFFSET_BANDS,
   PISTON_OPTIONS,
   PRICE_BANDS,
-  SPEED_RATINGS,
-  TIRE_OPTIONS,
   filterProducts,
   finishFamily,
   isCategory,
@@ -26,9 +24,8 @@ import { ProductCard } from "@/components/product/product-card"
 import { FilterSelect } from "@/components/catalog/filter-select"
 import { FitmentBanner } from "@/components/garage/fitment-banner"
 import { Button } from "@/components/ui/button"
-import { tireReferenceCopy } from "@/lib/i18n/tire-reference"
-import { TireModelsSection } from "@/components/catalog/tire-models-section"
-import { referenceBrands } from "@/lib/catalog/reference"
+import { TireModelCard } from "@/components/product/tire-model-card"
+import type { TireProduct } from "@/lib/catalog/types"
 
 type Params = Promise<{ market: string; lang: string; category: string }>
 type Search = Promise<Record<string, string | string[] | undefined>>
@@ -64,6 +61,22 @@ export default async function CategoryPage({ params, searchParams }: { params: P
   const all = (await getProductsByCategory(store.market, category)).map((p) => localizeProduct(p, store))
   const products = filterProducts(all, filters, store.market)
   const active = Object.values(filters).some(Boolean)
+  const grouped = new Map<string, Product[]>()
+  for (const product of products) {
+    const key = product.category === 'tires' ? `${product.brand}:${product.tire.model || product.name}` : product.id
+    const group = grouped.get(key) || []
+    group.push(product)
+    grouped.set(key, group)
+  }
+  const groups = [...grouped.values()]
+  const pages = category === 'tires' ? Math.max(1, Math.ceil(groups.length / 24)) : 1
+  const page = Math.min(pages, Math.max(1, Number.parseInt(filters.page || '1', 10) || 1))
+  const visible = category === 'tires' ? groups.slice((page - 1) * 24, page * 24) : groups
+  const pageHref = (n: number) => {
+    const query = new URLSearchParams(Object.entries(filters).filter((e): e is [string, string] => typeof e[1] === 'string'))
+    query.set('page', String(n))
+    return `${storePath(store, `/${category}`)}?${query}`
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-6">
@@ -80,7 +93,6 @@ export default async function CategoryPage({ params, searchParams }: { params: P
         </p>
       </header>
 
-      {category === "tires" && <Link href={storePath(store, '/tire-catalog')} className="mt-6 flex items-center justify-between gap-4 border border-border bg-muted p-5 font-semibold hover:text-primary"><span>{tireReferenceCopy(store.lang).title}</span><span aria-hidden="true">→</span></Link>}
       {category === "tires" && <FitmentBanner currentWidth={filters.width} />}
 
       <form method="get" className="flex flex-col gap-4 border-b border-border py-6 md:flex-row md:items-end">
@@ -102,14 +114,19 @@ export default async function CategoryPage({ params, searchParams }: { params: P
 
       {products.length > 0 ? (
         <div className="grid gap-4 py-8 sm:grid-cols-2 lg:grid-cols-4">
-          {products.map((p) => (
-            <ProductCard key={p.slug} product={p} store={store} />
-          ))}
+          {visible.map(group => {
+            const p = group[0]
+            if (p.category !== 'tires') return <ProductCard key={p.slug} product={p} store={store} />
+            const variants = group.filter((v): v is TireProduct => v.category === 'tires')
+              .sort((a, b) => a.offers[store.market]!.priceCents - b.offers[store.market]!.priceCents)
+              .map(({ id, slug, brand, name, mpn, gtin, images, offers, tire }) => ({ id, slug, brand, name, mpn, gtin, images, offers, tire }))
+            return <TireModelCard key={`${p.brand}:${p.tire.model || p.name}`} variants={variants} store={store} />
+          })}
         </div>
-      ) : category !== 'tires' || filters.price || filters.stock ? (
+      ) : (
         <EmptyState store={store} category={category} t={t} />
-      ) : null}
-      {category === 'tires' && <TireModelsSection store={store} filters={filters} />}
+      )}
+      {pages > 1 && <nav aria-label={copy.name} className="flex items-center justify-center gap-6 pb-8">{page > 1 && <Link href={pageHref(page - 1)} rel="prev" className="underline">←</Link>}<span className="font-mono">{page} / {pages}</span>{page < pages && <Link href={pageHref(page + 1)} rel="next" className="underline">→</Link>}</nav>}
     </div>
   )
 }
@@ -129,7 +146,7 @@ function CategoryFilters({
 }) {
   const c = t.catalog
   const any = c.any
-  const brands = unique([...products.map((p) => p.brand), ...(category === 'tires' ? referenceBrands : [])])
+  const brands = unique(products.map((p) => p.brand))
   const yesNo = { yes: c.yes, no: c.no }
   const shared = (
     <>
@@ -154,21 +171,24 @@ function CategoryFilters({
   )
 
   if (category === "tires") {
-    const loads = unique(products.map((p) => (p.category === "tires" ? String(p.tire.loadIndex) : "")))
+    const tires = products.filter((p): p is TireProduct => p.category === 'tires')
+    const options = (key: 'width' | 'aspect' | 'rim' | 'loadIndex' | 'speedRating') => unique(tires.map(p => String(p.tire[key]))).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+    const loads = options('loadIndex')
+    const rims = options('rim')
     return (
       <>
-        <FilterSelect name="width" label={c.width} any={any} value={filters.width} options={TIRE_OPTIONS.width.map(String)} />
-        <FilterSelect name="aspect" label={c.profile} any={any} value={filters.aspect} options={TIRE_OPTIONS.aspect.map(String)} />
+        <FilterSelect name="width" label={c.width} any={any} value={filters.width} options={options('width')} />
+        <FilterSelect name="aspect" label={c.profile} any={any} value={filters.aspect} options={options('aspect')} />
         <FilterSelect
           name="rim"
           label={c.rim}
           any={any}
           value={filters.rim}
-          options={TIRE_OPTIONS.rim.map(String)}
-          labels={Object.fromEntries(TIRE_OPTIONS.rim.map((rim) => [String(rim), `R${rim}`]))}
+          options={rims}
+          labels={Object.fromEntries(rims.map((rim) => [rim, `R${rim}`]))}
         />
         <FilterSelect name="season" label={c.season} any={any} value={filters.season} options={Object.keys(t.labels.season)} labels={t.labels.season} />
-        <FilterSelect name="speed" label={c.speed} any={any} value={filters.speed} options={[...SPEED_RATINGS]} />
+        <FilterSelect name="speed" label={c.speed} any={any} value={filters.speed} options={options('speedRating')} />
         {loads.length > 0 && <FilterSelect name="load" label={c.load} any={any} value={filters.load} options={loads} />}
         <FilterSelect name="runFlat" label={c.runFlat} any={any} value={filters.runFlat} options={["yes", "no"]} labels={yesNo} />
         <FilterSelect name="extraLoad" label={c.extraLoad} any={any} value={filters.extraLoad} options={["yes", "no"]} labels={yesNo} />
