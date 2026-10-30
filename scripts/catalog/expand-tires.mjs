@@ -1,7 +1,10 @@
 // Expands the tire catalog with real brands/models sourced from Wikimedia Commons (real photos, no AI generation).
 import { put } from "@vercel/blob"
 import { Client } from "pg"
-import https from "node:https"
+import { execFile } from "node:child_process"
+import { promisify } from "node:util"
+
+const execFileAsync = promisify(execFile)
 
 const DRY_RUN = process.argv.includes("--dry-run")
 const LIMIT_BRANDS = process.argv.includes("--limit-brands")
@@ -226,45 +229,35 @@ async function searchCommonsImages(query, count = 2) {
     .map((p) => p.imageinfo?.[0])
     .filter((info) => info && (info.mime === "image/jpeg" || info.mime === "image/png") && info.width >= 500)
     .sort((a, b) => b.width - a.width)
-  return candidates.slice(0, count).map((c) => c.url)
+  return candidates.slice(0, count).map((c) => c.url.split("?")[0])
 }
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-function downloadOnce(url) {
-  return new Promise((resolve, reject) => {
-    https
-      .get(url, { headers: { "User-Agent": "tire-shop-catalog-bot/1.0 (contact: demo@example.com)" } }, (res) => {
-        if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-          downloadOnce(res.headers.location).then(resolve, reject)
-          return
-        }
-        if (res.statusCode === 429) {
-          reject(Object.assign(new Error(`429 for ${url}`), { status: 429 }))
-          return
-        }
-        if (res.statusCode !== 200) {
-          reject(new Error(`download failed ${res.statusCode} for ${url}`))
-          return
-        }
-        const chunks = []
-        res.on("data", (c) => chunks.push(c))
-        res.on("end", () => resolve(Buffer.concat(chunks)))
-        res.on("error", reject)
-      })
-      .on("error", reject)
-  })
+async function downloadOnce(url) {
+  const { stdout, code } = await execFileAsync(
+    "curl",
+    ["-4", "-sS", "-L", "-m", "30", "-w", "\n%{http_code}", "-A", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", url],
+    { maxBuffer: 1024 * 1024 * 50, encoding: "buffer" },
+  ).catch((e) => ({ stdout: e.stdout, code: e.code }))
+  const buf = Buffer.isBuffer(stdout) ? stdout : Buffer.from(stdout ?? "")
+  const text = buf.toString("latin1")
+  const idx = text.lastIndexOf("\n")
+  const status = Number(text.slice(idx + 1))
+  if (status === 429) throw Object.assign(new Error(`429 for ${url}`), { status: 429 })
+  if (status !== 200) throw new Error(`download failed ${status} for ${url}`)
+  return buf.subarray(0, buf.length - (text.length - idx))
 }
 
-async function download(url, retries = 4) {
+async function download(url, retries = 1) {
   for (let i = 0; i < retries; i++) {
     try {
       return await downloadOnce(url)
     } catch (e) {
       if (e.status === 429 && i < retries - 1) {
-        await sleep(3000 * (i + 1))
+        await sleep(5000)
         continue
       }
       throw e
@@ -293,7 +286,7 @@ async function getModelImages(brand, model) {
   for (let i = 0; i < urls.length; i++) {
     const srcUrl = urls[i]
     try {
-      await sleep(600)
+      await sleep(6000)
       const buf = await download(srcUrl)
       const ext = srcUrl.toLowerCase().endsWith(".png") ? "png" : "jpg"
       const path = `products/${slugify(brand)}-${slugify(model)}-${i + 1}.${ext}`
@@ -367,14 +360,41 @@ function buildProduct(brand, model, preset, size, images) {
   }
 }
 
+const START_BRAND = process.argv.includes("--start-brand")
+  ? process.argv[process.argv.indexOf("--start-brand") + 1]
+  : null
+const MODEL_START = process.argv.includes("--model-start")
+  ? Number(process.argv[process.argv.indexOf("--model-start") + 1])
+  : 0
+const MODEL_COUNT = process.argv.includes("--model-count")
+  ? Number(process.argv[process.argv.indexOf("--model-count") + 1])
+  : Infinity
+
 async function main() {
-  const allNewProducts = []
+  let client = null
+  if (!DRY_RUN) {
+    client = new Client({
+      connectionString: process.env.DATABASE_URL.replace(
+        /([?&])sslmode=(?:prefer|require|verify-ca)(?=&|$)/,
+        "$1sslmode=verify-full",
+      ),
+    })
+    await client.connect()
+  }
+
   let brandCount = 0
+  let totalInserted = 0
+  let started = !START_BRAND
   for (const { brand, models } of BRANDS) {
+    if (!started) {
+      if (brand === START_BRAND) started = true
+      else continue
+    }
     if (brandCount >= LIMIT_BRANDS) break
     brandCount++
     console.log(`\n=== ${brand} ===`)
-    for (const [model, preset] of models) {
+    const slice = models.slice(MODEL_START, MODEL_START + MODEL_COUNT)
+    for (const [model, preset] of slice) {
       const images = await getModelImages(brand, model)
       await sleep(400)
       if (images.length === 0) {
@@ -382,39 +402,29 @@ async function main() {
         continue
       }
       const sizes = SIZE_PRESETS[preset].slice(0, 2)
-      for (const size of sizes) {
-        const product = buildProduct(brand, model, preset, size, images)
-        allNewProducts.push(product)
-      }
+      const modelProducts = sizes.map((size) => buildProduct(brand, model, preset, size, images))
       console.log(`  ${model}: ${images.length} real photo(s), ${sizes.length} sizes`)
-    }
-  }
 
-  console.log(`\nTotal new products: ${allNewProducts.length}`)
+      if (DRY_RUN) continue
+      for (const p of modelProducts) {
+        await client.query(
+          `insert into products (id, slug, category, data, archived, created_at, updated_at)
+           values ($1, $2, $3, $4, false, now(), now())
+           on conflict (id) do update set data = excluded.data, updated_at = now()`,
+          [p.id, p.slug, p.category, JSON.stringify({ ...p, source: "catalog-expansion" })],
+        )
+      }
+      totalInserted += modelProducts.length
+    }
+    console.log(`  -> running total inserted this run: ${totalInserted}`)
+  }
 
   if (DRY_RUN) {
-    console.log("Dry run — not writing to DB.")
-    return
+    console.log("\nDry run — not writing to DB.")
+  } else {
+    console.log(`\nDone. Inserted/updated ${totalInserted} rows total.`)
+    await client.end()
   }
-
-  const client = new Client({
-    connectionString: process.env.DATABASE_URL.replace(
-      /([?&])sslmode=(?:prefer|require|verify-ca)(?=&|$)/,
-      "$1sslmode=verify-full",
-    ),
-  })
-  await client.connect()
-
-  for (const p of allNewProducts) {
-    await client.query(
-      `insert into products (id, slug, category, data, archived, created_at, updated_at)
-       values ($1, $2, $3, $4, false, now(), now())
-       on conflict (id) do update set data = excluded.data, updated_at = now()`,
-      [p.id, p.slug, p.category, JSON.stringify({ ...p, source: "catalog-expansion" })],
-    )
-  }
-  console.log(`Inserted/updated ${allNewProducts.length} rows.`)
-  await client.end()
 }
 
 main().catch((e) => {
