@@ -44,7 +44,7 @@ export function buildEprelIndex(records) {
   for (const record of records) {
     if (record.status !== 'PUBLISHED' || record.blocked || !/^\d+$/.test(String(record.eprelRegistrationNumber))) continue
     const brand = brandKey(record.supplierOrTrademark)
-    const keys = [...manufacturerKeys(brand, record.modelIdentifier).map(code => `${brand}:mpn:${code}`), ...gtins(record).map(gtin => `${brand}:gtin:${gtin}`)]
+    const keys = [`${brand}:eprel:${record.eprelRegistrationNumber}`, ...manufacturerKeys(brand, record.modelIdentifier).map(code => `${brand}:mpn:${code}`), ...gtins(record).map(gtin => `${brand}:gtin:${gtin}`)]
     for (const key of keys) {
       const bucket = index.get(key) || new Map()
       const id = String(record.eprelRegistrationNumber)
@@ -64,8 +64,9 @@ function specificationsMatch(product, record) {
   if (!model || !officialModel || model !== officialModel) return false
   if (![record.tyreSection, record.aspectRatio, record.rimDiameter, record.loadCapacityIndex].every(v => v !== null && v !== undefined)) return false
   if (Number(record.tyreSection) !== t.width || Number(record.aspectRatio) !== t.aspect || Number(record.rimDiameter) !== t.rim || Number(record.loadCapacityIndex) !== t.loadIndex) return false
-  if (String(record.speedCategorySymbol).toUpperCase() !== t.speedRating.toUpperCase()) return false
-  if (['XL', 'SL'].includes(record.loadCapacityIndicator) && (record.loadCapacityIndicator === 'XL') !== t.extraLoad) return false
+  const officialSpeed = record.speedCategorySymbol === 'PAR_Y_PAR' ? '(Y)' : String(record.speedCategorySymbol).toUpperCase()
+  if (officialSpeed !== t.speedRating.toUpperCase()) return false
+  if (['XL', 'RF', 'SL'].includes(record.loadCapacityIndicator) && ['XL', 'RF'].includes(record.loadCapacityIndicator) !== t.extraLoad) return false
   const runFlat = record.additionalDetails?.unrestrictedMobility
   if (typeof runFlat === 'boolean' && runFlat !== t.runFlat) return false
   const recordGtins = gtins(record)
@@ -80,17 +81,30 @@ export function labelFromRecord(record) {
   return { fuelEfficiency: record.energyClass, wetGrip: record.wetGripClass, noiseDb: record.externalRollingNoiseValue, noiseClass: record.externalRollingNoiseClass, snowGrip: record.severeSnowTyre, iceGrip: record.iceTyre, eprelId: String(record.eprelRegistrationNumber) }
 }
 
-export function matchEprel(product, index) {
+export function matchEprel(product, index, crosswalks = []) {
   const brand = brandKey(product.brand)
+  const proofs = crosswalks.filter(proof => proof.productId === product.id
+    && brandKey(proof.brand) === brand
+    && proof.catalogMpn === product.mpn
+    && gtinKey(proof.catalogGtin) && gtinKey(proof.catalogGtin) === gtinKey(product.gtin)
+    && modelKey(brand, proof.catalogModel) === modelKey(brand, product.tire.model)
+    && /^https:\/\//.test(proof.sourceUrl || ''))
   const candidates = new Map()
-  const keys = [...manufacturerKeys(brand, product.mpn).map(code => `${brand}:mpn:${code}`), gtinKey(product.gtin) ? `${brand}:gtin:${gtinKey(product.gtin)}` : ''].filter(Boolean)
+  const keys = [...manufacturerKeys(brand, product.mpn).map(code => `${brand}:mpn:${code}`), gtinKey(product.gtin) ? `${brand}:gtin:${gtinKey(product.gtin)}` : '', ...proofs.map(proof => `${brand}:eprel:${proof.eprelId}`)].filter(Boolean)
   for (const key of keys) for (const [id, record] of index.get(key) || []) candidates.set(id, record)
   if (!candidates.size) return { status: 'unmatched', candidateIds: [] }
-  const exact = [...candidates.values()].filter(record => specificationsMatch(product, record))
+  const proofFor = record => proofs.find(proof => proof.eprelId === String(record.eprelRegistrationNumber)
+    && proof.officialMpn === record.modelIdentifier
+    && proof.officialModel === record.additionalDetails?.commercialName)
+  const exact = [...candidates.values()].filter(record => {
+    const proof = proofFor(record)
+    return specificationsMatch(proof ? { ...product, tire: { ...product.tire, model: proof.officialModel } } : product, record)
+      && (proof || keys.some(key => !key.includes(':eprel:') && index.get(key)?.has(String(record.eprelRegistrationNumber))))
+  })
   if (!exact.length) return { status: 'specification-conflict', candidateIds: [...candidates.keys()] }
   if (exact.length > 1) return { status: 'ambiguous', candidateIds: exact.map(r => String(r.eprelRegistrationNumber)) }
   const record = exact[0]
   const label = labelFromRecord(record)
   if (!label) return { status: 'incomplete-label', candidateIds: [String(record.eprelRegistrationNumber)] }
-  return { status: 'verified', candidateIds: [label.eprelId], label, record }
+  return { status: 'verified', candidateIds: [label.eprelId], label, record, crosswalk: proofFor(record) }
 }

@@ -12,6 +12,7 @@ const register = JSON.parse(readFileSync(`${root}/register.json`, 'utf8'))
 const age = Date.now() - Date.parse(register.checkedAt)
 if (!Array.isArray(register.records) || !register.records.length || !Number.isFinite(age) || age < 0 || age > 7 * 86400000) throw new Error('Missing or stale EPREL snapshot')
 const index = buildEprelIndex(register.records)
+const crosswalks = JSON.parse(readFileSync(new URL('./eprel-verified-articles.json', import.meta.url), 'utf8'))
 const brands = new Set(register.brands.map(brandKey))
 const table = pgTable('products', { id: text('id').primaryKey(), slug: text('slug'), category: text('category'), data: jsonb('data'), archived: boolean('archived'), updatedAt: timestamp('updated_at') })
 const pool = new Pool({ connectionString: process.env.DATABASE_URL, connectionTimeoutMillis: 10000 })
@@ -25,17 +26,19 @@ try {
   const report = []
   for (const row of rows) {
     const product = row.data
-    const result = matchEprel(product, index)
+    const result = matchEprel(product, index, crosswalks)
     report.push({ id: row.id, slug: row.slug, brand: product.brand, model: product.tire.model || product.name, mpn: product.mpn || '', gtin: product.gtin || '', size: `${product.tire.width}/${product.tire.aspect} R${product.tire.rim}`, service: `${product.tire.loadIndex}${product.tire.speedRating}${product.tire.extraLoad ? ' XL' : ''}${product.tire.runFlat ? ' Run-flat' : ''}`, status: result.status, eprelIds: result.candidateIds.join(';'), existingEprelId: product.tire.euLabel?.eprelId || '' })
     if (result.status !== 'verified') continue
     const evidence = {
+      ...product.verification?.eprel,
+      ...(result.crosswalk ? { crosswalk: result.crosswalk } : {}),
       status: 'verified', checkedAt: register.checkedAt,
       sourceUrl: `https://eprel.ec.europa.eu/screen/product/tyres/${result.label.eprelId}`,
       registrationNumber: result.label.eprelId, versionNumber: result.record.versionNumber,
       manufacturerIdentifier: result.record.modelIdentifier,
       commercialName: result.record.additionalDetails?.commercialName,
       catalogManufacturerIdentifier: product.mpn || '',
-      match: 'brand + manufacturer identifier (including verified brand-specific formatting) or GTIN + commercial model aliases + size + load + speed; conflicting GTIN, XL and declared run-flat rejected',
+      match: result.crosswalk ? 'documented catalogue article + GTIN to EU manufacturer identifier and OEM model; size, load, speed, reinforcement and declared run-flat validated' : 'brand + manufacturer identifier (including verified brand-specific formatting) or GTIN + commercial model aliases + size + load + speed; conflicting GTIN, XL and declared run-flat rejected',
     }
     const data = { ...product, tire: { ...product.tire, euLabel: result.label }, verification: { ...product.verification, eprel: evidence } }
     if (!isDeepStrictEqual(product, data)) updates.push({ row, data })
