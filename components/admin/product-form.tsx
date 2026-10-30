@@ -164,6 +164,7 @@ export function ProductForm({ product, archived, isNew }: { product: Product; ar
                       ))}
                     </select>
                   </label>
+                  <Field label="Остаток (шт.)" name={`${m}.stock`} type="number" min={0} defaultValue={offer?.stock ?? product.stock ?? 40} inputMode="numeric" />
                   <Field label="Старая цена (скидка)" name={`${m}.compareAt`} defaultValue={toMoney(offer?.compareAtCents)} inputMode="decimal" />
                   <Field label="Скидка до" name={`${m}.saleEndsAt`} type="datetime-local" defaultValue={toLocalInput(offer?.saleEndsAt)} />
                   <Field label="Предзаказ: доступен с" name={`${m}.availableFrom`} type="date" defaultValue={offer?.availableFrom?.slice(0, 10)} />

@@ -166,12 +166,16 @@ export async function saveProduct(_prev: ActionResult | null, form: FormData): P
   }
 
   const offers: Product["offers"] = {}
+  let productStock = 40
   for (const market of markets) {
     if (form.get(`${market}.enabled`) !== "on") continue
     const priceCents = cents(str(form, `${market}.price`, 20))
     if (!priceCents) return { ok: false, error: `Цена для ${market.toUpperCase()} не указана` }
     const availability = str(form, `${market}.availability`, 20) as Availability
-    const offer: Offer = { priceCents, availability: AVAILABILITY.includes(availability) ? availability : "in_stock" }
+    const rawStock = Number.parseInt(str(form, `${market}.stock`, 10), 10)
+    const stock = Number.isFinite(rawStock) && rawStock >= 0 ? rawStock : 40
+    productStock = stock
+    const offer: Offer = { priceCents, availability: AVAILABILITY.includes(availability) ? availability : "in_stock", stock }
     const compareAt = cents(str(form, `${market}.compareAt`, 20))
     const saleEndsAt = str(form, `${market}.saleEndsAt`, 40)
     if (compareAt) {
@@ -192,6 +196,7 @@ export async function saveProduct(_prev: ActionResult | null, form: FormData): P
     id,
     slug,
     category,
+    stock: productStock,
     name: str(form, "name", 200),
     brand: str(form, "brand", 100),
     gtin: str(form, "gtin", 20) || undefined,
@@ -214,8 +219,8 @@ export async function saveProduct(_prev: ActionResult | null, form: FormData): P
 
   await db
     .insert(products)
-    .values({ id, slug, category, data: product, archived })
-    .onConflictDoUpdate({ target: products.id, set: { slug, category, data: product, archived, updatedAt: new Date() } })
+    .values({ id, slug, category, stock: productStock, data: product, archived })
+    .onConflictDoUpdate({ target: products.id, set: { slug, category, stock: productStock, data: product, archived, updatedAt: new Date() } })
 
   revalidatePath("/", "layout")
   return { ok: true, message: "Сохранено" }

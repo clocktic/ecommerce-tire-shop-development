@@ -52,11 +52,12 @@ export const verification = pgTable("verification", {
   updatedAt: timestamp("updatedAt").notNull().defaultNow(),
 })
 
-// The whole product record lives in `data`; slug/category/archived are copied out for querying.
+// The whole product record lives in `data`; slug/category/archived/stock are copied out for querying.
 export const products = pgTable("products", {
   id: text("id").primaryKey(),
   slug: text("slug").notNull().unique(),
   category: text("category").notNull(),
+  stock: integer("stock").notNull().default(40),
   data: jsonb("data").$type<Product>().notNull(),
   archived: boolean("archived").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
