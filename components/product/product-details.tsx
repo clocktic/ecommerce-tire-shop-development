@@ -91,6 +91,17 @@ function categorySpecs(product: Product, { market }: Store, t: Dictionary) {
   return [
     { label: label.season, value: t.labels.season[tire.season] },
     { label: label.runFlat, value: tire.runFlat ? t.common.yes : t.common.no },
+    ...(market === "eu" && tire.eprelExempt
+      ? [
+          {
+            label: "EU 2020/740",
+            value:
+              tire.eprelExempt.reason === "studded"
+                ? "Exempt — Art. 2(2)(b) (Studded tyre)"
+                : "Exempt — Art. 2(2)(a) (POR Off-Road)",
+          },
+        ]
+      : []),
   ]
 }
 

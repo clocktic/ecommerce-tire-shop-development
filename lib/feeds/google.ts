@@ -94,7 +94,9 @@ export function feedExclusion(product: Product, market: Market): string | null {
   if (offer.availability === "preorder" && !offer.availableFrom) return "preorder without availability date"
   if (product.name.length > 150) return "title over 150 characters"
   if (product.gtin && !GTIN.test(product.gtin)) return "invalid GTIN"
-  if (market === "eu" && product.category === "tires" && !product.tire.euLabel) return "EU tyre label missing"
+  if (market === "eu" && product.category === "tires" && !product.tire.euLabel?.eprelId) {
+    return product.tire.eprelExempt ? "EU tyre exempt from EPREL (Reg. 2020/740 Art. 2(2))" : "EU tyre label / EPREL ID missing"
+  }
   return null
 }
 

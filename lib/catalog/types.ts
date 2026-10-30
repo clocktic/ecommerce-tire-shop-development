@@ -82,6 +82,10 @@ export type TireProduct = ProductBase & {
     extraLoad: boolean
     runFlat: boolean
     euLabel?: EuTyreLabel
+    eprelExempt?: {
+      reason: "studded" | "por_off_road"
+      regulation: string
+    }
     utqg?: Utqg
   }
 }
