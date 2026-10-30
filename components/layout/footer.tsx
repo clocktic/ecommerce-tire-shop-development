@@ -2,7 +2,7 @@ import Link from "next/link"
 import { Logo } from "@/components/layout/logo"
 import { LanguageSwitcher, RegionSwitcher } from "@/components/layout/region-switcher"
 import { CookieSettingsButton } from "@/components/legal/cookie-settings-button"
-import { CARRIER_BRAND_ICONS, PAYMENT_BRAND_ICONS, theSvgUrl } from "@/lib/brand-icons"
+import { PaymentBadges } from "@/components/ui/payment-badges"
 import { CATEGORIES } from "@/lib/catalog"
 import { COMPANY, companyAddressLine } from "@/lib/company"
 import { getDictionary, storePath, type Store } from "@/lib/i18n"
@@ -77,40 +77,7 @@ export function Footer({ store }: { store: Store }) {
             <RegionSwitcher />
           </div>
 
-          <div className="flex flex-wrap items-center gap-2" aria-label={t.footer.payments}>
-            {PAYMENT_BRAND_ICONS.map((icon) => (
-              <span
-                key={icon.slug}
-                title={icon.name}
-                className="flex h-7 items-center justify-center border border-secondary-foreground/15 bg-white px-2"
-              >
-                <img
-                  src={theSvgUrl(icon.slug, "default")}
-                  alt={icon.name}
-                  width={26}
-                  height={16}
-                  loading="lazy"
-                  className="h-4 w-auto object-contain"
-                />
-              </span>
-            ))}
-            {CARRIER_BRAND_ICONS.map((icon) => (
-              <span
-                key={icon.slug}
-                title={icon.name}
-                className="flex h-7 items-center justify-center border border-secondary-foreground/15 bg-white px-2"
-              >
-                <img
-                  src={theSvgUrl(icon.slug, "default")}
-                  alt={icon.name}
-                  width={26}
-                  height={16}
-                  loading="lazy"
-                  className="h-4 w-auto object-contain"
-                />
-              </span>
-            ))}
-          </div>
+          <PaymentBadges includeCarriers ariaLabel={t.footer.payments} />
         </div>
 
         <p className="max-w-3xl font-mono text-xs uppercase leading-relaxed tracking-[0.18em] text-secondary-foreground/60">

@@ -4,7 +4,7 @@ import { ArrowUpRight } from "lucide-react"
 import { FitmentModal } from "@/components/garage/fitment-modal"
 import { useGarage } from "@/components/garage/garage-provider"
 import { useI18n } from "@/components/i18n/i18n-provider"
-import { FEATURED_VEHICLE_BRANDS, theSvgUrl } from "@/lib/brand-icons"
+import { FEATURED_VEHICLE_BRANDS, getVehicleMakeIconUrl } from "@/lib/brand-icons"
 import { cn } from "@/lib/utils"
 
 const BRAND_GRID_COPY: Record<
@@ -101,14 +101,14 @@ export function VehicleBrandGrid() {
                     )}
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="flex size-10 items-center justify-center border border-border bg-white p-2 transition-colors group-hover:border-primary/50">
+                      <span className="flex size-10 items-center justify-center border border-border bg-muted/50 p-2 transition-colors group-hover:border-primary/50">
                         <img
-                          src={theSvgUrl(brand.slug, "default")}
+                          src={getVehicleMakeIconUrl(brand.make) ?? ""}
                           alt={brand.make}
-                          width={24}
-                          height={24}
+                          width={22}
+                          height={22}
                           loading="lazy"
-                          className="size-6 object-contain"
+                          className="size-5.5 object-contain opacity-90 group-hover:opacity-100 dark:invert"
                         />
                       </span>
                       <ArrowUpRight

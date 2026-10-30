@@ -17,7 +17,7 @@ import { Separator } from "@/components/ui/separator"
 import { MAX_QUANTITY, useCart } from "@/components/cart/cart-provider"
 import { SummaryRows } from "@/components/cart/cart-view"
 import { useI18n } from "@/components/i18n/i18n-provider"
-import { PAYMENT_BRAND_ICONS, theSvgUrl } from "@/lib/brand-icons"
+import { PaymentBadges } from "@/components/ui/payment-badges"
 import { fmt } from "@/lib/i18n/fmt"
 import { storePath } from "@/lib/i18n/config"
 import { formatPrice } from "@/lib/markets"
@@ -201,24 +201,7 @@ export function CartSheet() {
                   <ShieldCheck className="size-3.5 text-primary" aria-hidden="true" />
                   {t.policy.warranty}
                 </span>
-                <div className="flex shrink-0 items-center gap-1">
-                  {PAYMENT_BRAND_ICONS.slice(0, 4).map((icon) => (
-                    <span
-                      key={icon.slug}
-                      title={icon.name}
-                      className="flex h-5 items-center justify-center border border-border bg-white px-1.5"
-                    >
-                      <img
-                        src={theSvgUrl(icon.slug, "default")}
-                        alt={icon.name}
-                        width={20}
-                        height={12}
-                        loading="lazy"
-                        className="h-3 w-auto object-contain"
-                      />
-                    </span>
-                  ))}
-                </div>
+                <PaymentBadges size="sm" limit={5} />
               </div>
             </SheetFooter>
           </>

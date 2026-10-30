@@ -490,22 +490,23 @@ export function FitmentModal({
                       >
                         <span
                           className={cn(
-                            "flex size-5 shrink-0 items-center justify-center font-mono text-[10px] font-bold",
-                            makeIcon
-                              ? "bg-white p-0.5"
-                              : selected
-                                ? "bg-primary-foreground/20 text-primary-foreground"
-                                : "bg-muted text-muted-foreground group-hover:text-foreground",
+                            "flex size-6 shrink-0 items-center justify-center font-mono text-[10px] font-bold transition-colors",
+                            selected
+                              ? "bg-primary-foreground/20 text-primary-foreground"
+                              : "bg-muted text-muted-foreground group-hover:text-foreground",
                           )}
                         >
                           {makeIcon ? (
                             <img
                               src={makeIcon}
                               alt=""
-                              width={14}
-                              height={14}
+                              width={15}
+                              height={15}
                               loading="lazy"
-                              className="size-3.5 object-contain"
+                              className={cn(
+                                "size-[15px] object-contain",
+                                selected ? "invert" : "opacity-85 group-hover:opacity-100 dark:invert",
+                              )}
                             />
                           ) : (
                             monogram

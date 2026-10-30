@@ -208,11 +208,9 @@ export function ProductFitmentBadge({
         <span
           className={cn(
             "flex size-9 shrink-0 items-center justify-center border",
-            makeIcon
-              ? "border-border bg-white p-1.5"
-              : exactMatch || altVehicleMatch
-                ? "border-primary bg-primary/15 text-primary"
-                : "border-border bg-background text-muted-foreground",
+            exactMatch || altVehicleMatch
+              ? "border-primary bg-primary/15 text-primary"
+              : "border-border bg-muted/60 text-muted-foreground",
           )}
         >
           {makeIcon ? (
@@ -222,7 +220,7 @@ export function ProductFitmentBadge({
               width={20}
               height={20}
               loading="lazy"
-              className="size-5 object-contain"
+              className="size-5 object-contain dark:invert"
             />
           ) : active.kind === "vehicle" ? (
             <VehicleIcon className="size-6 w-8" />
