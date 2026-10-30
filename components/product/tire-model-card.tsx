@@ -13,7 +13,7 @@ import { EprelReference } from './eprel-reference'
 export type TireCardVariant = Pick<TireProduct, 'id' | 'slug' | 'brand' | 'name' | 'mpn' | 'gtin' | 'images' | 'offers' | 'tire'>
 export function TireModelCard({ variants, store }: { variants: TireCardVariant[]; store: Store }) {
   const id = useId()
-  const defaultProduct = (store.market === 'eu' && variants.find(p => p.tire.euLabel?.eprelId)) || variants[0]
+  const defaultProduct = (store.market === 'eu' && (variants.find(p => p.tire.euLabel?.eprelId) || variants.find(p => p.tire.euLabel))) || variants[0]
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const product = variants.find(p => p.id === selectedId) || defaultProduct
   const offer = product.offers[store.market]!
@@ -32,7 +32,7 @@ export function TireModelCard({ variants, store }: { variants: TireCardVariant[]
       <label htmlFor={`${id}-size`} className="text-xs text-muted-foreground">{labels.size}</label>
       <select id={`${id}-size`} value={size} onChange={e => {
         const choices = variants.filter(p => tireSize(p.tire) === e.target.value)
-        setSelectedId(((store.market === 'eu' && choices.find(p => p.tire.euLabel?.eprelId)) || choices[0]).id)
+        setSelectedId(((store.market === 'eu' && (choices.find(p => p.tire.euLabel?.eprelId) || choices.find(p => p.tire.euLabel))) || choices[0]).id)
       }} className="h-11 w-full min-w-0 border border-border bg-background px-2 text-sm">
         {sizes.map(s => <option key={s} value={s}>{s}</option>)}
       </select>
