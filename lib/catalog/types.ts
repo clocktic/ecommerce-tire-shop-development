@@ -70,6 +70,7 @@ export type Utqg = {
 export type TireProduct = ProductBase & {
   category: "tires"
   tire: {
+    model?: string
     width: number
     aspect: number
     rim: number

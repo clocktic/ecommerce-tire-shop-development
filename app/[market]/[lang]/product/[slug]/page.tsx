@@ -17,6 +17,8 @@ import { ProductCard, productCode } from "@/components/product/product-card"
 import { ProductDetails } from "@/components/product/product-details"
 import { ProductGallery } from "@/components/product/product-gallery"
 import { Utqg } from "@/components/product/utqg"
+import { TireVariants } from "@/components/product/tire-variants"
+import { tireVariants } from "@/lib/catalog/tire-variants"
 
 type Params = Promise<{ market: string; lang: string; slug: string }>
 
@@ -55,7 +57,9 @@ export default async function ProductPage({ params }: { params: Params }) {
   const { code, meta } = productCode(product, t)
   const categoryName = t.categories[product.category].name
   const jsonLd = productJsonLd(product, store)
-  const related = (await getProductsByCategory(store.market, product.category))
+  const categoryProducts = await getProductsByCategory(store.market, product.category)
+  const variants = base.category === "tires" ? tireVariants(base, categoryProducts) : []
+  const related = categoryProducts
     .filter((p) => p.slug !== product.slug)
     .slice(0, 4)
     .map((p) => localizeProduct(p, store))
@@ -104,7 +108,10 @@ export default async function ProductPage({ params }: { params: Params }) {
             <Utqg grades={product.tire.utqg} text={t.product.utqg} />
           )}
 
+          <TireVariants products={variants} selected={product.slug} store={store} />
+
           <AddToCart
+            key={product.slug}
             slug={product.slug}
             name={product.name}
             image={product.images[0]}

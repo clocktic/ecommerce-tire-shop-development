@@ -30,7 +30,7 @@ BRANDS = [
     "FIRESTONE",
     "NOKIAN TYRES",
 ]
-NOW = 1761800000  # ~2025-10, conservative on-market cutoff
+NOW = int(time.time())
 
 
 def get(url):
@@ -45,12 +45,12 @@ def harvest(brand):
             "supplierOrTrademark": brand,
             "tyreClass": "C1",
             "_page": 1,
-            "_limit": 200,
+            "_limit": 100,
         }
     )
     first = get(f"https://eprel.ec.europa.eu/api/products/tyres?{q}")
     total = first.get("size") or 0
-    pages = max(1, (total + 199) // 200)
+    pages = max(1, (total + 99) // 100)
     models = defaultdict(lambda: {"sizes": set(), "snow": 0, "ice": 0, "n": 0})
     seen_regs = set()
 
@@ -59,8 +59,6 @@ def harvest(brand):
             if hit.get("tyreClass") != "C1":
                 continue
             if hit.get("status") not in (None, "PUBLISHED"):
-                continue
-            if hit.get("lastVersion") is False:
                 continue
             end = hit.get("onMarketEndDateTS")
             if end and end < NOW:
@@ -98,7 +96,7 @@ def harvest(brand):
                 "supplierOrTrademark": brand,
                 "tyreClass": "C1",
                 "_page": page,
-                "_limit": 200,
+                "_limit": 100,
             }
         )
         for attempt in range(4):
