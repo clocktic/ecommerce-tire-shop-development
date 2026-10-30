@@ -26,7 +26,11 @@ export function AddToCart({ slug, name, image, priceCents, defaultQuantity, disa
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-stretch gap-2">
-        <div className="flex items-center border border-border bg-card" role="group" aria-label={t.product.quantity}>
+        <div
+          className="flex items-center border border-border bg-card shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5"
+          role="group"
+          aria-label={t.product.quantity}
+        >
           <button
             type="button"
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}

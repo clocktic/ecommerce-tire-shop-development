@@ -30,7 +30,7 @@ export async function CategoryTiles({ store }: { store: Store }) {
             <li key={c.slug}>
               <Link
                 href={storePath(store, `/${c.slug}`)}
-                className="group flex h-full flex-col border border-border bg-card transition-colors hover:border-foreground"
+                className="group flex h-full flex-col border border-border bg-card shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-1 hover:border-foreground"
               >
                 <div className="relative h-36 overflow-hidden bg-photo sm:h-44">
                   <Image

@@ -30,7 +30,7 @@ export function TrackForm({ defaultValue = "" }: { defaultValue?: string }) {
         placeholder={x.track.placeholder}
         autoComplete="off"
         spellCheck={false}
-        className="h-12 flex-1 border border-border bg-card px-4 font-mono text-sm uppercase tracking-wider placeholder:normal-case placeholder:tracking-normal"
+        className="h-12 flex-1 border border-border bg-card px-4 font-mono text-sm uppercase tracking-wider shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] placeholder:normal-case placeholder:tracking-normal"
       />
       <Button type="submit" size="lg" className="h-12">
         {x.track.submit}

@@ -214,7 +214,11 @@ export function PaymentBadges({
   return (
     <div className={cn("flex flex-wrap items-center gap-1.5", className)} aria-label={ariaLabel}>
       {visible.map((item) => (
-        <span key={item.id} title={item.name} className="inline-flex">
+        <span
+          key={item.id}
+          title={item.name}
+          className="inline-flex shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5"
+        >
           {item.svg}
         </span>
       ))}

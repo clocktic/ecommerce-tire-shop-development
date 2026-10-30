@@ -14,7 +14,7 @@ export function MarketPromise({ store }: { store: Store }) {
 
   return (
     <section aria-labelledby="promise-title" className="mx-auto max-w-7xl px-4 pt-24 md:px-6">
-      <div className="bg-secondary text-secondary-foreground">
+      <div className="bg-secondary text-secondary-foreground shadow-[0_4px_12px_rgba(0,0,0,0.25),0_20px_50px_-12px_rgba(0,0,0,0.55)]">
         <div className="flex flex-col gap-2 border-b border-secondary-foreground/15 p-6 md:flex-row md:items-end md:justify-between md:p-8">
           <h2 id="promise-title" className="font-expanded text-2xl font-extrabold uppercase md:text-3xl">
             {p.title}

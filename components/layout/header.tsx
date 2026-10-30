@@ -24,7 +24,7 @@ export function Header({ store }: { store: Store }) {
   ]
 
   return (
-    <header className="sticky top-0 z-40">
+    <header className="sticky top-0 z-40 shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)]">
       <div className="bg-secondary text-secondary-foreground">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-1.5 md:px-6">
           <p className="min-w-0 font-mono text-[10px] uppercase leading-relaxed tracking-[0.14em] text-secondary-foreground/80 sm:truncate sm:text-xs sm:tracking-[0.18em]">

@@ -482,9 +482,9 @@ export function FitmentModal({
                         aria-pressed={selected}
                         onClick={() => pickMake(item)}
                         className={cn(
-                          "group flex h-10 items-center gap-2 border px-2.5 text-left text-xs font-semibold transition-all",
+                          "group flex h-10 items-center gap-2 border px-2.5 text-left text-xs font-semibold transition-transform duration-200 hover:-translate-y-0.5",
                           selected
-                            ? "border-primary bg-primary text-primary-foreground shadow-xs"
+                            ? "border-primary bg-primary text-primary-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)]"
                             : "border-border bg-background text-foreground hover:border-foreground/50 hover:bg-muted/40",
                         )}
                       >

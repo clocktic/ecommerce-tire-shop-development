@@ -22,7 +22,10 @@ export function ContactForm() {
   }
 
   return (
-    <form action={action} className="flex flex-col gap-4 border border-border bg-card p-6">
+    <form
+      action={action}
+      className="flex flex-col gap-4 border border-border bg-card p-6 shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)]"
+    >
       <h2 className="label-caps">{c.title}</h2>
       <input type="hidden" name="market" value={store.market} />
       <input type="hidden" name="lang" value={store.lang} />

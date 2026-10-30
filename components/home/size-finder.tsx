@@ -61,7 +61,7 @@ export function SizeFinder() {
         }
         submit(size)
       }}
-      className="relative flex flex-col gap-6 border border-foreground/80 bg-card p-5 md:p-7"
+      className="relative flex flex-col gap-6 border border-foreground/80 bg-card p-5 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_20px_50px_-12px_rgba(0,0,0,0.55)] md:p-7"
       aria-labelledby="size-finder-title"
     >
       <CornerMarks />
@@ -77,7 +77,7 @@ export function SizeFinder() {
           trigger={
             <button
               type="button"
-              className="inline-flex items-center gap-1.5 border border-border bg-muted/40 px-2.5 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-foreground transition-colors hover:border-primary hover:text-primary"
+              className="inline-flex items-center gap-1.5 border border-border bg-muted/40 px-2.5 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-primary hover:text-primary"
             >
               <VehicleIcon className="size-4 w-5 text-primary" />
               {g.vehicleTab}
@@ -117,7 +117,7 @@ export function SizeFinder() {
             autoComplete="off"
             aria-invalid={!!error}
             aria-describedby={error ? "typed-size-error" : undefined}
-            className="h-12 border border-border bg-background px-3 font-mono text-sm uppercase placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-ring"
+            className="h-12 border border-border bg-background px-3 font-mono text-sm uppercase shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-ring"
           />
         </div>
         <Button type="submit" size="lg" className="sm:min-w-48">
@@ -160,7 +160,7 @@ function Segment({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          "h-12 w-full appearance-none border border-border bg-background px-3 font-mono text-base font-semibold",
+          "h-12 w-full appearance-none border border-border bg-background px-3 font-mono text-base font-semibold shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5",
           "focus-visible:outline-2 focus-visible:outline-ring",
         )}
       >

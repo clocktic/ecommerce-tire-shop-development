@@ -96,12 +96,12 @@ export function VehicleBrandGrid() {
                   <button
                     type="button"
                     className={cn(
-                      "group flex h-full w-full flex-col justify-between gap-3 border bg-card p-4 text-left transition-all hover:border-foreground",
+                      "group flex h-full w-full flex-col justify-between gap-3 border bg-card p-4 text-left shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground",
                       isSelectedMake ? "border-primary bg-primary/5" : "border-border",
                     )}
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="flex size-10 items-center justify-center border border-border bg-muted/50 p-2 transition-colors group-hover:border-primary/50">
+                      <span className="flex size-10 items-center justify-center border border-border bg-muted/50 p-2 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:border-primary/50">
                         <img
                           src={getVehicleMakeIconUrl(brand.make) ?? ""}
                           alt={brand.make}

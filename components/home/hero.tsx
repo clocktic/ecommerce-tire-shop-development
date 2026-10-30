@@ -16,7 +16,7 @@ export function Hero({ store }: { store: Store }) {
 
       <div className="relative mx-auto grid min-w-0 max-w-7xl px-4 py-10 md:px-6 lg:min-h-[640px] lg:grid-cols-12 lg:py-16">
         <div className="flex min-w-0 flex-col gap-8 lg:col-span-5 lg:col-start-8">
-          <div className="flex flex-col gap-4 border border-border/60 bg-background/90 p-5 backdrop-blur-sm sm:p-6 lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
+          <div className="flex flex-col gap-4 border border-border/60 bg-background/90 p-5 shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] backdrop-blur-sm sm:p-6 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-none">
             <p className="label-caps text-primary">{t.home.eyebrow}</p>
             <h1
               id="hero-title"

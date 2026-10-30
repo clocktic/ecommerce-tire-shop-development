@@ -49,7 +49,7 @@ export function FitmentBar() {
                     type="button"
                     className="group flex min-w-0 items-center gap-2.5 py-1 pr-2 text-left text-sm font-semibold transition-colors hover:text-primary"
                   >
-                    <span className="flex size-7 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 text-foreground">
+                    <span className="flex size-7 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 text-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 group-hover:-translate-y-0.5">
                       {active.kind === "vehicle" ? (
                         <VehicleIcon className="size-5 w-6" />
                       ) : (
@@ -57,11 +57,11 @@ export function FitmentBar() {
                       )}
                     </span>
                     <span className="truncate">{active.label}</span>
-                    <span className="border border-border bg-background px-1.5 py-0.5 font-mono text-xs text-foreground">
+                    <span className="border border-border bg-background px-1.5 py-0.5 font-mono text-xs text-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5">
                       {active.width}/{active.aspect}R{active.rim}
                     </span>
                     {boltPattern && (
-                      <span className="hidden border border-border bg-background px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground md:inline">
+                      <span className="hidden border border-border bg-background px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 md:inline">
                         {boltPattern.replace("x", "×")}
                       </span>
                     )}

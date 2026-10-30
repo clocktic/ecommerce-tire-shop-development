@@ -41,7 +41,7 @@ export function TireModelCard({ variants, store }: { variants: TireCardVariant[]
   const href = storePath(store, `/product/${product.slug}`)
 
   return (
-    <article className="flex min-w-0 flex-col border border-border bg-card transition-colors hover:border-foreground">
+    <article className="flex min-w-0 flex-col border border-border bg-card shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-1 hover:border-foreground">
       <Link href={href} className="relative aspect-square overflow-hidden bg-white">
         <Image
           src={product.images[0]}

@@ -45,7 +45,7 @@ export default async function ReferenceCatalogue({ params, searchParams }: Props
           <Link
             rel="prev"
             href={link(page - 1)}
-            className="flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+            className="flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-foreground hover:text-foreground"
           >
             ←
           </Link>
@@ -57,8 +57,8 @@ export default async function ReferenceCatalogue({ params, searchParams }: Props
             aria-current={n === page ? "page" : undefined}
             className={
               n === page
-                ? "flex h-9 min-w-9 items-center justify-center border border-primary bg-primary px-2.5 font-semibold text-primary-foreground"
-                : "flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+                ? "flex h-9 min-w-9 items-center justify-center border border-primary bg-primary px-2.5 font-semibold text-primary-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5"
+                : "flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-foreground hover:text-foreground"
             }
           >
             {n}
@@ -68,7 +68,7 @@ export default async function ReferenceCatalogue({ params, searchParams }: Props
           <Link
             rel="next"
             href={link(page + 1)}
-            className="flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+            className="flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-foreground hover:text-foreground"
           >
             →
           </Link>

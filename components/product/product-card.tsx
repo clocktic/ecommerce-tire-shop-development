@@ -28,7 +28,7 @@ export function ProductCard({ product, store }: { product: Product; store: Store
   const { code, meta } = productCode(product, t)
 
   return (
-    <article className="group relative flex flex-col border border-border bg-card transition-colors hover:border-foreground">
+    <article className="group relative flex flex-col border border-border bg-card shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-1 hover:border-foreground">
       <div className="relative aspect-square overflow-hidden bg-photo">
         <Image
           src={product.images[0] || "/placeholder.svg"}
@@ -38,7 +38,7 @@ export function ProductCard({ product, store }: { product: Product; store: Store
           className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
         />
         {product.sample && (
-          <span className="absolute left-3 top-3 bg-background px-2 py-1 font-mono text-xs uppercase tracking-[0.18em]">
+          <span className="absolute left-3 top-3 bg-background px-2 py-1 font-mono text-xs uppercase tracking-[0.18em] shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5">
             {t.product.demo}
           </span>
         )}

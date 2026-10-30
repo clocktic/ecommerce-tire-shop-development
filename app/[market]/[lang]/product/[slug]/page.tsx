@@ -155,7 +155,7 @@ export default async function ProductPage({ params }: { params: Params }) {
           />
           {product.sample && <p className="text-sm text-muted-foreground">{t.product.demoNote}</p>}
 
-          <ul className="flex flex-col divide-y divide-border border border-border bg-card text-sm">
+          <ul className="flex flex-col divide-y divide-border border border-border bg-card text-sm shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)]">
             <li className="flex items-start gap-3 p-4">
               <Truck className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
               <span>

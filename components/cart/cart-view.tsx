@@ -80,7 +80,10 @@ export function CartView() {
         ))}
       </ul>
 
-      <aside aria-labelledby="summary-title" className="flex flex-col gap-4 border border-border bg-card p-5 lg:col-span-4 lg:self-start">
+      <aside
+        aria-labelledby="summary-title"
+        className="flex flex-col gap-4 border border-border bg-card p-5 shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] lg:col-span-4 lg:self-start"
+      >
         <h2 id="summary-title" className="label-caps">
           {t.cart.summary}
         </h2>
