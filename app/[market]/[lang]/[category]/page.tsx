@@ -129,7 +129,42 @@ export default async function CategoryPage({ params, searchParams }: { params: P
       ) : (
         <EmptyState store={store} category={category} t={t} />
       )}
-      {pages > 1 && <nav aria-label={copy.name} className="flex items-center justify-center gap-6 pb-8">{page > 1 && <Link href={pageHref(page - 1)} rel="prev" className="underline">←</Link>}<span className="font-mono">{page} / {pages}</span>{page < pages && <Link href={pageHref(page + 1)} rel="next" className="underline">→</Link>}</nav>}
+      {pages > 1 && (
+        <nav aria-label={copy.name} className="flex flex-wrap items-center justify-center gap-1.5 pb-8 font-mono text-sm">
+          {page > 1 && (
+            <Link
+              href={pageHref(page - 1)}
+              rel="prev"
+              className="flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+            >
+              ←
+            </Link>
+          )}
+          {Array.from({ length: pages }, (_, i) => i + 1).map((n) => (
+            <Link
+              key={n}
+              href={pageHref(n)}
+              aria-current={n === page ? "page" : undefined}
+              className={
+                n === page
+                  ? "flex h-9 min-w-9 items-center justify-center border border-primary bg-primary px-2.5 font-semibold text-primary-foreground"
+                  : "flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+              }
+            >
+              {n}
+            </Link>
+          ))}
+          {page < pages && (
+            <Link
+              href={pageHref(page + 1)}
+              rel="next"
+              className="flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+            >
+              →
+            </Link>
+          )}
+        </nav>
+      )}
     </div>
   )
 }

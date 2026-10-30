@@ -29,6 +29,39 @@ export function TireModelsSection({ store, filters }: { store: Store; filters: R
     <header className="flex flex-wrap items-center justify-between gap-3"><h2 id="all-models-heading" className="text-2xl font-bold">{t.title}</h2><p className="font-mono text-sm text-muted-foreground">{models.length} {t.models}</p></header>
     <p className="text-sm leading-relaxed text-muted-foreground">{t.notice}</p>
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{models.slice((page-1)*24, page*24).map(model => <ReferenceModelCard key={model.slug} model={model} store={store} />)}</div>
-    {pages > 1 && <nav aria-label={t.title} className="flex items-center justify-center gap-6 py-4">{page > 1 && <Link href={href(page-1)} className="underline">← {t.previous}</Link>}<span className="font-mono">{page} / {pages}</span>{page < pages && <Link href={href(page+1)} className="underline">{t.next} →</Link>}</nav>}
+    {pages > 1 && (
+      <nav aria-label={t.title} className="flex flex-wrap items-center justify-center gap-1.5 py-4 font-mono text-sm">
+        {page > 1 && (
+          <Link
+            href={href(page - 1)}
+            className="flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+          >
+            ←
+          </Link>
+        )}
+        {Array.from({ length: pages }, (_, i) => i + 1).map((n) => (
+          <Link
+            key={n}
+            href={href(n)}
+            aria-current={n === page ? "page" : undefined}
+            className={
+              n === page
+                ? "flex h-9 min-w-9 items-center justify-center border border-primary bg-primary px-2.5 font-semibold text-primary-foreground"
+                : "flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+            }
+          >
+            {n}
+          </Link>
+        ))}
+        {page < pages && (
+          <Link
+            href={href(page + 1)}
+            className="flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+          >
+            →
+          </Link>
+        )}
+      </nav>
+    )}
   </section>
 }

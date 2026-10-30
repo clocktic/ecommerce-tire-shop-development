@@ -39,7 +39,42 @@ export default async function ReferenceCatalogue({ params, searchParams }: Props
     </form>
     <div className="flex flex-wrap items-center justify-between gap-3 py-5"><p aria-live="polite" className="font-mono text-sm text-muted-foreground">{models.length} {t.models}</p><Link href={storePath(store, '/tires')} className="text-sm font-semibold underline underline-offset-4">{t.shop} →</Link></div>
     {models.length ? <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{models.slice((page-1)*24, page*24).map(m => <ReferenceModelCard key={m.slug} model={m} store={store} />)}</div> : <p role="status" className="border border-border p-10 text-center text-muted-foreground">{t.empty}</p>}
-    {pages > 1 && <nav aria-label={t.models} className="flex items-center justify-center gap-6 py-8">{page > 1 && <Link rel="prev" href={link(page-1)} className="underline">← {t.previous}</Link>}<span className="font-mono">{page} / {pages}</span>{page < pages && <Link rel="next" href={link(page+1)} className="underline">{t.next} →</Link>}</nav>}
+    {pages > 1 && (
+      <nav aria-label={t.models} className="flex flex-wrap items-center justify-center gap-1.5 py-8 font-mono text-sm">
+        {page > 1 && (
+          <Link
+            rel="prev"
+            href={link(page - 1)}
+            className="flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+          >
+            ←
+          </Link>
+        )}
+        {Array.from({ length: pages }, (_, i) => i + 1).map((n) => (
+          <Link
+            key={n}
+            href={link(n)}
+            aria-current={n === page ? "page" : undefined}
+            className={
+              n === page
+                ? "flex h-9 min-w-9 items-center justify-center border border-primary bg-primary px-2.5 font-semibold text-primary-foreground"
+                : "flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+            }
+          >
+            {n}
+          </Link>
+        ))}
+        {page < pages && (
+          <Link
+            rel="next"
+            href={link(page + 1)}
+            className="flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+          >
+            →
+          </Link>
+        )}
+      </nav>
+    )}
     <aside className="mt-8 border-l-2 border-primary bg-muted p-5 text-sm leading-relaxed text-muted-foreground">{t.notice}</aside>
   </div>
 }
