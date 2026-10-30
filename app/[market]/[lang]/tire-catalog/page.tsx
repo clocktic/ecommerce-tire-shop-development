@@ -75,6 +75,5 @@ export default async function ReferenceCatalogue({ params, searchParams }: Props
         )}
       </nav>
     )}
-    <aside className="mt-8 border-l-2 border-primary bg-muted p-5 text-sm leading-relaxed text-muted-foreground">{t.notice}</aside>
   </div>
 }
