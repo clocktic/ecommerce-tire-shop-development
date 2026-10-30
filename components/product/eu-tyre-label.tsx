@@ -78,7 +78,7 @@ export function EuTyreLabel({ label, text, compact = false }: { label: Label; te
               rel="noopener noreferrer"
               className="underline underline-offset-4"
             >
-              {text.eprel}
+              {text.eprel} · EPREL {label.eprelId}
             </a>
           )}
         </div>

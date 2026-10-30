@@ -12,6 +12,7 @@ import { policyHref } from "@/lib/legal/pages"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
 import { AddToCart } from "@/components/product/add-to-cart"
 import { EuTyreLabel } from "@/components/product/eu-tyre-label"
+import { EprelReference } from "@/components/product/eprel-reference"
 import { Price } from "@/components/product/price"
 import { ProductCard, productCode } from "@/components/product/product-card"
 import { ProductDetails } from "@/components/product/product-details"
@@ -104,6 +105,7 @@ export default async function ProductPage({ params }: { params: Params }) {
           {product.category === "tires" && t.product.euLabel && product.tire.euLabel && (
             <EuTyreLabel label={product.tire.euLabel} text={t.product.euLabel} />
           )}
+          {store.market === 'eu' && product.category === 'tires' && !product.tire.euLabel?.eprelId && <EprelReference lang={store.lang} />}
           {product.category === "tires" && t.product.utqg && product.tire.utqg && (
             <Utqg grades={product.tire.utqg} text={t.product.utqg} />
           )}

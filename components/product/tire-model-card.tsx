@@ -8,6 +8,7 @@ import { getDictionary, storePath, type Store } from '@/lib/i18n'
 import { tireReferenceCopy } from '@/lib/i18n/tire-reference'
 import { Price } from './price'
 import { EuTyreLabel } from './eu-tyre-label'
+import { EprelReference } from './eprel-reference'
 
 export type TireCardVariant = Pick<TireProduct, 'id' | 'slug' | 'brand' | 'name' | 'mpn' | 'gtin' | 'images' | 'offers' | 'tire'>
 export function TireModelCard({ variants, store }: { variants: TireCardVariant[]; store: Store }) {
@@ -38,6 +39,7 @@ export function TireModelCard({ variants, store }: { variants: TireCardVariant[]
       <div aria-live="polite" className="flex flex-col gap-3">
         <dl className="grid grid-cols-[auto_1fr] gap-x-2 text-xs"><dt>MPN</dt><dd className="break-all text-right font-mono">{product.mpn || '—'}</dd><dt>EAN / GTIN</dt><dd className="break-all text-right font-mono">{product.gtin || '—'}</dd></dl>
         {store.market === 'eu' && product.tire.euLabel && t.product.euLabel && <EuTyreLabel label={product.tire.euLabel} text={t.product.euLabel} compact />}
+        {store.market === 'eu' && <EprelReference id={product.tire.euLabel?.eprelId} lang={store.lang} />}
         <div className="flex flex-wrap items-end justify-between gap-2 border-t border-border pt-3"><Price offer={offer} store={store} /><span className="text-xs text-muted-foreground">{t.labels.availability[offer.availability]}</span></div>
       </div>
       <Link href={href} className="mt-auto pt-2 text-sm font-semibold underline underline-offset-4">{labels.view} →</Link>
