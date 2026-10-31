@@ -11,6 +11,7 @@ export type Offer = {
   compareAtCents?: number
   saleEndsAt?: string
   availability: Availability
+  stock?: number
   // Required by Google for preorder items (availability_date). Without it the item stays out of the feed.
   availableFrom?: string
 }
@@ -22,6 +23,7 @@ type ProductBase = {
   slug: string
   name: string
   brand: string
+  stock?: number
   // Real codes only. No code → leave empty; the feed then sends identifier_exists=no.
   gtin?: string
   // Manufacturer part number. A reseller SKU does not belong here.
@@ -70,6 +72,7 @@ export type Utqg = {
 export type TireProduct = ProductBase & {
   category: "tires"
   tire: {
+    model?: string
     width: number
     aspect: number
     rim: number
@@ -79,6 +82,10 @@ export type TireProduct = ProductBase & {
     extraLoad: boolean
     runFlat: boolean
     euLabel?: EuTyreLabel
+    eprelExempt?: {
+      reason: "studded" | "por_off_road"
+      regulation: string
+    }
     utqg?: Utqg
   }
 }

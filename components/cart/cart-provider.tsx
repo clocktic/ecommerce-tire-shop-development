@@ -16,7 +16,9 @@ type CartContextValue = {
   lines: CartLine[]
   count: number
   subtotalCents: number
-  add: (line: CartLine) => void
+  open: boolean
+  setOpen: (open: boolean) => void
+  add: (line: CartLine, options?: { openDrawer?: boolean }) => void
   setQuantity: (slug: string, quantity: number) => void
   remove: (slug: string) => void
   clear: () => void
@@ -32,6 +34,7 @@ const storageKey = (market: Market) => `cp-cart-${market}-v1`
 export function CartProvider({ market, children }: { market: Market; children: React.ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([])
   const [loaded, setLoaded] = useState(false)
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
     try {
@@ -47,7 +50,7 @@ export function CartProvider({ market, children }: { market: Market; children: R
     if (loaded) window.localStorage.setItem(storageKey(market), JSON.stringify(lines))
   }, [lines, loaded, market])
 
-  const add = useCallback((line: CartLine) => {
+  const add = useCallback((line: CartLine, options?: { openDrawer?: boolean }) => {
     setLines((current) => {
       const existing = current.find((l) => l.slug === line.slug)
       if (existing) {
@@ -57,6 +60,9 @@ export function CartProvider({ market, children }: { market: Market; children: R
       }
       return [...current, { ...line, quantity: Math.min(MAX_QUANTITY, line.quantity) }]
     })
+    if (options?.openDrawer !== false) {
+      setOpen(true)
+    }
   }, [])
 
   const setQuantity = useCallback((slug: string, quantity: number) => {
@@ -74,12 +80,14 @@ export function CartProvider({ market, children }: { market: Market; children: R
       lines,
       count: lines.reduce((sum, l) => sum + l.quantity, 0),
       subtotalCents: lines.reduce((sum, l) => sum + l.quantity * l.priceCents, 0),
+      open,
+      setOpen,
       add,
       setQuantity,
       remove,
       clear,
     }),
-    [market, lines, add, setQuantity, remove, clear],
+    [market, lines, open, add, setQuantity, remove, clear],
   )
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>

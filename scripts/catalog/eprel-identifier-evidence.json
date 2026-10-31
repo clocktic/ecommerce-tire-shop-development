@@ -1,0 +1,148 @@
+{
+  "checkedAt": "2026-10-30",
+  "policy": "Formatting aliases are candidate lookup keys only. Published label still requires matching brand, commercial model, dimensions, load and speed; conflicts in GTIN, XL or declared run-flat reject the match. No name-and-size-only fallback.",
+  "retailerResearch": {
+    "checkedAt": "2026-10-30",
+    "policy": "Research only. These observations are not approved crosswalks and must not populate tire.euLabel or feed certification. Missing fields remain unknown. Resolve conflicting catalogue identity before applying any label; search misses do not prove absence of EU registration.",
+    "catalogUpdates": 0,
+    "findings": [
+      {
+        "productId": "ref-us-bridgestone-24594",
+        "brand": "Bridgestone",
+        "catalogModel": "Ecopia EP150",
+        "catalogMpn": "24594",
+        "catalogGtin": "3286340520317",
+        "catalogSize": "185/65 R15 88H",
+        "status": "catalog-identifier-conflict",
+        "reason": "The catalogue MPN identifies EU article 24594, EAN 3286342459417, EPREL 383253 (A/B/70). The catalogue EAN instead identifies article 5203 (B/C/69). Neither label may be assigned until stock identity is resolved.",
+        "candidates": [
+          {
+            "match": "catalog-mpn-only",
+            "manufacturerIdentifier": "24594",
+            "gtin": "3286342459417",
+            "observedLabel": { "fuelEfficiency": "A", "wetGrip": "B", "noiseDb": 70, "noiseClass": "B", "snowGrip": false, "iceGrip": false, "eprelId": "383253" },
+            "sources": [
+              "https://www.centralepneus.fr/pneu-auto/bridgestone/ecopia-ep150/185-65-r15-88h-1223232",
+              "https://www.butikumi.de/reifen-bridgestone-ep150-ecopia-185-65-r-15-88h",
+              "https://www.bridgestone.it/content/dam/website/documents/tyre-size-table/uk/car/Ecopia%20EP%20150.pdf",
+              "https://eprel.ec.europa.eu/api/products/tyres/383253"
+            ]
+          },
+          {
+            "match": "catalog-gtin-only",
+            "manufacturerIdentifier": "5203",
+            "gtin": "3286340520317",
+            "observedLabel": { "fuelEfficiency": "B", "wetGrip": "C", "noiseDb": 69, "noiseClass": "B" },
+            "unknownFields": ["eprelId", "snowGrip", "iceGrip"],
+            "sources": [
+              "https://www.reifen.com/en-de/18565-r15-88h-bridgestone-ecopia-ep-150-3286340520317",
+              "https://www.sklepopon.com/opona-letnia/bridgestone-ecopia-ep150-185-65-r15-88-h-61807"
+            ]
+          }
+        ],
+        "rejectedAlternative": {
+          "gtin": "3286341274219",
+          "manufacturerIdentifier": "12742",
+          "eprelId": "380821",
+          "reason": "Same model and dimensions but a different article and EAN.",
+          "sources": ["https://www.butikumi.de/reifen-bridgestone-ecopia-ep150-185-65-r-15-88h", "https://eprel.ec.europa.eu/api/products/tyres/380821"]
+        }
+      },
+      {
+        "productId": "ref-us-kumho-2267953",
+        "brand": "Kumho",
+        "catalogModel": "Ecsta PS31",
+        "catalogMpn": "2267953",
+        "catalogGtin": "8808956276829",
+        "catalogSize": "225/55 R17 101W",
+        "status": "partial-retailer-label",
+        "observedLabel": { "fuelEfficiency": "C", "wetGrip": "D", "noiseDb": 70 },
+        "unknownFields": ["noiseClass", "snowGrip", "iceGrip", "eprelId"],
+        "reason": "Two Italian comparison pages agree on EAN, dimensions, load, speed and three label values. A complete official label and regional article identity remain unverified; multiple sites do not necessarily represent independent upstream data.",
+        "sources": [
+          "https://gommeplanet.prezzigomme.com/pneumatico/8808956276829",
+          "https://www.pneumatici.it/kumho-ecsta-ps31-225-55-r17-101w--2465822"
+        ],
+        "rejectedAlternative": {
+          "manufacturerIdentifier": "2168203",
+          "gtin": "8808956156503",
+          "observedLabel": { "fuelEfficiency": "C", "wetGrip": "C", "noiseDb": 71, "noiseClass": "B" },
+          "reason": "Same model and dimensions but a different article and EAN; values conflict with the exact-EAN listings.",
+          "sources": ["https://www.butikumi.de/reifen-kumho-ecsta-ps31-225-55-r-17-101w"]
+        }
+      },
+      {
+        "productId": "ref-us-bridgestone-013651",
+        "brand": "Bridgestone",
+        "catalogModel": "Turanza T005A",
+        "catalogMpn": "013651",
+        "catalogGtin": "3286341090017",
+        "catalogSize": "205/50 R17 89V",
+        "status": "catalog-model-conflict",
+        "retailerModel": "Turanza T005",
+        "retailerMpn": "10900",
+        "observedLabel": { "fuelEfficiency": "B", "wetGrip": "A", "noiseDb": 71, "noiseClass": "B", "snowGrip": false, "iceGrip": false, "eprelId": "382369" },
+        "reason": "Exact EAN points to T005, not catalogue T005A. Do not alias the two models or replace the catalogue MPN without resolving the source identity.",
+        "sources": ["https://www.butikumi.de/reifen-bridgestone-turanza-t005-205-50-r-17-89v", "https://eprel.ec.europa.eu/api/products/tyres/382369"]
+      },
+      {
+        "productId": "ref-us-goodyear-1123000110",
+        "brand": "Goodyear",
+        "catalogModel": "Eagle LS2",
+        "catalogMpn": "1123000110",
+        "catalogGtin": "5452000391902",
+        "catalogSize": "255/45 R19 100H",
+        "status": "catalog-specification-conflict",
+        "retailerMpn": "526765",
+        "retailerSize": "255/40 R19 100H XL",
+        "observedLabel": { "fuelEfficiency": "C", "wetGrip": "C", "noiseDb": 70, "noiseClass": "A", "snowGrip": false, "iceGrip": false, "eprelId": "609689" },
+        "reason": "Exact EAN points to 255/40 R19 XL, not catalogue 255/45 R19 SL. A size/load-range correction requires identity review; no label assigned.",
+        "sources": ["https://www.butikumi.de/reifen-goodyear-eagle-ls-2-255-40-r-19-100h", "https://eprel.ec.europa.eu/api/products/tyres/609689"]
+      }
+    ],
+    "modelFollowups": [
+      {
+        "model": "Kumho Solus TA31",
+        "source": "https://www.kumho-eu-tyre-label.eu/en/our-tyres/TA31-1281.html",
+        "europeanArticles": ["2204123", "2262163", "2262173", "2204133"],
+        "reason": "None of these four European MPNs occur among the 23 currently unlabelled EU-offered catalogue articles. Do not transfer their labels by model and size alone."
+      },
+      {
+        "model": "Kumho Crugen HT51",
+        "source": "https://pidurdusmaa.ee/rehvid/kumho-ht51/",
+        "status": "search-lead-only",
+        "reason": "Search result lists EU versions 265/60 R18 110H, 265/65 R17 112H and LT245/75 R16 120Q. Current unlabelled catalogue versions do not match these speed/load combinations; no article-level EU identity established."
+      }
+    ]
+  },
+  "examples": [
+    {
+      "brand": "Pirelli",
+      "catalogCode": "2494300",
+      "eprelManufacturerCode": "24943",
+      "eprelId": "595030",
+      "source": "https://oponyialufelgi.pl/9933,opona-pirelli-235-60r18-scorpion-verde-103w-fr-n0.html"
+    },
+    {
+      "brand": "Pirelli",
+      "catalogCode": "2417900",
+      "eprelManufacturerCode": "24179",
+      "eprelId": "594889",
+      "source": "https://www.mojepneu.cz/pirelli-cinturato-p7-ao-225-50-r17-98y-xl"
+    },
+    {
+      "brand": "Continental",
+      "catalogCode": "03135770000",
+      "eprelManufacturerCode": "0313577",
+      "eprelId": "1183454",
+      "source": "https://www.butikumi.at/reifen-continental-ecocontact-6-q-245-35-r-21-96-1"
+    },
+    {
+      "brand": "Nexen",
+      "catalogCode": "15487NXK",
+      "eprelManufacturerCode": "15487",
+      "eprelId": "432999",
+      "source": "https://thmotorsports.com/12674801-nexen-15487nxk"
+    }
+  ]
+}

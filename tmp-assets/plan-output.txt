@@ -1,0 +1,8 @@
+{
+  total: 211,
+  bothOk: 0,
+  usOnly: 89,
+  euOnly: 101,
+  neither: 21,
+  lowImg: 27
+}

@@ -8,8 +8,6 @@ import {
   OFFSET_BANDS,
   PISTON_OPTIONS,
   PRICE_BANDS,
-  SPEED_RATINGS,
-  TIRE_OPTIONS,
   filterProducts,
   finishFamily,
   isCategory,
@@ -18,13 +16,19 @@ import {
   type Category,
   type Product,
 } from "@/lib/catalog"
-import { getProductsByCategory } from "@/lib/catalog/queries"
+import { readProductsByCategory } from "@/lib/catalog/queries"
+import { CatalogUnavailable } from "@/components/catalog/catalog-unavailable"
 import { ALL_STORES, fmt, getDictionary, parseStore, storePath, type Dictionary, type Store } from "@/lib/i18n"
 import { storeAlternates } from "@/lib/seo"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
 import { ProductCard } from "@/components/product/product-card"
 import { FilterSelect } from "@/components/catalog/filter-select"
+import { FitmentBanner } from "@/components/garage/fitment-banner"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { TireModelCard } from "@/components/product/tire-model-card"
+import type { TireProduct } from "@/lib/catalog/types"
+import { X } from "lucide-react"
 
 type Params = Promise<{ market: string; lang: string; category: string }>
 type Search = Promise<Record<string, string | string[] | undefined>>
@@ -57,9 +61,50 @@ export default async function CategoryPage({ params, searchParams }: { params: P
     Object.entries(raw).map(([k, v]) => [k, typeof v === "string" && v !== "" ? v : undefined]),
   )
   const copy = t.categories[category]
-  const all = (await getProductsByCategory(store.market, category)).map((p) => localizeProduct(p, store))
-  const products = filterProducts(all, filters, store.market)
-  const active = Object.values(filters).some(Boolean)
+  const catalog = await readProductsByCategory(store.market, category)
+  if (!catalog.ok) return <div className="mx-auto max-w-7xl px-4 md:px-6"><CatalogUnavailable store={store} /></div>
+  const all = catalog.data.map((p) => localizeProduct(p, store))
+  const filtered = filterProducts(all, filters, store.market)
+  const sortMode = filters.sort ?? "featured"
+  const products = [...filtered].sort((a, b) => {
+    const priceA = a.offers[store.market]?.priceCents ?? 0
+    const priceB = b.offers[store.market]?.priceCents ?? 0
+    if (sortMode === "price-asc") return priceA - priceB
+    if (sortMode === "price-desc") return priceB - priceA
+    if (sortMode === "brand-asc") return a.brand.localeCompare(b.brand)
+    return 0
+  })
+  const activeEntries = Object.entries(filters).filter(
+    (entry): entry is [string, string] =>
+      Boolean(entry[1]) && entry[0] !== "page" && entry[0] !== "sort",
+  )
+  const active = activeEntries.length > 0 || Boolean(filters.sort)
+  const removeFilterHref = (keyToRemove: string) => {
+    const query = new URLSearchParams(
+      Object.entries(filters).filter(
+        (e): e is [string, string] =>
+          typeof e[1] === "string" && e[0] !== keyToRemove && e[0] !== "page",
+      ),
+    )
+    const qs = query.toString()
+    return qs ? `${storePath(store, `/${category}`)}?${qs}` : storePath(store, `/${category}`)
+  }
+  const grouped = new Map<string, Product[]>()
+  for (const product of products) {
+    const key = product.category === 'tires' ? `${product.brand}:${product.tire.model || product.name}` : product.id
+    const group = grouped.get(key) || []
+    group.push(product)
+    grouped.set(key, group)
+  }
+  const groups = [...grouped.values()]
+  const pages = category === 'tires' ? Math.max(1, Math.ceil(groups.length / 24)) : 1
+  const page = Math.min(pages, Math.max(1, Number.parseInt(filters.page || '1', 10) || 1))
+  const visible = category === 'tires' ? groups.slice((page - 1) * 24, page * 24) : groups
+  const pageHref = (n: number) => {
+    const query = new URLSearchParams(Object.entries(filters).filter((e): e is [string, string] => typeof e[1] === 'string'))
+    query.set('page', String(n))
+    return `${storePath(store, `/${category}`)}?${query}`
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-6">
@@ -76,13 +121,16 @@ export default async function CategoryPage({ params, searchParams }: { params: P
         </p>
       </header>
 
+      <FitmentBanner category={category} filters={filters} matchingCount={products.length} />
+
       <form method="get" className="flex flex-col gap-4 border-b border-border py-6 md:flex-row md:items-end">
+        {filters.vehicle && <input type="hidden" name="vehicle" value={filters.vehicle} />}
         <fieldset className="grid flex-1 grid-cols-2 gap-3 lg:grid-cols-4">
           <legend className="sr-only">{fmt(t.catalog.filter, { category: copy.name })}</legend>
           <CategoryFilters category={category} products={all} filters={filters} store={store} t={t} />
         </fieldset>
         <div className="flex items-center gap-3">
-          <Button type="submit" size="lg">
+          <Button type="submit" size="lg" className="flex-1 md:flex-initial">
             {t.catalog.apply}
           </Button>
           {active && (
@@ -93,14 +141,78 @@ export default async function CategoryPage({ params, searchParams }: { params: P
         </div>
       </form>
 
+      {activeEntries.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 pt-4">
+          {activeEntries.map(([key, val]) => (
+            <Link key={key} href={removeFilterHref(key)}>
+              <Badge
+                variant="secondary"
+                className="h-7 gap-1.5 rounded-none border border-border px-2.5 font-mono text-xs uppercase hover:border-primary"
+              >
+                <span className="text-muted-foreground">{key}:</span>
+                <span className="font-semibold text-foreground">{val}</span>
+                <X className="size-3 text-muted-foreground" aria-hidden="true" />
+              </Badge>
+            </Link>
+          ))}
+        </div>
+      )}
+
       {products.length > 0 ? (
         <div className="grid gap-4 py-8 sm:grid-cols-2 lg:grid-cols-4">
-          {products.map((p) => (
-            <ProductCard key={p.slug} product={p} store={store} />
-          ))}
+          {visible.map(group => {
+            const p = group[0]
+            if (p.category !== 'tires') return <ProductCard key={p.slug} product={p} store={store} />
+            const variants = group.filter((v): v is TireProduct => v.category === 'tires')
+              .sort((a, b) => a.offers[store.market]!.priceCents - b.offers[store.market]!.priceCents)
+              .map(({ id, slug, brand, name, mpn, gtin, images, offers, tire }) => ({ id, slug, brand, name, mpn, gtin, images, offers, tire }))
+            return <TireModelCard key={`${p.brand}:${p.tire.model || p.name}`} variants={variants} store={store} />
+          })}
         </div>
       ) : (
         <EmptyState store={store} category={category} t={t} />
+      )}
+      {pages > 1 && (
+        <nav aria-label={copy.name} className="flex flex-wrap items-center justify-center gap-1.5 pb-8 font-mono text-sm">
+          {page > 1 && (
+            <Link
+              href={pageHref(page - 1)}
+              rel="prev"
+              className="flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-foreground hover:text-foreground"
+            >
+              ←
+            </Link>
+          )}
+          {visiblePageNumbers(page, pages).map((item, idx) =>
+            item === "ellipsis" ? (
+              <span key={`ellipsis-${idx}`} className="flex h-9 min-w-7 items-center justify-center text-muted-foreground">
+                …
+              </span>
+            ) : (
+              <Link
+                key={item}
+                href={pageHref(item)}
+                aria-current={item === page ? "page" : undefined}
+                className={
+                  item === page
+                    ? "flex h-9 min-w-9 items-center justify-center border border-primary bg-primary px-2.5 font-semibold text-primary-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5"
+                    : "flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-foreground hover:text-foreground"
+                }
+              >
+                {item}
+              </Link>
+            ),
+          )}
+          {page < pages && (
+            <Link
+              href={pageHref(page + 1)}
+              rel="next"
+              className="flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-foreground hover:text-foreground"
+            >
+              →
+            </Link>
+          )}
+        </nav>
       )}
     </div>
   )
@@ -142,25 +254,40 @@ function CategoryFilters({
         options={Object.keys(t.labels.availability)}
         labels={t.labels.availability}
       />
+      <FilterSelect
+        name="sort"
+        label="Sort"
+        any="Featured"
+        value={filters.sort}
+        options={["price-asc", "price-desc", "brand-asc"]}
+        labels={{
+          "price-asc": "Price: Low → High",
+          "price-desc": "Price: High → Low",
+          "brand-asc": "Brand: A → Z",
+        }}
+      />
     </>
   )
 
   if (category === "tires") {
-    const loads = unique(products.map((p) => (p.category === "tires" ? String(p.tire.loadIndex) : "")))
+    const tires = products.filter((p): p is TireProduct => p.category === 'tires')
+    const options = (key: 'width' | 'aspect' | 'rim' | 'loadIndex' | 'speedRating') => unique(tires.map(p => String(p.tire[key]))).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+    const loads = options('loadIndex')
+    const rims = options('rim')
     return (
       <>
-        <FilterSelect name="width" label={c.width} any={any} value={filters.width} options={TIRE_OPTIONS.width.map(String)} />
-        <FilterSelect name="aspect" label={c.profile} any={any} value={filters.aspect} options={TIRE_OPTIONS.aspect.map(String)} />
+        <FilterSelect name="width" label={c.width} any={any} value={filters.width} options={options('width')} />
+        <FilterSelect name="aspect" label={c.profile} any={any} value={filters.aspect} options={options('aspect')} />
         <FilterSelect
           name="rim"
           label={c.rim}
           any={any}
           value={filters.rim}
-          options={TIRE_OPTIONS.rim.map(String)}
-          labels={Object.fromEntries(TIRE_OPTIONS.rim.map((rim) => [String(rim), `R${rim}`]))}
+          options={rims}
+          labels={Object.fromEntries(rims.map((rim) => [rim, `R${rim}`]))}
         />
         <FilterSelect name="season" label={c.season} any={any} value={filters.season} options={Object.keys(t.labels.season)} labels={t.labels.season} />
-        <FilterSelect name="speed" label={c.speed} any={any} value={filters.speed} options={[...SPEED_RATINGS]} />
+        <FilterSelect name="speed" label={c.speed} any={any} value={filters.speed} options={options('speedRating')} />
         {loads.length > 0 && <FilterSelect name="load" label={c.load} any={any} value={filters.load} options={loads} />}
         <FilterSelect name="runFlat" label={c.runFlat} any={any} value={filters.runFlat} options={["yes", "no"]} labels={yesNo} />
         <FilterSelect name="extraLoad" label={c.extraLoad} any={any} value={filters.extraLoad} options={["yes", "no"]} labels={yesNo} />
@@ -219,6 +346,20 @@ function priceLabels(store: Store, t: Dictionary): Record<string, string> {
 
 function unique(values: string[]) {
   return [...new Set(values.filter(Boolean))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+}
+
+function visiblePageNumbers(current: number, total: number): Array<number | "ellipsis"> {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+  const pages = new Set<number>([1, total, current, current - 1, current + 1])
+  const sorted = [...pages].filter((n) => n >= 1 && n <= total).sort((a, b) => a - b)
+  const result: Array<number | "ellipsis"> = []
+  for (let i = 0; i < sorted.length; i++) {
+    if (i > 0 && sorted[i]! - sorted[i - 1]! > 1) {
+      result.push("ellipsis")
+    }
+    result.push(sorted[i]!)
+  }
+  return result
 }
 
 function EmptyState({ store, category, t }: { store: Store; category: Category; t: Dictionary }) {

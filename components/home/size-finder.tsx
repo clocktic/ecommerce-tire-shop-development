@@ -5,6 +5,9 @@ import { useState } from "react"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useI18n } from "@/components/i18n/i18n-provider"
+import { useGarage } from "@/components/garage/garage-provider"
+import { FitmentModal } from "@/components/garage/fitment-modal"
+import { TireSizeIcon, VehicleIcon } from "@/components/garage/fitment-icons"
 import { TIRE_OPTIONS } from "@/lib/catalog"
 import { storePath } from "@/lib/i18n/config"
 import { cn } from "@/lib/utils"
@@ -15,13 +18,26 @@ const SIZE_PATTERN = /^\s*(\d{3})\s*[/\s-]?\s*(\d{2})\s*[zZ]?[rR]?\s*(\d{2})\s*$
 
 export function SizeFinder() {
   const router = useRouter()
-  const { store, t } = useI18n()
+  const { store, t, x } = useI18n()
   const f = t.home.finder
-  const [size, setSize] = useState<Size>({ width: "225", aspect: "45", rim: "17" })
+  const g = x.garage
+  const { active, applySelection } = useGarage()
+  const [size, setSize] = useState<Size>(() => ({
+    width: String(active?.width ?? 225),
+    aspect: String(active?.aspect ?? 45),
+    rim: String(active?.rim ?? 17),
+  }))
   const [typed, setTyped] = useState("")
   const [error, setError] = useState<string | null>(null)
 
   const submit = (s: Size) => {
+    applySelection({
+      kind: "size",
+      label: `${s.width}/${s.aspect}R${s.rim}`,
+      width: Number(s.width),
+      aspect: Number(s.aspect),
+      rim: Number(s.rim),
+    })
     const params = new URLSearchParams({ width: s.width, aspect: s.aspect, rim: s.rim })
     router.push(`${storePath(store, "/tires")}?${params.toString()}`)
   }
@@ -45,15 +61,29 @@ export function SizeFinder() {
         }
         submit(size)
       }}
-      className="relative flex flex-col gap-6 border border-foreground/80 bg-card p-5 md:p-7"
+      className="relative flex flex-col gap-6 border border-foreground/80 bg-card p-5 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_20px_50px_-12px_rgba(0,0,0,0.55)] md:p-7"
       aria-labelledby="size-finder-title"
     >
       <CornerMarks />
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h2 id="size-finder-title" className="label-caps">
-          {f.title}
-        </h2>
-        <span className="label-caps text-muted-foreground">{f.hint}</span>
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
+        <div className="flex items-center gap-2">
+          <TireSizeIcon className="size-5 text-primary" />
+          <h2 id="size-finder-title" className="label-caps">
+            {f.title}
+          </h2>
+        </div>
+        <FitmentModal
+          defaultTab="vehicle"
+          trigger={
+            <button
+              type="button"
+              className="inline-flex items-center gap-1.5 border border-border bg-muted/40 px-2.5 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-primary hover:text-primary"
+            >
+              <VehicleIcon className="size-4 w-5 text-primary" />
+              {g.vehicleTab}
+            </button>
+          }
+        />
       </div>
 
       <p
@@ -87,7 +117,7 @@ export function SizeFinder() {
             autoComplete="off"
             aria-invalid={!!error}
             aria-describedby={error ? "typed-size-error" : undefined}
-            className="h-12 border border-border bg-background px-3 font-mono text-sm uppercase placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-ring"
+            className="h-12 border border-border bg-background px-3 font-mono text-sm uppercase shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-ring"
           />
         </div>
         <Button type="submit" size="lg" className="sm:min-w-48">
@@ -121,8 +151,8 @@ function Segment({
 }) {
   const id = `seg-${name}`
   return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="label-caps text-balance text-muted-foreground">
+    <div className="flex min-w-0 flex-col justify-between gap-1.5">
+      <label htmlFor={id} className="truncate font-mono text-[10px] uppercase tracking-wider text-muted-foreground sm:text-xs sm:tracking-[0.16em]">
         {label} <span className="normal-case tracking-normal">({unit})</span>
       </label>
       <select
@@ -130,7 +160,7 @@ function Segment({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          "h-12 w-full appearance-none border border-border bg-background px-3 font-mono text-base font-semibold",
+          "h-12 w-full appearance-none border border-border bg-background px-2.5 font-mono text-base font-semibold shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 sm:px-3",
           "focus-visible:outline-2 focus-visible:outline-ring",
         )}
       >

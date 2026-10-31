@@ -13,6 +13,7 @@ import { fmt } from "@/lib/i18n/fmt"
 import { storePath } from "@/lib/i18n/config"
 import { MARKETS, formatPrice } from "@/lib/markets"
 import { policyHref } from "@/lib/legal/pages"
+import { PaymentBadges } from "@/components/ui/payment-badges"
 
 export function CheckoutForm() {
   const { lines, subtotalCents, clear } = useCart()
@@ -149,6 +150,7 @@ export function CheckoutForm() {
           <p className="text-sm leading-relaxed text-muted-foreground">
             {t.accepted}
           </p>
+          <PaymentBadges className="pt-1" />
         </fieldset>
       </div>
 

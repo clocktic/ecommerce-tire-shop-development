@@ -3,7 +3,8 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Truck, RotateCcw, ShieldCheck } from "lucide-react"
 import { localizeProduct, offerFor, type Product } from "@/lib/catalog"
-import { getProductBySlug, getProductsByCategory } from "@/lib/catalog/queries"
+import { readProductBySlug, readProductsByCategory } from "@/lib/catalog/queries"
+import { CatalogUnavailable } from "@/components/catalog/catalog-unavailable"
 import { counterpart, fmt, getDictionary, parseStore, storePath, type Dictionary, type Store } from "@/lib/i18n"
 import { markets } from "@/lib/markets"
 import { storeAlternates } from "@/lib/seo"
@@ -12,11 +13,15 @@ import { policyHref } from "@/lib/legal/pages"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
 import { AddToCart } from "@/components/product/add-to-cart"
 import { EuTyreLabel } from "@/components/product/eu-tyre-label"
+import { EprelReference } from "@/components/product/eprel-reference"
 import { Price } from "@/components/product/price"
 import { ProductCard, productCode } from "@/components/product/product-card"
 import { ProductDetails } from "@/components/product/product-details"
 import { ProductGallery } from "@/components/product/product-gallery"
 import { Utqg } from "@/components/product/utqg"
+import { TireVariants } from "@/components/product/tire-variants"
+import { ProductFitmentBadge } from "@/components/garage/product-fitment-badge"
+import { tireVariants } from "@/lib/catalog/tire-variants"
 
 type Params = Promise<{ market: string; lang: string; slug: string }>
 
@@ -26,8 +31,11 @@ export const dynamicParams = true
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { market, lang, slug } = await params
   const store = parseStore(market, lang)
-  const base = await getProductBySlug(slug)
-  if (!base || !store) return {}
+  if (!store) return {}
+  const result = await readProductBySlug(slug)
+  if (!result.ok) return { robots: { index: false, follow: true } }
+  const base = result.data
+  if (!base) return {}
   const product = localizeProduct(base, store)
   const availableIn = markets.filter((m) => product.offers[m])
   return {
@@ -43,7 +51,9 @@ export default async function ProductPage({ params }: { params: Params }) {
   const { market, lang, slug } = await params
   const store = parseStore(market, lang)
   if (!store) notFound()
-  const base = await getProductBySlug(slug)
+  const result = await readProductBySlug(slug)
+  if (!result.ok) return <div className="mx-auto max-w-7xl px-4 md:px-6"><CatalogUnavailable store={store} /></div>
+  const base = result.data
   if (!base) notFound()
 
   const t = getDictionary(store)
@@ -55,7 +65,11 @@ export default async function ProductPage({ params }: { params: Params }) {
   const { code, meta } = productCode(product, t)
   const categoryName = t.categories[product.category].name
   const jsonLd = productJsonLd(product, store)
-  const related = (await getProductsByCategory(store.market, product.category))
+  const relatedResult = await readProductsByCategory(store.market, product.category)
+  if (!relatedResult.ok) return <div className="mx-auto max-w-7xl px-4 md:px-6"><CatalogUnavailable store={store} /></div>
+  const categoryProducts = relatedResult.data
+  const variants = base.category === "tires" ? tireVariants(base, categoryProducts) : []
+  const related = categoryProducts
     .filter((p) => p.slug !== product.slug)
     .slice(0, 4)
     .map((p) => localizeProduct(p, store))
@@ -90,21 +104,50 @@ export default async function ProductPage({ params }: { params: Params }) {
             <Identifiers product={product} labels={t.product.spec} />
           </div>
 
-          <div className="flex items-end justify-between gap-4 border-y border-border py-4">
-            <Price offer={offer} store={store} size="lg" showNote />
-            <span className="text-right font-mono text-xs uppercase tracking-[0.12em]">
+          <div className="flex flex-wrap items-start justify-between gap-3 border-y border-border py-4">
+            <div className="min-w-0 flex-1">
+              <Price offer={offer} store={store} size="lg" showNote />
+            </div>
+            <span className="shrink-0 border border-border bg-muted/40 px-2.5 py-1 text-right font-mono text-xs font-semibold uppercase tracking-[0.12em]">
               {t.labels.availability[offer.availability]}
             </span>
           </div>
 
+          <ProductFitmentBadge
+            target={
+              product.category === "tires"
+                ? {
+                    category: "tires",
+                    width: product.tire.width,
+                    aspect: product.tire.aspect,
+                    rim: product.tire.rim,
+                  }
+                : product.category === "wheels"
+                  ? {
+                      category: "wheels",
+                      diameter: product.wheel.diameter,
+                      boltPattern: product.wheel.boltPattern,
+                      centerBore: product.wheel.centerBore,
+                    }
+                  : {
+                      category: "brakes",
+                      fitment: product.brake.fitment,
+                    }
+            }
+          />
+
           {product.category === "tires" && t.product.euLabel && product.tire.euLabel && (
             <EuTyreLabel label={product.tire.euLabel} text={t.product.euLabel} />
           )}
+          {store.market === 'eu' && product.category === 'tires' && !product.tire.euLabel?.eprelId && <EprelReference lang={store.lang} />}
           {product.category === "tires" && t.product.utqg && product.tire.utqg && (
             <Utqg grades={product.tire.utqg} text={t.product.utqg} />
           )}
 
+          <TireVariants products={variants} selected={product.slug} store={store} />
+
           <AddToCart
+            key={product.slug}
             slug={product.slug}
             name={product.name}
             image={product.images[0]}
@@ -114,7 +157,7 @@ export default async function ProductPage({ params }: { params: Params }) {
           />
           {product.sample && <p className="text-sm text-muted-foreground">{t.product.demoNote}</p>}
 
-          <ul className="flex flex-col divide-y divide-border border border-border bg-card text-sm">
+          <ul className="flex flex-col divide-y divide-border border border-border bg-card text-sm shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)]">
             <li className="flex items-start gap-3 p-4">
               <Truck className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
               <span>

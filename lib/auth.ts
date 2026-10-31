@@ -1,6 +1,7 @@
 import "server-only"
 
 import { betterAuth } from "better-auth"
+import { nextCookies } from "better-auth/next-js"
 import { pool } from "@/lib/db"
 
 export type SocialProvider = "google" | "apple" | "facebook"
@@ -20,7 +21,13 @@ export const auth = betterAuth({
       ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
       : process.env.VERCEL_URL
         ? `https://${process.env.VERCEL_URL}`
-        : process.env.V0_RUNTIME_URL),
+        :         process.env.V0_RUNTIME_URL),
+  emailAndPassword: {
+    enabled: true,
+    // Sign-up itself is gated by a captcha check performed in the server action
+    // before auth.api.signUpEmail runs (see lib/actions/auth.ts).
+    autoSignIn: true,
+  },
   socialProviders: {
     ...(ENABLED_PROVIDERS.google
       ? { google: { clientId: process.env.GOOGLE_CLIENT_ID!, clientSecret: process.env.GOOGLE_CLIENT_SECRET! } }
@@ -75,6 +82,9 @@ export const auth = betterAuth({
         },
       }
     : {}),
+  // Required so Set-Cookie headers from auth.api.signUpEmail reach the browser
+  // when called from a Next.js server action (see lib/actions/auth.ts). Keep last.
+  plugins: [nextCookies()],
 })
 
 export async function getSessionUser(requestHeaders: Headers) {

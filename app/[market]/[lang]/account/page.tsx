@@ -12,7 +12,9 @@ import { getShipmentEventsForOrders } from "@/lib/shipping/events"
 import { statusLabel, type OrderStatus } from "@/lib/shipping/tracking"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
 import { SocialSignIn } from "@/components/account/social-sign-in"
+import { EmailAuthForm } from "@/components/account/email-auth-form"
 import { SignOutButton } from "@/components/account/sign-out-button"
+import { GarageManager } from "@/components/garage/garage-manager"
 
 type Params = Promise<{ market: string; lang: string }>
 
@@ -42,6 +44,12 @@ export default async function AccountPage({ params }: { params: Params }) {
             <p className="leading-relaxed text-muted-foreground">{x.account.lead}</p>
           </header>
           <SocialSignIn enabled={ENABLED_PROVIDERS} />
+          <div className="flex items-center gap-3 text-xs uppercase tracking-wide text-muted-foreground">
+            <span className="h-px flex-1 bg-border" />
+            {x.account.orEmail}
+            <span className="h-px flex-1 bg-border" />
+          </div>
+          <EmailAuthForm />
           <p className="text-xs leading-relaxed text-muted-foreground">
             {x.account.consent}{" "}
             <Link href={policyHref(store, "terms")} className="underline underline-offset-4">
@@ -71,6 +79,8 @@ export default async function AccountPage({ params }: { params: Params }) {
         </div>
         <SignOutButton />
       </header>
+
+      <GarageManager />
 
       <section aria-labelledby="orders-title" className="flex flex-col gap-4 py-10">
         <h2 id="orders-title" className="label-caps">
