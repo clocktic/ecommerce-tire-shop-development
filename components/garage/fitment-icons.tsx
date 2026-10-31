@@ -165,3 +165,29 @@ export function WheelRimIcon({ className, ...props }: SVGProps<SVGSVGElement>) {
     </svg>
   )
 }
+
+export function BrakeDiscIcon({ className, ...props }: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      className={className}
+      {...props}
+    >
+      <circle cx="12" cy="12" r="9.5" stroke="currentColor" strokeWidth="1.8" />
+      <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.4" />
+      <path
+        d="M14.5 3.2C18.2 4.3 20.8 7.5 21.1 11.4H17.2C16.9 9.1 15.5 7.2 13.5 6.4L14.5 3.2Z"
+        className="fill-primary/25 stroke-primary"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <circle cx="7.5" cy="7.5" r="0.9" fill="currentColor" />
+      <circle cx="6.2" cy="12" r="0.9" fill="currentColor" />
+      <circle cx="7.5" cy="16.5" r="0.9" fill="currentColor" />
+      <circle cx="12" cy="17.8" r="0.9" fill="currentColor" />
+    </svg>
+  )
+}

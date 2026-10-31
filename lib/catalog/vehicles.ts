@@ -477,6 +477,27 @@ export function findVehicleById(id: string | undefined | null): VehicleModel | u
   return VEHICLES.find((item) => item.id === id)
 }
 
+export function matchesBrakeVehicle(fitment: string[], vehicle: VehicleModel): boolean {
+  if (!fitment || fitment.length === 0) return true
+  const needleMake = vehicle.make.toLowerCase()
+  const modelParts = vehicle.model
+    .split("/")
+    .map((s) => s.trim().toLowerCase())
+    .filter((s) => s.length >= 2)
+
+  const exactMatch = fitment.some((entry) => {
+    const text = entry.toLowerCase()
+    if (!text.includes(needleMake)) return false
+    return modelParts.some((part) => text.includes(part))
+  })
+  if (exactMatch) return true
+
+  return fitment.some((entry) => {
+    const text = entry.toLowerCase()
+    return text.includes(needleMake) && !text.includes("(")
+  })
+}
+
 export function sizeKey(width: number, aspect: number, rim: number): string {
   return `${width}/${aspect}R${rim}`
 }

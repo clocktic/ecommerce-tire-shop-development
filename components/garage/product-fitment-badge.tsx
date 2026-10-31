@@ -9,7 +9,7 @@ import { FitmentModal } from "@/components/garage/fitment-modal"
 import { TireSizeIcon, VehicleIcon } from "@/components/garage/fitment-icons"
 import { useI18n } from "@/components/i18n/i18n-provider"
 import { getVehicleMakeIconUrl } from "@/lib/brand-icons"
-import { findVehicleById } from "@/lib/catalog/vehicles"
+import { findVehicleById, matchesBrakeVehicle } from "@/lib/catalog/vehicles"
 import { storePath } from "@/lib/i18n/config"
 import { cn } from "@/lib/utils"
 
@@ -159,12 +159,7 @@ export function ProductFitmentBadge({
     }
   } else {
     if (vehicle && target.fitment.length > 0) {
-      const makeNeedle = vehicle.make.toLowerCase()
-      const modelNeedle = vehicle.model.split("/")[0]!.trim().toLowerCase()
-      exactMatch = target.fitment.some((f) => {
-        const text = f.toLowerCase()
-        return text.includes(makeNeedle) || (modelNeedle.length >= 2 && text.includes(modelNeedle))
-      })
+      exactMatch = matchesBrakeVehicle(target.fitment, vehicle)
     }
   }
 
@@ -182,18 +177,22 @@ export function ProductFitmentBadge({
   }
 
   const matchingHref =
-    target.category === "wheels" && (active.boltPattern ?? vehicle?.boltPattern)
-      ? `${storePath(store, "/wheels")}?${new URLSearchParams({
-          ...(vehicle ? { vehicle: vehicle.id } : {}),
-          diameter: String(active.rim),
-          bolt: (active.boltPattern ?? vehicle?.boltPattern)!,
+    target.category === "brakes" && vehicle
+      ? `${storePath(store, "/brakes")}?${new URLSearchParams({
+          vehicle: vehicle.id,
         }).toString()}`
-      : `${storePath(store, "/tires")}?${new URLSearchParams({
-          ...(vehicle ? { vehicle: vehicle.id } : {}),
-          width: String(active.width),
-          aspect: String(active.aspect),
-          rim: String(active.rim),
-        }).toString()}`
+      : target.category === "wheels" && (active.boltPattern ?? vehicle?.boltPattern)
+        ? `${storePath(store, "/wheels")}?${new URLSearchParams({
+            ...(vehicle ? { vehicle: vehicle.id } : {}),
+            diameter: String(active.rim),
+            bolt: (active.boltPattern ?? vehicle?.boltPattern)!,
+          }).toString()}`
+        : `${storePath(store, "/tires")}?${new URLSearchParams({
+            ...(vehicle ? { vehicle: vehicle.id } : {}),
+            width: String(active.width),
+            aspect: String(active.aspect),
+            rim: String(active.rim),
+          }).toString()}`
 
   return (
     <div

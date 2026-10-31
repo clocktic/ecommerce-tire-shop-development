@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { useI18n } from "@/components/i18n/i18n-provider"
 import { useGarage } from "@/components/garage/garage-provider"
 import { FitmentModal } from "@/components/garage/fitment-modal"
-import { TireSizeIcon, VehicleIcon, WheelRimIcon } from "@/components/garage/fitment-icons"
+import { BrakeDiscIcon, TireSizeIcon, VehicleIcon, WheelRimIcon } from "@/components/garage/fitment-icons"
 import { findVehicleById, type FactorySize } from "@/lib/catalog/vehicles"
 import type { Category } from "@/lib/catalog/types"
 import { storePath } from "@/lib/i18n/config"
@@ -126,7 +126,13 @@ export function FitmentBanner({
       aspect: s.aspect,
       rim: s.rim,
     })
-    if (category === "wheels") {
+    if (category === "brakes") {
+      router.push(
+        `${storePath(store, "/brakes")}?${new URLSearchParams({
+          vehicle: vehicle.id,
+        }).toString()}`,
+      )
+    } else if (category === "wheels") {
       router.push(
         `${storePath(store, "/wheels")}?${new URLSearchParams({
           vehicle: vehicle.id,
@@ -189,11 +195,15 @@ export function FitmentBanner({
               className="inline-flex h-9 items-center gap-1.5 bg-primary px-3.5 text-xs font-bold uppercase tracking-wider text-primary-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:opacity-90"
             >
               <SlidersHorizontal aria-hidden="true" className="size-3.5" />
-              {category === "wheels" ? t.categories.wheels.name : g.useThisSize}
+              {category === "brakes"
+                ? t.categories.brakes.name
+                : category === "wheels"
+                  ? t.categories.wheels.name
+                  : g.useThisSize}
             </Link>
           ) : (
             <>
-              {category === "tires" && boltPattern && (
+              {category !== "wheels" && boltPattern && (
                 <Link
                   href={`${storePath(store, "/wheels")}?${new URLSearchParams({
                     ...(vehicle ? { vehicle: vehicle.id } : {}),
@@ -206,7 +216,7 @@ export function FitmentBanner({
                   {t.categories.wheels.name} (R{rim} · {boltPattern.replace("x", "×")})
                 </Link>
               )}
-              {category === "wheels" && (
+              {category !== "tires" && (
                 <Link
                   href={`${storePath(store, "/tires")}?${new URLSearchParams({
                     ...(vehicle ? { vehicle: vehicle.id } : {}),
@@ -218,6 +228,17 @@ export function FitmentBanner({
                 >
                   <TireSizeIcon className="size-3.5 text-primary" />
                   {t.categories.tires.name} ({width}/{aspect}R{rim})
+                </Link>
+              )}
+              {category !== "brakes" && vehicle && (
+                <Link
+                  href={`${storePath(store, "/brakes")}?${new URLSearchParams({
+                    vehicle: vehicle.id,
+                  }).toString()}`}
+                  className="inline-flex h-9 items-center gap-1.5 border border-border bg-background px-3 font-mono text-xs font-semibold shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-primary"
+                >
+                  <BrakeDiscIcon className="size-3.5 text-primary" />
+                  {t.categories.brakes.name}
                 </Link>
               )}
             </>

@@ -1,5 +1,5 @@
 import type { Category, Offer, Product } from "@/lib/catalog/types"
-import { findVehicleById } from "@/lib/catalog/vehicles"
+import { findVehicleById, matchesBrakeVehicle } from "@/lib/catalog/vehicles"
 import type { Market } from "@/lib/markets"
 import { localeMeta, type Store } from "@/lib/i18n/config"
 
@@ -155,14 +155,15 @@ export function filterProducts(products: Product[], filters: CatalogFilters, mar
       if (filters.axle && b.axle !== filters.axle) return false
       if (filters.pistons && String(b.pistons ?? "") !== filters.pistons) return false
       if (filters.disc && String(b.discDiameterMm ?? "") !== filters.disc) return false
+      if (filters.segment) {
+        const isPrem =
+          p.badges?.includes("premium") ||
+          p.specs.some((s) => s.label === "Segment" && s.value.toLowerCase().includes("premium"))
+        if (filters.segment === "premium" && !isPrem) return false
+        if (filters.segment === "mid" && isPrem) return false
+      }
       if (vehicle && b.fitment.length > 0) {
-        const needleMake = vehicle.make.toLowerCase()
-        const needleModel = vehicle.model.split("/")[0]!.trim().toLowerCase()
-        const matchesFitment = b.fitment.some((entry) => {
-          const text = entry.toLowerCase()
-          return text.includes(needleMake) || (needleModel.length >= 2 && text.includes(needleModel))
-        })
-        if (!matchesFitment) return false
+        if (!matchesBrakeVehicle(b.fitment, vehicle)) return false
       }
     }
     return true

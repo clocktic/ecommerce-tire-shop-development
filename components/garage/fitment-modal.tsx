@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useI18n } from "@/components/i18n/i18n-provider"
 import { useGarage } from "@/components/garage/garage-provider"
-import { TireSizeIcon, VehicleIcon, WheelRimIcon } from "@/components/garage/fitment-icons"
+import { BrakeDiscIcon, TireSizeIcon, VehicleIcon, WheelRimIcon } from "@/components/garage/fitment-icons"
 import { getVehicleMakeIconUrl } from "@/lib/brand-icons"
 import {
   findVehicleById,
@@ -224,14 +224,26 @@ export function FitmentModal({
     }
   }
 
-  function confirmVehicle(target?: "tires" | "wheels") {
+  function confirmVehicle(target?: "tires" | "wheels" | "brakes") {
     const selection = buildVehicleSelection()
     if (!selection || !model || !vehicleSize) return
     applySelection(selection)
     close()
 
-    const dest = target ?? (pathname?.endsWith("/wheels") ? "wheels" : "tires")
-    if (dest === "wheels") {
+    const dest =
+      target ??
+      (pathname?.endsWith("/brakes")
+        ? "brakes"
+        : pathname?.endsWith("/wheels")
+          ? "wheels"
+          : "tires")
+    if (dest === "brakes") {
+      router.push(
+        `${storePath(store, "/brakes")}?${new URLSearchParams({
+          vehicle: model.id,
+        }).toString()}`,
+      )
+    } else if (dest === "wheels") {
       router.push(
         `${storePath(store, "/wheels")}?${new URLSearchParams({
           vehicle: model.id,
@@ -273,7 +285,13 @@ export function FitmentModal({
     selectSaved(row)
     close()
     const foundVehicle = findVehicleById(row.vehicleId)
-    if (pathname?.endsWith("/wheels") && foundVehicle) {
+    if (pathname?.endsWith("/brakes") && foundVehicle) {
+      router.push(
+        `${storePath(store, "/brakes")}?${new URLSearchParams({
+          vehicle: foundVehicle.id,
+        }).toString()}`,
+      )
+    } else if (pathname?.endsWith("/wheels") && foundVehicle) {
       router.push(
         `${storePath(store, "/wheels")}?${new URLSearchParams({
           vehicle: foundVehicle.id,
@@ -663,7 +681,18 @@ export function FitmentModal({
                 <span />
               )}
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  onClick={() => confirmVehicle("brakes")}
+                  disabled={!model || !vehicleSize}
+                  className="gap-1.5 px-3 text-xs sm:text-sm"
+                >
+                  <BrakeDiscIcon className="size-4 text-primary" />
+                  {t.categories.brakes.name}
+                </Button>
                 <Button
                   type="button"
                   variant="outline"
