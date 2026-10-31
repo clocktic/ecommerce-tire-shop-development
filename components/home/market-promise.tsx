@@ -13,10 +13,10 @@ export function MarketPromise({ store }: { store: Store }) {
   ]
 
   return (
-    <section aria-labelledby="promise-title" className="mx-auto max-w-7xl px-4 pt-24 md:px-6">
-      <div className="bg-secondary text-secondary-foreground shadow-[0_4px_12px_rgba(0,0,0,0.25),0_20px_50px_-12px_rgba(0,0,0,0.55)]">
-        <div className="flex flex-col gap-2 border-b border-secondary-foreground/15 p-6 md:flex-row md:items-end md:justify-between md:p-8">
-          <h2 id="promise-title" className="font-expanded text-2xl font-extrabold uppercase md:text-3xl">
+    <section aria-labelledby="promise-title" className="mx-auto max-w-7xl px-4 pt-16 sm:pt-24 md:px-6">
+      <div className="overflow-hidden bg-secondary text-secondary-foreground shadow-[0_4px_12px_rgba(0,0,0,0.25),0_20px_50px_-12px_rgba(0,0,0,0.55)]">
+        <div className="flex flex-col gap-2 border-b border-secondary-foreground/15 p-5 sm:p-6 md:flex-row md:items-end md:justify-between md:p-8">
+          <h2 id="promise-title" className="break-words font-expanded text-xl font-extrabold uppercase sm:text-2xl md:text-3xl">
             {p.title}
           </h2>
           <p className="text-sm text-secondary-foreground/70">
@@ -28,10 +28,13 @@ export function MarketPromise({ store }: { store: Store }) {
         </div>
         <ul className="grid md:grid-cols-3">
           {items.map((item) => (
-            <li key={item.href} className="min-w-0 border-b border-secondary-foreground/15 md:border-b-0 md:border-r md:last:border-r-0">
-              <Link href={item.href} className="group flex h-full min-w-0 flex-col gap-3 p-6 md:p-8">
-                <span className="label-caps text-secondary-foreground/60">{item.title}</span>
-                <span className="text-balance font-expanded text-[clamp(1.6rem,8.5vw,1.875rem)] font-black uppercase leading-none group-hover:text-primary">
+            <li
+              key={item.href}
+              className="@container min-w-0 overflow-hidden border-b border-secondary-foreground/15 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0"
+            >
+              <Link href={item.href} className="group flex h-full min-w-0 flex-col gap-2.5 p-5 sm:gap-3 sm:p-6 lg:p-8">
+                <span className="label-caps break-words text-secondary-foreground/60">{item.title}</span>
+                <span className="max-w-full break-words text-balance font-expanded text-[clamp(0.95rem,6.8cqi,1.875rem)] font-black uppercase leading-none tracking-tight group-hover:text-primary">
                   {item.value}
                 </span>
                 <span className="text-sm leading-relaxed text-secondary-foreground/75">{item.text}</span>
