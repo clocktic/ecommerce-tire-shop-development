@@ -55,6 +55,13 @@ export function ProductCard({ product, store }: { product: Product; store: Store
         <div className="flex flex-col gap-0.5">
           <p className="font-mono text-sm font-semibold">{code}</p>
           <p className="font-mono text-xs text-muted-foreground">{meta}</p>
+          {(product.mpn || product.gtin) && (
+            <p className="mt-0.5 truncate font-mono text-[11px] text-muted-foreground/85">
+              {product.mpn ? `MPN: ${product.mpn}` : ""}
+              {product.mpn && product.gtin ? " · " : ""}
+              {product.gtin ? `EAN: ${product.gtin}` : ""}
+            </p>
+          )}
         </div>
         {t.product.euLabel && product.category === "tires" && product.tire.euLabel && (
           <EuTyreLabel label={product.tire.euLabel} text={t.product.euLabel} compact />

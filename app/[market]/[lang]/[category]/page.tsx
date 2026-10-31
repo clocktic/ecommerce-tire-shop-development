@@ -67,8 +67,8 @@ export default async function CategoryPage({ params, searchParams }: { params: P
   const filtered = filterProducts(all, filters, store.market)
   const sortMode = filters.sort ?? "featured"
   const products = [...filtered].sort((a, b) => {
-    const priceA = a.offers[store.market]?.price ?? 0
-    const priceB = b.offers[store.market]?.price ?? 0
+    const priceA = a.offers[store.market]?.priceCents ?? 0
+    const priceB = b.offers[store.market]?.priceCents ?? 0
     if (sortMode === "price-asc") return priceA - priceB
     if (sortMode === "price-desc") return priceB - priceA
     if (sortMode === "brand-asc") return a.brand.localeCompare(b.brand)
