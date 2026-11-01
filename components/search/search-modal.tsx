@@ -257,13 +257,14 @@ export function SearchModal() {
                       onClick={() => setOpen(false)}
                       className="group flex items-center gap-3.5 px-4 py-3 transition-colors hover:bg-muted/50"
                     >
-                      <div className="relative size-14 shrink-0 overflow-hidden border border-border bg-photo">
+                      <div className="relative size-14 shrink-0 overflow-hidden border border-border bg-white">
                         <Image
                           src={item.image}
                           alt={item.name}
                           fill
+                          quality={90}
                           sizes="56px"
-                          className="object-contain p-1"
+                          className="object-contain p-1.5"
                         />
                       </div>
                       <div className="flex min-w-0 flex-1 flex-col gap-0.5">

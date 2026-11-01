@@ -91,14 +91,15 @@ export function CartSheet() {
                   <Link
                     href={storePath(store, `/product/${line.slug}`)}
                     onClick={() => setOpen(false)}
-                    className="relative size-16 shrink-0 overflow-hidden border border-border bg-photo sm:size-20"
+                    className="relative size-16 shrink-0 overflow-hidden border border-border bg-white sm:size-20"
                   >
                     <Image
                       src={line.image || "/placeholder.svg"}
                       alt={line.name}
                       fill
+                      quality={90}
                       sizes="80px"
-                      className="object-contain p-1.5"
+                      className="object-contain p-2"
                     />
                   </Link>
                   <div className="flex min-w-0 flex-1 flex-col justify-between gap-2">

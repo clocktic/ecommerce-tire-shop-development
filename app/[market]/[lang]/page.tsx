@@ -39,7 +39,7 @@ export default async function HomePage({ params }: { params: Promise<{ market: s
           </Link>
         </div>
         {catalog.ok ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {featured.map((p) => (
               <ProductCard key={p.slug} product={p} store={store} />
             ))}
