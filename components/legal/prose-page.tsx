@@ -52,7 +52,7 @@ export function ProsePage({
           <header className="flex flex-col gap-4 border-b border-border pb-8">
             <p className="label-caps text-primary">{t.prose.store}</p>
         <h1 className="break-words text-balance font-expanded text-2xl font-extrabold uppercase leading-tight sm:text-3xl md:text-5xl">
-          {page.title}
+          {doc.title}
         </h1>
             <p className="text-pretty text-lg leading-relaxed">{doc.intro}</p>
             <p className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">

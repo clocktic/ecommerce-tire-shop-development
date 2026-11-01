@@ -158,7 +158,7 @@ export function filterProducts(products: Product[], filters: CatalogFilters, mar
       if (filters.disc && String(b.discDiameterMm ?? "") !== filters.disc) return false
       if (filters.segment) {
         const isPrem =
-          p.badges?.includes("premium") ||
+          ("badges" in p && Array.isArray(p.badges) && p.badges.includes("premium")) ||
           p.specs.some((s) => s.label === "Segment" && s.value.toLowerCase().includes("premium"))
         if (filters.segment === "premium" && !isPrem) return false
         if (filters.segment === "mid" && isPrem) return false
