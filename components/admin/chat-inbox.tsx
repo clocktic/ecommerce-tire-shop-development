@@ -6,7 +6,15 @@ import { Send } from "lucide-react"
 import { markChatRead, replyToChat } from "@/lib/actions/admin"
 import { cn } from "@/lib/utils"
 
-type Conversation = { id: string; market: string; lang: string; unread: boolean; lastMessageAt: string }
+type Conversation = {
+  id: string
+  market: string
+  lang: string
+  name: string | null
+  email: string | null
+  unread: boolean
+  lastMessageAt: string
+}
 type Message = { id: string; role: "visitor" | "admin"; body: string; createdAt: string }
 
 const fetcher = <T,>(url: string) => fetch(url, { cache: "no-store" }).then((r) => r.json() as Promise<T>)
@@ -40,8 +48,13 @@ export function ChatInbox() {
                 c.id === activeId ? "bg-muted" : "hover:bg-muted",
               )}
             >
-              <span className="flex flex-col">
-                <span className="font-mono text-xs font-semibold">{c.id.slice(-8)}</span>
+              <span className="flex min-w-0 flex-col">
+                <span className="truncate font-semibold text-xs">
+                  {c.name || c.id.slice(-8)}
+                </span>
+                {c.email && (
+                  <span className="truncate text-[11px] text-muted-foreground">{c.email}</span>
+                )}
                 <span className="text-xs text-muted-foreground">
                   {c.market.toUpperCase()}/{c.lang} · {time.format(new Date(c.lastMessageAt))}
                 </span>
@@ -88,11 +101,16 @@ function Thread({ conversation, onBack }: { conversation: Conversation; onBack: 
 
   return (
     <>
-      <header className="flex items-center gap-3 border-b border-border p-3 text-sm">
+      <header className="flex flex-wrap items-center gap-3 border-b border-border p-3 text-sm">
         <button type="button" onClick={onBack} className="text-muted-foreground underline lg:hidden">
           Назад
         </button>
-        <span className="font-mono font-semibold">{conversation.id.slice(-8)}</span>
+        <span className="font-semibold">{conversation.name || conversation.id.slice(-8)}</span>
+        {conversation.email && (
+          <a href={`mailto:${conversation.email}`} className="font-mono text-xs text-primary underline">
+            {conversation.email}
+          </a>
+        )}
         <span className="text-muted-foreground">
           Витрина {conversation.market.toUpperCase()}, язык {conversation.lang} — отвечайте на языке покупателя
         </span>

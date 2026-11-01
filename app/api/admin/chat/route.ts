@@ -15,6 +15,8 @@ export async function GET(request: Request) {
       id: c.id,
       market: c.market,
       lang: c.lang,
+      name: c.name,
+      email: c.email,
       unread: c.unreadByAdmin,
       lastMessageAt: c.lastMessageAt.toISOString(),
     })),
