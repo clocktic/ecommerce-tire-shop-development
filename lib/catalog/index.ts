@@ -4,6 +4,7 @@ import type { Market } from "@/lib/markets"
 import { localeMeta, type Store } from "@/lib/i18n/config"
 
 export * from "@/lib/catalog/types"
+export * from "@/lib/catalog/warranty"
 
 export const CATEGORIES: { slug: Category; name: string; singular: string; blurb: string; image: string }[] = [
   {

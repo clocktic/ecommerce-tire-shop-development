@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Truck, RotateCcw, ShieldCheck } from "lucide-react"
-import { localizeProduct, offerFor, type Product } from "@/lib/catalog"
+import { getProductWarranty, localizeProduct, offerFor, type Product } from "@/lib/catalog"
 import { readProductBySlug, readProductsByCategory } from "@/lib/catalog/queries"
 import { CatalogUnavailable } from "@/components/catalog/catalog-unavailable"
 import { counterpart, fmt, getDictionary, parseStore, storePath, type Dictionary, type Store } from "@/lib/i18n"
@@ -181,7 +181,12 @@ export default async function ProductPage({ params }: { params: Params }) {
               <ShieldCheck className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
               <span>
                 <span className="font-semibold">{t.product.warrantyTitle}</span>
-                <span className="block text-muted-foreground">{t.policy.warranty}</span>
+                <span className="block text-muted-foreground">
+                  {getProductWarranty(product, store).specValue}{" · "}
+                  <Link href={policyHref(store, "warranty")} className="underline underline-offset-4">
+                    {getProductWarranty(product, store).policyLinkLabel}
+                  </Link>
+                </span>
               </span>
             </li>
           </ul>
