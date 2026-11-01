@@ -33,21 +33,34 @@ export async function addMessage(conversationId: string, role: "visitor" | "admi
     .where(eq(chatConversations.id, conversationId))
 }
 
-export async function startConversation(visitorId: string, market: string, lang: string): Promise<ChatConversationRow> {
+export async function startConversation(
+  visitorId: string,
+  market: string,
+  lang: string,
+  name: string | null = null,
+  email: string | null = null,
+): Promise<ChatConversationRow> {
   const now = new Date()
   const row: ChatConversationRow = {
     id: newId("chat"),
     visitorId,
     market,
     lang,
-    name: null,
-    email: null,
+    name,
+    email,
     unreadByAdmin: false,
     lastMessageAt: now,
     createdAt: now,
   }
   await db.insert(chatConversations).values(row)
   return row
+}
+
+export async function updateConversationContact(conversationId: string, name: string, email: string) {
+  await db
+    .update(chatConversations)
+    .set({ name, email })
+    .where(eq(chatConversations.id, conversationId))
 }
 
 export async function listConversations() {
