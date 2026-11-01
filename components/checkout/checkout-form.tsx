@@ -82,6 +82,10 @@ export function CheckoutForm() {
           }
           setPlaced(true)
           clear()
+          if (result.forwardUrl) {
+            window.location.assign(result.forwardUrl)
+            return
+          }
           router.push(storePath(store, `/order/${result.orderNumber}`))
         })
       }}
