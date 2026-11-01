@@ -83,7 +83,12 @@ export function CheckoutForm() {
           setPlaced(true)
           clear()
           if (result.forwardUrl) {
-            window.location.assign(result.forwardUrl)
+            if (window.self !== window.top) {
+              window.open(result.forwardUrl, "_blank", "noopener,noreferrer")
+              router.push(storePath(store, `/order/${result.orderNumber}`))
+            } else {
+              window.location.assign(result.forwardUrl)
+            }
             return
           }
           router.push(storePath(store, `/order/${result.orderNumber}`))
