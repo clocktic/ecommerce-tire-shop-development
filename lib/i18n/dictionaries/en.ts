@@ -129,7 +129,7 @@ const checkoutFields = {
   selectCountry: "Select country",
   payment: "Payment",
   yourOrder: "Your order",
-  notConnected: "Payments are not connected yet — no order was created.",
+  notConnected: "Redirecting to secure 3D Secure card payment page…",
 }
 
 const consentShared = {
@@ -365,7 +365,7 @@ export const usEn = {
     postal: "ZIP code",
     state: "State" as string | null,
     deliverTo: `We deliver to ${us.shipping.area}. Not available: ${us.shipping.exclusions}.`,
-    accepted: `Accepted: ${us.paymentMethods.join(", ")}. The payment provider is not connected yet in this preview.`,
+    accepted: `Accepted: ${us.paymentMethods.join(", ")}. Encrypted 3D Secure 2.0 card checkout.`,
     estimated: `Estimated delivery: ${usDays}.`,
     acceptPrefix: "I have read and accept the",
     termsLink: "Terms of Service",
@@ -655,7 +655,7 @@ export const euEn: Dictionary = {
     postal: "Postcode",
     state: null,
     deliverTo: `We deliver to ${eu.shipping.area}. Not available: ${eu.shipping.exclusions}.`,
-    accepted: `Accepted: ${eu.paymentMethods.join(", ")}. The payment provider is not connected yet in this preview.`,
+    accepted: `Accepted: ${eu.paymentMethods.join(", ")}. Encrypted 3D Secure 2.0 card checkout.`,
     estimated: `Estimated delivery: ${euDays}.`,
     acceptPrefix: "I have read and accept the",
     termsLink: "Terms & Conditions",

@@ -23,6 +23,7 @@ export default async function OrderPage({ params }: { params: Params }) {
   const x = getExtras(store)
   const meta = localeMeta(store)
   const price = (cents: number) => formatPrice(cents, order.market as Market, meta.intlLocale)
+  const statusKey = (order.status in x.orderStatus ? order.status : "paid") as keyof typeof x.orderStatus
 
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-6">
@@ -54,6 +55,12 @@ export default async function OrderPage({ params }: { params: Params }) {
           <div className="flex justify-between gap-4">
             <span className="label-caps text-muted-foreground">{x.order.number}</span>
             <span className="font-mono font-semibold">{order.orderNumber}</span>
+          </div>
+          <div className="flex justify-between gap-4">
+            <span className="label-caps text-muted-foreground">{x.account.status}</span>
+            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-primary">
+              {x.orderStatus[statusKey]}
+            </span>
           </div>
           <h2 className="label-caps">{x.order.items}</h2>
           <ul className="flex flex-col gap-2 text-sm">

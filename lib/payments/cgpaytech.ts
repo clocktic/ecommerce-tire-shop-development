@@ -216,3 +216,57 @@ export async function createCgPayTechPaymentForm(
     return { ok: false, reason: "exception" }
   }
 }
+
+export async function syncCgPayTechOrderStatus(
+  market: Market,
+  orderNumber: string
+): Promise<"paid" | "cancelled" | null> {
+  const cfg = getCgPayTechConfig(market)
+  if (!cfg) return null
+
+  try {
+    const token = await getBearerToken(cfg)
+    const now = new Date()
+    const from = new Date(now.getTime() - 7 * 24 * 3600 * 1000).toISOString().slice(0, 10)
+    const to = new Date(now.getTime() + 24 * 3600 * 1000).toISOString().slice(0, 10)
+
+    const url = `${cfg.baseUrl}/v1/api/reporting/search?dateFrom=${from}&dateTo=${to}&externalId=${encodeURIComponent(orderNumber)}`
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        MerchantInfo: {
+          merchantId: cfg.merchantId,
+          merchantWebsiteId: cfg.merchantWebsiteId,
+        },
+      }),
+      signal: AbortSignal.timeout(5_000),
+    })
+
+    if (!res.ok) return null
+    const data = (await res.json()) as {
+      results?: Array<{ status?: string }>
+    }
+    const items = Array.isArray(data.results) ? data.results : []
+    for (const item of items) {
+      const st = String(item.status || "").trim().toLowerCase()
+      if (["success", "succeeded", "captured", "settled", "approved", "paid", "completed"].includes(st)) {
+        return "paid"
+      }
+    }
+    for (const item of items) {
+      const st = String(item.status || "").trim().toLowerCase()
+      if (["failed", "declined", "error", "expired", "canceled", "cancelled"].includes(st)) {
+        return "cancelled"
+      }
+    }
+    return null
+  } catch {
+    return null
+  }
+}
+
