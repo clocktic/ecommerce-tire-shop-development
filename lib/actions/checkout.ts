@@ -12,6 +12,7 @@ import { localeMeta, parseStore } from "@/lib/i18n/config"
 import { extrasFor } from "@/lib/i18n/extras"
 import { fmt } from "@/lib/i18n/fmt"
 import { MARKETS, formatPrice } from "@/lib/markets"
+import { createCgPayTechPaymentForm } from "@/lib/payments/cgpaytech"
 import { POLICIES } from "@/lib/policies"
 
 const MAX_PER_LINE = 8
@@ -34,7 +35,9 @@ export type PlaceOrderInput = {
   accepted: boolean
 }
 
-export type PlaceOrderResult = { ok: true; orderNumber: string } | { ok: false }
+export type PlaceOrderResult =
+  | { ok: true; orderNumber: string; forwardUrl?: string }
+  | { ok: false }
 
 function text(value: unknown, max: number): string {
   return typeof value === "string" ? value.trim().slice(0, max) : ""
@@ -94,7 +97,9 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
 
   const subtotalCents = items.reduce((sum, i) => sum + i.lineTotalCents, 0)
   const shippingCents = POLICIES[store.market].shipping.rateCents
-  const user = await getSessionUser(await headers())
+  const totalCents = subtotalCents + shippingCents
+  const reqHeaders = await headers()
+  const user = await getSessionUser(reqHeaders)
   const orderNumber = newOrderNumber(store.market)
 
   await db.insert(orders).values({
@@ -108,7 +113,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
     status: "pending",
     subtotalCents,
     shippingCents,
-    totalCents: subtotalCents + shippingCents,
+    totalCents,
     currency: MARKETS[store.market].currency,
     shippingName: `${fields.firstName} ${fields.lastName}`,
     shippingAddress1: fields.address,
@@ -119,18 +124,46 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
   })
   await db.insert(orderItems).values(items)
 
+  const host = reqHeaders.get("x-forwarded-host") || reqHeaders.get("host") || "localhost:3000"
+  const proto = reqHeaders.get("x-forwarded-proto") || (host.startsWith("localhost") ? "http" : "https")
+  const origin = `${proto}://${host}`
+  const forwardedFor = reqHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() || "8.8.8.8"
+
+  const paymentSession = await createCgPayTechPaymentForm({
+    market: store.market,
+    lang: store.lang,
+    orderNumber,
+    amountCents: totalCents,
+    currency: MARKETS[store.market].currency,
+    email,
+    phone: fields.phone,
+    firstName: fields.firstName,
+    lastName: fields.lastName,
+    address: fields.address,
+    city: fields.city,
+    postalCode: fields.postal,
+    state: fields.state || undefined,
+    countryIso2: fields.country,
+    ipAddress: forwardedFor,
+    origin,
+  })
+
   const meta = localeMeta(store)
   const x = extrasFor(meta.content)
   await sendMail({
     to: email,
     subject: fmt(x.email.orderSubject, { number: orderNumber }),
     paragraphs: [
-      fmt(x.email.orderBody, { number: orderNumber, total: formatPrice(subtotalCents + shippingCents, store.market, meta.intlLocale) }),
+      fmt(x.email.orderBody, { number: orderNumber, total: formatPrice(totalCents, store.market, meta.intlLocale) }),
       ...items.map((i) => `${i.quantity} × ${i.productName}`),
       x.order.payment,
     ],
     signoff: x.email.signoff,
   })
+
+  if (paymentSession.ok) {
+    return { ok: true, orderNumber, forwardUrl: paymentSession.forwardUrl }
+  }
 
   return { ok: true, orderNumber }
 }
