@@ -42,13 +42,14 @@ export function TireModelCard({ variants, store }: { variants: TireCardVariant[]
 
   return (
     <article className="flex min-w-0 flex-col border border-border bg-card shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-1 hover:border-foreground">
-      <Link href={href} className="relative aspect-square overflow-hidden bg-white">
+      <Link href={href} className="relative h-44 overflow-hidden bg-white sm:h-48">
         <Image
           src={product.images[0]}
           alt={`${product.brand} ${product.tire.model || product.name}`}
           fill
-          sizes="(min-width:1024px) 25vw,(min-width:640px) 50vw,100vw"
-          className="object-contain p-4"
+          quality={95}
+          sizes="(min-width:1024px) 260px,(min-width:768px) 300px,(min-width:640px) 45vw,90vw"
+          className="object-contain p-6 transition-transform duration-500 group-hover:scale-[1.03]"
         />
       </Link>
       <div className="flex flex-1 flex-col gap-3 p-4">

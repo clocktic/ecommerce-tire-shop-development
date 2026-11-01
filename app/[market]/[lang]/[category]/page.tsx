@@ -159,7 +159,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
       )}
 
       {products.length > 0 ? (
-        <div className="grid gap-4 py-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 py-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {visible.map(group => {
             const p = group[0]
             if (p.category !== 'tires') return <ProductCard key={p.slug} product={p} store={store} />

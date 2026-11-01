@@ -33,8 +33,8 @@ export function CartView() {
       <ul className="flex flex-col divide-y divide-border border-y border-border lg:col-span-8">
         {lines.map((line) => (
           <li key={line.slug} className="flex gap-4 py-4">
-            <div className="relative size-24 shrink-0 bg-photo">
-              <Image src={line.image || "/placeholder.svg"} alt="" fill sizes="96px" className="object-cover" />
+            <div className="relative size-24 shrink-0 border border-border bg-white">
+              <Image src={line.image || "/placeholder.svg"} alt="" fill quality={90} sizes="96px" className="object-contain p-2.5" />
             </div>
             <div className="flex flex-1 flex-col gap-3">
               <div className="flex items-start justify-between gap-4">

@@ -27,7 +27,7 @@ export function TireModelsSection({ store, filters }: { store: Store; filters: R
   }
   return <section id="all-tire-models" aria-labelledby="all-models-heading" className="flex scroll-mt-44 flex-col gap-5 border-t border-border py-8">
     <header className="flex flex-wrap items-center justify-between gap-3"><h2 id="all-models-heading" className="text-2xl font-bold">{t.title}</h2><p className="font-mono text-sm text-muted-foreground">{models.length} {t.models}</p></header>
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{models.slice((page-1)*24, page*24).map(model => <ReferenceModelCard key={model.slug} model={model} store={store} />)}</div>
+    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">{models.slice((page-1)*24, page*24).map(model => <ReferenceModelCard key={model.slug} model={model} store={store} />)}</div>
     {pages > 1 && (
       <nav aria-label={t.title} className="flex flex-wrap items-center justify-center gap-1.5 py-4 font-mono text-sm">
         {page > 1 && (

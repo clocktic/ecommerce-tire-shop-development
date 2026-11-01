@@ -86,12 +86,12 @@ export default async function ProductPage({ params }: { params: Params }) {
         ]}
       />
 
-      <div className="grid gap-6 pb-16 lg:grid-cols-12 lg:gap-10">
-        <div className="lg:col-span-7">
+      <div className="grid gap-6 pb-16 md:grid-cols-12 md:gap-8 lg:gap-10">
+        <div className="md:col-span-5 lg:col-span-5">
           <ProductGallery images={product.images} alt={product.name} badge={product.sample ? t.product.demoProduct : undefined} />
         </div>
 
-        <div className="flex flex-col gap-6 lg:col-span-5">
+        <div className="flex flex-col gap-6 md:col-span-7 lg:col-span-7">
           <div className="flex flex-col gap-3">
             <p className="label-caps text-muted-foreground">{product.brand}</p>
             <h1 className="text-balance font-expanded text-2xl font-extrabold uppercase leading-tight md:text-3xl">
@@ -200,7 +200,7 @@ export default async function ProductPage({ params }: { params: Params }) {
           <h2 id="related-title" className="mb-6 font-expanded text-xl font-extrabold uppercase">
             {fmt(t.product.related, { category: categoryName.toLowerCase() })}
           </h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {related.map((p) => (
               <ProductCard key={p.slug} product={p} store={store} />
             ))}

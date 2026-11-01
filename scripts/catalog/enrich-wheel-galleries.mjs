@@ -31,7 +31,7 @@ async function uploadWorker() {
     if (!fn) break
     const filePath = path.join(BLOB_DIR, fn)
     const buf = fs.readFileSync(filePath)
-    const key = `products/${fn}`
+    const key = `products/v2-${fn}`
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
         const blob = await put(key, buf, {

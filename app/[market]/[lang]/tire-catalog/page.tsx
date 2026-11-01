@@ -38,7 +38,7 @@ export default async function ReferenceCatalogue({ params, searchParams }: Props
       <div className="flex items-end gap-3"><button type="submit" className="h-12 bg-primary px-5 text-sm font-semibold text-primary-foreground hover:opacity-90">{t.apply}</button><Link href={storePath(store, '/tire-catalog')} className="py-3 text-sm underline">{t.reset}</Link></div>
     </form>
     <div className="flex flex-wrap items-center justify-between gap-3 py-5"><p aria-live="polite" className="font-mono text-sm text-muted-foreground">{models.length} {t.models}</p><Link href={storePath(store, '/tires')} className="text-sm font-semibold underline underline-offset-4">{t.shop} →</Link></div>
-    {models.length ? <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{models.slice((page-1)*24, page*24).map(m => <ReferenceModelCard key={m.slug} model={m} store={store} />)}</div> : <p role="status" className="border border-border p-10 text-center text-muted-foreground">{t.empty}</p>}
+    {models.length ? <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">{models.slice((page-1)*24, page*24).map(m => <ReferenceModelCard key={m.slug} model={m} store={store} />)}</div> : <p role="status" className="border border-border p-10 text-center text-muted-foreground">{t.empty}</p>}
     {pages > 1 && (
       <nav aria-label={t.models} className="flex flex-wrap items-center justify-center gap-1.5 py-8 font-mono text-sm">
         {page > 1 && (
