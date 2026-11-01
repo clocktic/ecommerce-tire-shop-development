@@ -36,8 +36,8 @@ type ProductBase = {
   shortDescription: string
   description: string
   highlights: string[]
-  specs: Spec[]
-  // A product is sold only in the markets it has an offer for.
+  specs: { label: string; value: string }[]
+  warranty?: Partial<Record<Market, string>>
   offers: Partial<Record<Market, Offer>>
   // Copy per content language; English fields above are the fallback.
   translations?: Partial<Record<ContentLang, ProductCopy>>

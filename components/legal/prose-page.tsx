@@ -51,9 +51,9 @@ export function ProsePage({
         <article className="flex max-w-3xl flex-col gap-10 lg:col-span-8 lg:col-start-5">
           <header className="flex flex-col gap-4 border-b border-border pb-8">
             <p className="label-caps text-primary">{t.prose.store}</p>
-            <h1 className="text-balance font-expanded text-3xl font-extrabold uppercase leading-tight md:text-5xl">
-              {doc.title}
-            </h1>
+        <h1 className="break-words text-balance font-expanded text-2xl font-extrabold uppercase leading-tight sm:text-3xl md:text-5xl">
+          {page.title}
+        </h1>
             <p className="text-pretty text-lg leading-relaxed">{doc.intro}</p>
             <p className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground">
               {t.prose.updated} <time dateTime={updated}>{formatted}</time>

@@ -7,16 +7,18 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import type { Product } from "@/lib/catalog"
+import { getProductWarranty, type Product } from "@/lib/catalog"
 import { getDictionary, type Dictionary, type Store } from "@/lib/i18n"
 import { policyHref } from "@/lib/legal/pages"
 
 export function ProductDetails({ product, store }: { product: Product; store: Store }) {
   const t = getDictionary(store)
+  const warranty = getProductWarranty(product, store)
   const rawSpecs = [
-    ...product.specs.filter((s) => !IDENTIFIER_LABELS.has(s.label)),
+    ...product.specs.filter((s) => !EXCLUDED_SPEC_LABELS.has(s.label.trim().toLowerCase())),
     ...identifierSpecs(product, t),
     ...categorySpecs(product, store, t),
+    { label: warranty.specLabel, value: warranty.specValue },
   ]
   const seenLabels = new Set<string>()
   const specs = rawSpecs.filter((s) => {
@@ -73,6 +75,20 @@ export function ProductDetails({ product, store }: { product: Product; store: St
         </AccordionItem>
       )}
 
+      <AccordionItem value="warranty" className="border-b border-border">
+        <AccordionTrigger className="rounded-none py-4 text-sm font-semibold uppercase tracking-wide hover:no-underline">
+          {warranty.accordionTitle}
+        </AccordionTrigger>
+        <AccordionContent className="pb-5">
+          <div className="flex flex-col gap-4 text-sm">
+            <p className="leading-relaxed">{warranty.detailParagraph}</p>
+            <Link href={policyHref(store, "warranty")} className="text-sm underline underline-offset-4">
+              {warranty.policyLinkLabel}
+            </Link>
+          </div>
+        </AccordionContent>
+      </AccordionItem>
+
       <AccordionItem value="shipping" className="border-b border-border">
         <AccordionTrigger className="rounded-none py-4 text-sm font-semibold uppercase tracking-wide hover:no-underline">
           {t.product.shipping}
@@ -104,7 +120,21 @@ export function ProductDetails({ product, store }: { product: Product; store: St
   )
 }
 
-const IDENTIFIER_LABELS = new Set(["EAN", "UPC", "MPN", "GTIN", "Supplier part", "Manufacturer part"])
+const EXCLUDED_SPEC_LABELS = new Set([
+  "ean",
+  "upc",
+  "mpn",
+  "gtin",
+  "supplier part",
+  "manufacturer part",
+  "manufacturer part number (mpn)",
+  "ean / gtin-13",
+  "upc / gtin",
+  "manufacturer warranty (us source)",
+  "manufacturer warranty",
+  "warranty",
+  "reference checked",
+])
 
 function identifierSpecs(product: Product, t: Dictionary) {
   const label = t.product.spec

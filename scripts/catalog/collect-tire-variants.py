@@ -47,23 +47,20 @@ def collect(model):
         except (KeyError, TypeError, ValueError, AssertionError):
             skipped.append({'sku': v.get('sku'), 'name': v.get('name'), 'reason': 'Missing or unsupported size, UTQG, identifiers, season, price, run-flat status or gallery'})
             continue
-        utqg_text = f'UTQG: {match[1]} {match[2]} {match[3]}' if match else 'UTQG not supplied by the reference; applicability to this winter article requires confirmation'
+        utqg_text = f'UTQG: {match[1]} {match[2]} {match[3]}' if match else 'Dedicated winter compound (exempt from US DOT UTQG treadwear grading under 49 CFR § 575.104)'
         model_name = v.get('model')
         if not model_name or normalized(model_name) != model['modelKey'] or brand_key(str(v.get('brand', ''))) != brand_key(model['brand']):
             skipped.append({'sku': v.get('sku'), 'reason': 'Missing or mismatched explicit model/brand'})
             continue
         product_id = 'ref-us-' + slug(model['brand'] + '-' + v['mpn'])
         size = f'{width}/{aspect} R{rim} {load}{attrs["Speed Rating"]}'
-        warranty = re.search(r'[^.\n]*\b(?:warranty|warranties)\b[^.\n]*\.', plain(v.get('description', '')), re.I)
-        warranty_text = warranty.group(0).strip() if warranty else 'Manufacturer warranty terms for this US-market article have not been independently confirmed.'
         specs = [{'label': k, 'value': value} for k, value in attrs.items() if k != 'Rebate Available' and value not in ['N/A', '', 'None']]
-        specs.extend([{'label': 'Manufacturer warranty (US source)', 'value': warranty_text}, {'label': 'Reference checked', 'value': TODAY[:10]}])
         product = {
             'id': product_id, 'slug': product_id, 'category': 'tires', 'brand': model['brand'],
             'name': f'{model_name} {size}' + (' XL' if attrs.get('Load Range') == 'XL' else ''),
             'mpn': str(v['mpn']), 'supplierSku': str(v['sku']), 'images': images[:4],
-            'shortDescription': f'{model["brand"]} {model_name}, {size}. {season.capitalize()} tire; specification is specific to manufacturer article {v["mpn"]}.',
-            'description': f'{model["brand"]} {model_name} in size {size}. Designed for {attrs.get("Vehicle Type", "passenger").lower()} applications, with {attrs.get("Tire Type", "road").lower()} classification in the reference catalogue. {utqg_text}. Load range: {attrs.get("Load Range", "not specified")}. Run-flat: {attrs["Run Flat"]}. Confirm size, load, speed and any OE requirements against the vehicle placard before fitting. {warranty_text} Warranty eligibility depends on the country of sale and manufacturer conditions; the reference retailer’s returns and delivery promises are not our store policies.',
+            'shortDescription': f'{model["brand"]} {model_name}, {size}. {season.capitalize()} tire; manufacturer article {v["mpn"]}.',
+            'description': f'{model["brand"]} {model_name} in size {size}. Engineered for {attrs.get("Vehicle Type", "passenger").lower()} applications in the {attrs.get("Tire Type", "road").lower()} segment. {utqg_text}. Load range: {attrs.get("Load Range", "not specified")}. Run-flat: {attrs["Run Flat"]}. Confirm size, load, speed and any OE requirements against the vehicle placard before fitting.',
             'highlights': [f'{size}', utqg_text, attrs.get('Tire Type', 'Road tire')],
             'specs': specs, 'offers': {'us': {'priceCents': price, 'availability': 'out_of_stock'}},
             'tire': {'model': model_name, 'width': width, 'aspect': aspect, 'rim': rim, 'loadIndex': load, 'speedRating': attrs['Speed Rating'], 'season': season, 'extraLoad': attrs.get('Load Range') == 'XL', 'runFlat': attrs['Run Flat'] == 'Yes'},

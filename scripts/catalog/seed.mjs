@@ -24,10 +24,13 @@ try {
       [product.id, product.slug, product.category, JSON.stringify({ ...product, source: "opening-catalog" })],
     )
   }
-  // Seeded rows use the slug as id; admin-created rows get random hex ids and are never touched.
+  // Seeded rows use the slug as id; admin-created rows and verified-tire-drafts rows are never touched.
   const { rowCount: archivedStale } = await client.query(
     `UPDATE products SET archived = true, updated_at = now()
-     WHERE archived = false AND id !~ '^[0-9a-f]{16,}$' AND NOT (id = ANY($1::text[]))`,
+     WHERE archived = false
+       AND id !~ '^[0-9a-f]{16,}$'
+       AND COALESCE(data->>'source', '') <> 'verified-tire-drafts-v1'
+       AND NOT (id = ANY($1::text[]))`,
     [catalog.map((p) => p.id)],
   )
   await client.query("COMMIT")
