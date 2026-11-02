@@ -6,7 +6,7 @@ import { formatPrice, type Market } from "@/lib/markets"
 
 export type TelegramResult = { ok: true } | { ok: false; skipped?: boolean; error?: string }
 
-function escapeHtml(value: string): string {
+export function escapeHtml(value: string): string {
   return value
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -34,15 +34,34 @@ function readEnvFallback(key: string): string | undefined {
   return undefined
 }
 
-function getTelegramCredentials(): { token?: string; rawChatIds?: string } {
-  return {
-    token: readEnvFallback("TELEGRAM_BOT_TOKEN"),
-    rawChatIds: readEnvFallback("TELEGRAM_CHAT_ID"),
-  }
+export function getTelegramCredentials(): { token?: string; rawChatIds?: string; chatIds: string[] } {
+  const token = readEnvFallback("TELEGRAM_BOT_TOKEN")
+  const rawChatIds = readEnvFallback("TELEGRAM_CHAT_ID")
+  const chatIds = (rawChatIds ?? "")
+    .split(",")
+    .map((id) => id.trim())
+    .filter(Boolean)
+  return { token, rawChatIds, chatIds }
+}
+
+export function getTelegramChatBotCredentials(): { token?: string; rawChatIds?: string; chatIds: string[] } {
+  const token = readEnvFallback("TELEGRAM_CHAT_BOT_TOKEN") ?? readEnvFallback("TELEGRAM_BOT_TOKEN")
+  const rawChatIds = readEnvFallback("TELEGRAM_CHAT_BOT_CHAT_ID") ?? readEnvFallback("TELEGRAM_CHAT_ID")
+  const chatIds = (rawChatIds ?? "")
+    .split(",")
+    .map((id) => id.trim())
+    .filter(Boolean)
+  return { token, rawChatIds, chatIds }
 }
 
 export function isTelegramConfigured(): boolean {
-  const { token, rawChatIds } = getTelegramCredentials()
+  const { token, chatIds } = getTelegramCredentials()
+  return Boolean(token && chatIds.length > 0)
+}
+
+export function isTelegramChatBotConfigured(): boolean {
+  const token = readEnvFallback("TELEGRAM_CHAT_BOT_TOKEN")
+  const rawChatIds = readEnvFallback("TELEGRAM_CHAT_BOT_CHAT_ID") ?? readEnvFallback("TELEGRAM_CHAT_ID")
   return Boolean(token && rawChatIds)
 }
 
@@ -51,21 +70,15 @@ export function isTelegramConfigured(): boolean {
  * (comma-separated chat IDs in TELEGRAM_CHAT_ID are supported).
  * Never throws so customer-facing flows (registration, checkout, webhooks) cannot fail because of Telegram.
  */
-export async function sendTelegramNotification(html: string): Promise<TelegramResult> {
-  const { token, rawChatIds } = getTelegramCredentials()
+export async function sendTelegramNotification(
+  html: string,
+  extra?: Record<string, unknown>,
+): Promise<TelegramResult> {
+  const { token, chatIds } = getTelegramCredentials()
 
-  if (!token || !rawChatIds) {
+  if (!token || chatIds.length === 0) {
     console.info("[telegram] skipped (TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID not configured)")
     return { ok: false, skipped: true, error: "TELEGRAM_BOT_TOKEN или TELEGRAM_CHAT_ID не заданы" }
-  }
-
-  const chatIds = rawChatIds
-    .split(",")
-    .map((id) => id.trim())
-    .filter(Boolean)
-
-  if (chatIds.length === 0) {
-    return { ok: false, skipped: true, error: "TELEGRAM_CHAT_ID пуст" }
   }
 
   let lastError: string | undefined
@@ -81,6 +94,7 @@ export async function sendTelegramNotification(html: string): Promise<TelegramRe
           text: html,
           parse_mode: "HTML",
           disable_web_page_preview: true,
+          ...extra,
         }),
         cache: "no-store",
       })
@@ -229,3 +243,88 @@ export async function notifyTelegramOrderPaid(input: {
 
   return sendTelegramNotification(lines.join("\n"))
 }
+
+export async function sendTelegramChatBotMessage(
+  html: string,
+  extra?: Record<string, unknown>,
+): Promise<TelegramResult> {
+  const { token, chatIds } = getTelegramChatBotCredentials()
+
+  if (!token || chatIds.length === 0) {
+    console.info("[telegram-chat-bot] skipped (TELEGRAM_CHAT_BOT_TOKEN / TELEGRAM_CHAT_BOT_CHAT_ID not configured)")
+    return { ok: false, skipped: true, error: "TELEGRAM_CHAT_BOT_TOKEN или TELEGRAM_CHAT_BOT_CHAT_ID не заданы" }
+  }
+
+  let lastError: string | undefined
+  let anySuccess = false
+
+  for (const chatId of chatIds) {
+    try {
+      const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: html,
+          parse_mode: "HTML",
+          disable_web_page_preview: true,
+          ...extra,
+        }),
+        cache: "no-store",
+      })
+
+      if (!response.ok) {
+        const body = await response.text().catch(() => "")
+        lastError = `HTTP ${response.status}: ${body.slice(0, 200)}`
+        console.error("[telegram-chat-bot] sendMessage failed:", lastError)
+      } else {
+        anySuccess = true
+      }
+    } catch (e) {
+      lastError = e instanceof Error ? e.message : String(e)
+      console.error("[telegram-chat-bot] network error:", lastError)
+    }
+  }
+
+  return anySuccess ? { ok: true } : { ok: false, error: lastError ?? "Не удалось отправить сообщение" }
+}
+
+export async function notifyTelegramChatMessage(input: {
+  conversationId: string
+  name: string
+  email: string
+  market: string
+  lang: string
+  body: string
+}): Promise<TelegramResult> {
+  const lines = [
+    `<b>Сообщение в онлайн-чате · ${escapeHtml(COMPANY.tradingName)}</b>`,
+    `<b>Покупатель:</b> ${escapeHtml(input.name)} (${escapeHtml(input.email)})`,
+    `<b>Витрина и язык:</b> ${escapeHtml(input.market.toUpperCase())} / ${escapeHtml(input.lang.toUpperCase())}`,
+    `<b>ID диалога:</b> <code>#${escapeHtml(input.conversationId)}</code>`,
+    ``,
+    `<blockquote>${escapeHtml(input.body)}</blockquote>`,
+    ``,
+    `<i>Ответьте (Reply) на это сообщение в Telegram или нажмите кнопку ниже — ваш ответ сразу появится у покупателя на сайте.</i>`,
+  ]
+
+  return sendTelegramChatBotMessage(lines.join("\n"), {
+    reply_markup: {
+      inline_keyboard: [
+        [
+          {
+            text: `Ответить ${input.name.slice(0, 24)}`,
+            callback_data: `reply:${input.conversationId}`,
+          },
+        ],
+        [
+          {
+            text: "Открыть чат в админке →",
+            url: `${COMPANY.url}/admin/chat`,
+          },
+        ],
+      ],
+    },
+  })
+}
+

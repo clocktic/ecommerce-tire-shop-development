@@ -1,15 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   images: {
     unoptimized: true,
-  },
-  experimental: {
-    // The persistent dev cache kept compiling a deleted app/[market]/layout.tsx after the
-    // move to app/[market]/[lang]; rebuild from source on every dev start instead.
-    turbopackFileSystemCacheForDev: false,
+    qualities: [75, 95],
   },
   async headers() {
     return [

@@ -156,7 +156,8 @@ SEO (`lib/seo.ts`): у каждой страницы canonical на свой я�
 | `APPLE_CLIENT_ID`, `APPLE_CLIENT_SECRET` | Вход через Apple (Services ID и JWT-секрет). Return URL: `https://<домен>/api/auth/callback/apple` |
 | `FACEBOOK_CLIENT_ID`, `FACEBOOK_CLIENT_SECRET` | Вход через Facebook. Redirect URI: `https://<домен>/api/auth/callback/facebook` |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM` | Отправка писем (необязательно; без них письма пропускаются) |
-| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | Telegram-уведомления о регистрации нового покупателя, новом заказе и успешной оплате заказа (можно указать несколько `chat_id` через запятую) |
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | Бот №1: уведомления о регистрации нового покупателя, новом заказе и успешной оплате заказа |
+| `TELEGRAM_CHAT_BOT_TOKEN`, `TELEGRAM_CHAT_BOT_CHAT_ID` | Бот №2: двусторонний онлайн-чат с покупателями (получение сообщений и ответы из Telegram) |
 
 Кнопка входа через провайдера активна только когда заданы оба его ключа; до этого на ней надпись «Not available yet».
 

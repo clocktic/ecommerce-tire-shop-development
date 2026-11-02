@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server"
 import { isAdmin } from "@/lib/admin-auth"
 import { listConversations, messagesFor } from "@/lib/chat"
+import { syncTelegramChatUpdates } from "@/lib/telegram-chat"
 
 export const dynamic = "force-dynamic"
 
 // ?id=<conversationId> returns that thread; without it, the conversation list.
 export async function GET(request: Request) {
   if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  await syncTelegramChatUpdates()
   const id = new URL(request.url).searchParams.get("id")
   if (id) return NextResponse.json({ messages: await messagesFor(id) })
   const rows = await listConversations()
