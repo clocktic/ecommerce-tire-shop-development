@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { getBrandIconUrl } from "@/lib/brand-icons"
+import { getProductBrandIconUrl } from "@/lib/brand-icons"
 import { cn } from "@/lib/utils"
 
 export function BrandFilterStrip({
@@ -38,7 +38,7 @@ export function BrandFilterStrip({
       <Link
         href={brandHref(undefined)}
         className={cn(
-          "inline-flex h-10 shrink-0 items-center gap-2 border px-3 font-mono text-xs font-semibold uppercase tracking-wider transition-all duration-200 hover:-translate-y-0.5",
+          "inline-flex h-11 shrink-0 items-center gap-2 border px-3.5 font-mono text-xs font-semibold uppercase tracking-wider transition-all duration-200 hover:-translate-y-0.5",
           !activeBrand
             ? "border-primary bg-primary text-primary-foreground shadow-[0_6px_18px_-4px_rgba(0,0,0,0.5)]"
             : "border-border bg-card text-muted-foreground hover:border-foreground hover:text-foreground",
@@ -50,43 +50,33 @@ export function BrandFilterStrip({
 
       {brands.map(({ name, count }) => {
         const isSelected = activeBrand?.toLowerCase() === name.toLowerCase()
-        const iconUrl = getBrandIconUrl(name)
+        const iconUrl = getProductBrandIconUrl(name)
         return (
           <Link
             key={name}
             href={brandHref(isSelected ? undefined : name)}
             aria-current={isSelected ? "true" : undefined}
+            title={`${name} (${count})`}
             className={cn(
-              "group inline-flex h-10 shrink-0 items-center gap-2 border px-2.5 transition-all duration-200 hover:-translate-y-0.5",
+              "group inline-flex h-11 shrink-0 items-center gap-2.5 border p-1.5 pr-3 transition-all duration-200 hover:-translate-y-0.5",
               isSelected
-                ? "border-primary bg-primary/10 text-foreground shadow-[0_6px_18px_-4px_rgba(0,0,0,0.5)]"
+                ? "border-primary bg-primary/15 text-foreground ring-1 ring-primary/50 shadow-[0_6px_18px_-4px_rgba(0,0,0,0.5)]"
                 : "border-border bg-card text-foreground hover:border-foreground",
             )}
           >
             {iconUrl && (
-              <span
-                className={cn(
-                  "flex size-6 shrink-0 items-center justify-center border p-1 transition-colors",
-                  isSelected
-                    ? "border-primary/60 bg-background"
-                    : "border-border bg-muted/60 group-hover:border-primary/50",
-                )}
-              >
+              <span className="flex h-8 min-w-[72px] shrink-0 items-center justify-center border border-border/70 bg-white px-2.5 py-1">
                 <img
                   src={iconUrl}
-                  alt=""
-                  aria-hidden="true"
-                  width={16}
-                  height={16}
+                  alt={name}
                   loading="lazy"
-                  className="size-full object-contain opacity-90 dark:invert"
+                  className="h-5 w-auto max-w-[92px] object-contain"
                 />
               </span>
             )}
-            <span className="font-expanded text-xs font-extrabold uppercase tracking-wide group-hover:text-primary">
-              {name}
+            <span className="font-mono text-[11px] font-semibold text-muted-foreground group-hover:text-foreground">
+              ({count})
             </span>
-            <span className="font-mono text-[10px] text-muted-foreground">({count})</span>
           </Link>
         )
       })}

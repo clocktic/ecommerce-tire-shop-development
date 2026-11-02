@@ -1,60 +1,156 @@
-// Brand, payment, and logistics SVG icon helper powered by theSVG (https://thesvg.org) via jsDelivr CDN,
-// plus 24x24 monochrome SVG emblems for vehicle makes and all 63 tire, wheel, and brake manufacturers in the catalog.
+// Brand, payment, and logistics SVG icon helper powered by theSVG.org (via jsDelivr CDN),
+// Simple Icons, and official Wikimedia Commons vector SVGs, plus pure-vector (<path>)
+// full-color motorsport logotypes for specialty wheel & brake manufacturers.
 // Individual brand marks remain trademarks of their respective owners.
 
 const THESVG_CDN = "https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons"
+const SIMPLE_ICONS_CDN = "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons"
 
 export function theSvgUrl(slug: string, variant: "default" | "mono" | "light" | "dark" = "default"): string {
   return `${THESVG_CDN}/${slug}/${variant}.svg`
 }
 
-function svgDataUri(innerPaths: string): string {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#000000">${innerPaths}</svg>`
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
+function svgDataUri(svgContent: string): string {
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svgContent)}`
 }
 
-// Crisp geometric motorsport badge with 1-3 monogram characters inside an octagonal/shield frame
-function monogramEmblem(code: string, shape: "hex" | "ring" | "slanted" | "rotor" | "spoke" = "slanted"): string {
-  const clean = code.toUpperCase().slice(0, 3)
-  const fontSize = clean.length === 1 ? "11.5" : clean.length === 2 ? "9.2" : "7.2"
-  const textEl = `<text x="12" y="15.3" text-anchor="middle" font-family="Arial Black, Impact, system-ui, sans-serif" font-weight="900" font-style="italic" font-size="${fontSize}" letter-spacing="-0.3" fill="#000000">${clean}</text>`
-
-  if (shape === "ring") {
-    return svgDataUri(
-      `<path d="M12 1.2a10.8 10.8 0 1 0 0 21.6 10.8 10.8 0 0 0 0-21.6zm0 2a8.8 8.8 0 1 1 0 17.6 8.8 8.8 0 0 1 0-17.6z"/>` +
-        `<path d="M12 4.4a7.6 7.6 0 0 1 6.2 3.2h-2.1a5.8 5.8 0 0 0-8.2 0H5.8A7.6 7.6 0 0 1 12 4.4zm0 15.2a7.6 7.6 0 0 1-6.2-3.2h2.1a5.8 5.8 0 0 0 8.2 0h2.1a7.6 7.6 0 0 1-6.2 3.2z"/>` +
-        textEl,
-    )
-  }
-  if (shape === "hex") {
-    return svgDataUri(
-      `<path d="M12 1.3 21.3 6.6v10.8L12 22.7 2.7 17.4V6.6L12 1.3zm0 2.2L4.6 7.7v8.6l7.4 4.2 7.4-4.2V7.7L12 3.5z"/>` +
-        textEl,
-    )
-  }
-  if (shape === "rotor") {
-    return svgDataUri(
-      `<path d="M12 1.2a10.8 10.8 0 1 0 0 21.6 10.8 10.8 0 0 0 0-21.6zm0 2.1a8.7 8.7 0 1 1 0 17.4 8.7 8.7 0 0 1 0-17.4z"/>` +
-        `<circle cx="12" cy="4.9" r="0.9"/><circle cx="12" cy="19.1" r="0.9"/><circle cx="4.9" cy="12" r="0.9"/><circle cx="19.1" cy="12" r="0.9"/>` +
-        textEl,
-    )
-  }
-  if (shape === "spoke") {
-    return svgDataUri(
-      `<path d="M12 1.2a10.8 10.8 0 1 0 0 21.6 10.8 10.8 0 0 0 0-21.6zm0 1.9a8.9 8.9 0 1 1 0 17.8 8.9 8.9 0 0 1 0-17.8z"/>` +
-        `<path d="M4.2 8.2h15.6v7.6H4.2V8.2zm1.6 1.5v4.6h12.4V9.7H5.8z"/>` +
-        textEl,
-    )
-  }
-  // slanted motorsport parallelogram crest
-  return svgDataUri(
-    `<path d="M4.2 4.5h17.3l-2.7 15H1.5l2.7-15zm1.7 2-2 11h13.2l2-11H5.9z"/>` +
-      `<path d="M2.2 18.2h3.2l.4-2.2H2.6l-.4 2.2z"/>` +
-      textEl,
-  )
+// Pure-vector ultra-heavy motorsport block glyph paths (cap height = 24, 0..24 Y, variable advance width)
+// Renders identically on Linux, macOS, Windows, iOS, and Android inside <img> tags with zero font dependencies.
+const GLYPHS: Record<string, { w: number; d: string }> = {
+  A: { w: 20, d: "M0 24 7.5 0h5L20 24h-5.6l-1.3-4.6H6.9L5.6 24H0zm8.2-9h3.6L10 8.2 8.2 15z" },
+  B: { w: 19, d: "M0 0h12.2c4.2 0 6.4 2.1 6.4 5.6 0 2.5-1.3 4.4-3.4 5.2 2.5.7 4 2.7 4 5.7 0 4.3-2.8 7.5-7.4 7.5H0V0zm5.4 4.4v5.1h5.5c1.5 0 2.4-.9 2.4-2.5 0-1.7-.9-2.6-2.4-2.6H5.4zm0 9.3v5.9h6c1.7 0 2.7-1.1 2.7-2.9 0-1.9-1-3-2.7-3h-6z" },
+  C: { w: 19, d: "M18.8 8.2h-5.5c-.4-2.2-1.7-3.5-3.7-3.5-2.7 0-4.2 2.4-4.2 7.3s1.5 7.3 4.2 7.3c2 0 3.3-1.3 3.7-3.5h5.5C18.2 21.1 14.8 24.4 9.5 24.4 3.4 24.4 0 19.8 0 12S3.4-.4 9.5-.4c5.3 0 8.7 3.3 9.3 8.6z" },
+  D: { w: 19, d: "M0 0h10.2C16.2 0 19.4 4.2 19.4 12s-3.2 12-9.2 12H0V0zm5.5 4.8v14.4h4.4c3.1 0 4.6-2.4 4.6-7.2s-1.5-7.2-4.6-7.2H5.5z" },
+  E: { w: 17, d: "M0 0h16.6v4.8H5.5v4.6h9.8v4.6H5.5v5.2h11.4V24H0V0z" },
+  F: { w: 16, d: "M0 0h16.2v4.8H5.5v5h9.2v4.6H5.5V24H0V0z" },
+  G: { w: 20, d: "M19.5 11.2v12.8h-3.8l-.5-2.4c-1.4 1.9-3.5 2.8-6.2 2.8C3.2 24.4 0 19.8 0 12S3.4-.4 9.8-.4c5.4 0 8.9 3.1 9.5 8.1h-5.5c-.4-2.1-1.7-3.3-3.9-3.3-2.9 0-4.4 2.5-4.4 7.6s1.5 7.6 4.5 7.6c2.5 0 4.1-1.5 4.3-4.2h-4.1v-4.2h9.3z" },
+  H: { w: 19, d: "M0 0h5.5v9.4h8V0H19v24h-5.5v-9.6h-8V24H0V0z" },
+  I: { w: 7, d: "M.8 0h5.5v24H.8V0z" },
+  J: { w: 16, d: "M15.5 0v16.2c0 5.3-3 8.2-8 8.2-4.8 0-7.5-2.7-7.5-7.4v-1.6h5.3v1.3c0 1.9.8 2.9 2.3 2.9 1.6 0 2.4-1.1 2.4-3.3V0h5.5z" },
+  K: { w: 19, d: "M0 0h5.5v9.8L13.4 0h6.2l-8 9.6L20 24h-6.2l-5.6-10.1-2.7 3.1V24H0V0z" },
+  L: { w: 16, d: "M0 0h5.5v19h10.4v5H0V0z" },
+  M: { w: 23, d: "M0 0h6.4l5.1 14.8L16.6 0H23v24h-5.1V8.4L13.3 24H9.7L5.1 8.4V24H0V0z" },
+  N: { w: 19, d: "M0 0h5.6l8.2 15.2V0H19v24h-5.4L5.2 8.6V24H0V0z" },
+  O: { w: 20, d: "M10-.4C16.4-.4 20 4.2 20 12s-3.6 12.4-10 12.4S0 19.8 0 12 3.6-.4 10-.4zm0 4.8c-2.9 0-4.5 2.5-4.5 7.6s1.6 7.6 4.5 7.6 4.5-2.5 4.5-7.6-1.6-7.6-4.5-7.6z" },
+  "Ö": { w: 20, d: "M4.5-5h4v3.4h-4V-5zm7 0h4v3.4h-4V-5zM10-.4C16.4-.4 20 4.2 20 12s-3.6 12.4-10 12.4S0 19.8 0 12 3.6-.4 10-.4zm0 4.8c-2.9 0-4.5 2.5-4.5 7.6s1.6 7.6 4.5 7.6 4.5-2.5 4.5-7.6-1.6-7.6-4.5-7.6z" },
+  P: { w: 18, d: "M0 0h11.4c4.5 0 7 2.8 7 7.6s-2.5 7.6-7 7.6H5.5V24H0V0zm5.5 4.6v6h5.1c1.6 0 2.5-1 2.5-3s-.9-3-2.5-3H5.5z" },
+  Q: { w: 20, d: "M15.8 21.8 19.2 25l-2.8 2.8-3.5-3.4c-.9.2-1.9.3-2.9.3C3.6 24.4 0 19.8 0 12S3.6-.4 10-.4 20 4.2 20 12c0 4.4-1.5 7.8-4.2 9.8zM10 4.4c-2.9 0-4.5 2.5-4.5 7.6s1.6 7.6 4.5 7.6 4.5-2.5 4.5-7.6-1.6-7.6-4.5-7.6z" },
+  R: { w: 19, d: "M0 0h11.8c4.4 0 6.8 2.5 6.8 6.8 0 3.1-1.5 5.3-4.1 6.2L19.4 24h-5.9l-4.2-10.2H5.5V24H0V0zm5.5 4.5v5.3h5.3c1.6 0 2.5-.9 2.5-2.6 0-1.8-.9-2.7-2.5-2.7H5.5z" },
+  S: { w: 18, d: "M17.8 7.1h-5.3c-.2-1.9-1.4-2.9-3.5-2.9-1.9 0-3.1.8-3.1 2.2 0 1.4 1 2 4.3 2.9 4.8 1.3 7.9 3 7.9 7.6 0 4.8-3.5 7.5-9.2 7.5-5.7 0-9-2.9-9.2-7.8h5.4c.3 2.1 1.6 3.3 4 3.3 2.2 0 3.5-.9 3.5-2.4 0-1.5-1.1-2.2-4.5-3.1-4.6-1.2-7.6-3-7.6-7.3C.5 2.4 3.8-.4 9.1-.4c5.3 0 8.4 2.8 8.7 7.5z" },
+  T: { w: 18, d: "M0 0h18v4.8h-6.2V24H6.3V4.8H0V0z" },
+  U: { w: 19, d: "M0 0h5.5v15.4c0 2.7 1.3 4.2 4 4.2s4-1.5 4-4.2V0H19v15.2c0 6-3.4 9.2-9.5 9.2S0 21.2 0 15.2V0z" },
+  V: { w: 20, d: "M0 0h5.8L10 16.5 14.2 0H20l-7.2 24H7.2L0 0z" },
+  W: { w: 26, d: "M0 0h5.3l2.9 15.6L11.1 0h4.2l2.9 15.6L21.1 0h5.1l-5.2 24h-5.1L13.1 9.6 10.3 24H5.2L0 0z" },
+  X: { w: 20, d: "M.4 0h6.1l3.6 7.4L13.7 0h5.9l-6.4 11.7L20 24h-6.1l-4-7.9L5.9 24H0l6.8-12.3L.4 0z" },
+  Y: { w: 19, d: "M0 0h6l3.6 8.6L13.2 0h5.8l-6.7 14.4V24H6.8v-9.6L0 0z" },
+  Z: { w: 18, d: "M.4 0h17.2v4.4L6.7 19.2h11.1V24H0v-4.5L10.9 4.8H.4V0z" },
+  "0": { w: 18, d: "M9-.4c5.8 0 9 4.2 9 12.4s-3.2 12.4-9 12.4S0 20.2 0 12 3.2-.4 9-.4zm0 4.6c-2.4 0-3.6 2.5-3.6 7.8s1.2 7.8 3.6 7.8 3.6-2.5 3.6-7.8S11.4 4.2 9 4.2z" },
+  "1": { w: 12, d: "M0 4.2C2.8 4.2 4.6 2.7 5.2 0h4.9v24H4.6V8.2H0v-4z" },
+  "2": { w: 18, d: "M.2 8.2C.4 2.7 3.6-.4 9.1-.4c5.1 0 8.4 2.9 8.4 7.3 0 3.4-1.8 5.8-5.9 8.9l-4.2 3.2h10.3V24H0v-4.2l8.1-6.5c2.7-2.2 3.9-3.6 3.9-5.7 0-1.9-1.2-3.1-3-3.1-2 0-3.3 1.3-3.4 3.7H.2z" },
+  "3": { w: 18, d: "M.3 6.6C.6 2.1 3.7-.4 8.9-.4c4.9 0 8.1 2.5 8.1 6.4 0 2.7-1.4 4.6-3.8 5.4 2.9.8 4.5 2.9 4.5 6 0 4.4-3.5 7-9 7-5.5 0-8.6-2.7-8.9-7.4h5.2c.2 1.9 1.4 3 3.6 3 2.1 0 3.5-1.1 3.5-2.9 0-2-1.3-3-3.9-3H6.7V9.9h1.4c2.3 0 3.5-.9 3.5-2.7 0-1.7-1.1-2.7-2.9-2.7-1.9 0-3 1-3.2 2.7H.3z" },
+  "5": { w: 18, d: "M1.2 0h15.4v4.6H5.7l-.5 4.8c1.1-1 2.7-1.6 4.7-1.6 4.6 0 7.7 3.1 7.7 8.1 0 5.3-3.5 8.5-9.1 8.5-5.2 0-8.4-2.7-8.7-7.2H5c.3 1.8 1.5 2.8 3.5 2.8 2.3 0 3.7-1.5 3.7-4.1s-1.4-4-3.6-4c-1.7 0-2.9.7-3.4 1.9L.4 13.2 1.2 0z" },
+  "·": { w: 8, d: "M1.5 9h5v6h-5V9z" },
+  "-": { w: 11, d: "M1 9.5h9v5H1v-5z" },
+  " ": { w: 8, d: "" },
 }
 
-// 34 makes with native 24x24 mono.svg in theSVG
+function renderVectorWord(str: string, letterSpacing = 2.2): { width: number; paths: string } {
+  const upper = str.toUpperCase()
+  let x = 0
+  let paths = ""
+  for (let i = 0; i < upper.length; i++) {
+    const ch = upper[i]
+    const g = GLYPHS[ch] ?? GLYPHS.X
+    if (g.d) {
+      paths += `<g transform="translate(${x.toFixed(1)},0)"><path d="${g.d}"/></g>`
+    }
+    x += g.w + (i < upper.length - 1 ? letterSpacing : 0)
+  }
+  return { width: x, paths }
+}
+
+// High-precision pure-vector horizontal logotype with tight bounding box and zero font dependencies
+function wordmarkLogoSvg({
+  text,
+  accent = "#e11d48",
+  primary = "#09090b",
+  badge,
+  badgeBg = "#e11d48",
+  badgeFg = "#ffffff",
+  style = "clean",
+}: {
+  text: string
+  subtext?: string
+  accent?: string
+  primary?: string
+  badge?: string
+  badgeBg?: string
+  badgeFg?: string
+  style?: "clean" | "pill" | "stripe" | "slash" | "crest" | "underline"
+}): string {
+  const { width: rawTextW, paths: textPaths } = renderVectorWord(text, 2.4)
+
+  if (style === "pill") {
+    const padX = 22
+    const vbW = Math.max(130, Math.round(rawTextW + padX * 2 + 16))
+    const tx = Math.round((vbW - rawTextW) / 2 + 4)
+    const svg =
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${vbW} 44">` +
+      `<path d="M10 2h${vbW - 12}l-8 40H2L10 2z" fill="${accent}"/>` +
+      `<g transform="translate(${tx},10) skewX(-10)" fill="#ffffff">${textPaths}</g>` +
+      `</svg>`
+    return svgDataUri(svg)
+  }
+
+  let markSvg = ""
+  let markW = 0
+
+  if (badge) {
+    const { width: bw, paths: bp } = renderVectorWord(badge, 1.8)
+    const boxW = Math.max(44, Math.round(bw * 0.72 + 22))
+    const bx = Math.round((boxW - bw * 0.72) / 2 + 3)
+    markSvg =
+      `<path d="M7 3h${boxW - 7}l-6 38H1L7 3z" fill="${badgeBg}"/>` +
+      `<g transform="translate(${bx},13) scale(0.72) skewX(-10)" fill="${badgeFg}">${bp}</g>`
+    markW = boxW + 10
+  } else if (style === "stripe") {
+    markSvg =
+      `<path d="M9 5h11l-7 34H2l7-34z" fill="${accent}"/>` +
+      `<path d="M24 5h6.5l-7 34H17l7-34z" fill="${primary}"/>`
+    markW = 38
+  } else if (style === "slash") {
+    markSvg =
+      `<path d="M2 39 18 5h12L14 39H2z" fill="${accent}"/>` +
+      `<path d="M18 39 28 18h7L25 39h-7z" fill="${primary}"/>`
+    markW = 40
+  } else if (style === "crest") {
+    markSvg =
+      `<path d="M20 3 37 9v14c0 10-7.2 16-17 19C10.2 39 3 33 3 23V9L20 3z" fill="${accent}"/>` +
+      `<path d="M20 7.5 32.5 12v10.5c0 7.2-5 11.8-12.5 14-7.5-2.2-12.5-6.8-12.5-14V12L20 7.5z" fill="#ffffff"/>` +
+      `<path d="M12 16.5h16v3.5H12v-3.5zm2.5 6h11V26h-11v-3.5z" fill="${accent}"/>`
+    markW = 45
+  }
+
+  const textX = markW + 6
+  const totalW = Math.round(textX + rawTextW + 12)
+  const textY = style === "underline" ? 6 : 8
+
+  const underlineSvg =
+    style === "underline"
+      ? `<path d="M${markW + 2} 35.5h${Math.round(rawTextW + 6)}l-2 5.5H${markW}l2-5.5z" fill="${accent}"/>`
+      : `<path d="M${markW + 2} 36.5h${Math.round(rawTextW + 6)}l-1.5 4H${markW + 0.5}l1.5-4z" fill="${accent}"/>`
+
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} 44">` +
+    markSvg +
+    `<g transform="translate(${textX},${textY}) skewX(-10)" fill="${primary}">${textPaths}</g>` +
+    underlineSvg +
+    `</svg>`
+
+  return svgDataUri(svg)
+}
+
+// ================= VEHICLE MAKES (46 makes) =================
 const THESVG_MONO_MAKES: Record<string, string> = {
   Acura: "acura",
   Audi: "audi",
@@ -92,227 +188,121 @@ const THESVG_MONO_MAKES: Record<string, string> = {
   Volvo: "volvo",
 }
 
-// 12 makes that need a clean 24x24 monochrome emblem (either missing in theSVG or only available as wide wordmarks)
-const CUSTOM_MONO_MAKES: Record<string, string> = {
-  "Mercedes-Benz": svgDataUri(
-    `<path d="M12 1a11 11 0 1 0 0 22 11 11 0 0 0 0-22zm0 1.6a9.4 9.4 0 0 1 8.58 13.22L13.4 11.4 12 3.1l-1.4 8.3-7.18 4.42A9.4 9.4 0 0 1 12 2.6zm0 11.2 7.75 3.63a9.4 9.4 0 0 1-15.5 0L12 13.8z"/>`,
-  ),
-  Lexus: svgDataUri(
-    `<path d="M12 3.5C5.9 3.5 1 7.3 1 12s4.9 8.5 11 8.5 11-3.8 11-8.5-4.9-8.5-11-8.5zm0 1.8c5.05 0 9.15 3.02 9.15 6.7 0 1.48-.65 2.84-1.76 3.95H9.8c-.45 0-.62-.32-.35-.78l4.15-7.17h-2.35L6.8 14.8c-.65 1.1-.1 2.2 1.25 2.2h9.72c-1.52.95-3.54 1.7-5.77 1.7-5.05 0-9.15-3.02-9.15-6.7S6.95 5.3 12 5.3z"/>`,
-  ),
-  "Land Rover": svgDataUri(
-    `<path d="M12 4.5C5.6 4.5 1 7.8 1 12s4.6 7.5 11 7.5 11-3.3 11-7.5-4.6-7.5-11-7.5zm0 1.7c5.3 0 9.3 2.58 9.3 5.8s-4 5.8-9.3 5.8-9.3-2.58-9.3-5.8 4-5.8 9.3-5.8zm-5.5 3.3v5h3.4v-1.3H8v-3.7H6.5zm5.2 0v5h1.5v-1.8h.9l1.1 1.8h1.7l-1.3-2c.65-.28 1.05-.82 1.05-1.52 0-1.02-.75-1.48-1.95-1.48h-3zm1.5 1.1h1.3c.45 0 .7.2.7.52 0 .33-.25.53-.7.53h-1.3v-1.05z"/>`,
-  ),
-  "Alfa Romeo": svgDataUri(
-    `<path d="M12 1a11 11 0 1 0 0 22 11 11 0 0 0 0-22zm0 2a9 9 0 1 1 0 18 9 9 0 0 1 0-18zm0 1.8a7.2 7.2 0 0 0-6.5 4.1h3.3V5.5A7.2 7.2 0 0 0 5.5 9h3.3V5.5c.9-.45 1.9-.7 3.2-.7zm-1.4.4v5.9H4.9a7.2 7.2 0 0 0 0 1.8h5.7v5.9a7.2 7.2 0 0 0 1.4.2V4.8c-.5 0-.95.1-1.4.4zm2.8.3v13c2.8-.65 5-3.2 5-6.5s-2.2-5.85-5-6.5zm1.5 2.7c1.1.8 1.8 2.1 1.8 3.8s-.7 3-1.8 3.8V8.2z"/>`,
-  ),
-  Cupra: svgDataUri(
-    `<path d="M12 2 3.5 7.5l3.6 6.2L12 10.6l4.9 3.1 3.6-6.2L12 2zm0 2.4 5.8 3.7-2 3.4L12 9.1l-3.8 2.4-2-3.4L12 4.4zM6.4 14.6 12 22l5.6-7.4-2.1-1.3L12 17.9l-3.5-4.6-2.1 1.3z"/>`,
-  ),
-  Genesis: svgDataUri(
-    `<path d="M1 8.5 4.5 15h3.8l1.2 1.8h5L15.7 15h3.8L23 8.5h-5.2l-1.6 1.8H7.8L6.2 8.5H1zm7.6 3h6.8l-.9 2.3H9.5l-.9-2.3zM3.8 10.2h2.1l1.1 1.3H4.6l-.8-1.3zm14.3 0h2.1l-.8 1.3H17l1.1-1.3z"/>`,
-  ),
-  Jaguar: svgDataUri(
-    `<path d="M21.5 8.5c-1.8-.9-4.1-.8-6.3.2l-3.6 1.6-3.9-.6c-1.6-.2-3.2.3-4.5 1.4L1.5 12.6l1.2 1.1 2.2-1.1c1-.5 2.1-.6 3.2-.3l3.6 1.1-2.5 2.2H6.5v1.6h3.4l3.5-2.9 3.8.6 3.8 1.8.8-1.4-2.9-1.9 2.6-2.1.8-.9-.8-1.9z"/>`,
-  ),
-  Lincoln: svgDataUri(
-    `<path d="M12 1.5 9.8 9.8 1.5 12l8.3 2.2L12 22.5l2.2-8.3 8.3-2.2-8.3-2.2L12 1.5zm0 5.3 1.1 4.1 4.1 1.1-4.1 1.1-1.1 4.1-1.1-4.1-4.1-1.1 4.1-1.1 1.1-4.1z"/>`,
-  ),
-  Rivian: svgDataUri(
-    `<path d="M12 2 5 9l4.2 3L5 15l7 7 7-7-4.2-3L19 9l-7-7zm0 3.2L15.8 9 12 11.6 8.2 9 12 5.2zm0 9.2L15.8 17 12 19.8 8.2 17 12 14.4z"/>`,
-  ),
-  Buick: svgDataUri(
-    `<path d="M12 1.5A10.5 10.5 0 1 0 22.5 12 10.5 10.5 0 0 0 12 1.5zm0 1.8a8.7 8.7 0 1 1-8.7 8.7A8.7 8.7 0 0 1 12 3.3zM6.2 9.5v6.8l2.4-1.4V8.1L6.2 9.5zm4.6-2.2v8.2l2.4-1.4V5.9l-2.4 1.4zm4.6-1.4v8.2l2.4-1.4V4.5l-2.4 1.4z"/>`,
-  ),
-  Dodge: svgDataUri(
-    `<path d="M11.2 4.5 4 19.5h3.8l7.2-15h-3.8zm5 0-7.2 15H13l7.2-15h-4z"/>`,
-  ),
-  GMC: svgDataUri(
-    `<path d="M1.5 8.5v7h5.8v-4.2H4.6v1.4h.9v1H3.3V10.3h4V8.5H1.5zm7 0v7h1.7v-4.1l1.4 3h1l1.4-3v4.1h1.7v-7h-2l-1.6 3.4L10.5 8.5h-2zm8.2 0v7h5.8v-1.8h-4V10.3h4V8.5h-5.8z"/>`,
-  ),
+const OFFICIAL_EXTRA_MAKES: Record<string, string> = {
+  "Mercedes-Benz": theSvgUrl("mercedes-benz", "default"),
+  Lexus: theSvgUrl("lexus", "default"),
+  Jaguar: theSvgUrl("jaguar", "default"),
+  Lincoln: theSvgUrl("lincoln-motor-company", "default"),
+  Rivian: theSvgUrl("rivian", "default"),
+  "Land Rover": `${SIMPLE_ICONS_CDN}/landrover.svg`,
+  "Alfa Romeo": `${SIMPLE_ICONS_CDN}/alfaromeo.svg`,
+  Cupra: "https://upload.wikimedia.org/wikipedia/commons/e/ef/Cupra_symbol.svg",
+  Genesis: "https://upload.wikimedia.org/wikipedia/commons/6/6d/Genesis_Motor_Logo.svg",
+  Buick: "https://upload.wikimedia.org/wikipedia/commons/8/85/Buick-logo.svg",
+  Dodge: "https://upload.wikimedia.org/wikipedia/commons/e/ec/Dodge_Logo_2010.svg",
+  GMC: "https://upload.wikimedia.org/wikipedia/commons/f/f9/GMC-Logo_2.svg",
 }
 
-// Product brands available directly in theSVG.org
-const THESVG_PRODUCT_BRANDS: Record<string, string> = {
-  Bosch: "bosch",
-}
+// ================= PRODUCT BRANDS (63 Tire, Wheel & Brake Manufacturers) =================
+const PRODUCT_BRAND_LOGOS: Record<string, string> = {
+  // -------- TIRES (All 14 from official Wikimedia Commons vector SVGs) --------
+  Michelin: "https://upload.wikimedia.org/wikipedia/commons/8/8c/Michelin_Wordmark.svg",
+  Pirelli: "https://upload.wikimedia.org/wikipedia/commons/b/b9/Pirelli_-_logo_full_%28Italy%2C_1997%29.svg",
+  Bridgestone: "https://upload.wikimedia.org/wikipedia/commons/5/54/Bridgestone_logo_full_color.svg",
+  Continental: "https://upload.wikimedia.org/wikipedia/commons/3/3f/Continental_logo.svg",
+  Goodyear: "https://upload.wikimedia.org/wikipedia/en/c/cc/Goodyear_Logo_2025.svg",
+  Dunlop: "https://upload.wikimedia.org/wikipedia/commons/8/86/LogoDunlopTire.svg",
+  Hankook: "https://upload.wikimedia.org/wikipedia/commons/c/cd/Hankook_Logo_2024.svg",
+  Yokohama: "https://upload.wikimedia.org/wikipedia/commons/5/57/Yokohama_%28Unternehmen%29_logo.svg",
+  Nokian: "https://upload.wikimedia.org/wikipedia/commons/1/11/Nokian-Renkaat-Logo.svg",
+  Falken: "https://upload.wikimedia.org/wikipedia/commons/1/1d/Falken_Tire_logo.svg",
+  Kumho: "https://upload.wikimedia.org/wikipedia/commons/6/67/Kumho_Tire_logo_%282023%29.svg",
+  Nexen: "https://upload.wikimedia.org/wikipedia/en/a/af/Nexen_Tire_logo.svg",
+  BFGoodrich: "https://upload.wikimedia.org/wikipedia/commons/9/90/BFGoodrich_logo.svg",
+  Firestone: "https://upload.wikimedia.org/wikipedia/commons/4/41/Firestone.svg",
 
-// Custom 24x24 monochrome SVG marks for all tire, wheel, and brake manufacturers in the catalog
-const PRODUCT_BRAND_ICONS: Record<string, string> = {
-  // ================= TIRES (14 brands) =================
-  // Michelin — Slanted M + motorsport underline bar
-  Michelin: svgDataUri(
-    `<path d="M3.2 16.5 5.8 5.2h3.5l1.9 6.6 3.7-6.6h3.5l-2.6 11.3h-2.8l1.6-7.2-3.4 6.1H9.5L7.8 9.3l-1.7 7.2H3.2zm-1.2 2.1h20l-.5 1.8H1.5l.5-1.8z"/>`,
-  ),
-  // Pirelli — Iconic elongated roof-P mark
-  Pirelli: svgDataUri(
-    `<path d="M2 4.5h20v2.8H7.2v3.1h11.3c2.1 0 3.5 1.2 3.5 3.2s-1.4 3.3-3.5 3.3H7.2v3.6H3.8V7.3H2V4.5zm5.2 8.1v2.1h10.4c.7 0 1.1-.4 1.1-1.05S18.3 12.6 17.6 12.6H7.2z"/>`,
-  ),
-  // Bridgestone — Keystone B with upward arrow cutout
-  Bridgestone: svgDataUri(
-    `<path d="M4.5 3.5h10.8c3.4 0 5.4 1.7 5.4 4.2 0 1.8-1 3.2-2.7 3.8 2.1.5 3.3 2 3.3 4.1 0 3-2.4 4.9-6.2 4.9H2.5L4.5 3.5zm4.1 3.2-.6 3.6h5.5c1.4 0 2.3-.7 2.3-1.8 0-1.1-.8-1.8-2.2-1.8H8.6zm-1.1 6.4-.7 4.2h6.3c1.6 0 2.6-.8 2.6-2.1 0-1.3-1-2.1-2.6-2.1H7.5zM9.2 9.2l3.8-3.8 1.5 1.5-3.8 3.8-1.5-1.5z"/>`,
-  ),
-  // Continental — Circular double-ring C crest with prancing-wheel core
-  Continental: svgDataUri(
-    `<path d="M12 1.2a10.8 10.8 0 1 0 0 21.6 10.8 10.8 0 0 0 0-21.6zm0 2a8.8 8.8 0 1 1 0 17.6 8.8 8.8 0 0 1 0-17.6zm3.9 5.5a5.5 5.5 0 1 0 0 6.6l-1.9-1.4a3.2 3.2 0 1 1 0-3.8l1.9-1.4z"/>`,
-  ),
-  // Goodyear — Winged-foot speed emblem
-  Goodyear: svgDataUri(
-    `<path d="M22.2 6.2c-3.8 0-7.2 1.4-9.5 3.8L9.5 6.8H3.2l3.2 3.2H2l2.8 2.8h4.5l-4.8 4.8h6.2c3.2 0 5.9-1.5 7.6-4.1l3.9-7.3zm-7.8 5.2c-.9 1.6-2.5 2.6-4.5 2.6H8.4l2.8-2.8h3.2v.2z"/>`,
-  ),
-  // Dunlop — Iconic Flying-D arrow circle emblem
-  Dunlop: svgDataUri(
-    `<path d="M12 1.5a10.5 10.5 0 1 0 0 21 10.5 10.5 0 0 0 0-21zm0 2a8.5 8.5 0 0 1 8.2 6.3L7.2 4.8A8.4 8.4 0 0 1 12 3.5zM4.2 8.6l11.2 3.4-11.2 3.4a8.5 8.5 0 0 1 0-6.8zm3 10.6 13-5a8.5 8.5 0 0 1-13 5z"/>`,
-  ),
-  // Hankook — Dynamic twin-wing speed slash
-  Hankook: svgDataUri(
-    `<path d="M2.5 7.2c5.5-2.8 12.2-3.2 19-1.2-4.8 1.5-9.2 4.2-12.8 7.8L2.5 7.2zm4.2 8.2c4.4-3.1 9.6-4.8 14.8-4.9-3.6 2.8-7.4 5.5-11.4 7.7l-3.4-2.8z"/>`,
-  ),
-  // Yokohama — Iconic 5-chevron Y performance emblem
-  Yokohama: svgDataUri(
-    `<path d="M2 5h4.2l5.8 6.8L17.8 5H22l-7.8 9.2V19h-4.4v-4.8L2 5zm4.8 0h2.6L12 8.2 14.6 5h2.6L12 11.2 6.8 5z"/>`,
-  ),
-  // Nokian — Nordic tread-chevron crown mark
-  Nokian: svgDataUri(
-    `<path d="M12 2 3 8.2v3.6L12 5.6l9 6.2V8.2L12 2zm0 5.8L3 14v3.6l9-6.2 9 6.2V14l-9-6.2zm0 5.8-6.5 4.5v3.4L12 17l6.5 4.5v-3.4L12 13.6z"/>`,
-  ),
-  // Falken — Slanted twin-stripe F mark
-  Falken: svgDataUri(
-    `<path d="M4.5 4.5h16.8l-1.2 3.6H9.2l-.8 2.5h9.8l-1.1 3.4H7.3l-1.8 5.5H1.7L4.5 4.5zm12.8 11.2h4l-1.3 3.8h-4l1.3-3.8z"/>`,
-  ),
-  // Kumho — Winged K emblem
-  Kumho: svgDataUri(
-    `<path d="M4 4.5h3.8v6.2l6.8-6.2h4.8l-7.6 6.8 8.2 8.2h-4.9l-6-6.2-1.3 1.2v5H4V4.5zm14.5 0h2.5l-3.5 3.2h-2.5L18.5 4.5z"/>`,
-  ),
-  // Nexen — Dynamic N-chevron arrow mark
-  Nexen: svgDataUri(
-    `<path d="M3 19.5 6.2 4.5h3.9l4.8 9.2 2-9.2h3.6l-3.2 15h-3.9L8.6 10.3l-2 9.2H3z"/>`,
-  ),
-  // BFGoodrich — Off-road tread-shield BFG crest
-  BFGoodrich: monogramEmblem("BFG", "hex"),
-  // Firestone — Classic 5-point F shield crest
-  Firestone: svgDataUri(
-    `<path d="M4 3.5h16l-1.4 11.2L12 21.5 5.4 14.7 4 3.5zm3.4 3 .9 7.1 3.7 3.8 3.7-3.8.9-7.1H7.4zm2.1 1.6h5.8v2h-3.6v1.2h3v1.8h-3v2.5H9.5V8.1z"/>`,
-  ),
+  // -------- BRAKES (8 brands) --------
+  Bosch: "https://upload.wikimedia.org/wikipedia/commons/1/16/Bosch-logo.svg",
+  Brembo: "https://upload.wikimedia.org/wikipedia/commons/8/82/Brembo_logo_%282022%29.svg",
+  EBC: wordmarkLogoSvg({ text: "EBC", accent: "#dc2626", style: "stripe" }),
+  Ferodo: wordmarkLogoSvg({ text: "FERODO", accent: "#dc2626", style: "pill" }),
+  Wilwood: wordmarkLogoSvg({ text: "WILWOOD", accent: "#dc2626", style: "underline" }),
+  PowerStop: wordmarkLogoSvg({ text: "POWERSTOP", accent: "#dc2626", style: "slash" }),
+  "Baer Brakes": wordmarkLogoSvg({ text: "BAER", accent: "#dc2626", style: "crest" }),
+  "TBM Brakes": wordmarkLogoSvg({ text: "TBM", badge: "TBM", badgeBg: "#dc2626", accent: "#dc2626" }),
 
-  // ================= BRAKES (8 brands) =================
-  // Bosch — uses theSVG (bosch/mono.svg) via THESVG_PRODUCT_BRANDS
-  // Brembo — Iconic vented-rotor + caliper slash circle emblem
-  Brembo: svgDataUri(
-    `<path d="M12 1.5a10.5 10.5 0 1 0 0 21 10.5 10.5 0 0 0 0-21zm0 2.5a8 8 0 0 1 7.4 5h-4.3a4 4 0 0 0-6.2 0H4.6a8 8 0 0 1 7.4-5zm-4 8a4 4 0 0 1 8 0 4 4 0 0 1-8 0zm4 8a8 8 0 0 1-7.4-5h4.3a4 4 0 0 0 6.2 0h4.3a8 8 0 0 1-7.4 5z"/>`,
-  ),
-  // EBC — Checkered racing brake flag emblem
-  EBC: monogramEmblem("EBC", "slanted"),
-  // Ferodo — Racing F brake-pad shield
-  Ferodo: monogramEmblem("FRD", "hex"),
-  // PowerStop — Drilled & slotted rotor lightning emblem
-  PowerStop: svgDataUri(
-    `<path d="M12 1.2a10.8 10.8 0 1 0 0 21.6 10.8 10.8 0 0 0 0-21.6zm0 2.1a8.7 8.7 0 1 1 0 17.4 8.7 8.7 0 0 1 0-17.4zm1.4 2.2-5.6 7.3h3.7l-.9 5.7 5.6-7.3h-3.7l.9-5.7z"/>`,
-  ),
-  // Wilwood — Multi-piston caliper W emblem
-  Wilwood: svgDataUri(
-    `<path d="M1.8 6h3.5l2.4 7.8L10.3 6h3.4l2.6 7.8L18.7 6h3.5l-4.2 12h-3.4L12 10.6 9.4 18H6L1.8 6z"/>`,
-  ),
-  "Baer Brakes": monogramEmblem("BAER", "rotor"),
-  "TBM Brakes": monogramEmblem("TBM", "rotor"),
+  // -------- WHEELS (41 brands) --------
+  BBS: "https://upload.wikimedia.org/wikipedia/commons/8/8f/BBS_logo.svg",
+  Borbet: "https://upload.wikimedia.org/wikipedia/commons/0/07/Borbet_%28Unternehmen%29_logo.svg",
+  Enkei: "https://upload.wikimedia.org/wikipedia/commons/e/e1/Enkei_company_logo.svg",
+  Sparco: "https://upload.wikimedia.org/wikipedia/commons/9/9a/Sparco_logo_with_subtitle.svg",
+  Alutec: "https://upload.wikimedia.org/wikipedia/commons/8/80/Alutec_logo.svg",
+  "Fox Racing": "https://upload.wikimedia.org/wikipedia/commons/8/85/Fox_Factory_Logo.svg",
 
-  // ================= WHEELS (41 brands) =================
-  // BBS — Iconic cross-spoke mesh wheel + BBS badge
-  BBS: monogramEmblem("BBS", "spoke"),
-  // OZ Racing — Iconic multi-spoke racing ring + OZ monogram
-  "OZ Racing": monogramEmblem("OZ", "ring"),
-  "MSW (by OZ)": monogramEmblem("MSW", "ring"),
-  // Enkei — 3-blade turbine infinity wheel emblem
-  Enkei: svgDataUri(
-    `<path d="M12 1.5a10.5 10.5 0 1 0 0 21 10.5 10.5 0 0 0 0-21zm0 2.2a8.3 8.3 0 0 1 7.1 4L13.5 11V3.7h-1.5zm-1.5 0V11L4.9 7.7a8.3 8.3 0 0 1 5.6-4zm-6.4 5.5 5.6 3.3-5.6 3.3a8.3 8.3 0 0 1 0-6.6zm1.5 8.1 5.6-3.3v6.3a8.3 8.3 0 0 1-5.6-3zm7.9 3v-6.3l5.6 3.3a8.3 8.3 0 0 1-5.6 3zm6.4-4.5-5.6-3.3 5.6-3.3a8.3 8.3 0 0 1 0 6.6z"/>`,
-  ),
-  // Sparco — S-shield motorsport emblem
-  Sparco: svgDataUri(
-    `<path d="M12 1.5 3 5.5v6.5c0 5.5 3.8 9.2 9 10.5 5.2-1.3 9-5 9-10.5V5.5l-9-4zm3.8 6.8H9.6c-.6 0-1 .3-1 .8s.4.8 1 .8h4.2c1.9 0 3.2 1.1 3.2 2.8 0 1.8-1.4 3-3.4 3H7.2v-2.2h6.4c.6 0 1-.3 1-.8s-.4-.8-1-.8H9.4c-1.9 0-3.2-1.1-3.2-2.8 0-1.8 1.4-3 3.4-3h6.2v2.2z"/>`,
-  ),
-  // HRE Forged — Crest shield with crossbars
-  "HRE Forged": monogramEmblem("HRE", "hex"),
-  // Rotiform — Hexagonal R wheel nut crest
-  Rotiform: monogramEmblem("RTF", "hex"),
-  // Fifteen52 — 52 tarmac star emblem
-  Fifteen52: monogramEmblem("52", "spoke"),
-  // American Racing — 5-spoke Torq-Thrust star inside wheel ring
-  "American Racing": svgDataUri(
-    `<path d="M12 1.2a10.8 10.8 0 1 0 0 21.6 10.8 10.8 0 0 0 0-21.6zm0 2.3 2.1 5.6h5.9l-4.8 3.5 1.8 5.7-5-3.5-5 3.5 1.8-5.7-4.8-3.5h5.9L12 3.5z"/>`,
-  ),
-  Borbet: monogramEmblem("BRB", "ring"),
-  Ronal: monogramEmblem("RNL", "ring"),
-  Konig: svgDataUri(
-    `<path d="M3.5 6.5 7 12l5-6.5L17 12l3.5-5.5-1.8 11.5H5.3L3.5 6.5zm3.6 8.8h9.8l.5-2.8-2.8 1.8L12 10.8l-2.6 3.5-2.8-1.8.5 2.8z"/>`,
-  ),
-  Method: monogramEmblem("MRW", "hex"),
-  Weld: monogramEmblem("WLD", "rotor"),
-  TSW: monogramEmblem("TSW", "spoke"),
-  "TSW Alloy": monogramEmblem("TSW", "spoke"),
-  "3SDM": monogramEmblem("3S", "hex"),
-  AEZ: monogramEmblem("AEZ", "ring"),
-  ATS: monogramEmblem("ATS", "spoke"),
-  Alutec: monogramEmblem("ALU", "ring"),
-  Asanti: monogramEmblem("ASN", "hex"),
-  Autec: monogramEmblem("AUT", "ring"),
-  Beyern: monogramEmblem("BYN", "spoke"),
-  "Black Rhino": monogramEmblem("BR", "hex"),
-  Calibre: monogramEmblem("CAL", "ring"),
-  Dezent: monogramEmblem("DEZ", "ring"),
-  Dotz: monogramEmblem("DTZ", "spoke"),
-  Dub: monogramEmblem("DUB", "hex"),
-  Fondmetal: monogramEmblem("FND", "ring"),
-  Forgestar: svgDataUri(
-    `<path d="M12 1.5 14.6 9h7.9l-6.4 4.6 2.4 7.5L12 16.5l-6.5 4.6 2.4-7.5L1.5 9h7.9L12 1.5z"/>`,
-  ),
-  "Fox Racing": monogramEmblem("FOX", "slanted"),
-  Helo: monogramEmblem("HLO", "hex"),
-  MAK: monogramEmblem("MAK", "slanted"),
-  Mandrus: monogramEmblem("MND", "ring"),
-  Motegi: monogramEmblem("MTG", "slanted"),
-  "Moto Metal": monogramEmblem("MM", "hex"),
-  Niche: monogramEmblem("NCH", "spoke"),
-  "Pro Comp": monogramEmblem("PC", "rotor"),
-  Ultra: monogramEmblem("ULT", "hex"),
-  "Victor Equipment": monogramEmblem("VE", "hex"),
-  XXR: monogramEmblem("XXR", "slanted"),
+  "OZ Racing": wordmarkLogoSvg({ text: "O·Z", accent: "#dc2626", style: "underline" }),
+  "MSW (by OZ)": wordmarkLogoSvg({ text: "MSW", accent: "#dc2626", style: "slash" }),
+  "HRE Forged": wordmarkLogoSvg({ text: "HRE", accent: "#b91c1c", style: "crest" }),
+  Rotiform: wordmarkLogoSvg({ text: "ROTIFORM", badge: "R", badgeBg: "#dc2626", accent: "#dc2626" }),
+  Fifteen52: wordmarkLogoSvg({ text: "FIFTEEN52", badge: "52", badgeBg: "#dc2626", accent: "#dc2626" }),
+  "American Racing": wordmarkLogoSvg({ text: "AMERICAN", accent: "#dc2626", primary: "#1e3a8a", style: "stripe" }),
+  Ronal: wordmarkLogoSvg({ text: "RONAL", accent: "#0284c7", style: "slash" }),
+  Konig: wordmarkLogoSvg({ text: "KÖNIG", accent: "#d97706", style: "crest" }),
+  Method: wordmarkLogoSvg({ text: "METHOD", accent: "#dc2626", style: "underline" }),
+  Weld: wordmarkLogoSvg({ text: "WELD", accent: "#ca8a04", primary: "#09090b", style: "pill" }),
+  TSW: wordmarkLogoSvg({ text: "TSW", accent: "#dc2626", style: "slash" }),
+  "TSW Alloy": wordmarkLogoSvg({ text: "TSW", accent: "#dc2626", style: "slash" }),
+  "3SDM": wordmarkLogoSvg({ text: "3SDM", badge: "3S", badgeBg: "#09090b", accent: "#dc2626" }),
+  AEZ: wordmarkLogoSvg({ text: "AEZ", accent: "#dc2626", style: "stripe" }),
+  ATS: wordmarkLogoSvg({ text: "ATS", accent: "#dc2626", style: "underline" }),
+  Asanti: wordmarkLogoSvg({ text: "ASANTI", accent: "#b45309", style: "crest" }),
+  Autec: wordmarkLogoSvg({ text: "AUTEC", accent: "#0284c7", style: "slash" }),
+  Beyern: wordmarkLogoSvg({ text: "BEYERN", accent: "#0284c7", style: "stripe" }),
+  "Black Rhino": wordmarkLogoSvg({ text: "BLACK RHINO", accent: "#dc2626", style: "underline" }),
+  Calibre: wordmarkLogoSvg({ text: "CALIBRE", accent: "#dc2626", style: "slash" }),
+  Dezent: wordmarkLogoSvg({ text: "DEZENT", accent: "#dc2626", style: "underline" }),
+  Dotz: wordmarkLogoSvg({ text: "DOTZ", accent: "#eab308", primary: "#09090b", style: "stripe" }),
+  Dub: wordmarkLogoSvg({ text: "DUB", accent: "#09090b", style: "pill" }),
+  Fondmetal: wordmarkLogoSvg({ text: "FONDMETAL", accent: "#dc2626", style: "slash" }),
+  Forgestar: wordmarkLogoSvg({ text: "FORGESTAR", badge: "F", badgeBg: "#dc2626", accent: "#dc2626" }),
+  Helo: wordmarkLogoSvg({ text: "HELO", accent: "#dc2626", style: "underline" }),
+  MAK: wordmarkLogoSvg({ text: "MAK", badge: "M", badgeBg: "#dc2626", accent: "#dc2626" }),
+  Mandrus: wordmarkLogoSvg({ text: "MANDRUS", accent: "#3f3f46", style: "underline" }),
+  Motegi: wordmarkLogoSvg({ text: "MOTEGI", accent: "#dc2626", style: "stripe" }),
+  "Moto Metal": wordmarkLogoSvg({ text: "MOTO METAL", accent: "#dc2626", style: "slash" }),
+  Niche: wordmarkLogoSvg({ text: "NICHE", accent: "#dc2626", style: "underline" }),
+  "Pro Comp": wordmarkLogoSvg({ text: "PRO COMP", accent: "#dc2626", style: "stripe" }),
+  Ultra: wordmarkLogoSvg({ text: "ULTRA", accent: "#0284c7", style: "crest" }),
+  "Victor Equipment": wordmarkLogoSvg({ text: "VICTOR", accent: "#dc2626", style: "crest" }),
+  XXR: wordmarkLogoSvg({ text: "XXR", accent: "#dc2626", style: "stripe" }),
 }
 
 export function getVehicleMakeIconUrl(make?: string | null): string | null {
   if (!make) return null
   const monoSlug = THESVG_MONO_MAKES[make]
   if (monoSlug) return theSvgUrl(monoSlug, "mono")
-  return CUSTOM_MONO_MAKES[make] ?? null
+  return OFFICIAL_EXTRA_MAKES[make] ?? null
 }
 
 export function getProductBrandIconUrl(brand?: string | null): string | null {
   if (!brand) return null
   const trimmed = brand.trim()
-  const thesvgSlug = THESVG_PRODUCT_BRANDS[trimmed]
-  if (thesvgSlug) return theSvgUrl(thesvgSlug, "mono")
-  if (PRODUCT_BRAND_ICONS[trimmed]) return PRODUCT_BRAND_ICONS[trimmed]
+  if (PRODUCT_BRAND_LOGOS[trimmed]) return PRODUCT_BRAND_LOGOS[trimmed]
 
-  // Case-insensitive match
   const lower = trimmed.toLowerCase()
-  for (const [k, slug] of Object.entries(THESVG_PRODUCT_BRANDS)) {
-    if (k.toLowerCase() === lower) return theSvgUrl(slug, "mono")
-  }
-  for (const [k, uri] of Object.entries(PRODUCT_BRAND_ICONS)) {
+  for (const [k, uri] of Object.entries(PRODUCT_BRAND_LOGOS)) {
     if (k.toLowerCase() === lower) return uri
   }
 
-  // Fallback monogram emblem so even newly added Admin brands always render a sharp badge
-  const initials = trimmed
-    .split(/[\s()-]+/)
-    .filter(Boolean)
-    .map((w) => w[0])
-    .join("")
-  return monogramEmblem(initials.length >= 2 ? initials.slice(0, 3) : trimmed.slice(0, 3), "slanted")
+  return wordmarkLogoSvg({
+    text: trimmed.toUpperCase().slice(0, 12),
+    accent: "#dc2626",
+    style: "slash",
+  })
 }
 
 export function getBrandIconUrl(brandOrMake?: string | null): string | null {
   if (!brandOrMake) return null
-  return getVehicleMakeIconUrl(brandOrMake) ?? getProductBrandIconUrl(brandOrMake)
+  return getProductBrandIconUrl(brandOrMake)
 }
 
 export const FEATURED_VEHICLE_BRANDS = [
@@ -329,46 +319,3 @@ export const FEATURED_VEHICLE_BRANDS = [
   { make: "Hyundai", modelsHint: "IONIQ 5 · Tucson · Santa Fe" },
   { make: "Subaru", modelsHint: "Outback · Forester · WRX" },
 ] as const
-
-export const FEATURED_CATALOG_BRANDS = {
-  tires: [
-    { brand: "Michelin", tagline: "Pilot Sport · Primacy · CrossClimate" },
-    { brand: "Pirelli", tagline: "P Zero · Cinturato · Scorpion" },
-    { brand: "Continental", tagline: "SportContact · PremiumContact · WinterContact" },
-    { brand: "Bridgestone", tagline: "Potenza · Turanza · Blizzak" },
-    { brand: "Goodyear", tagline: "Eagle F1 · EfficientGrip · UltraGrip" },
-    { brand: "Dunlop", tagline: "Sport Maxx · Winter Sport · Grandtrek" },
-    { brand: "Hankook", tagline: "Ventus S1 · Kinergy · Winter i*cept" },
-    { brand: "Yokohama", tagline: "ADVAN Sport · BluEarth · Geolandar" },
-    { brand: "Nokian", tagline: "Hakkapeliitta · Snowproof · Wetproof" },
-    { brand: "Falken", tagline: "Azenis FK520 · Eurowinter · Wildpeak" },
-    { brand: "Kumho", tagline: "Ecsta PS71 · Solus · WinterCraft" },
-    { brand: "BFGoodrich", tagline: "All-Terrain KO2 · g-Force · Trail-Terrain" },
-    { brand: "Firestone", tagline: "Firehawk · Roadhawk · Winterhawk" },
-    { brand: "Nexen", tagline: "N'Fera Sport · N'Blue · Winguard" },
-  ],
-  wheels: [
-    { brand: "BBS", tagline: "Forged & Flow-Formed Motorsport" },
-    { brand: "OZ Racing", tagline: "Ultraleggera · Superturismo · Rally" },
-    { brand: "Enkei", tagline: "RPF1 · NT03+M · MAT Technology" },
-    { brand: "HRE Forged", tagline: "FlowForm & Monoblok Forged" },
-    { brand: "Rotiform", tagline: "Aerodisc · LAS-R · Monoblock" },
-    { brand: "Fifteen52", tagline: "Turbomac · Tarmac · Rally Sport" },
-    { brand: "Sparco", tagline: "Assetto Gara · Terra · Corsa" },
-    { brand: "Borbet", tagline: "OEM German Alloy Engineering" },
-    { brand: "Ronal", tagline: "OE-Grade European Cast Wheels" },
-    { brand: "Konig", tagline: "Hypergram · Ampliform · Flow Formed" },
-    { brand: "Method", tagline: "Bead Grip · Overland & Rally" },
-    { brand: "American Racing", tagline: "Torq Thrust · Heritage Muscle" },
-  ],
-  brakes: [
-    { brand: "Brembo", tagline: "GT Big Brake Kits · Two-Piece Rotors" },
-    { brand: "Bosch", tagline: "OE QuietCast & High-Carbon Discs" },
-    { brand: "EBC", tagline: "Yellowstuff · Redstuff · GD Rotors" },
-    { brand: "Ferodo", tagline: "DS2500 · DS Performance Compounds" },
-    { brand: "Wilwood", tagline: "Forged Narrow Superlite 6R Kits" },
-    { brand: "PowerStop", tagline: "Z23 & Z26 Extreme Street Warrior" },
-    { brand: "Baer Brakes", tagline: "6P Pro+ Monoblock Brake Systems" },
-    { brand: "TBM Brakes", tagline: "Revolution Billet Drag & Track Kits" },
-  ],
-} as const

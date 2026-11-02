@@ -522,7 +522,7 @@ export function FitmentModal({
                               height={15}
                               loading="lazy"
                               className={cn(
-                                "size-[15px] object-contain",
+                                "size-[15px] object-contain brightness-0",
                                 selected ? "invert" : "opacity-85 group-hover:opacity-100 dark:invert",
                               )}
                             />

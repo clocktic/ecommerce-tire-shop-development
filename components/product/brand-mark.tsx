@@ -1,60 +1,50 @@
 import Link from "next/link"
-import { getBrandIconUrl } from "@/lib/brand-icons"
+import { getProductBrandIconUrl } from "@/lib/brand-icons"
 import { cn } from "@/lib/utils"
 
 export function BrandMark({
   brand,
   size = "xs",
   className,
-  textClassName,
 }: {
   brand: string
   size?: "xs" | "sm" | "md"
   className?: string
   textClassName?: string
 }) {
-  const iconUrl = getBrandIconUrl(brand)
+  const iconUrl = getProductBrandIconUrl(brand)
 
-  const boxSizes = {
-    xs: "size-5 p-0.5",
-    sm: "size-6 p-1",
-    md: "size-8 p-1.5",
+  const plateSizes = {
+    xs: "h-5 px-2 py-0.5",
+    sm: "h-6 px-2.5 py-0.5",
+    md: "h-7 px-3 py-1",
   }[size]
 
   const imgSizes = {
-    xs: 14,
-    sm: 16,
-    md: 20,
+    xs: "h-3.5 max-w-[82px]",
+    sm: "h-4 max-w-[96px]",
+    md: "h-5 max-w-[116px]",
   }[size]
 
   return (
-    <span className={cn("inline-flex min-w-0 items-center gap-1.5", className)}>
-      {iconUrl && (
-        <span
-          className={cn(
-            "inline-flex shrink-0 items-center justify-center border border-border bg-muted/60",
-            boxSizes,
-          )}
-        >
-          <img
-            src={iconUrl}
-            alt=""
-            aria-hidden="true"
-            width={imgSizes}
-            height={imgSizes}
-            loading="lazy"
-            className="size-full object-contain opacity-90 dark:invert"
-          />
-        </span>
+    <span
+      className={cn(
+        "inline-flex w-fit shrink-0 items-center justify-center border border-border/80 bg-white shadow-2xs",
+        plateSizes,
+        className,
       )}
-      <span
-        className={cn(
-          "label-caps truncate text-[10px] text-muted-foreground sm:text-xs",
-          textClassName,
-        )}
-      >
-        {brand}
-      </span>
+      title={brand}
+    >
+      {iconUrl ? (
+        <img
+          src={iconUrl}
+          alt={brand}
+          loading="lazy"
+          className={cn("w-auto object-contain", imgSizes)}
+        />
+      ) : (
+        <span className="label-caps text-[10px] text-zinc-900">{brand}</span>
+      )}
     </span>
   )
 }
@@ -68,20 +58,17 @@ export function BrandBadge({
   href?: string
   className?: string
 }) {
-  const iconUrl = getBrandIconUrl(brand)
+  const iconUrl = getProductBrandIconUrl(brand)
 
   const inner = (
     <>
       {iconUrl && (
-        <span className="flex size-7 shrink-0 items-center justify-center border border-border bg-muted/60 p-1 transition-colors group-hover:border-primary/50">
+        <span className="flex h-7 shrink-0 items-center justify-center border border-border/80 bg-white px-2.5 py-1 transition-colors group-hover:border-primary/60">
           <img
             src={iconUrl}
-            alt=""
-            aria-hidden="true"
-            width={18}
-            height={18}
+            alt={brand}
             loading="lazy"
-            className="size-full object-contain opacity-90 dark:invert"
+            className="h-4.5 w-auto max-w-[110px] object-contain"
           />
         </span>
       )}
@@ -96,7 +83,7 @@ export function BrandBadge({
       <Link
         href={href}
         className={cn(
-          "group inline-flex w-fit items-center gap-2 border border-border bg-card px-2.5 py-1 transition-colors hover:border-primary",
+          "group inline-flex w-fit items-center gap-2.5 border border-border bg-card p-1 pr-3 transition-colors hover:border-primary",
           className,
         )}
       >
@@ -108,7 +95,7 @@ export function BrandBadge({
   return (
     <div
       className={cn(
-        "inline-flex w-fit items-center gap-2 border border-border bg-card px-2.5 py-1",
+        "inline-flex w-fit items-center gap-2.5 border border-border bg-card p-1 pr-3",
         className,
       )}
     >

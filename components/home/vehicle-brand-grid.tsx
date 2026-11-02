@@ -105,11 +105,11 @@ export function VehicleBrandGrid() {
                         <img
                           src={getVehicleMakeIconUrl(brand.make) ?? ""}
                           alt={brand.make}
-                          width={22}
-                          height={22}
-                          loading="lazy"
-                          className="size-4.5 object-contain opacity-90 group-hover:opacity-100 dark:invert sm:size-5.5"
-                        />
+                      width={22}
+                      height={22}
+                      loading="lazy"
+                      className="size-4.5 object-contain brightness-0 opacity-90 group-hover:opacity-100 dark:invert sm:size-5.5"
+                    />
                       </span>
                       <ArrowUpRight
                         className="size-3.5 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary sm:size-4"
