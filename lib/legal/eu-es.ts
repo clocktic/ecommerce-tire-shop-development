@@ -14,7 +14,7 @@ const r = p.returns
 const t = euEs.policy
 const contactLine = `${COMPANY.email} · ${COMPANY.phoneDisplay} (${euEs.company.hours})`
 const seller = `${COMPANY.legalName}, ${companyAddressLine}, correo electrónico ${COMPANY.email}, teléfono ${COMPANY.phoneDisplay}`
-const bulky = "como máximo unos 25 € por neumático o llanta y 15 € por bulto de frenos"
+const bulky = "como máximo unos 90 € por neumático o llanta y 45 € por bulto de frenos para la devolución a Estados Unidos"
 const payments = p.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "Transferencia SEPA" : m))
 
 const SNIP = EU_SNIPPETS.es
@@ -45,14 +45,15 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
         blocks: [
           {
             rows: [
-              ["Hora límite de pedido", `${s.cutoff}, de lunes a viernes`],
+              ["Hora límite de pedido", "14:00 PT (hora del Pacífico de EE. UU.), de lunes a viernes"],
               ["Tiempo de preparación", `${s.handlingDays[0]}–${s.handlingDays[1]} días laborables`],
               ["Tiempo de tránsito", `${s.transitDays[0]}–${s.transitDays[1]} días laborables`],
               ["Plazo total de entrega", t.days],
-              ["Transportistas", s.carriers.join(", ")],
-              ["Enviado desde", EU_PRESENCE.dispatchCountry],
+              ["Transportistas", `Servicio de entrega y mensajero propios (TiresShop Courier) cuando esté disponible; en caso contrario, ${s.carriers.join(", ")}`],
+              ["Enviado desde", "Estados Unidos (California)"],
             ],
           },
+          `Siempre que sea posible enviar el pedido con nuestro propio servicio de entrega y nuestro propio mensajero, lo enviaremos así. Si no es posible enviarlo mediante nuestra propia entrega para tu dirección o ruta, utilizamos otros transportistas (${s.carriers.join(", ")}).`,
           "Si no podemos entregar en un plazo de 30 días desde tu pedido y no acordamos contigo una fecha posterior, puedes cancelar el pedido y recibir el reembolso íntegro.",
         ],
       },
@@ -91,10 +92,10 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
         blocks: [
           `En caso de desistimiento, te devolveremos todos los pagos recibidos de ti, incluidos los gastos de entrega (con la excepción de los gastos adicionales resultantes de la elección por tu parte de una modalidad de entrega diferente a la modalidad menos costosa de entrega ordinaria que ofrezcamos) sin ninguna demora indebida y, en todo caso, a más tardar ${r.refundDays} días naturales a partir de la fecha en la que se nos informe de tu decisión de desistir del presente contrato. Procederemos a efectuar dicho reembolso utilizando el mismo medio de pago empleado por ti para la transacción inicial, a no ser que hayas dispuesto expresamente lo contrario; en todo caso, no incurrirás en ningún gasto como consecuencia del reembolso.`,
           "Podremos retener el reembolso hasta haber recibido los bienes, o hasta que hayas presentado una prueba de la devolución de los mismos, según qué condición se cumpla primero.",
-          `Deberás devolver los bienes a la dirección indicada en el correo de autorización de devolución (RMA) sin ninguna demora indebida y, en cualquier caso, a más tardar en el plazo de ${r.windowDays} días naturales a partir de la fecha en que nos comuniques tu decisión de desistimiento del contrato. Se considerará cumplido el plazo si efectúas la devolución de los bienes antes de que haya concluido dicho plazo.`,
+          `Deberás devolver los bienes a nuestro centro de devoluciones (${EU_PRESENCE.returnsAddress}, indicando el número de autorización de devolución RMA recibido por correo) sin ninguna demora indebida y, en cualquier caso, a más tardar en el plazo de ${r.windowDays} días naturales a partir de la fecha en que nos comuniques tu decisión de desistimiento del contrato. Se considerará cumplido el plazo si efectúas la devolución de los bienes antes de que haya concluido dicho plazo.`,
           r.returnShippingPaidBy === "merchant"
             ? "Asumiremos el coste de la devolución de los bienes."
-            : `Deberás asumir el coste directo de devolución de los bienes. Por su naturaleza, los neumáticos, las llantas y los kits de frenos no pueden devolverse normalmente por correo; se calcula que dicho coste asciende a ${bulky}. Si lo solicitas, podemos enviarte una etiqueta prepagada por ese importe.`,
+            : `Deberás asumir el coste directo de devolución de los bienes. Por su naturaleza, los neumáticos, las llantas y los kits de frenos no pueden devolverse normalmente por correo; se calcula que dicho coste asciende a ${bulky}. Si lo solicitas, podemos enviarte una etiqueta prepagada por ese importe. Nunca cobramos gastos por reposición (0,00 €).`,
           "Solo serás responsable de la disminución de valor de los bienes resultante de una manipulación distinta a la necesaria para establecer la naturaleza, las características y el funcionamiento de los bienes.",
         ],
       },
@@ -219,7 +220,7 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
       {
         heading: "Cuándo se realiza el cargo",
         blocks: [
-          "Los pagos con tarjeta y PayPal se autorizan al realizar el pedido y se cobran en el momento del envío. Con transferencia SEPA, el pedido se envía una vez recibido el pago; los datos bancarios figuran en la confirmación del pedido.",
+          "Los pagos con tarjeta (Visa, Mastercard, American Express) se autorizan y procesan en nuestra pasarela segura 3D Secure 2.0 al realizar el pedido. Si un pedido se cancela antes del envío, la autorización se libera o reembolsa íntegramente de inmediato. Con transferencia SEPA, el pedido se envía una vez recibido el pago; los datos bancarios figuran en la confirmación del pedido.",
         ],
       },
       {
@@ -245,8 +246,11 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Precios",
-        blocks: [SNIP.pricesText],
+        heading: "Precios y Member Club (7 % de descuento)",
+        blocks: [
+          SNIP.pricesText,
+          "Member Club (7 % de descuento para miembros registrados): Los clientes que crean una cuenta gratuita e inician sesión antes de finalizar la compra reciben automáticamente un 7 % de descuento sobre el subtotal de mercancía. En caso de desistimiento o devolución, el reembolso corresponde al importe neto efectivamente pagado.",
+        ],
       },
       { heading: "Entrega", blocks: ["Las condiciones de entrega se describen en Condiciones de entrega."] },
       { heading: "Derecho de desistimiento", blocks: [`Los consumidores tienen un derecho de desistimiento de ${r.windowDays} días, descrito en Derecho de desistimiento y devoluciones.`] },
@@ -398,21 +402,23 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
               ["Forma jurídica", `Limited liability company constituida conforme a la legislación de ${COMPANY.stateOfFormation}, EE. UU.`],
               ["Registro", `${COMPANY.stateOfFormation} Secretary of State, n.º ${COMPANY.registrationNumber}`],
               ["Domicilio", companyAddressLine],
+              ["Domicilio para notificaciones legales", COMPANY.mailingAddress],
+              ["Dirección física de devoluciones", EU_PRESENCE.returnsAddress],
               ["Representada por", `${COMPANY.representative}, ${COMPANY.representativeRole}`],
               ["Correo electrónico", COMPANY.email],
-              ["Teléfono", COMPANY.phoneDisplay],
-              ["Seller's permit (CDTFA)", COMPANY.sellerPermit],
+              ["Teléfono", `${COMPANY.phoneDisplay} (${COMPANY.hours})`],
+              ["Seller's permit (CDTFA)", `${COMPANY.sellerPermit} (${COMPANY.sellerPermitAuthority})`],
             ],
           },
         ],
       },
       {
-        heading: "Representante en la UE",
-        blocks: [`${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address}`],
+        heading: "Contacto de protección de datos en la UE (RGPD)",
+        blocks: [`${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address} · Correo: ${EU_PRESENCE.gdprRepresentative.email}`],
       },
       {
         heading: "Responsable de los contenidos",
-        blocks: [`${COMPANY.representative}, domicilio indicado arriba.`],
+        blocks: [`${COMPANY.representative}, ${companyAddressLine}.`],
       },
     ],
   },

@@ -185,12 +185,12 @@ export function SearchModal() {
               type="button"
               onClick={() => setQuery("")}
               className="p-1 text-muted-foreground hover:text-foreground"
-              aria-label="Clear"
+              aria-label={t.catalog.clear}
             >
               <X className="size-4" aria-hidden="true" />
             </button>
           )}
-          <Button type="button" variant="ghost" size="icon-sm" onClick={() => setOpen(false)} aria-label="Close">
+          <Button type="button" variant="ghost" size="icon-sm" onClick={() => setOpen(false)} aria-label={t.catalog.clear}>
             <X className="size-4" aria-hidden="true" />
           </Button>
         </div>

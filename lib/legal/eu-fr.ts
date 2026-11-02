@@ -14,7 +14,7 @@ const r = p.returns
 const t = euFr.policy
 const contactLine = `${COMPANY.email} · ${COMPANY.phoneDisplay} (${euFr.company.hours})`
 const seller = `${COMPANY.legalName}, ${companyAddressLine}, e-mail ${COMPANY.email}, téléphone ${COMPANY.phoneDisplay}`
-const bulky = "au maximum environ 25 € par pneu ou jante et 15 € par colis de freinage"
+const bulky = "au maximum environ 90 € par pneu ou jante et 45 € par colis de freinage pour le renvoi vers les États-Unis"
 const payments = p.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "Virement SEPA" : m))
 
 const SNIP = EU_SNIPPETS.fr
@@ -45,14 +45,15 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
         blocks: [
           {
             rows: [
-              ["Heure limite de commande", `${s.cutoff}, du lundi au vendredi`],
+              ["Heure limite de commande", "14 h 00 PT (heure du Pacifique É.-U.), du lundi au vendredi"],
               ["Délai de préparation", `${s.handlingDays[0]} à ${s.handlingDays[1]} jours ouvrés`],
               ["Délai d’acheminement", `${s.transitDays[0]} à ${s.transitDays[1]} jours ouvrés`],
               ["Délai total de livraison", t.days],
-              ["Transporteurs", s.carriers.join(", ")],
-              ["Expédié depuis", EU_PRESENCE.dispatchCountry],
+              ["Transporteurs", `Service de livraison et coursier propres (TiresShop Courier) lorsque disponible ; sinon ${s.carriers.join(", ")}`],
+              ["Expédié depuis", "États-Unis (Californie)"],
             ],
           },
+          `Lorsqu’il est possible d’expédier votre commande via notre propre service de livraison et notre propre coursier, nous l’envoyons de cette manière. S’il n’est pas possible d’assurer la livraison par notre propre service pour votre adresse ou itinéraire, nous faisons appel à d’autres transporteurs (${s.carriers.join(", ")}).`,
           "Si nous ne pouvons pas livrer dans les 30 jours suivant votre commande et qu’aucune date ultérieure n’a été convenue avec vous, vous pouvez annuler la commande et être intégralement remboursé.",
         ],
       },
@@ -91,10 +92,10 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
         blocks: [
           `En cas de rétractation de votre part du présent contrat, nous vous rembourserons tous les paiements reçus de vous, y compris les frais de livraison (à l’exception des frais supplémentaires découlant du fait que vous avez choisi, le cas échéant, un mode de livraison autre que le mode moins coûteux de livraison standard proposé par nous), sans retard excessif et, en tout état de cause, au plus tard ${r.refundDays} jours à compter du jour où nous sommes informés de votre décision de rétractation du présent contrat. Nous procéderons au remboursement en utilisant le même moyen de paiement que celui que vous aurez utilisé pour la transaction initiale, sauf si vous convenez expressément d’un moyen différent ; en tout état de cause, ce remboursement n’occasionnera pas de frais pour vous.`,
           "Nous pouvons différer le remboursement jusqu’à ce que nous ayons reçu le bien ou jusqu’à ce que vous ayez fourni une preuve d’expédition du bien, la date retenue étant celle du premier de ces faits.",
-          `Vous devrez renvoyer le bien à l’adresse indiquée dans l’e-mail d’autorisation de retour (RMA) sans retard excessif et, en tout état de cause, au plus tard ${r.windowDays} jours après que vous nous aurez communiqué votre décision de rétractation du présent contrat. Ce délai est réputé respecté si vous renvoyez le bien avant l’expiration du délai de ${r.windowDays} jours.`,
+          `Vous devrez renvoyer le bien à notre centre de retours (${EU_PRESENCE.returnsAddress}, en mentionnant le numéro d’autorisation de retour RMA indiqué par e-mail) sans retard excessif et, en tout état de cause, au plus tard ${r.windowDays} jours après que vous nous aurez communiqué votre décision de rétractation du présent contrat. Ce délai est réputé respecté si vous renvoyez le bien avant l’expiration du délai de ${r.windowDays} jours.`,
           r.returnShippingPaidBy === "merchant"
             ? "Nous prendrons en charge les frais de renvoi du bien."
-            : `Vous devrez prendre en charge les frais directs de renvoi du bien. Les pneus, jantes et kits de freinage ne peuvent normalement pas être renvoyés par la poste ; ces frais sont estimés à ${bulky}. Sur demande, nous pouvons vous envoyer une étiquette prépayée à ce prix.`,
+            : `Vous devrez prendre en charge les frais directs de renvoi du bien. Les pneus, jantes et kits de freinage ne peuvent normalement pas être renvoyés par la poste ; ces frais sont estimés à ${bulky}. Sur demande, nous pouvons vous envoyer une étiquette prépayée à ce prix. Nous ne facturons jamais de frais de remise en stock (0,00 €).`,
           "Votre responsabilité est engagée uniquement à l’égard de la dépréciation du bien résultant de manipulations autres que celles nécessaires pour établir la nature, les caractéristiques et le bon fonctionnement de ce bien.",
         ],
       },
@@ -219,7 +220,7 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
       {
         heading: "Quand vous êtes débité",
         blocks: [
-          "Les paiements par carte et PayPal sont autorisés lors de la commande et encaissés à l’expédition. Pour un virement SEPA, la commande est expédiée dès réception du paiement ; les coordonnées bancaires figurent dans votre confirmation de commande.",
+          "Les paiements par carte (Visa, Mastercard, American Express) sont autorisés et traités sur notre page sécurisée 3D Secure 2.0 lors de la commande. Si une commande est annulée avant l’expédition, l’autorisation est immédiatement libérée ou intégralement remboursée. Pour un virement SEPA, la commande est expédiée dès réception du paiement ; les coordonnées bancaires figurent dans votre confirmation de commande.",
         ],
       },
       {
@@ -245,8 +246,11 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Prix",
-        blocks: [SNIP.pricesText],
+        heading: "Prix et Member Club (remise de 7 %)",
+        blocks: [
+          SNIP.pricesText,
+          "Member Club (7 % de remise pour les membres inscrits) : Les clients qui créent un compte gratuit et se connectent avant de valider leur commande bénéficient automatiquement d’une remise de 7 % sur le sous-total des articles. En cas de rétractation ou de retour, le remboursement correspond au montant net effectivement payé.",
+        ],
       },
       { heading: "Livraison", blocks: ["Les modalités de livraison sont décrites dans les Conditions de livraison."] },
       { heading: "Droit de rétractation", blocks: [`Les consommateurs disposent d’un droit de rétractation de ${r.windowDays} jours, décrit dans Droit de rétractation et retours.`] },
@@ -398,21 +402,23 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
               ["Forme juridique", `Limited liability company de droit de l’État de ${COMPANY.stateOfFormation}, États-Unis`],
               ["Immatriculation", `${COMPANY.stateOfFormation} Secretary of State, n° ${COMPANY.registrationNumber}`],
               ["Adresse", companyAddressLine],
+              ["Adresse pour les notifications légales", COMPANY.mailingAddress],
+              ["Adresse de retour physique", EU_PRESENCE.returnsAddress],
               ["Représentée par", `${COMPANY.representative}, ${COMPANY.representativeRole}`],
               ["E-mail", COMPANY.email],
-              ["Téléphone", COMPANY.phoneDisplay],
-              ["Seller's permit (CDTFA)", COMPANY.sellerPermit],
+              ["Téléphone", `${COMPANY.phoneDisplay} (${COMPANY.hours})`],
+              ["Seller's permit (CDTFA)", `${COMPANY.sellerPermit} (${COMPANY.sellerPermitAuthority})`],
             ],
           },
         ],
       },
       {
-        heading: "Représentant dans l’UE",
-        blocks: [`${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address}`],
+        heading: "Contact protection des données dans l’UE (RGPD)",
+        blocks: [`${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address} · E-mail : ${EU_PRESENCE.gdprRepresentative.email}`],
       },
       {
         heading: "Directeur de la publication",
-        blocks: [`${COMPANY.representative}, adresse ci-dessus.`],
+        blocks: [`${COMPANY.representative}, ${companyAddressLine}.`],
       },
     ],
   },

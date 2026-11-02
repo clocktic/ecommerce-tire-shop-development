@@ -14,7 +14,7 @@ const r = p.returns
 const t = euIt.policy
 const contactLine = `${COMPANY.email} · ${COMPANY.phoneDisplay} (${euIt.company.hours})`
 const seller = `${COMPANY.legalName}, ${companyAddressLine}, e-mail ${COMPANY.email}, telefono ${COMPANY.phoneDisplay}`
-const bulky = "al massimo circa 25 € per pneumatico o cerchio e 15 € per collo di freni"
+const bulky = "al massimo circa 90 € per pneumatico o cerchio e 45 € per collo di freni per la rispedizione negli Stati Uniti"
 const payments = p.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "Bonifico SEPA" : m))
 
 const SNIP = EU_SNIPPETS.it
@@ -45,14 +45,15 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
         blocks: [
           {
             rows: [
-              ["Orario limite per l’ordine", `${s.cutoff}, dal lunedì al venerdì`],
+              ["Orario limite per l’ordine", "14:00 PT (ora del Pacifico USA), dal lunedì al venerdì"],
               ["Tempo di preparazione", `${s.handlingDays[0]}–${s.handlingDays[1]} giorni lavorativi`],
               ["Tempo di trasporto", `${s.transitDays[0]}–${s.transitDays[1]} giorni lavorativi`],
               ["Tempo totale di consegna", t.days],
-              ["Corrieri", s.carriers.join(", ")],
-              ["Spedito da", EU_PRESENCE.dispatchCountry],
+              ["Corrieri", `Servizio di consegna e corriere propri (TiresShop Courier) ove disponibile; altrimenti ${s.carriers.join(", ")}`],
+              ["Spedito da", "Stati Uniti (California)"],
             ],
           },
+          `Quando è possibile spedire l’ordine tramite il nostro servizio di consegna e il nostro corriere, effettuiamo la spedizione in questo modo. Se non è possibile spedire con il nostro servizio di consegna per il tuo indirizzo o la tua tratta, utilizziamo altri corrieri (${s.carriers.join(", ")}).`,
           "Se non possiamo consegnare entro 30 giorni dall’ordine e non concordiamo con te una data successiva, puoi annullare l’ordine e ricevere il rimborso completo.",
         ],
       },
@@ -91,10 +92,10 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
         blocks: [
           `Se recedi dal presente contratto, ti saranno rimborsati tutti i pagamenti che hai effettuato a nostro favore, compresi i costi di consegna (ad eccezione dei costi supplementari derivanti dalla tua eventuale scelta di un tipo di consegna diverso dal tipo meno costoso di consegna standard da noi offerto), senza indebito ritardo e in ogni caso non oltre ${r.refundDays} giorni dal giorno in cui siamo informati della tua decisione di recedere dal presente contratto. Detti rimborsi saranno effettuati utilizzando lo stesso mezzo di pagamento da te usato per la transazione iniziale, salvo che tu non abbia espressamente convenuto altrimenti; in ogni caso, non dovrai sostenere alcun costo quale conseguenza di tale rimborso.`,
           "Il rimborso può essere sospeso fino al ricevimento dei beni oppure fino all’avvenuta dimostrazione da parte tua di aver rispedito i beni, se precedente.",
-          `Sei pregato di rispedire i beni all’indirizzo indicato nell’e-mail di autorizzazione al reso (RMA) senza indebiti ritardi e in ogni caso entro ${r.windowDays} giorni dal giorno in cui ci hai comunicato il recesso dal presente contratto. Il termine è rispettato se rispedisci i beni prima della scadenza del periodo di ${r.windowDays} giorni.`,
+          `Sei pregato di rispedire i beni al nostro centro resi (${EU_PRESENCE.returnsAddress}, indicando il numero di autorizzazione al reso RMA ricevuto via e-mail) senza indebiti ritardi e in ogni caso entro ${r.windowDays} giorni dal giorno in cui ci hai comunicato il recesso dal presente contratto. Il termine è rispettato se rispedisci i beni prima della scadenza del periodo di ${r.windowDays} giorni.`,
           r.returnShippingPaidBy === "merchant"
             ? "I costi della restituzione dei beni saranno a nostro carico."
-            : `I costi diretti della restituzione dei beni saranno a tuo carico. Pneumatici, cerchi e kit freni, per loro natura, non possono essere normalmente restituiti a mezzo posta; il costo è stimato in ${bulky}. Su richiesta possiamo inviarti un’etichetta prepagata a tale costo.`,
+            : `I costi diretti della restituzione dei beni saranno a tuo carico. Pneumatici, cerchi e kit freni, per loro natura, non possono essere normalmente restituiti a mezzo posta; il costo è stimato in ${bulky}. Su richiesta possiamo inviarti un’etichetta prepagata a tale costo. Non applichiamo mai alcuna commissione di riassortimento (0,00 €).`,
           "Sei responsabile unicamente della diminuzione del valore dei beni risultante da una manipolazione dei beni diversa da quella necessaria per stabilire la natura, le caratteristiche e il funzionamento dei beni.",
         ],
       },
@@ -219,7 +220,7 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
       {
         heading: "Quando avviene l’addebito",
         blocks: [
-          "I pagamenti con carta e PayPal vengono autorizzati al momento dell’ordine e addebitati alla spedizione. Con il bonifico SEPA l’ordine viene spedito una volta ricevuto il pagamento; le coordinate bancarie sono nella conferma d’ordine.",
+          "I pagamenti con carta (Visa, Mastercard, American Express) vengono autorizzati ed elaborati sulla nostra pagina sicura 3D Secure 2.0 al momento dell’ordine. Se un ordine viene annullato prima della spedizione, l’autorizzazione viene immediatamente svincolata o rimborsata per intero. Con il bonifico SEPA l’ordine viene spedito una volta ricevuto il pagamento; le coordinate bancarie sono nella conferma d’ordine.",
         ],
       },
       {
@@ -245,8 +246,11 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Prezzi",
-        blocks: [SNIP.pricesText],
+        heading: "Prezzi e Member Club (sconto del 7%)",
+        blocks: [
+          SNIP.pricesText,
+          "Member Club (sconto del 7% per i membri registrati): I clienti che creano un account gratuito e accedono prima del checkout ricevono automaticamente uno sconto del 7% sul subtotale della merce. In caso di recesso o reso, il rimborso corrisponde al prezzo netto effettivamente pagato.",
+        ],
       },
       { heading: "Consegna", blocks: ["Le modalità di consegna sono descritte nelle Condizioni di consegna."] },
       { heading: "Diritto di recesso", blocks: [`I consumatori hanno un diritto di recesso di ${r.windowDays} giorni, come descritto in Diritto di recesso e resi.`] },
@@ -398,21 +402,23 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
               ["Forma giuridica", `Limited liability company costituita secondo le leggi di ${COMPANY.stateOfFormation}, USA`],
               ["Registrazione", `${COMPANY.stateOfFormation} Secretary of State, n. ${COMPANY.registrationNumber}`],
               ["Indirizzo", companyAddressLine],
+              ["Indirizzo per notifiche legali", COMPANY.mailingAddress],
+              ["Indirizzo fisico per i resi", EU_PRESENCE.returnsAddress],
               ["Rappresentata da", `${COMPANY.representative}, ${COMPANY.representativeRole}`],
               ["E-mail", COMPANY.email],
-              ["Telefono", COMPANY.phoneDisplay],
-              ["Seller's permit (CDTFA)", COMPANY.sellerPermit],
+              ["Telefono", `${COMPANY.phoneDisplay} (${COMPANY.hours})`],
+              ["Seller's permit (CDTFA)", `${COMPANY.sellerPermit} (${COMPANY.sellerPermitAuthority})`],
             ],
           },
         ],
       },
       {
-        heading: "Rappresentante nell’UE",
-        blocks: [`${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address}`],
+        heading: "Contatto protezione dati nell’UE (GDPR)",
+        blocks: [`${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address} · E-mail: ${EU_PRESENCE.gdprRepresentative.email}`],
       },
       {
         heading: "Responsabile dei contenuti",
-        blocks: [`${COMPANY.representative}, indirizzo come sopra.`],
+        blocks: [`${COMPANY.representative}, ${companyAddressLine}.`],
       },
     ],
   },

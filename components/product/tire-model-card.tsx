@@ -14,6 +14,7 @@ import { tireReferenceCopy } from '@/lib/i18n/tire-reference'
 import { Price } from './price'
 import { EuTyreLabel } from './eu-tyre-label'
 import { EprelReference } from './eprel-reference'
+import { BrandMark } from './brand-mark'
 
 export type TireCardVariant = Pick<TireProduct, 'id' | 'slug' | 'brand' | 'name' | 'mpn' | 'gtin' | 'images' | 'offers' | 'tire'>
 
@@ -34,7 +35,7 @@ export function TireModelCard({ variants, store }: { variants: TireCardVariant[]
   const product = variants.find(p => p.id === selectedId) || defaultProduct
   const offer = product.offers[store.market]!
   const t = getDictionary(store)
-  const labels = tireReferenceCopy(store.lang)
+  const labels = tireReferenceCopy(store.lang, store.market)
   const size = tireSize(product.tire)
   const sizes = [...new Set(variants.map(p => tireSize(p.tire)))]
   const sameSize = variants.filter(p => tireSize(p.tire) === size)
@@ -57,7 +58,7 @@ export function TireModelCard({ variants, store }: { variants: TireCardVariant[]
       </Link>
       <div className="flex flex-1 flex-col gap-2.5 p-3.5 sm:gap-3 sm:p-4">
         <div className="flex flex-wrap items-center justify-between gap-1.5">
-          <p className="label-caps text-muted-foreground">{product.brand}</p>
+          <BrandMark brand={product.brand} size="xs" />
           <ProductFitmentBadge
             compact
             target={{

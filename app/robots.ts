@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: ["/", "/images/", "/feeds/"],
-        disallow: ["/api/", "/*/*/cart", "/*/*/checkout"],
+        disallow: ["/api/", "/admin/", "/*/*/cart", "/*/*/checkout", "/*/*/order/"],
       },
       // Merchant Center and Shopping crawlers must reach product pages and images in every store language.
       { userAgent: ["Googlebot", "Googlebot-Image", "Storebot-Google", "AdsBot-Google"], allow: "/" },

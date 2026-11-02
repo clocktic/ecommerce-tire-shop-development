@@ -55,6 +55,17 @@ export function productJsonLd(product: Product, store: Store) {
         shippingDestination: countries.map((code) => ({ "@type": "DefinedRegion", addressCountry: code })),
         deliveryTime: {
           "@type": "ShippingDeliveryTime",
+          cutoffTime: "14:00-08:00",
+          businessDays: {
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: [
+              "https://schema.org/Monday",
+              "https://schema.org/Tuesday",
+              "https://schema.org/Wednesday",
+              "https://schema.org/Thursday",
+              "https://schema.org/Friday",
+            ],
+          },
           handlingTime: { "@type": "QuantitativeValue", minValue: shipping.handlingDays[0], maxValue: shipping.handlingDays[1], unitCode: "DAY" },
           transitTime: { "@type": "QuantitativeValue", minValue: shipping.transitDays[0], maxValue: shipping.transitDays[1], unitCode: "DAY" },
         },
@@ -65,10 +76,25 @@ export function productJsonLd(product: Product, store: Store) {
         returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
         merchantReturnDays: returns.windowDays,
         returnMethod: "https://schema.org/ReturnByMail",
+        itemCondition: "https://schema.org/NewCondition",
         returnFees:
           returns.returnShippingPaidBy === "merchant"
             ? "https://schema.org/FreeReturn"
             : "https://schema.org/ReturnShippingFees",
+        ...(returns.returnShippingPaidBy === "customer"
+          ? {
+              returnShippingFeesAmount: {
+                "@type": "MonetaryAmount",
+                value: (returns.returnShippingFeeCents / 100).toFixed(2),
+                currency,
+              },
+            }
+          : {}),
+        restockingFee: {
+          "@type": "MonetaryAmount",
+          value: "0.00",
+          currency,
+        },
         merchantReturnLink: absoluteUrl(storePath(store, "/policies/returns")),
       },
     },

@@ -40,6 +40,12 @@ const BRAND_GRID_COPY: Record<
     lead: "Selecciona tu marca para filtrar neumáticos, llantas y frenos según medida de fábrica y anclaje (PCD).",
     cta: "Las más de 40 marcas",
   },
+  "es-419": {
+    eyebrow: "Garage de compatibilidad OEM",
+    title: "Comprar por marca de vehículo",
+    lead: "Selecciona tu marca para filtrar llantas, rines y frenos según medida de fábrica y barrenación (PCD).",
+    cta: "Las más de 40 marcas",
+  },
   it: {
     eyebrow: "Garage compatibilità OEM",
     title: "Acquista per marca auto",
@@ -57,7 +63,8 @@ const BRAND_GRID_COPY: Record<
 export function VehicleBrandGrid() {
   const { store } = useI18n()
   const { active } = useGarage()
-  const copy = BRAND_GRID_COPY[store.lang] ?? BRAND_GRID_COPY.en
+  const key = store.market === "us" && store.lang === "es" ? "es-419" : store.lang
+  const copy = BRAND_GRID_COPY[key] ?? BRAND_GRID_COPY[store.lang] ?? BRAND_GRID_COPY.en
 
   return (
     <section aria-labelledby="vehicle-brands-title" className="mx-auto max-w-7xl px-4 pt-12 sm:pt-20 md:px-6">
@@ -105,11 +112,11 @@ export function VehicleBrandGrid() {
                         <img
                           src={getVehicleMakeIconUrl(brand.make) ?? ""}
                           alt={brand.make}
-                          width={22}
-                          height={22}
-                          loading="lazy"
-                          className="size-4.5 object-contain opacity-90 group-hover:opacity-100 dark:invert sm:size-5.5"
-                        />
+                      width={22}
+                      height={22}
+                      loading="lazy"
+                      className="size-4.5 object-contain brightness-0 opacity-90 group-hover:opacity-100 dark:invert sm:size-5.5"
+                    />
                       </span>
                       <ArrowUpRight
                         className="size-3.5 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary sm:size-4"

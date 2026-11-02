@@ -3,8 +3,20 @@
 import { useState } from "react"
 import Image from "next/image"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { useI18n } from "@/components/i18n/i18n-provider"
+
+const GALLERY_NAV_LABELS: Record<string, { prev: string; next: string }> = {
+  en: { prev: "Previous image", next: "Next image" },
+  de: { prev: "Vorheriges Bild", next: "Nächstes Bild" },
+  fr: { prev: "Image précédente", next: "Image suivante" },
+  it: { prev: "Immagine precedente", next: "Immagine successiva" },
+  es: { prev: "Imagen anterior", next: "Imagen siguiente" },
+  nl: { prev: "Vorige afbeelding", next: "Volgende afbeelding" },
+}
 
 export function ProductGallery({ images, alt, badge }: { images: string[]; alt: string; badge?: string }) {
+  const { store } = useI18n()
+  const navLabels = GALLERY_NAV_LABELS[store.lang] ?? GALLERY_NAV_LABELS.en
   const photos = images.length ? images : ["/placeholder.svg"]
   const [active, setActive] = useState(0)
   const currentIndex = Math.min(active, photos.length - 1)
@@ -32,7 +44,7 @@ export function ProductGallery({ images, alt, badge }: { images: string[]; alt: 
             <button
               type="button"
               onClick={() => setActive((i) => (i - 1 + photos.length) % photos.length)}
-              aria-label="Previous image"
+              aria-label={navLabels.prev}
               className="absolute left-2.5 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center border border-border bg-background/90 text-foreground shadow-md transition-colors hover:border-primary hover:text-primary md:hidden"
             >
               <ChevronLeft className="size-4" aria-hidden="true" />
@@ -40,7 +52,7 @@ export function ProductGallery({ images, alt, badge }: { images: string[]; alt: 
             <button
               type="button"
               onClick={() => setActive((i) => (i + 1) % photos.length)}
-              aria-label="Next image"
+              aria-label={navLabels.next}
               className="absolute right-2.5 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center border border-border bg-background/90 text-foreground shadow-md transition-colors hover:border-primary hover:text-primary md:hidden"
             >
               <ChevronRight className="size-4" aria-hidden="true" />

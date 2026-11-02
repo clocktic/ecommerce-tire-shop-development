@@ -145,13 +145,14 @@ function identifierSpecs(product: Product, t: Dictionary) {
   ]
 }
 
-function categorySpecs(product: Product, { market }: Store, t: Dictionary) {
+function categorySpecs(product: Product, { market, lang }: Store, t: Dictionary) {
   const label = t.product.spec
   if (product.category === "wheels") {
     const w = product.wheel
+    const constr = t.catalog.constructionLabels[w.construction] ?? w.construction
     return [
       { label: label.finish, value: w.finish },
-      { label: label.construction, value: w.construction },
+      { label: label.construction, value: constr },
       { label: label.loadRating, value: `${w.loadRatingKg} kg` },
       ...(w.approvals[market] ? [{ label: label.approval, value: w.approvals[market]! }] : []),
     ]
@@ -164,6 +165,33 @@ function categorySpecs(product: Product, { market }: Store, t: Dictionary) {
     ]
   }
   const tire = product.tire
+  const exemptCopy: Record<string, { studded: string; por: string }> = {
+    en: {
+      studded: "Exempt — Art. 2(2)(b) (Studded tyre)",
+      por: "Exempt — Art. 2(2)(a) (POR Off-Road)",
+    },
+    de: {
+      studded: "Ausgenommen — Art. 2 Abs. 2 Buchst. b (Spikereifen)",
+      por: "Ausgenommen — Art. 2 Abs. 2 Buchst. a (POR Geländereifen)",
+    },
+    fr: {
+      studded: "Exempté — art. 2, § 2, b) (pneu à crampons)",
+      por: "Exempté — art. 2, § 2, a) (pneu tout-terrain professionnel POR)",
+    },
+    it: {
+      studded: "Esente — art. 2, par. 2, lett. b) (pneumatico chiodato)",
+      por: "Esente — art. 2, par. 2, lett. a) (fuoristrada professionale POR)",
+    },
+    es: {
+      studded: "Exento — art. 2.2.b (neumático con clavos)",
+      por: "Exento — art. 2.2.a (todoterreno profesional POR)",
+    },
+    nl: {
+      studded: "Vrijgesteld — art. 2, lid 2, sub b (spijkerband)",
+      por: "Vrijgesteld — art. 2, lid 2, sub a (professionele terreinband POR)",
+    },
+  }
+  const ex = exemptCopy[lang] ?? exemptCopy.en
   return [
     { label: label.season, value: t.labels.season[tire.season] },
     { label: label.runFlat, value: tire.runFlat ? t.common.yes : t.common.no },
@@ -171,10 +199,7 @@ function categorySpecs(product: Product, { market }: Store, t: Dictionary) {
       ? [
           {
             label: "EU 2020/740",
-            value:
-              tire.eprelExempt.reason === "studded"
-                ? "Exempt — Art. 2(2)(b) (Studded tyre)"
-                : "Exempt — Art. 2(2)(a) (POR Off-Road)",
+            value: tire.eprelExempt.reason === "studded" ? ex.studded : ex.por,
           },
         ]
       : []),

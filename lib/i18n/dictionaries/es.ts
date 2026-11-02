@@ -5,13 +5,14 @@ import type { Dictionary } from "@/lib/i18n/dictionaries/en"
 // Spanish from Spain for the EU store: neumáticos = tyres, llantas = wheels.
 const eu = POLICIES.eu
 const s = eu.shipping
+const cutoff = "14:00 PT (hora del Pacífico de EE. UU.)"
 const [min, max] = deliveryDays("eu")
 const days = `${min}–${max} días laborables`
 const area = "los 27 Estados miembros de la UE"
 const exclusions = "países de fuera de la UE (incluidos Reino Unido, Suiza y Noruega) y regiones ultraperiféricas de la UE como las Islas Canarias"
 const duties = "Enviado desde Estados Unidos. Los precios no incluyen aranceles ni IVA de importación, que pagas al transportista o a la aduana en la entrega. Una vez recibido tu pedido, te reembolsamos el IVA de importación abonado."
 const warranty = "Garantía legal de conformidad de la UE durante 2 años desde la entrega, además de cualquier garantía del fabricante."
-const bulky = "como máximo unos 25 € por neumático o llanta y 15 € por bulto de frenos"
+const bulky = "como máximo unos 90 € por neumático o llanta y 45 € por bulto de frenos para la devolución a Estados Unidos"
 const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "transferencia SEPA" : m)).join(", ")
 
 export const euEs: Dictionary = {
@@ -125,7 +126,7 @@ export const euEs: Dictionary = {
       title: "Las condiciones de la tienda UE",
       lead: "Stock, precios y condiciones propios para cada región.",
       shippingTitle: s.freeShipping ? "Envío gratuito" : "Envío",
-      shippingText: `A ${area}. ${duties}`,
+      shippingText: `A ${area}. Siempre que sea posible enviamos con nuestro propio servicio de entrega y nuestro propio mensajero; si no es posible enviar con nuestra entrega propia, utilizamos otros transportistas (${s.carriers.join(", ")}). ${duties}`,
       returnsTitle: "Derecho de desistimiento",
       returnsValue: `${eu.returns.windowDays} días`,
       returnsText: "Desde la entrega, sin necesidad de justificación. Artículos sin montar.",
@@ -167,6 +168,23 @@ export const euEs: Dictionary = {
     over: "Más de {n}",
     yes: "Sí",
     no: "No",
+    sort: "Ordenar",
+    sortFeatured: "Destacados",
+    sortPriceAsc: "Precio: menor a mayor",
+    sortPriceDesc: "Precio: mayor a menor",
+    sortBrandAsc: "Marca: A → Z",
+    segment: "Segmento",
+    segmentLabels: {
+      premium: "Premium Alto Rendimiento (65 %)",
+      mid: "Gama Media OE+ (35 %)",
+    },
+    constructionLabels: {
+      Cast: "Fundida",
+      "Flow-Formed": "Flow-forming",
+      "Flow-formed": "Flow-forming",
+      Forged: "Forjada",
+    } as Record<string, string>,
+    filterByBrand: "Filtrar por marca",
     finishFamily: {
       black: "Negro",
       silver: "Plata",
@@ -229,11 +247,11 @@ export const euEs: Dictionary = {
   },
     priceNote: "Sin aranceles ni IVA de importación · precio por unidad",
     deliveryTitle: `${s.freeShipping ? "Entrega gratuita" : "Entrega"} en ${days}`,
-    deliveryText: `A ${area}. Los pedidos realizados antes de las ${s.cutoff} salen en ${s.handlingDays[0]}–${s.handlingDays[1]} días laborables.`,
+    deliveryText: `A ${area}. Los pedidos realizados antes de las ${cutoff} salen en ${s.handlingDays[0]}–${s.handlingDays[1]} días laborables. Enviamos con nuestro propio servicio de entrega y nuestro propio mensajero siempre que sea posible, o con otros transportistas si no está disponible.`,
     returnsTitle: `Desistimiento en ${eu.returns.windowDays} días`,
     returnsText: "Sin montar y sin usar.",
     warrantyTitle: "Garantía legal de 2 años",
-    shippingText: `Entrega gratuita a ${area} en ${days} con ${s.carriers.join(", ")}. ${duties}`,
+    shippingText: `Entrega gratuita a ${area} en ${days}. Siempre que sea posible enviamos el pedido con nuestro propio servicio de entrega y nuestro propio mensajero; si no es posible enviarlo con nuestra entrega propia, utilizamos otros transportistas (${s.carriers.join(", ")}). ${duties}`,
     returnsDetail: `Puedes desistir de la compra en un plazo de ${eu.returns.windowDays} días desde la entrega sin indicar el motivo. Los neumáticos y llantas montados o utilizados pueden perder valor, lo que puede reducir el reembolso.`,
     notSold: {
       eyebrow: "No disponible en la tienda UE",
@@ -339,7 +357,7 @@ export const euEs: Dictionary = {
         items: [
           {
             q: "¿Cuánto tarda la entrega?",
-            a: `${days} en total: ${s.handlingDays[0]}–${s.handlingDays[1]} días hasta el envío y ${s.transitDays[0]}–${s.transitDays[1]} días de tránsito con ${s.carriers.join(", ")}. Los pedidos realizados antes de las ${s.cutoff} en día laborable cuentan desde ese día.`,
+            a: `${days} en total: ${s.handlingDays[0]}–${s.handlingDays[1]} días hasta el envío y ${s.transitDays[0]}–${s.transitDays[1]} días de tránsito. Siempre que sea posible enviamos con nuestro propio servicio de entrega y nuestro propio mensajero; si no es posible usar nuestra entrega propia, enviamos con otros transportistas (${s.carriers.join(", ")}). Los pedidos realizados antes de las ${cutoff} en día laborable cuentan desde ese día.`,
           },
           { q: "¿Cuánto cuesta el envío?", a: "El envío es gratuito en todos los pedidos." },
           { q: "¿Tendré que pagar aranceles o IVA de importación?", a: duties },

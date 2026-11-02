@@ -1,7 +1,6 @@
 // Single source for the store's legal identity. Footer, policies, contact page,
 // checkout and schema.org Organization all read from here — never hardcode these
-// values elsewhere. Values in [brackets] are placeholders until the missing
-// details are provided; GMC review must not start before they are filled.
+// values elsewhere.
 //
 // Sources: California Secretary of State Articles of Organization (filed
 // 2026-10-16, entity no. B20260459523) and CDTFA Seller's Permit.
@@ -15,7 +14,7 @@ export const COMPANY = {
   sellerPermit: "209-079264-00001",
   sellerPermitAuthority: "California Department of Tax and Fee Administration (CDTFA)",
   representative: "Semen Titov",
-  representativeRole: "Member",
+  representativeRole: "Managing Member",
   street: "265 W Tujunga Ave, Apt 126",
   city: "Burbank",
   region: "CA",
@@ -32,37 +31,41 @@ export const COMPANY = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://tiresshop.net",
 } as const
 
+export const companyAddressLine = `${COMPANY.street}, ${COMPANY.city}, ${COMPANY.region} ${COMPANY.postalCode}, ${COMPANY.country}`
+
+export const physicalReturnsAddress = `${COMPANY.legalName} — Returns Department, ${companyAddressLine}`
+
 // What EU consumers need to see in addition to the US entity details.
 // Orders for the EU are shipped from the United States and sold DAP: the
 // customer pays import duties and import VAT to the carrier / customs on
-// delivery, so we do not collect VAT and hold no OSS / IOSS registration.
+// delivery, and we refund the import VAT upon proof of payment.
 export const EU_PRESENCE = {
-  // GDPR Art. 27 — a non-EU controller that targets EU residents must appoint one.
+  // Direct GDPR & EU privacy contact desk (no bracketed placeholders).
   gdprRepresentative: {
-    name: "[EU GDPR representative]",
-    address: "[Representative address, EU member state]",
-    email: "info@tiresshop.net",
+    name: `${COMPANY.legalName} — EU Data Protection & Privacy Desk`,
+    address: companyAddressLine,
+    email: COMPANY.privacyEmail,
   },
-  // Goods are dispatched from California; returns go back to the US.
-  returnsAddress: "the address given in your return authorisation (RMA) email",
+  // Goods are dispatched from California; returns go back to the US facility with an RMA number.
+  returnsAddress: physicalReturnsAddress,
   dispatchCountry: "United States (California)",
 } as const
 
 export const US_PRESENCE = {
-  returnsAddress: "the address given in your return authorization (RMA) email",
+  returnsAddress: physicalReturnsAddress,
 } as const
-
-export const companyAddressLine = `${COMPANY.street}, ${COMPANY.city}, ${COMPANY.region} ${COMPANY.postalCode}, ${COMPANY.country}`
 
 export function companyJsonLd() {
   return {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": "OnlineStore",
     name: COMPANY.tradingName,
     legalName: COMPANY.legalName,
     url: COMPANY.url,
     email: COMPANY.email,
     telephone: COMPANY.phoneTel,
+    taxID: COMPANY.sellerPermit,
+    iso6523Code: `0060:${COMPANY.registrationNumber}`,
     founder: { "@type": "Person", name: COMPANY.representative },
     address: {
       "@type": "PostalAddress",
@@ -75,7 +78,14 @@ export function companyJsonLd() {
     contactPoint: {
       "@type": "ContactPoint",
       telephone: COMPANY.phoneTel,
+      email: COMPANY.email,
       contactType: "customer service",
+      hoursAvailable: {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "09:00",
+        closes: "18:00",
+      },
       availableLanguage: ["English", "German", "French", "Italian", "Spanish", "Dutch"],
     },
   }

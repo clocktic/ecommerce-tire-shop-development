@@ -67,11 +67,19 @@ const FITMENT_COPY: Record<
     shopMatching: "Voir les dimensions compatibles",
   },
   es: {
-    fits: "Ajuste exacto para tu",
+    fits: "Compatible exactamente con tu",
     altSize: "Compatible con otra medida de fábrica de tu",
-    doesNotFit: "Medida diferente a la seleccionada para tu",
+    doesNotFit: "Medida distinta a la seleccionada para tu",
     checkTitle: "Verificar compatibilidad con tu vehículo",
     checkHint: "Selecciona tu vehículo o medida de neumático para confirmar.",
+    shopMatching: "Ver medidas compatibles",
+  },
+  "es-419": {
+    fits: "Compatible exactamente con tu",
+    altSize: "Compatible con otra medida de fábrica de tu",
+    doesNotFit: "Medida distinta a la seleccionada para tu",
+    checkTitle: "Verificar compatibilidad con tu vehículo",
+    checkHint: "Selecciona tu vehículo o medida de llanta para confirmar.",
     shopMatching: "Ver medidas compatibles",
   },
   it: {
@@ -102,7 +110,8 @@ export function ProductFitmentBadge({
   const { active } = useGarage()
   const { store, x } = useI18n()
   const g = x.garage
-  const copy = FITMENT_COPY[store.lang] ?? FITMENT_COPY.en
+  const key = store.market === "us" && store.lang === "es" ? "es-419" : store.lang
+  const copy = FITMENT_COPY[key] ?? FITMENT_COPY[store.lang] ?? FITMENT_COPY.en
 
   if (!active) {
     if (compact) return null

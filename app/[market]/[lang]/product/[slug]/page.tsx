@@ -12,6 +12,7 @@ import { productJsonLd } from "@/lib/structured-data"
 import { policyHref } from "@/lib/legal/pages"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
 import { AddToCart } from "@/components/product/add-to-cart"
+import { BrandBadge } from "@/components/product/brand-mark"
 import { EuTyreLabel } from "@/components/product/eu-tyre-label"
 import { EprelReference } from "@/components/product/eprel-reference"
 import { Price } from "@/components/product/price"
@@ -94,7 +95,10 @@ export default async function ProductPage({ params }: { params: Params }) {
 
         <div className="flex flex-col gap-6 md:col-span-7 lg:col-span-7">
           <div className="flex flex-col gap-3">
-            <p className="label-caps text-muted-foreground">{product.brand}</p>
+            <BrandBadge
+              brand={product.brand}
+              href={storePath(store, `/${product.category}?brand=${encodeURIComponent(product.brand)}`)}
+            />
             <h1 className="text-balance font-expanded text-2xl font-extrabold uppercase leading-tight md:text-3xl">
               {product.name}
             </h1>

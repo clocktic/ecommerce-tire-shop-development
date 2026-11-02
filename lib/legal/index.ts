@@ -36,4 +36,4 @@ export function policyLinks(store: Store): { slug: string; title: string }[] {
 }
 
 // Last material revision of the policy texts. Update when the wording changes.
-export const POLICIES_UPDATED = "2026-10-27"
+export const POLICIES_UPDATED = "2026-11-02"

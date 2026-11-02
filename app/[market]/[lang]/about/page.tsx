@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { COMPANY, companyAddressLine } from "@/lib/company"
+import { COMPANY, companyAddressLine, physicalReturnsAddress } from "@/lib/company"
 import { getDictionary, parseStore, storePath } from "@/lib/i18n"
 import { storeAlternates } from "@/lib/seo"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
@@ -23,9 +23,10 @@ export default async function AboutPage({ params }: { params: Params }) {
   const a = t.about
 
   const rows: [string, string][] = [
-    [a.company, COMPANY.legalName],
-    [a.legalForm, a.legalFormValue],
+    [a.company, `${COMPANY.legalName} (${COMPANY.tradingName})`],
+    [a.legalForm, `${a.legalFormValue} · CDTFA Permit ${COMPANY.sellerPermit}`],
     [a.address, companyAddressLine],
+    [t.contact.returnsAddress, physicalReturnsAddress],
     [a.email, COMPANY.email],
     [a.phone, COMPANY.phoneDisplay],
     [a.hours, t.company.hours],
