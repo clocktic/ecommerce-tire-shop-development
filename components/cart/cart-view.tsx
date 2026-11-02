@@ -101,7 +101,15 @@ export function CartView() {
   )
 }
 
-export function SummaryRows({ subtotalCents, onNavigate }: { subtotalCents: number; onNavigate?: () => void }) {
+export function SummaryRows({
+  subtotalCents,
+  onNavigate,
+  isCheckout = false,
+}: {
+  subtotalCents: number
+  onNavigate?: () => void
+  isCheckout?: boolean
+}) {
   const { store, t, x, intl } = useI18n()
   const { market } = store
   const { data: session } = useSession()
@@ -157,7 +165,9 @@ export function SummaryRows({ subtotalCents, onNavigate }: { subtotalCents: numb
         {t.cart.tax && (
           <div className="flex justify-between gap-4">
             <dt className="text-muted-foreground">{t.cart.tax.label}</dt>
-            <dd className="font-mono text-muted-foreground">{t.cart.tax.value}</dd>
+            <dd className="font-mono text-muted-foreground tabular-nums">
+              {isCheckout ? formatPrice(0, market, intl) : t.cart.tax.value}
+            </dd>
           </div>
         )}
         <div className="flex justify-between border-t border-border pt-2 text-base font-semibold">

@@ -75,7 +75,7 @@ export default async function ProductPage({ params }: { params: Params }) {
     .filter((p) => p.slug !== product.slug)
     .slice(0, 4)
     .map((p) => localizeProduct(p, store))
-  const defaultQuantity = product.category === "brakes" ? 1 : 4
+  const defaultQuantity = 1
 
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-6">
@@ -160,6 +160,7 @@ export default async function ProductPage({ params }: { params: Params }) {
             image={product.images[0]}
             priceCents={offer.priceCents}
             defaultQuantity={defaultQuantity}
+            showSetPreset={product.category !== "brakes"}
             disabled={offer.availability === "out_of_stock"}
           />
           {product.sample && <p className="text-sm text-muted-foreground">{t.product.demoNote}</p>}

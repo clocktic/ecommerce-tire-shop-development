@@ -31,13 +31,17 @@ export function productJsonLd(product: Product, store: Store) {
   const { shipping, returns } = POLICIES[market]
   const countries = shipsTo.map((c) => c.code)
 
+  const productUrl = absoluteUrl(storePath(store, `/product/${product.slug}`))
+
   return {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
     description: product.description,
+    url: productUrl,
     image: product.images.map((src) => absoluteUrl(src)),
     sku: product.id,
+    itemCondition: "https://schema.org/NewCondition",
     ...(product.mpn ? { mpn: product.mpn } : {}),
     ...gtinProperty(product.gtin),
     ...(product.category === "tires"
@@ -51,9 +55,10 @@ export function productJsonLd(product: Product, store: Store) {
     brand: { "@type": "Brand", name: product.brand },
     offers: {
       "@type": "Offer",
-      url: absoluteUrl(storePath(store, `/product/${product.slug}`)),
+      url: productUrl,
       price: (offer.priceCents / 100).toFixed(2),
       priceCurrency: currency,
+      ...(offer.saleEndsAt ? { priceValidUntil: offer.saleEndsAt.slice(0, 10) } : {}),
       availability: AVAILABILITY[offer.availability],
       itemCondition: "https://schema.org/NewCondition",
       seller: { "@type": "Organization", name: COMPANY.tradingName },

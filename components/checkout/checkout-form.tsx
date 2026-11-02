@@ -12,6 +12,7 @@ import { useSession } from "@/lib/auth-client"
 import { fmt } from "@/lib/i18n/fmt"
 import { storePath } from "@/lib/i18n/config"
 import { MARKETS, formatPrice } from "@/lib/markets"
+import { COMPANY, companyAddressLine } from "@/lib/company"
 import { policyHref } from "@/lib/legal/pages"
 import { PaymentBadges } from "@/components/ui/payment-badges"
 
@@ -175,7 +176,7 @@ export function CheckoutForm() {
             </li>
           ))}
         </ul>
-        <SummaryRows subtotalCents={subtotalCents} />
+        <SummaryRows subtotalCents={subtotalCents} isCheckout />
         <p className="text-xs text-muted-foreground">{t.estimated}</p>
 
         <label className="flex items-start gap-3 text-sm leading-relaxed">
@@ -212,6 +213,29 @@ export function CheckoutForm() {
             {x.checkout.error}
           </p>
         )}
+
+        <div className="flex flex-col gap-2 border-t border-border pt-4 text-xs text-muted-foreground">
+          <div className="flex flex-wrap gap-x-3 gap-y-1">
+            <Link href={policyHref(store, "shipping")} className="underline underline-offset-4" target="_blank">
+              {dict.product.shipping}
+            </Link>
+            <Link href={policyHref(store, "returns")} className="underline underline-offset-4" target="_blank">
+              {t.returnsLink}
+            </Link>
+            <Link href={policyHref(store, "payments")} className="underline underline-offset-4" target="_blank">
+              {t.payment}
+            </Link>
+            <Link href={policyHref(store, "privacy")} className="underline underline-offset-4" target="_blank">
+              {t.privacyLink}
+            </Link>
+            <Link href={policyHref(store, "terms")} className="underline underline-offset-4" target="_blank">
+              {t.termsLink}
+            </Link>
+          </div>
+          <p className="leading-relaxed">
+            {COMPANY.legalName} · {companyAddressLine} · {COMPANY.phoneDisplay} · {COMPANY.email}
+          </p>
+        </div>
       </aside>
     </form>
   )

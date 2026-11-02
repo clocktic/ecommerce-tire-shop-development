@@ -1,6 +1,6 @@
 import type { Offer } from "@/lib/catalog"
 import { getDictionary, localeMeta, type Store } from "@/lib/i18n"
-import { formatPrice } from "@/lib/markets"
+import { MARKETS, formatPrice } from "@/lib/markets"
 import { cn } from "@/lib/utils"
 
 export function Price({
@@ -21,6 +21,9 @@ export function Price({
     <div className="flex flex-col gap-1">
       <div className="flex flex-wrap items-baseline gap-x-2">
         <span
+          data-testid="product-unit-price"
+          data-price={(offer.priceCents / 100).toFixed(2)}
+          data-currency={MARKETS[store.market].currency}
           className={cn(
             "font-mono font-semibold tabular-nums",
             size === "lg" ? "text-3xl" : "text-base",

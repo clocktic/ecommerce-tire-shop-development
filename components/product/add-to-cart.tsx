@@ -15,10 +15,11 @@ type Props = {
   image: string
   priceCents: number
   defaultQuantity: number
+  showSetPreset?: boolean
   disabled?: boolean
 }
 
-export function AddToCart({ slug, name, image, priceCents, defaultQuantity, disabled }: Props) {
+export function AddToCart({ slug, name, image, priceCents, defaultQuantity, showSetPreset, disabled }: Props) {
   const { add } = useCart()
   const { store, t, intl } = useI18n()
   const [quantity, setQuantity] = useState(defaultQuantity)
@@ -72,6 +73,26 @@ export function AddToCart({ slug, name, image, priceCents, defaultQuantity, disa
             <Plus className="size-4" aria-hidden="true" />
           </button>
         </div>
+        {showSetPreset && (
+          <div className="flex items-stretch border border-border bg-card font-mono text-xs font-semibold">
+            <button
+              type="button"
+              onClick={() => setQuantity(1)}
+              aria-pressed={quantity === 1}
+              className={`px-2.5 transition-colors ${quantity === 1 ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
+            >
+              1×
+            </button>
+            <button
+              type="button"
+              onClick={() => setQuantity(4)}
+              aria-pressed={quantity === 4}
+              className={`border-l border-border px-2.5 transition-colors ${quantity === 4 ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
+            >
+              4×
+            </button>
+          </div>
+        )}
         <Button size="lg" className="flex-1" disabled={disabled} onClick={handleAdd}>
           {added ? <Check aria-hidden="true" /> : null}
           {added ? t.product.added : t.product.add}
