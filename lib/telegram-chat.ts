@@ -3,7 +3,7 @@ import "server-only"
 import { desc, eq } from "drizzle-orm"
 import { db } from "@/lib/db"
 import { chatConversations, chatMessages, type ChatConversationRow } from "@/lib/db/schema"
-import { escapeHtml, getTelegramCredentials } from "@/lib/telegram"
+import { escapeHtml, getTelegramChatBotCredentials } from "@/lib/telegram"
 
 export type TelegramMessage = {
   message_id: number
@@ -40,7 +40,7 @@ export function extractConversationIdFromText(text?: string | null): string | nu
 }
 
 function isAuthorizedAdminChat(chatId: number | string): boolean {
-  const { chatIds } = getTelegramCredentials()
+  const { chatIds } = getTelegramChatBotCredentials()
   const normalized = String(chatId).trim()
   return chatIds.includes(normalized)
 }
@@ -50,7 +50,7 @@ async function sendTelegramReplyToChat(
   html: string,
   extra?: Record<string, unknown>,
 ): Promise<void> {
-  const { token } = getTelegramCredentials()
+  const { token } = getTelegramChatBotCredentials()
   if (!token) return
   try {
     await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
@@ -71,7 +71,7 @@ async function sendTelegramReplyToChat(
 }
 
 async function answerCallbackQuery(callbackQueryId: string, text?: string): Promise<void> {
-  const { token } = getTelegramCredentials()
+  const { token } = getTelegramChatBotCredentials()
   if (!token) return
   try {
     await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
@@ -257,7 +257,7 @@ let syncInFlight: Promise<void> | null = null
  * If a webhook is active on the bot, Telegram returns 409 Conflict and we skip polling cleanly.
  */
 export async function syncTelegramChatUpdates(): Promise<void> {
-  const { token } = getTelegramCredentials()
+  const { token } = getTelegramChatBotCredentials()
   if (!token) return
 
   const now = Date.now()
@@ -307,7 +307,7 @@ export async function syncTelegramChatUpdates(): Promise<void> {
 }
 
 export async function registerTelegramWebhook(webhookUrl: string): Promise<{ ok: boolean; error?: string }> {
-  const { token } = getTelegramCredentials()
+  const { token } = getTelegramChatBotCredentials()
   if (!token) return { ok: false, error: "TELEGRAM_BOT_TOKEN не задан" }
   try {
     const res = await fetch(`https://api.telegram.org/bot${token}/setWebhook`, {

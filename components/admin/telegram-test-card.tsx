@@ -2,16 +2,35 @@
 
 import { useState, useTransition } from "react"
 import { Button } from "@/components/ui/button"
-import { testTelegramBot } from "@/lib/actions/admin"
+import { testTelegramBot, testTelegramChatBot } from "@/lib/actions/admin"
 
-export function TelegramTestCard({ configured }: { configured: boolean }) {
-  const [pending, startTransition] = useTransition()
+export function TelegramTestCard({
+  configured,
+  chatBotConfigured,
+}: {
+  configured: boolean
+  chatBotConfigured: boolean
+}) {
+  const [pendingOrders, startOrdersTransition] = useTransition()
+  const [pendingChat, startChatTransition] = useTransition()
   const [feedback, setFeedback] = useState<{ ok: boolean; text: string } | null>(null)
 
-  function handleTest() {
+  function handleTestOrders() {
     setFeedback(null)
-    startTransition(async () => {
+    startOrdersTransition(async () => {
       const res = await testTelegramBot()
+      if (res.ok) {
+        setFeedback({ ok: true, text: res.message ?? "Отправлено" })
+      } else {
+        setFeedback({ ok: false, text: res.error })
+      }
+    })
+  }
+
+  function handleTestChat() {
+    setFeedback(null)
+    startChatTransition(async () => {
+      const res = await testTelegramChatBot()
       if (res.ok) {
         setFeedback({ ok: true, text: res.message ?? "Отправлено" })
       } else {
@@ -23,20 +42,28 @@ export function TelegramTestCard({ configured }: { configured: boolean }) {
   return (
     <section className="flex flex-col justify-between gap-4 border border-border bg-card p-5 sm:flex-row sm:items-center">
       <div className="flex flex-col gap-1.5">
-        <div className="flex items-center gap-2.5">
-          <span className="label-caps text-muted-foreground">Telegram-уведомления</span>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <span className="label-caps text-muted-foreground">Telegram-боты</span>
           <span
             className={`inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-wider ${
               configured ? "bg-emerald-500/15 text-emerald-500" : "bg-amber-500/15 text-amber-500"
             }`}
           >
             <span className={`size-1.5 rounded-full ${configured ? "bg-emerald-500" : "bg-amber-500"}`} />
-            {configured ? "Подключён" : "Ожидает ключи в Vars"}
+            {configured ? "Заказы: подключён" : "Заказы: нет ключей"}
+          </span>
+          <span
+            className={`inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-wider ${
+              chatBotConfigured ? "bg-emerald-500/15 text-emerald-500" : "bg-amber-500/15 text-amber-500"
+            }`}
+          >
+            <span className={`size-1.5 rounded-full ${chatBotConfigured ? "bg-emerald-500" : "bg-amber-500"}`} />
+            {chatBotConfigured ? "Онлайн-чат: подключён" : "Онлайн-чат: нет ключей"}
           </span>
         </div>
         <p className="text-xs leading-relaxed text-muted-foreground">
-          События: регистрация нового покупателя, создание нового заказа, успешная оплата заказа и двусторонний{" "}
-          <strong className="font-semibold text-foreground">онлайн-чат с покупателями</strong> (отвечайте через Reply или кнопку прямо в Telegram).
+          Бот №1 (<code className="font-mono text-foreground">TELEGRAM_BOT_TOKEN</code>) — регистрации, заказы и оплаты. Бот №2 (
+          <code className="font-mono text-foreground">TELEGRAM_CHAT_BOT_TOKEN</code>) — двусторонний онлайн-чат с покупателями.
         </p>
         {feedback && (
           <p className={`font-mono text-xs ${feedback.ok ? "text-emerald-500" : "text-destructive"}`}>
@@ -44,16 +71,26 @@ export function TelegramTestCard({ configured }: { configured: boolean }) {
           </p>
         )}
       </div>
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        disabled={!configured || pending}
-        onClick={handleTest}
-        className="shrink-0"
-      >
-        {pending ? "Отправка…" : "Проверить бота"}
-      </Button>
+      <div className="flex flex-wrap items-center gap-2 shrink-0">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={!configured || pendingOrders}
+          onClick={handleTestOrders}
+        >
+          {pendingOrders ? "Отправка…" : "Тест бота заказов"}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={!chatBotConfigured || pendingChat}
+          onClick={handleTestChat}
+        >
+          {pendingChat ? "Отправка…" : "Тест бота чата"}
+        </Button>
+      </div>
     </section>
   )
 }

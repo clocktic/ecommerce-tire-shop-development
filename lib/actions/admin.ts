@@ -17,7 +17,7 @@ import { fmt } from "@/lib/i18n/fmt"
 import { localeMeta } from "@/lib/i18n/config"
 import { sendMail } from "@/lib/email"
 import { orderStore } from "@/lib/shipping/events"
-import { sendTelegramNotification } from "@/lib/telegram"
+import { sendTelegramChatBotMessage, sendTelegramNotification } from "@/lib/telegram"
 
 export type ActionResult = { ok: true; message?: string } | { ok: false; error: string }
 
@@ -80,18 +80,32 @@ export async function testTelegramBot(): Promise<ActionResult> {
   const res = await sendTelegramNotification(
     [
       `<b>Тестовое уведомление · TiresShop</b>`,
-      `Бот успешно подключён к магазину <b>tiresshop.net</b>.`,
+      `Бот уведомлений успешно подключён к магазину <b>tiresshop.net</b>.`,
       `Сюда приходят уведомления:`,
       `• о регистрации нового покупателя`,
       `• о создании нового заказа`,
       `• об успешной оплате заказа`,
-      `• сообщения покупателей из онлайн-чата (с возможностью отвечать прямо из Telegram через Reply или кнопку)`,
     ].join("\n"),
   )
   if (!res.ok) {
     return { ok: false, error: res.error ?? "Ошибка отправки в Telegram" }
   }
-  return { ok: true, message: "Тестовое сообщение отправлено в Telegram" }
+  return { ok: true, message: "Тест отправлен в бот заказов/регистраций" }
+}
+
+export async function testTelegramChatBot(): Promise<ActionResult> {
+  await requireAdmin()
+  const res = await sendTelegramChatBotMessage(
+    [
+      `<b>Тестовое сообщение · Онлайн-чат TiresShop</b>`,
+      `Отдельный бот для живого чата с покупателями подключён.`,
+      `Сюда приходят все сообщения из виджета чата на сайте, и вы можете отвечать покупателям прямо отсюда (через Reply или кнопку под сообщением).`,
+    ].join("\n"),
+  )
+  if (!res.ok) {
+    return { ok: false, error: res.error ?? "Ошибка отправки в бот онлайн-чата" }
+  }
+  return { ok: true, message: "Тест отправлен в бот онлайн-чата" }
 }
   return { ok: true, message: "Тестовое сообщение отправлено в Telegram" }
 }
