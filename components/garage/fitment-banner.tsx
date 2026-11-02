@@ -53,22 +53,22 @@ export function FitmentBanner({
 
   if (!active && !urlVehicle) {
     return (
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border border-border bg-muted/25 px-4 py-3 shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)]">
-        <div className="flex items-center gap-3">
-          <span className="flex size-9 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 text-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5">
-            {category === "wheels" ? <VehicleIcon className="size-6 w-8" /> : <TireSizeIcon className="size-6" />}
+      <div className="mt-6 hidden flex-wrap items-center justify-between gap-3 border border-border bg-muted/25 px-4 py-3 shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] md:flex">
+        <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+          <span className="flex size-8 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 text-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] sm:size-9">
+            {category === "wheels" ? <VehicleIcon className="size-5 w-7 sm:size-6 sm:w-8" /> : <TireSizeIcon className="size-5 sm:size-6" />}
           </span>
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold">{g.addFitment}</span>
-            <span className="text-xs text-muted-foreground">{g.vehicleTabHint}</span>
+          <div className="flex min-w-0 flex-col">
+            <span className="truncate text-xs font-semibold sm:text-sm">{g.addFitment}</span>
+            <span className="truncate text-[11px] text-muted-foreground sm:text-xs">{g.vehicleTabHint}</span>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <FitmentModal
             defaultTab="vehicle"
             trigger={
-              <Button type="button" variant="outline" size="sm" className="gap-2">
-                <VehicleIcon className="size-5 w-6 text-primary" />
+              <Button type="button" variant="outline" size="sm" className="h-8 gap-1.5 px-2.5 text-xs sm:h-9 sm:gap-2 sm:px-3">
+                <VehicleIcon className="size-4 w-5 text-primary sm:size-5 sm:w-6" />
                 {g.vehicleTab}
               </Button>
             }
@@ -76,8 +76,8 @@ export function FitmentBanner({
           <FitmentModal
             defaultTab="size"
             trigger={
-              <Button type="button" size="sm" className="gap-2">
-                <TireSizeIcon className="size-4" />
+              <Button type="button" size="sm" className="h-8 gap-1.5 px-2.5 text-xs sm:h-9 sm:gap-2 sm:px-3">
+                <TireSizeIcon className="size-3.5 sm:size-4" />
                 {g.sizeTab}
               </Button>
             }

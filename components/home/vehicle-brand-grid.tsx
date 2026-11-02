@@ -60,14 +60,14 @@ export function VehicleBrandGrid() {
   const copy = BRAND_GRID_COPY[store.lang] ?? BRAND_GRID_COPY.en
 
   return (
-    <section aria-labelledby="vehicle-brands-title" className="mx-auto max-w-7xl px-4 pt-20 md:px-6">
-      <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-        <div className="flex flex-col gap-2">
+    <section aria-labelledby="vehicle-brands-title" className="mx-auto max-w-7xl px-4 pt-12 sm:pt-20 md:px-6">
+      <div className="mb-5 flex flex-col justify-between gap-3 sm:mb-8 sm:flex-row sm:items-end sm:gap-4">
+        <div className="flex flex-col gap-1.5 sm:gap-2">
           <p className="label-caps text-primary">{copy.eyebrow}</p>
-          <h2 id="vehicle-brands-title" className="font-expanded text-2xl font-extrabold uppercase md:text-3xl">
+          <h2 id="vehicle-brands-title" className="font-expanded text-xl font-extrabold uppercase sm:text-2xl md:text-3xl">
             {copy.title}
           </h2>
-          <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">{copy.lead}</p>
+          <p className="max-w-2xl text-xs leading-relaxed text-muted-foreground sm:text-sm">{copy.lead}</p>
         </div>
 
         <FitmentModal
@@ -84,7 +84,7 @@ export function VehicleBrandGrid() {
         />
       </div>
 
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+      <ul className="grid grid-cols-3 gap-2 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-6">
         {FEATURED_VEHICLE_BRANDS.map((brand) => {
           const isSelectedMake = active?.make === brand.make
           return (
@@ -96,31 +96,31 @@ export function VehicleBrandGrid() {
                   <button
                     type="button"
                     className={cn(
-                      "group flex h-full w-full flex-col justify-between gap-3 border bg-card p-4 text-left shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground",
+                      "group flex h-full w-full flex-col justify-between gap-2 border bg-card p-2.5 text-left shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground sm:gap-3 sm:p-4",
                       isSelectedMake ? "border-primary bg-primary/5" : "border-border",
                     )}
                   >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="flex size-10 items-center justify-center border border-border bg-muted/50 p-2 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:border-primary/50">
+                    <div className="flex items-center justify-between gap-1.5 sm:gap-2">
+                      <span className="flex size-8 items-center justify-center border border-border bg-muted/50 p-1.5 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:border-primary/50 sm:size-10 sm:p-2">
                         <img
                           src={getVehicleMakeIconUrl(brand.make) ?? ""}
                           alt={brand.make}
                           width={22}
                           height={22}
                           loading="lazy"
-                          className="size-5.5 object-contain opacity-90 group-hover:opacity-100 dark:invert"
+                          className="size-4.5 object-contain opacity-90 group-hover:opacity-100 dark:invert sm:size-5.5"
                         />
                       </span>
                       <ArrowUpRight
-                        className="size-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary"
+                        className="size-3.5 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary sm:size-4"
                         aria-hidden="true"
                       />
                     </div>
                     <div className="flex flex-col gap-0.5">
-                      <span className="font-expanded text-sm font-extrabold uppercase tracking-wide group-hover:text-primary">
+                      <span className="truncate font-expanded text-xs font-extrabold uppercase tracking-wide group-hover:text-primary sm:text-sm">
                         {brand.make}
                       </span>
-                      <span className="truncate font-mono text-[10px] text-muted-foreground">
+                      <span className="truncate font-mono text-[9px] text-muted-foreground sm:text-[10px]">
                         {brand.modelsHint}
                       </span>
                     </div>
