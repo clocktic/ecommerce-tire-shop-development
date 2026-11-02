@@ -405,7 +405,7 @@ export const euEs: Dictionary = {
   },
   contact: {
     title: "Contacto",
-    lead: "Respondemos a los correos en 1 día laborable. Indica tu número de pedido y, si es una consulta de compatibilidad, tu vehículo y la medida actual de tus neumáticos.",
+    lead: "Nuestro servicio de atención al cliente responde en un plazo de 24 a 48 horas en días laborables. Indica tu número de pedido y, si es una consulta de compatibilidad, tu vehículo y la medida actual de tus neumáticos.",
     email: "Correo electrónico",
     phone: "Teléfono",
     hours: "Horario",

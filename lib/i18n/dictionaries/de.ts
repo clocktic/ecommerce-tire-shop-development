@@ -404,7 +404,7 @@ export const euDe: Dictionary = {
   },
   contact: {
     title: "Kontakt",
-    lead: "Wir antworten auf E-Mails innerhalb von 1 Werktag. Geben Sie Ihre Bestellnummer an und bei Fragen zur Passform Ihr Fahrzeug und Ihre aktuelle Reifengröße.",
+    lead: "Unser Kundenservice antwortet innerhalb von 24 bis 48 Stunden an Werktagen. Geben Sie Ihre Bestellnummer an und bei Fragen zur Passform Ihr Fahrzeug und Ihre aktuelle Reifengröße.",
     email: "E-Mail",
     phone: "Telefon",
     hours: "Erreichbarkeit",

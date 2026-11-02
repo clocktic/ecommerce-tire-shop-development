@@ -139,7 +139,7 @@ export const US_POLICIES_ES: Record<string, PolicyDoc> = {
       {
         heading: "Costos de envío de devolución y cargos por reposición",
         blocks: [
-          "Artículos dañados, defectuosos o incorrectos: Si un artículo llegó dañado en tránsito, presenta un defecto de fábrica al recibirlo o no corresponde al número de parte que pediste, cubrimos el 100% del costo de envío de devolución y te enviamos una guía prepagada sin costo (US$0.00).",
+          "Artículos dañados, defectuosos o incorrectos: Si un artículo llegó dañado en tránsito, presenta un defecto de fábrica al recibirlo o no corresponde al número de parte que pediste, cubrimos la totalidad del costo de envío de devolución y te enviamos una guía prepagada sin costo (US$0.00).",
           r.returnShippingPaidBy === "merchant"
             ? "Artículos no deseados: El envío de devolución es gratis."
             : "Cambio de opinión o medida solicitada por error: Tú cubres el envío de devolución. Si utilizas nuestra guía prepagada con tarifa preferencial, el costo es de aprox. US$25 por llanta o rin y US$15 por paquete de frenos, que se descuenta de tu reembolso. También puedes enviarlo por tu cuenta mediante paquetería terrestre asegurada con número de rastreo tras recibir tu RMA.",
@@ -171,7 +171,7 @@ export const US_POLICIES_ES: Record<string, PolicyDoc> = {
       {
         heading: "Cancelaciones y cambios",
         blocks: [
-          "Cancelación antes del envío: Puedes cancelar tu pedido sin costo alguno en cualquier momento antes de que se despache escribiéndonos o llamándonos; liberaremos la autorización de pago o reembolsaremos el 100% de inmediato.",
+          "Cancelación antes del envío: Puedes cancelar tu pedido sin costo alguno en cualquier momento antes de que se despache escribiéndonos o llamándonos; liberaremos la autorización de pago o reembolsaremos el importe total de inmediato.",
           "Cambios de medida o modelo: Para cambiar un artículo por otra medida o modelo, inicia la devolución del artículo original y realiza un pedido nuevo para que la pieza correcta salga de inmediato sin esperar el tránsito de devolución.",
         ],
       },
@@ -241,7 +241,7 @@ export const US_POLICIES_ES: Record<string, PolicyDoc> = {
       {
         heading: "Cómo se procesa el pago",
         blocks: [
-          "Al hacer clic en «Hacer pedido» en la página de pago, eres redirigido a nuestra pasarela segura con autenticación 3D Secure 2.0 para completar el pago con tarjeta. El pago se autoriza al confirmar la operación y se procesa para el despacho del pedido. Si un pedido se cancela antes del envío o no puede surtirse, la autorización se libera o se reembolsa el 100% de inmediato.",
+          "Al hacer clic en «Hacer pedido» en la página de pago, eres redirigido a nuestra pasarela segura con autenticación 3D Secure 2.0 para completar el pago con tarjeta. El pago se autoriza al confirmar la operación y se procesa para el despacho del pedido. Si un pedido se cancela antes del envío o no puede surtirse, la autorización se libera o se reembolsa el importe total de inmediato.",
         ],
       },
       {
@@ -290,7 +290,7 @@ export const US_POLICIES_ES: Record<string, PolicyDoc> = {
       {
         heading: "Pedidos y formación del contrato",
         blocks: [
-          "Enviar un pedido al finalizar la compra constituye una oferta de compra sujeta a estos Términos. Enviamos un correo automático confirmando la recepción de los datos de tu pedido; la aceptación de tu oferta y el perfeccionamiento del contrato se producen cuando despachamos los productos y enviamos el correo de confirmación de envío. Podemos rechazar o cancelar un pedido antes del envío —por ejemplo, por falta de existencias, imposibilidad de verificar los datos de facturación/envío, sospecha de fraude o error evidente de precio— en cuyo caso te avisaremos de inmediato y reembolsaremos el 100% de cualquier importe cobrado.",
+          "Enviar un pedido al finalizar la compra constituye una oferta de compra sujeta a estos Términos. Enviamos un correo automático confirmando la recepción de los datos de tu pedido; la aceptación de tu oferta y el perfeccionamiento del contrato se producen cuando despachamos los productos y enviamos el correo de confirmación de envío. Podemos rechazar o cancelar un pedido antes del envío —por ejemplo, por falta de existencias, imposibilidad de verificar los datos de facturación/envío, sospecha de fraude o error evidente de precio— en cuyo caso te avisaremos de inmediato y reembolsaremos el importe total cobrado.",
         ],
       },
       {

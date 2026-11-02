@@ -404,7 +404,7 @@ export const euFr: Dictionary = {
   },
   contact: {
     title: "Contact",
-    lead: "Nous répondons aux e-mails sous 1 jour ouvré. Indiquez votre numéro de commande et, pour une question de compatibilité, votre véhicule et la dimension actuelle de vos pneus.",
+    lead: "Notre service client répond sous 24 à 48 heures les jours ouvrés. Indiquez votre numéro de commande et, pour une question de compatibilité, votre véhicule et la dimension actuelle de vos pneus.",
     email: "E-mail",
     phone: "Téléphone",
     hours: "Horaires",

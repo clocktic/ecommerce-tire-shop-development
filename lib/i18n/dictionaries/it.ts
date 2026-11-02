@@ -404,7 +404,7 @@ export const euIt: Dictionary = {
   },
   contact: {
     title: "Contatti",
-    lead: "Rispondiamo alle e-mail entro 1 giorno lavorativo. Indica il numero d’ordine e, per domande sulla compatibilità, il veicolo e la misura attuale dei pneumatici.",
+    lead: "Il nostro servizio clienti risponde entro 24–48 ore nei giorni lavorativi. Indica il numero d’ordine e, per domande sulla compatibilità, il veicolo e la misura attuale dei pneumatici.",
     email: "E-mail",
     phone: "Telefono",
     hours: "Orari",

@@ -397,7 +397,7 @@ export const usEs: Dictionary = {
   },
   contact: {
     title: "Contacto",
-    lead: "Respondemos los correos en 1 día hábil. Incluye tu número de pedido y, si es sobre compatibilidad, tu vehículo y la medida actual de tus llantas.",
+    lead: "Nuestro servicio de atención al cliente responde en un plazo de 24 a 48 horas en días hábiles. Incluye tu número de pedido y, si es sobre compatibilidad, tu vehículo y la medida actual de tus llantas.",
     email: "Correo electrónico",
     phone: "Teléfono",
     hours: "Horario",
