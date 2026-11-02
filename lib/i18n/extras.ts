@@ -299,7 +299,7 @@ const en: Extras = {
     shipSubject: "Order {number}: {status}",
     shipBody: "There is an update for your order {number}: {status}.",
     trackCta: "Track your parcel",
-    signoff: "The Contact Patch team",
+    signoff: "The TiresShop team",
   },
   memberDiscount: {
     topbarTag: "−7% Member Discount on Registration",
@@ -308,7 +308,7 @@ const en: Extras = {
     eyebrow: "Drivers Club · Instant Registration Reward",
     headline: "Register your account & unlock 7% off every order",
     activeHeadline: "Your 7% member discount is active across the store",
-    lead: "Create a free Contact Patch account in 30 seconds. Your 7% privilege applies automatically at checkout to tires, wheels, and brake kits — plus saved vehicle fitment and live shipment tracking.",
+    lead: "Create a free TiresShop account in 30 seconds. Your 7% privilege applies automatically at checkout to tires, wheels, and brake kits — plus saved vehicle fitment and live shipment tracking.",
     activeLead: "Signed in as {email}. A 7% member discount is automatically deducted from every cart and checkout total.",
     perks: [
       "Instant −7% on all tires, wheels & brakes",
@@ -473,7 +473,7 @@ const es419: Extras = {
     shipSubject: "Pedido {number}: {status}",
     shipBody: "Hay una actualización de tu pedido {number}: {status}.",
     trackCta: "Rastrear tu paquete",
-    signoff: "El equipo de Contact Patch",
+    signoff: "El equipo de TiresShop",
   },
   memberDiscount: {
     topbarTag: "−7% de descuento al registrarte",
@@ -482,7 +482,7 @@ const es419: Extras = {
     eyebrow: "Club de Conductores · Beneficio por Registro",
     headline: "Regístrate y obtén un 7% de descuento en cada pedido",
     activeHeadline: "Tu 7% de descuento de miembro está activo en toda la tienda",
-    lead: "Crea tu cuenta gratuita de Contact Patch en segundos. El 7% de descuento se aplica automáticamente al finalizar la compra en llantas, rines y frenos, además de guardar tu garage.",
+    lead: "Crea tu cuenta gratuita de TiresShop en segundos. El 7% de descuento se aplica automáticamente al finalizar la compra en llantas, rines y frenos, además de guardar tu garage.",
     activeLead: "Sesión iniciada como {email}. Se descuenta automáticamente un 7% en tu carrito y al pagar.",
     perks: [
       "−7% inmediato en llantas, rines y frenos",
@@ -694,7 +694,7 @@ const de: Extras = {
     shipSubject: "Bestellung {number}: {status}",
     shipBody: "Neuigkeiten zu Ihrer Bestellung {number}: {status}.",
     trackCta: "Paket verfolgen",
-    signoff: "Ihr Contact-Patch-Team",
+    signoff: "Ihr TiresShop-Team",
   },
   memberDiscount: {
     topbarTag: "−7 % Kundenrabatt bei Registrierung",
@@ -703,7 +703,7 @@ const de: Extras = {
     eyebrow: "Drivers Club · Sofortrabatt für registrierte Käufer",
     headline: "Konto erstellen & dauerhaft 7 % auf jede Bestellung sichern",
     activeHeadline: "Ihr 7 % Mitgliederrabatt ist im gesamten Shop aktiviert",
-    lead: "Erstellen Sie in 30 Sekunden Ihr kostenloses Contact-Patch-Konto. Ihre 7 % Preisvorteil werden im Warenkorb und an der Kasse automatisch auf Reifen, Felgen und Bremsen abgezogen.",
+    lead: "Erstellen Sie in 30 Sekunden Ihr kostenloses TiresShop-Konto. Ihre 7 % Preisvorteil werden im Warenkorb und an der Kasse automatisch auf Reifen, Felgen und Bremsen abgezogen.",
     activeLead: "Angemeldet als {email}. 7 % Mitgliederrabatt werden automatisch im Warenkorb und beim Checkout abgezogen.",
     perks: [
       "Sofort −7 % auf alle Reifen, Felgen & Bremsen",
@@ -868,7 +868,7 @@ const fr: Extras = {
     shipSubject: "Commande {number} : {status}",
     shipBody: "Du nouveau pour votre commande {number} : {status}.",
     trackCta: "Suivre votre colis",
-    signoff: "L'équipe Contact Patch",
+    signoff: "L'équipe TiresShop",
   },
   memberDiscount: {
     topbarTag: "−7 % de remise membre dès l'inscription",
@@ -1042,7 +1042,7 @@ const it: Extras = {
     shipSubject: "Ordine {number}: {status}",
     shipBody: "Aggiornamento sul tuo ordine {number}: {status}.",
     trackCta: "Traccia il pacco",
-    signoff: "Il team Contact Patch",
+    signoff: "Il team TiresShop",
   },
   memberDiscount: {
     topbarTag: "−7% di sconto clienti con registrazione",
@@ -1051,7 +1051,7 @@ const it: Extras = {
     eyebrow: "Drivers Club · Vantaggio Immediato alla Registrazione",
     headline: "Registrati ora e ottieni il 7% di sconto su ogni ordine",
     activeHeadline: "Il tuo sconto membro del 7% è attivo in tutto il negozio",
-    lead: "Crea un account gratuito Contact Patch in 30 secondi. Il tuo sconto del 7% viene applicato automaticamente nel carrello e al checkout su pneumatici, cerchi e freni.",
+    lead: "Crea un account gratuito TiresShop in 30 secondi. Il tuo sconto del 7% viene applicato automaticamente nel carrello e al checkout su pneumatici, cerchi e freni.",
     activeLead: "Accesso effettuato come {email}. Lo sconto membro del 7% viene detratto automaticamente da ogni ordine.",
     perks: [
       "−7% immediato su pneumatici, cerchi e freni",
@@ -1216,7 +1216,7 @@ const nl: Extras = {
     shipSubject: "Bestelling {number}: {status}",
     shipBody: "Er is nieuws over je bestelling {number}: {status}.",
     trackCta: "Volg je pakket",
-    signoff: "Het Contact Patch-team",
+    signoff: "Het TiresShop-team",
   },
   memberDiscount: {
     topbarTag: "−7% ledenkorting bij registratie",
@@ -1225,7 +1225,7 @@ const nl: Extras = {
     eyebrow: "Drivers Club · Direct Voordeel bij Registratie",
     headline: "Maak een account aan en ontvang 7% korting op elke bestelling",
     activeHeadline: "Je 7% ledenkorting is actief in de hele winkel",
-    lead: "Maak binnen 30 seconden een gratis Contact Patch-account aan. Je 7% korting wordt automatisch verrekend in je winkelwagen en bij het afrekenen op alle banden, velgen en remmen.",
+    lead: "Maak binnen 30 seconden een gratis TiresShop-account aan. Je 7% korting wordt automatisch verrekend in je winkelwagen en bij het afrekenen op alle banden, velgen en remmen.",
     activeLead: "Ingelogd als {email}. Er wordt automatisch 7% ledenkorting afgetrokken van elke bestelling.",
     perks: [
       "Direct −7% op alle banden, velgen & remmen",

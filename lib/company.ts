@@ -7,7 +7,7 @@
 // 2026-10-16, entity no. B20260459523) and CDTFA Seller's Permit.
 
 export const COMPANY = {
-  tradingName: "Contact Patch",
+  tradingName: "TiresShop",
   legalName: "Semen Ti Trading LLC",
   entityType: "Limited liability company",
   stateOfFormation: "California",
@@ -26,11 +26,10 @@ export const COMPANY = {
   mailingAddress: "6550 Yucca Street, Apt 205, Los Angeles, CA 90028, United States",
   phoneDisplay: "+1 (747) 287-6583",
   phoneTel: "+17472876583",
-  // Replace both once the domain is purchased.
-  email: "support@[domain]",
-  privacyEmail: "privacy@[domain]",
+  email: "info@tiresshop.net",
+  privacyEmail: "info@tiresshop.net",
   hours: "Mon–Fri, 9:00 AM – 6:00 PM PT",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.example.com",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://tiresshop.net",
 } as const
 
 // What EU consumers need to see in addition to the US entity details.
@@ -42,7 +41,7 @@ export const EU_PRESENCE = {
   gdprRepresentative: {
     name: "[EU GDPR representative]",
     address: "[Representative address, EU member state]",
-    email: "eu-rep@[domain]",
+    email: "info@tiresshop.net",
   },
   // Goods are dispatched from California; returns go back to the US.
   returnsAddress: "the address given in your return authorisation (RMA) email",

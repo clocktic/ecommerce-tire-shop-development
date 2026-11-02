@@ -49,7 +49,13 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     description: t.meta.description,
     alternates: storeAlternates(store, "/"),
     openGraph: { siteName: COMPANY.tradingName, locale: localeMeta(store).ogLocale, type: "website" },
-    icons: { icon: "/icon.svg" },
+    icons: {
+      icon: [
+        { url: "/icon.svg", type: "image/svg+xml" },
+        { url: "/icon-dark-32x32.png", sizes: "32x32", type: "image/png" },
+      ],
+      apple: "/apple-icon.png",
+    },
   }
 }
 

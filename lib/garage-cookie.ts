@@ -1,7 +1,7 @@
 // Shared between client (reading/writing the cookie) and server (SSR read in
 // the layout) — no "server-only" or "use client" pragma on this file.
 
-export const GARAGE_COOKIE = "cp_garage"
+export const GARAGE_COOKIE = "ts_garage"
 
 export type GarageSelection = {
   kind: "vehicle" | "size"

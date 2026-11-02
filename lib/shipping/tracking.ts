@@ -2,7 +2,7 @@ import type { ContentLang } from "@/lib/i18n/config"
 import type { Market } from "@/lib/markets"
 
 // Own courier first; when it cannot close a route the parcel goes to a partner.
-export const OWN_CARRIER = "Contact Patch Courier"
+export const OWN_CARRIER = "TiresShop Courier"
 export const PARTNER_CARRIERS: Record<Market, readonly string[]> = {
   us: ["UPS", "FedEx"],
   eu: ["DHL", "DPD"],

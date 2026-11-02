@@ -349,11 +349,13 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
         blocks: [
           {
             rows: [
-              ["cp_market", "Remembers the store region you chose — 12 months"],
-              ["cp_geo", "Store region suggested from your country — 12 months"],
-              ["cp_lang", "Remembers the language you chose — 12 months"],
-              ["cp-cart-eu-v1 (local storage)", "Keeps the contents of your cart — until cleared"],
-              ["cp-consent-v1 (local storage)", `Stores your cookie choice — ${Math.round(CONSENT_MAX_AGE_DAYS / 30.4)} months`],
+              ["ts_market", "Remembers the store region you chose — 12 months"],
+              ["ts_geo", "Store region suggested from your country — 12 months"],
+              ["ts_lang", "Remembers the language you chose — 12 months"],
+              ["ts_garage", "Remembers your selected vehicle or tire size — 12 months"],
+              ["ts-theme", "Remembers your light or dark theme preference — 12 months"],
+              ["ts-cart-eu-v1 (local storage)", "Keeps the contents of your cart — until cleared"],
+              ["ts-consent-v1 (local storage)", `Stores your cookie choice — ${Math.round(CONSENT_MAX_AGE_DAYS / 30.4)} months`],
             ],
           },
         ],

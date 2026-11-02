@@ -352,11 +352,13 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
         blocks: [
           {
             rows: [
-              ["cp_market", "Onthoudt de gekozen winkelregio — 12 maanden"],
-              ["cp_geo", "Winkelregio voorgesteld op basis van uw land — 12 maanden"],
-              ["cp_lang", "Onthoudt de gekozen taal — 12 maanden"],
-              ["cp-cart-eu-v1 (lokale opslag)", "Bewaart de inhoud van uw winkelwagen — tot deze wordt gewist"],
-              ["cp-consent-v1 (lokale opslag)", `Slaat uw cookiekeuze op — ${Math.round(CONSENT_MAX_AGE_DAYS / 30.4)} maanden`],
+              ["ts_market", "Onthoudt de gekozen winkelregio — 12 maanden"],
+              ["ts_geo", "Winkelregio voorgesteld op basis van uw land — 12 maanden"],
+              ["ts_lang", "Onthoudt de gekozen taal — 12 maanden"],
+              ["ts_garage", "Onthoudt uw gekozen voertuig of bandenmaat — 12 maanden"],
+              ["ts-theme", "Onthoudt uw voorkeur voor licht of donker thema — 12 maanden"],
+              ["ts-cart-eu-v1 (lokale opslag)", "Bewaart de inhoud van uw winkelwagen — tot deze wordt gewist"],
+              ["ts-consent-v1 (lokale opslag)", `Slaat uw cookiekeuze op — ${Math.round(CONSENT_MAX_AGE_DAYS / 30.4)} maanden`],
             ],
           },
         ],
