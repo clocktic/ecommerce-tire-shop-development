@@ -1,4 +1,5 @@
 import "server-only"
+import fs from "node:fs"
 
 import { COMPANY } from "@/lib/company"
 import { formatPrice, type Market } from "@/lib/markets"
@@ -12,8 +13,37 @@ function escapeHtml(value: string): string {
     .replace(/>/g, "&gt;")
 }
 
+function readEnvFallback(key: string): string | undefined {
+  const fromProc = process.env[key]?.trim()
+  if (fromProc) return fromProc
+  for (const envPath of ["/vercel/share/.env.project", "/vercel/share/v0-project/.env.development.local"]) {
+    try {
+      if (!fs.existsSync(envPath)) continue
+      const content = fs.readFileSync(envPath, "utf8")
+      for (const line of content.split("\n")) {
+        const trimmed = line.trim()
+        if (trimmed.startsWith(`${key}=`)) {
+          const val = trimmed.slice(key.length + 1).trim().replace(/^["']|["']$/g, "")
+          if (val) return val
+        }
+      }
+    } catch {
+      // ignore fs read errors in serverless runtime
+    }
+  }
+  return undefined
+}
+
+function getTelegramCredentials(): { token?: string; rawChatIds?: string } {
+  return {
+    token: readEnvFallback("TELEGRAM_BOT_TOKEN"),
+    rawChatIds: readEnvFallback("TELEGRAM_CHAT_ID"),
+  }
+}
+
 export function isTelegramConfigured(): boolean {
-  return Boolean(process.env.TELEGRAM_BOT_TOKEN?.trim() && process.env.TELEGRAM_CHAT_ID?.trim())
+  const { token, rawChatIds } = getTelegramCredentials()
+  return Boolean(token && rawChatIds)
 }
 
 /**
@@ -22,8 +52,7 @@ export function isTelegramConfigured(): boolean {
  * Never throws so customer-facing flows (registration, checkout, webhooks) cannot fail because of Telegram.
  */
 export async function sendTelegramNotification(html: string): Promise<TelegramResult> {
-  const token = process.env.TELEGRAM_BOT_TOKEN?.trim()
-  const rawChatIds = process.env.TELEGRAM_CHAT_ID?.trim()
+  const { token, rawChatIds } = getTelegramCredentials()
 
   if (!token || !rawChatIds) {
     console.info("[telegram] skipped (TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID not configured)")
