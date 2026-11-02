@@ -32,13 +32,13 @@ export async function CategoryTiles({ store }: { store: Store }) {
                 href={storePath(store, `/${c.slug}`)}
                 className="group grid h-full grid-cols-[7.25rem_1fr] border border-border bg-card shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-1 hover:border-foreground sm:flex sm:flex-col"
               >
-                <div className="relative min-h-28 overflow-hidden border-r border-border bg-white sm:h-44 sm:w-full sm:border-b sm:border-r-0">
+                <div className="relative min-h-28 overflow-hidden border-r border-border bg-photo sm:aspect-[6/5] sm:w-full sm:border-b sm:border-r-0">
                   <Image
                     src={c.image || "/placeholder.svg"}
                     alt=""
                     fill
                     sizes="(min-width: 640px) 33vw, 120px"
-                    className="object-contain object-center p-3 transition-transform duration-500 group-hover:scale-[1.04] sm:p-5"
+                    className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.04]"
                   />
                 </div>
                 <div className="flex flex-1 items-start justify-between gap-3 p-3.5 sm:gap-4 sm:p-5">
