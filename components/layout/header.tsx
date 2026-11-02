@@ -28,18 +28,12 @@ export function Header({ store }: { store: Store }) {
       <div className="bg-secondary text-secondary-foreground">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-1 sm:px-4 sm:py-1.5 md:px-6">
           <p className="min-w-0 truncate font-mono text-[10px] uppercase leading-relaxed tracking-[0.12em] text-secondary-foreground/80 sm:text-xs sm:tracking-[0.18em]">
-            <Link
-              href={storePath(store, "/account?mode=sign-up")}
-              className="mr-2 inline-flex items-center bg-primary px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-primary-foreground transition-opacity hover:opacity-90"
-            >
-              {x.memberDiscount.topbarTag}
-            </Link>
             <span className="text-secondary-foreground">{t.topbar.shipsTo}</span>
-            <span className="hidden min-[520px]:inline">
+            <span className="hidden min-[420px]:inline">
               <span aria-hidden="true"> · </span>
               {t.topbar.shipping}
             </span>
-            <span className="hidden xl:inline">
+            <span className="hidden lg:inline">
               <span aria-hidden="true"> · </span>
               {t.policy.days}
               <span aria-hidden="true"> · </span>

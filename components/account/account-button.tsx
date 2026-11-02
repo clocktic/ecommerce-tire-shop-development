@@ -22,7 +22,7 @@ export function AccountButton() {
       {data?.user ? (
         <span aria-hidden="true" className="absolute right-1.5 top-1.5 size-2 rounded-full bg-primary" />
       ) : (
-        <span className="hidden bg-primary px-1 py-0.5 font-mono text-[9px] font-bold leading-none tracking-wider text-primary-foreground sm:inline-block">
+        <span className="bg-primary px-1 py-0.5 font-mono text-[9px] font-bold leading-none tracking-wider text-primary-foreground">
           −7%
         </span>
       )}
