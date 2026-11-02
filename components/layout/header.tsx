@@ -51,24 +51,9 @@ export function Header({ store }: { store: Store }) {
         </div>
       </div>
 
-      <div className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-        <div className="@container/header mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:px-4 sm:py-3 md:px-6">
+      <div className="@container/header border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-3 py-2.5 sm:px-4 sm:py-3 md:px-6">
           <Logo store={store} label={t.common.logoHome} />
-
-          <nav aria-label={t.common.mainNav} className="hidden min-w-0 @min-[1100px]/header:block">
-            <ul className="flex items-center">
-              {nav.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="block whitespace-nowrap px-2 py-2 text-sm font-semibold uppercase tracking-wide transition-colors hover:text-primary xl:px-3"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
 
           <div className="flex shrink-0 items-center gap-0.5">
             <SearchModal />
@@ -77,6 +62,24 @@ export function Header({ store }: { store: Store }) {
             <MobileNavSheet nav={nav} openLabel={t.common.openMenu} navLabel={t.common.mobileNav} />
           </div>
         </div>
+
+        <nav
+          aria-label={t.common.mainNav}
+          className="hidden border-t border-border/60 @min-[1100px]/header:block"
+        >
+          <ul className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-1 px-3 sm:px-4 md:px-6">
+            {nav.map((item) => (
+              <li key={item.href} className="first:-ml-2">
+                <Link
+                  href={item.href}
+                  className="block whitespace-nowrap px-2 py-2 text-[13px] font-semibold uppercase tracking-wide transition-colors hover:text-primary xl:px-3"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
 
       <FitmentBar />
