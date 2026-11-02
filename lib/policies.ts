@@ -24,10 +24,11 @@ export type ReturnPolicy = {
   // Days to issue the refund once the return is received (EU legal max is 14 from withdrawal notice).
   refundDays: number
   returnShippingPaidBy: "customer" | "merchant"
+  // Standard per-item return label fee in cents (used in Schema.org MerchantReturnPolicy).
+  returnShippingFeeCents: number
   restockingFeePercent: number
   method: string
   // EU Annex I(A): goods that cannot normally be returned by post need a cost estimate.
-  // Confirm against the carrier contract before launch.
   bulkyReturnCostEstimate: string
 }
 
@@ -53,22 +54,23 @@ export const POLICIES: Record<Market, MarketPolicy> = {
       cutoff: "2:00 PM PT",
       carriers: ["UPS", "FedEx", "USPS"],
       area: "the 48 contiguous United States",
-      exclusions: "Alaska, Hawaii, US territories and APO/FPO/DPO addresses",
-      duties: "Ships from a US warehouse — no import fees.",
+      exclusions: "Alaska, Hawaii, Puerto Rico, US territories, APO/FPO/DPO military addresses and PO Boxes",
+      duties: "Ships from our US warehouse network — no import duties or customs fees.",
     },
     returns: {
       windowDays: 30,
       refundDays: 5,
       returnShippingPaidBy: "customer",
+      returnShippingFeeCents: 2500,
       restockingFeePercent: 0,
-      method: "Prepaid label emailed after approval, or drop-off at the carrier",
+      method: "Prepaid return label emailed after RMA approval, or insured drop-off with your preferred carrier",
       bulkyReturnCostEstimate: "about $25 per tire or wheel and $15 per brake parcel",
     },
     warranty: {
       summary: "Manufacturer warranty applies; terms vary by brand and are linked on each product.",
       months: null,
     },
-    paymentMethods: ["Visa", "Mastercard", "American Express", "Discover", "PayPal"],
+    paymentMethods: ["Visa", "Mastercard", "American Express", "Discover"],
   },
   eu: {
     shipping: {
@@ -79,16 +81,17 @@ export const POLICIES: Record<Market, MarketPolicy> = {
       cutoff: "2:00 PM Pacific Time",
       carriers: ["DHL Express", "UPS", "FedEx"],
       area: "all 27 EU member states",
-      exclusions: "Non-EU countries (incl. UK, Switzerland, Norway) and EU outermost regions such as the Canary Islands",
+      exclusions: "Non-EU countries (incl. UK, Switzerland, Norway), PO Boxes / Packstations, and EU outermost or non-VAT territories such as the Canary Islands, Ceuta, Melilla and French overseas territories",
       duties:
-        "Ships from the United States. Prices exclude import duties and import VAT — you pay them to the carrier or customs on delivery. After you receive your order, we refund the import VAT you paid.",
+        "Ships from the United States (DAP). Prices exclude import duties and import VAT — you pay them to the carrier or customs on delivery. After you receive your order, we refund the import VAT you paid upon receipt of the customs/carrier invoice.",
     },
     returns: {
       windowDays: 14,
       refundDays: 14,
       returnShippingPaidBy: "customer",
+      returnShippingFeeCents: 9000,
       restockingFeePercent: 0,
-      method: "Withdrawal by email or the model withdrawal form; we issue a return authorisation (RMA) and a return label on request",
+      method: "Withdrawal by email or the model withdrawal form; we issue a return authorisation (RMA) and a prepaid return label on request",
       bulkyReturnCostEstimate:
         "a maximum of approximately €90 per tyre or wheel and €45 per brake parcel for the return shipment to the United States",
     },
@@ -96,7 +99,7 @@ export const POLICIES: Record<Market, MarketPolicy> = {
       summary: "Statutory EU legal guarantee of conformity for 2 years from delivery, in addition to any manufacturer warranty.",
       months: 24,
     },
-    paymentMethods: ["Visa", "Mastercard", "PayPal", "SEPA bank transfer"],
+    paymentMethods: ["Visa", "Mastercard", "American Express", "SEPA bank transfer"],
   },
 }
 

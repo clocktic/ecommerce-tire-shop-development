@@ -10,7 +10,7 @@ const area = "les 27 États membres de l’UE"
 const exclusions = "les pays hors UE (dont le Royaume-Uni, la Suisse et la Norvège) et les régions ultrapériphériques de l’UE comme les îles Canaries"
 const duties = "Expédié depuis les États-Unis. Les prix excluent les droits de douane et la TVA à l’importation, que vous réglez au transporteur ou à la douane à la livraison. Une fois votre commande reçue, nous vous remboursons la TVA à l’importation payée."
 const warranty = "Garantie légale de conformité de l’UE pendant 2 ans à compter de la livraison, en plus de toute garantie du fabricant."
-const bulky = "au maximum environ 25 € par pneu ou jante et 15 € par colis de freinage"
+const bulky = "au maximum environ 90 € par pneu ou jante et 45 € par colis de freinage pour le renvoi vers les États-Unis"
 const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "virement SEPA" : m)).join(", ")
 
 export const euFr: Dictionary = {

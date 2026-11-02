@@ -13,7 +13,7 @@ const r = p.returns
 const t = euNl.policy
 const contactLine = `${COMPANY.email} · ${COMPANY.phoneDisplay} (${euNl.company.hours})`
 const seller = `${COMPANY.legalName}, ${companyAddressLine}, e-mail ${COMPANY.email}, telefoon ${COMPANY.phoneDisplay}`
-const bulky = "maximaal ongeveer € 25 per band of velg en € 15 per remmenpakket"
+const bulky = "maximaal ongeveer € 90 per band of velg en € 45 per remmenpakket voor de retourzending naar de Verenigde Staten"
 const payments = p.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "SEPA-overschrijving" : m))
 
 const SNIP = EU_SNIPPETS.nl
@@ -90,10 +90,10 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
         blocks: [
           `Als u de overeenkomst herroept, ontvangt u alle betalingen die u tot op dat moment heeft gedaan, inclusief leveringskosten (met uitzondering van eventuele extra kosten ten gevolge van uw keuze voor een andere wijze van levering dan de door ons geboden goedkoopste standaardlevering), onverwijld en in ieder geval niet later dan ${r.refundDays} dagen nadat wij op de hoogte zijn gesteld van uw beslissing de overeenkomst te herroepen, van ons terug. Wij betalen u terug met hetzelfde betaalmiddel als waarmee u de oorspronkelijke transactie heeft verricht, tenzij u uitdrukkelijk anderszins heeft ingestemd; in ieder geval zult u voor zulke terugbetaling geen kosten hoeven te betalen.`,
           "Wij mogen wachten met terugbetalen tot wij de goederen hebben teruggekregen, of tot u heeft aangetoond dat u de goederen heeft teruggezonden, al naargelang welk tijdstip eerst valt.",
-          `U dient de goederen onverwijld, en in ieder geval niet later dan ${r.windowDays} dagen na de dag waarop u ons uw herroeping heeft meegedeeld, terug te zenden naar het adres dat wij u met het retourautorisatienummer (RMA) per e-mail doorgeven. U bent op tijd als u de goederen terugzendt voordat de termijn van ${r.windowDays} dagen is verstreken.`,
+          `U dient de goederen onverwijld, en in ieder geval niet later dan ${r.windowDays} dagen na de dag waarop u ons uw herroeping heeft meegedeeld, terug te zenden naar ons retouradres (${EU_PRESENCE.returnsAddress}, onder vermelding van het retourautorisatienummer RMA uit onze e-mail). U bent op tijd als u de goederen terugzendt voordat de termijn van ${r.windowDays} dagen is verstreken.`,
           r.returnShippingPaidBy === "merchant"
             ? "Wij dragen de kosten van het terugzenden van de goederen."
-            : `U draagt de rechtstreekse kosten van het terugzenden van de goederen. Banden, velgen en remmensets kunnen vanwege hun aard normaal gesproken niet per post worden teruggezonden; deze kosten worden geschat op ${bulky}. Op verzoek sturen wij u een vooraf betaald retourlabel voor dat bedrag.`,
+            : `U draagt de rechtstreekse kosten van het terugzenden van de goederen. Banden, velgen en remmensets kunnen vanwege hun aard normaal gesproken niet per post worden teruggezonden; deze kosten worden geschat op ${bulky}. Op verzoek sturen wij u een vooraf betaald retourlabel voor dat bedrag. Wij rekenen nooit herbevoorradingskosten (€ 0,00).`,
           "U bent alleen aansprakelijk voor de waardevermindering van de goederen die het gevolg is van het gebruik van de goederen dat verder gaat dan nodig is om de aard, de kenmerken en de werking van de goederen vast te stellen.",
         ],
       },
@@ -218,7 +218,7 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
       {
         heading: "Wanneer wordt er afgeschreven",
         blocks: [
-          "Kaart- en PayPal-betalingen worden bij het bestellen geautoriseerd en bij verzending afgeschreven. Bij een SEPA-overschrijving wordt de bestelling verzonden zodra de betaling is ontvangen; de bankgegevens staan in de orderbevestiging.",
+          "Kaartbetalingen (Visa, Mastercard, American Express) worden bij het bestellen geautoriseerd en verwerkt via onze beveiligde 3D Secure 2.0-betaalpagina. Wordt een bestelling vóór verzending geannuleerd, dan wordt het bedrag direct vrijgegeven of volledig terugbetaald. Bij een SEPA-overschrijving wordt de bestelling verzonden zodra de betaling is ontvangen; de bankgegevens staan in de orderbevestiging.",
         ],
       },
       {
@@ -243,7 +243,13 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
           "De taal van de overeenkomst is de taal van de winkelversie waarin u bestelt (Nederlands, Engels, Duits, Frans, Italiaans of Spaans). Wij bewaren de tekst van de overeenkomst en sturen u de bestelgegevens en deze voorwaarden per e-mail.",
         ],
       },
-      { heading: "Prijzen", blocks: [SNIP.pricesText] },
+      {
+        heading: "Prijzen en Member Club (7% korting)",
+        blocks: [
+          SNIP.pricesText,
+          "Member Club (7% korting voor geregistreerde leden): Klanten die een gratis account aanmaken en inloggen vóór het afrekenen, ontvangen automatisch 7% korting op het subtotaal van de artikelen. Bij herroeping of retour wordt het daadwerkelijk betaalde nettobedrag terugbetaald.",
+        ],
+      },
       { heading: "Levering", blocks: ["De leveringsvoorwaarden staan beschreven in Leveringsvoorwaarden."] },
       { heading: "Herroepingsrecht", blocks: [`Consumenten hebben een herroepingsrecht van ${r.windowDays} dagen, beschreven in Herroepingsrecht en retourneren.`] },
       { heading: "Wettelijke garantie", blocks: ["De wettelijke conformiteitsgarantie is van toepassing, beschreven in Wettelijke en commerciële garantie."] },
@@ -394,21 +400,23 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
               ["Rechtsvorm", `Limited liability company naar het recht van ${COMPANY.stateOfFormation}, VS`],
               ["Register", `${COMPANY.stateOfFormation} Secretary of State, nr. ${COMPANY.registrationNumber}`],
               ["Adres", companyAddressLine],
+              ["Adres voor juridische kennisgevingen", COMPANY.mailingAddress],
+              ["Fysiek retouradres", EU_PRESENCE.returnsAddress],
               ["Vertegenwoordigd door", `${COMPANY.representative}, ${COMPANY.representativeRole}`],
               ["E-mail", COMPANY.email],
-              ["Telefoon", COMPANY.phoneDisplay],
-              ["Seller's permit (CDTFA)", COMPANY.sellerPermit],
+              ["Telefoon", `${COMPANY.phoneDisplay} (${COMPANY.hours})`],
+              ["Seller's permit (CDTFA)", `${COMPANY.sellerPermit} (${COMPANY.sellerPermitAuthority})`],
             ],
           },
         ],
       },
       {
-        heading: "EU-vertegenwoordiger",
-        blocks: [`${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address}`],
+        heading: "Contactpunt gegevensbescherming in de EU (AVG)",
+        blocks: [`${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address} · E-mail: ${EU_PRESENCE.gdprRepresentative.email}`],
       },
       {
         heading: "Verantwoordelijk voor de inhoud",
-        blocks: [`${COMPANY.representative}, adres zoals hierboven.`],
+        blocks: [`${COMPANY.representative}, ${companyAddressLine}.`],
       },
     ],
   },

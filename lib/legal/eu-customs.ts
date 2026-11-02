@@ -31,7 +31,7 @@ const EN: Snippets = {
   linkLabel: "Duties, Import VAT & Customs",
   shippingDescription: `Free delivery to ${s.area} from the United States. Import duties and VAT are paid on delivery.`,
   shippingIntro: `This policy applies to orders placed in the ${COMPANY.tradingName} EU store (prices in EUR, excluding import duties and import VAT).`,
-  paymentsDescription: "Pay by card, PayPal or SEPA transfer. Prices in EUR, excluding import duties and import VAT.",
+  paymentsDescription: "Pay by Visa, Mastercard, American Express or SEPA bank transfer. Prices in EUR, excluding import duties and import VAT.",
   paymentsIntro: "All prices in the EU store are in euro (EUR). They do not include import VAT or customs duty, which you pay on delivery.",
   paymentsVat: {
     heading: "Import VAT and duties",
@@ -61,7 +61,7 @@ const DE: Snippets = {
   linkLabel: "Zölle, Einfuhrumsatzsteuer & Zollabwicklung",
   shippingDescription: `Kostenlose Lieferung in ${s.area} aus den USA. Einfuhrzölle und Einfuhrumsatzsteuer zahlen Sie bei Lieferung.`,
   shippingIntro: `Diese Bedingungen gelten für Bestellungen im EU-Shop von ${COMPANY.tradingName} (Preise in EUR, ohne Einfuhrzölle und Einfuhrumsatzsteuer).`,
-  paymentsDescription: "Zahlung per Karte, PayPal oder SEPA-Überweisung. Preise in EUR, ohne Einfuhrzölle und Einfuhrumsatzsteuer.",
+  paymentsDescription: "Zahlung per Visa, Mastercard, American Express oder SEPA-Überweisung. Preise in EUR, ohne Einfuhrzölle und Einfuhrumsatzsteuer.",
   paymentsIntro: "Alle Preise im EU-Shop sind in Euro (EUR) angegeben. Sie enthalten weder Einfuhrumsatzsteuer noch Zoll; diese zahlen Sie bei Lieferung.",
   paymentsVat: {
     heading: "Einfuhrumsatzsteuer und Zölle",
@@ -91,7 +91,7 @@ const FR: Snippets = {
   linkLabel: "Droits de douane, TVA à l’importation et dédouanement",
   shippingDescription: `Livraison gratuite dans ${s.area} depuis les États-Unis. Droits de douane et TVA à l’importation payés à la livraison.`,
   shippingIntro: `Ces conditions s’appliquent aux commandes passées sur la boutique UE de ${COMPANY.tradingName} (prix en EUR, hors droits de douane et TVA à l’importation).`,
-  paymentsDescription: "Paiement par carte, PayPal ou virement SEPA. Prix en EUR, hors droits de douane et TVA à l’importation.",
+  paymentsDescription: "Paiement par Visa, Mastercard, American Express ou virement SEPA. Prix en EUR, hors droits de douane et TVA à l’importation.",
   paymentsIntro: "Tous les prix de la boutique UE sont en euros (EUR). Ils n’incluent ni la TVA à l’importation ni les droits de douane, que vous réglez à la livraison.",
   paymentsVat: {
     heading: "TVA à l’importation et droits de douane",
@@ -121,7 +121,7 @@ const IT: Snippets = {
   linkLabel: "Dazi, IVA all’importazione e sdoganamento",
   shippingDescription: `Consegna gratuita in ${s.area} dagli Stati Uniti. Dazi e IVA all’importazione si pagano alla consegna.`,
   shippingIntro: `Queste condizioni si applicano agli ordini effettuati nel negozio UE di ${COMPANY.tradingName} (prezzi in EUR, esclusi dazi e IVA all’importazione).`,
-  paymentsDescription: "Paga con carta, PayPal o bonifico SEPA. Prezzi in EUR, esclusi dazi e IVA all’importazione.",
+  paymentsDescription: "Paga con Visa, Mastercard, American Express o bonifico SEPA. Prezzi in EUR, esclusi dazi e IVA all’importazione.",
   paymentsIntro: "Tutti i prezzi del negozio UE sono in euro (EUR). Non comprendono l’IVA all’importazione né i dazi, che paghi alla consegna.",
   paymentsVat: {
     heading: "IVA all’importazione e dazi",
@@ -151,7 +151,7 @@ const ES: Snippets = {
   linkLabel: "Aranceles, IVA de importación y trámite aduanero",
   shippingDescription: `Entrega gratuita en ${s.area} desde Estados Unidos. Aranceles e IVA de importación se pagan en la entrega.`,
   shippingIntro: `Estas condiciones se aplican a los pedidos realizados en la tienda UE de ${COMPANY.tradingName} (precios en EUR, sin aranceles ni IVA de importación).`,
-  paymentsDescription: "Paga con tarjeta, PayPal o transferencia SEPA. Precios en EUR, sin aranceles ni IVA de importación.",
+  paymentsDescription: "Paga con Visa, Mastercard, American Express o transferencia SEPA. Precios en EUR, sin aranceles ni IVA de importación.",
   paymentsIntro: "Todos los precios de la tienda UE están en euros (EUR). No incluyen el IVA de importación ni los aranceles, que pagas en la entrega.",
   paymentsVat: {
     heading: "IVA de importación y aranceles",
@@ -181,7 +181,7 @@ const NL: Snippets = {
   linkLabel: "Invoerrechten, invoer-btw & douane",
   shippingDescription: `Gratis levering in ${s.area} vanuit de Verenigde Staten. Invoerrechten en invoer-btw betaalt u bij levering.`,
   shippingIntro: `Deze voorwaarden gelden voor bestellingen in de EU-winkel van ${COMPANY.tradingName} (prijzen in EUR, exclusief invoerrechten en invoer-btw).`,
-  paymentsDescription: "Betaal met kaart, PayPal of SEPA-overschrijving. Prijzen in EUR, exclusief invoerrechten en invoer-btw.",
+  paymentsDescription: "Betaal met Visa, Mastercard, American Express of SEPA-overschrijving. Prijzen in EUR, exclusief invoerrechten en invoer-btw.",
   paymentsIntro: "Alle prijzen in de EU-winkel zijn in euro (EUR). Ze bevatten geen invoer-btw en geen invoerrechten; die betaalt u bij levering.",
   paymentsVat: {
     heading: "Invoer-btw en invoerrechten",

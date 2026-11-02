@@ -17,6 +17,9 @@ export function PaymentBadges({
 }) {
   const dim = size === "sm" ? "h-[22px] w-[36px]" : "h-[26px] w-[42px]"
 
+  // Keep badges strictly aligned with accepted payment methods in lib/policies.ts
+  // and checkout (Visa, Mastercard, American Express, Discover, SEPA, 3D Secure 2.0)
+  // so Google Merchant Center never flags unsupported payment logos.
   const items = [
     {
       id: "visa",
@@ -39,10 +42,7 @@ export function PaymentBadges({
           <rect width="42" height="26" rx="2" fill="#141923" stroke="rgba(255,255,255,0.16)" />
           <circle cx="17.2" cy="13" r="6.2" fill="#EB001B" />
           <circle cx="24.8" cy="13" r="6.2" fill="#F79E1B" />
-          <path
-            d="M21 8.1a6.2 6.2 0 0 0 0 9.8 6.2 6.2 0 0 0 0-9.8z"
-            fill="#FF5F00"
-          />
+          <path d="M21 8.1a6.2 6.2 0 0 0 0 9.8 6.2 6.2 0 0 0 0-9.8z" fill="#FF5F00" />
         </svg>
       ),
     },
@@ -68,88 +68,92 @@ export function PaymentBadges({
       ),
     },
     {
-      id: "paypal",
-      name: "PayPal",
+      id: "discover",
+      name: "Discover",
       svg: (
-        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="PayPal">
+        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="Discover">
           <rect width="42" height="26" rx="2" fill="#141923" stroke="rgba(255,255,255,0.16)" />
-          <path
-            d="M22.8 6.5h-4.7c-.4 0-.7.3-.8.7l-1.9 11.6c-.1.3.2.5.4.5h2.2c.4 0 .7-.3.8-.7l.5-3.2h2.1c2.7 0 4.3-1.3 4.7-3.9.4-2.3-.9-5-3.3-5z"
-            fill="#253B80"
-          />
-          <path
-            d="M25.2 9.6c-.4 2.6-2 3.9-4.7 3.9h-1.4l-.8 5.2c-.1.3.1.5.4.5h1.9c.3 0 .6-.2.7-.6l.4-2.5h1.8c2.3 0 3.7-1.1 4.1-3.4.3-1.6-.2-2.7-2.4-3.1z"
-            fill="#179BD7"
-          />
-          <path
-            d="M22.8 6.5h-4.7c-.4 0-.7.3-.8.7l-1.9 11.6c-.1.3.2.5.4.5h2.2c.4 0 .7-.3.8-.7l.5-3.2h2.1c2.7 0 4.3-1.3 4.7-3.9.2-1.3 0-2.4-.7-3.3-.6-.9-1.5-1.7-2.6-1.7z"
-            fill="#2997D8"
-            fillOpacity="0.85"
-          />
+          <text
+            x="21"
+            y="15"
+            textAnchor="middle"
+            fill="#FFFFFF"
+            fontFamily="ui-sans-serif, system-ui, sans-serif"
+            fontWeight="800"
+            fontSize="6.5"
+            letterSpacing="0.5"
+          >
+            DISCOVER
+          </text>
+          <circle cx="26.2" cy="19.5" r="2.2" fill="#FF6000" />
         </svg>
       ),
     },
     {
-      id: "apple-pay",
-      name: "Apple Pay",
+      id: "sepa",
+      name: "SEPA",
       svg: (
-        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="Apple Pay">
-          <rect width="42" height="26" rx="2" fill="#141923" stroke="rgba(255,255,255,0.16)" />
-          <path
-            d="M12.9 10.1c.4-.5.7-1.1.6-1.8-.6 0-1.3.4-1.7.9-.4.4-.7 1.1-.6 1.7.7.1 1.3-.3 1.7-.8zm.6.9c-.9-.1-1.7.5-2.2.5-.5 0-1.1-.5-1.9-.5-1 0-1.9.6-2.4 1.5-1 1.8-.3 4.4.7 5.9.5.7 1.1 1.5 1.9 1.5.7 0 1-.5 1.9-.5.9 0 1.1.5 1.9.5.8 0 1.3-.7 1.8-1.4.6-.8.8-1.6.8-1.7-.1 0-1.6-.6-1.6-2.4 0-1.5 1.2-2.2 1.3-2.3-.7-1-1.8-1.1-2.2-1.1z"
-            fill="#FFFFFF"
-          />
+        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="SEPA">
+          <rect width="42" height="26" rx="2" fill="#003399" stroke="rgba(255,255,255,0.2)" />
           <text
-            x="26.5"
-            y="16.2"
+            x="21"
+            y="15.8"
             textAnchor="middle"
             fill="#FFFFFF"
             fontFamily="ui-sans-serif, system-ui, sans-serif"
-            fontWeight="700"
+            fontWeight="900"
             fontSize="8.5"
+            letterSpacing="0.8"
           >
-            Pay
+            SEPA
           </text>
         </svg>
       ),
     },
     {
-      id: "klarna",
-      name: "Klarna",
+      id: "3ds2",
+      name: "3D Secure 2.0",
       svg: (
-        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="Klarna">
-          <rect width="42" height="26" rx="2" fill="#FFA8CD" stroke="rgba(255,255,255,0.2)" />
-          <path
-            d="M14.5 7.5h2.5v11h-2.5v-11zm6.8 0h2.7c0 2.5-1.1 4.8-3 6.2l3.4 4.8h-3l-2.9-4.2v-.2c1.8-1.2 2.8-3.2 2.8-6.6z"
-            fill="#0B051D"
-          />
-          <circle cx="26.8" cy="17.1" r="1.5" fill="#0B051D" />
-        </svg>
-      ),
-    },
-    {
-      id: "stripe",
-      name: "Stripe",
-      svg: (
-        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="Stripe">
-          <rect width="42" height="26" rx="2" fill="#635BFF" stroke="rgba(255,255,255,0.2)" />
+        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="3D Secure 2.0">
+          <rect width="42" height="26" rx="2" fill="#141923" stroke="rgba(255,255,255,0.16)" />
           <text
             x="21"
-            y="16"
+            y="15.8"
             textAnchor="middle"
-            fill="#FFFFFF"
-            fontFamily="ui-sans-serif, system-ui, sans-serif"
+            fill="#10B981"
+            fontFamily="ui-monospace, monospace"
             fontWeight="800"
-            fontSize="9.2"
-            letterSpacing="-0.2"
+            fontSize="8"
+            letterSpacing="0.4"
           >
-            stripe
+            3DS 2.0
           </text>
         </svg>
       ),
     },
     ...(includeCarriers
       ? [
+          {
+            id: "ups",
+            name: "UPS",
+            svg: (
+              <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="UPS">
+                <rect width="42" height="26" rx="2" fill="#351C15" stroke="rgba(255,181,0,0.35)" />
+                <text
+                  x="21"
+                  y="16.2"
+                  textAnchor="middle"
+                  fill="#FFB500"
+                  fontFamily="ui-sans-serif, system-ui, sans-serif"
+                  fontWeight="900"
+                  fontSize="10"
+                  letterSpacing="0.5"
+                >
+                  UPS
+                </text>
+              </svg>
+            ),
+          },
           {
             id: "dhl",
             name: "DHL",

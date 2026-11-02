@@ -11,7 +11,7 @@ const area = "los 27 Estados miembros de la UE"
 const exclusions = "países de fuera de la UE (incluidos Reino Unido, Suiza y Noruega) y regiones ultraperiféricas de la UE como las Islas Canarias"
 const duties = "Enviado desde Estados Unidos. Los precios no incluyen aranceles ni IVA de importación, que pagas al transportista o a la aduana en la entrega. Una vez recibido tu pedido, te reembolsamos el IVA de importación abonado."
 const warranty = "Garantía legal de conformidad de la UE durante 2 años desde la entrega, además de cualquier garantía del fabricante."
-const bulky = "como máximo unos 25 € por neumático o llanta y 15 € por bulto de frenos"
+const bulky = "como máximo unos 90 € por neumático o llanta y 45 € por bulto de frenos para la devolución a Estados Unidos"
 const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "transferencia SEPA" : m)).join(", ")
 
 export const euEs: Dictionary = {

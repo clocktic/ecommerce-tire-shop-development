@@ -10,7 +10,7 @@ const area = "alle 27 EU-Mitgliedstaaten"
 const exclusions = "Länder außerhalb der EU (u. a. Vereinigtes Königreich, Schweiz, Norwegen) und EU-Gebiete in äußerster Randlage wie die Kanarischen Inseln"
 const duties = "Versand aus den USA. Die Preise enthalten keine Einfuhrzölle und keine Einfuhrumsatzsteuer — diese zahlen Sie bei Lieferung an den Zusteller bzw. den Zoll. Nachdem Sie Ihre Bestellung erhalten haben, erstatten wir Ihnen die gezahlte Einfuhrumsatzsteuer."
 const warranty = "Gesetzliche Gewährleistung in der EU: 2 Jahre ab Lieferung, zusätzlich zu einer etwaigen Herstellergarantie."
-const bulky = "höchstens ca. 25 € pro Reifen oder Felge und 15 € pro Bremsenpaket"
+const bulky = "höchstens ca. 90 € pro Reifen oder Felge und 45 € pro Bremsenpaket für den Rückversand in die USA"
 const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "SEPA-Überweisung" : m)).join(", ")
 
 export const euDe: Dictionary = {

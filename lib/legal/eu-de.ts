@@ -14,7 +14,7 @@ const r = p.returns
 const t = euDe.policy
 const contactLine = `${COMPANY.email} · ${COMPANY.phoneDisplay} (${euDe.company.hours})`
 const seller = `${COMPANY.legalName}, ${companyAddressLine}, E-Mail ${COMPANY.email}, Telefon ${COMPANY.phoneDisplay}`
-const bulky = "höchstens etwa 25 € pro Reifen oder Felge und 15 € pro Bremsenpaket"
+const bulky = "höchstens etwa 90 € pro Reifen oder Felge und 45 € pro Bremsenpaket für den Rückversand in die USA"
 const payments = p.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "SEPA-Überweisung" : m))
 
 const SNIP = EU_SNIPPETS.de
@@ -91,10 +91,10 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
         blocks: [
           `Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen erhalten haben, einschließlich der Lieferkosten (mit Ausnahme der zusätzlichen Kosten, die sich daraus ergeben, dass Sie eine andere Art der Lieferung als die von uns angebotene, günstigste Standardlieferung gewählt haben), unverzüglich und spätestens binnen ${r.refundDays} Tagen ab dem Tag zurückzuzahlen, an dem die Mitteilung über Ihren Widerruf dieses Vertrags bei uns eingegangen ist. Für diese Rückzahlung verwenden wir dasselbe Zahlungsmittel, das Sie bei der ursprünglichen Transaktion eingesetzt haben, es sei denn, mit Ihnen wurde ausdrücklich etwas anderes vereinbart; in keinem Fall werden Ihnen wegen dieser Rückzahlung Entgelte berechnet.`,
           "Wir können die Rückzahlung verweigern, bis wir die Waren wieder zurückerhalten haben oder bis Sie den Nachweis erbracht haben, dass Sie die Waren zurückgesandt haben, je nachdem, welches der frühere Zeitpunkt ist.",
-          `Sie haben die Waren unverzüglich und in jedem Fall spätestens binnen ${r.windowDays} Tagen ab dem Tag, an dem Sie uns über den Widerruf dieses Vertrags unterrichten, an die Adresse, die wir Ihnen mit der Rücksendenummer (RMA) per E-Mail mitteilen, zurückzusenden oder zu übergeben. Die Frist ist gewahrt, wenn Sie die Waren vor Ablauf der Frist von ${r.windowDays} Tagen absenden.`,
+          `Sie haben die Waren unverzüglich und in jedem Fall spätestens binnen ${r.windowDays} Tagen ab dem Tag, an dem Sie uns über den Widerruf dieses Vertrags unterrichten, an unsere Rücksendestelle (${EU_PRESENCE.returnsAddress}, unter Angabe der in Ihrer E-Mail mitgeteilten Rücksendenummer RMA) zurückzusenden oder zu übergeben. Die Frist ist gewahrt, wenn Sie die Waren vor Ablauf der Frist von ${r.windowDays} Tagen absenden.`,
           r.returnShippingPaidBy === "merchant"
             ? "Wir tragen die Kosten der Rücksendung der Waren."
-            : `Sie tragen die unmittelbaren Kosten der Rücksendung der Waren. Reifen, Felgen und Bremsanlagen können wegen ihrer Beschaffenheit nicht normal mit der Post zurückgesandt werden; die Kosten werden auf ${bulky} geschätzt. Auf Wunsch senden wir Ihnen ein vorfrankiertes Etikett zu diesem Preis.`,
+            : `Sie tragen die unmittelbaren Kosten der Rücksendung der Waren. Reifen, Felgen und Bremsanlagen können wegen ihrer Beschaffenheit nicht normal mit der Post zurückgesandt werden; die Kosten werden auf ${bulky} geschätzt. Auf Wunsch senden wir Ihnen ein vorfrankiertes Etikett zu diesem Preis. Eine Wiedereinlagerungsgebühr (Restocking Fee) berechnen wir niemals (0,00 €).`,
           "Sie müssen für einen etwaigen Wertverlust der Waren nur aufkommen, wenn dieser Wertverlust auf einen zur Prüfung der Beschaffenheit, Eigenschaften und Funktionsweise der Waren nicht notwendigen Umgang mit ihnen zurückzuführen ist.",
         ],
       },
@@ -219,7 +219,7 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
       {
         heading: "Wann belastet wird",
         blocks: [
-          "Karten- und PayPal-Zahlungen werden bei der Bestellung autorisiert und beim Versand eingezogen. Bei SEPA-Überweisung versenden wir, sobald die Zahlung eingegangen ist; die Bankverbindung finden Sie in Ihrer Bestellbestätigung.",
+          "Kartenzahlungen (Visa, Mastercard, American Express) werden bei der Bestellung über unsere verschlüsselte 3D-Secure-2.0-Zahlungsseite autorisiert und abgerechnet. Wird eine Bestellung vor dem Versand storniert, wird der Betrag sofort vollständig freigegeben bzw. erstattet. Bei SEPA-Überweisung versenden wir, sobald die Zahlung eingegangen ist; die Bankverbindung erhalten Sie in Ihrer Bestellbestätigung.",
         ],
       },
       {
@@ -245,8 +245,11 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Preise",
-        blocks: [SNIP.pricesText],
+        heading: "Preise & Member Club (7 % Rabatt)",
+        blocks: [
+          SNIP.pricesText,
+          "Member Club (7 % Rabatt für registrierte Mitglieder): Kunden, die ein kostenloses Konto erstellen und sich vor Abschluss der Bestellung anmelden, erhalten automatisch 7 % Rabatt auf den Warenwert im Warenkorb und an der Kasse. Im Falle eines Widerrufs oder einer Rücksendung wird der tatsächlich gezahlte Nettopreis erstattet.",
+        ],
       },
       { heading: "Lieferung", blocks: ["Die Lieferbedingungen sind in den Lieferbedingungen geregelt."] },
       { heading: "Widerrufsrecht", blocks: [`Verbrauchern steht ein ${r.windowDays}-tägiges Widerrufsrecht zu, wie in der Widerrufsbelehrung beschrieben.`] },
@@ -398,21 +401,27 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
               ["Rechtsform", `Limited Liability Company nach dem Recht von ${COMPANY.stateOfFormation}, USA`],
               ["Registrierung", `${COMPANY.stateOfFormation} Secretary of State, Nr. ${COMPANY.registrationNumber}`],
               ["Anschrift", companyAddressLine],
+              ["Zustellungsanschrift für rechtliche Mitteilungen", COMPANY.mailingAddress],
+              ["Rücksendeadresse", EU_PRESENCE.returnsAddress],
               ["Vertreten durch", `${COMPANY.representative}, ${COMPANY.representativeRole}`],
               ["E-Mail", COMPANY.email],
-              ["Telefon", COMPANY.phoneDisplay],
-              ["Seller's permit (CDTFA)", COMPANY.sellerPermit],
+              ["Telefon", `${COMPANY.phoneDisplay} (${COMPANY.hours})`],
+              ["Seller's permit (CDTFA)", `${COMPANY.sellerPermit} (${COMPANY.sellerPermitAuthority})`],
             ],
           },
         ],
       },
       {
-        heading: "EU-Vertreter",
-        blocks: [`${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address}`],
+        heading: "Datenschutz-Kontaktstelle (DSGVO)",
+        blocks: [`${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address} · E-Mail: ${EU_PRESENCE.gdprRepresentative.email}`],
       },
       {
-        heading: "Inhaltlich verantwortlich",
-        blocks: [`${COMPANY.representative}, Anschrift wie oben.`],
+        heading: "Inhaltlich verantwortlich (§ 18 Abs. 2 MStV)",
+        blocks: [`${COMPANY.representative}, ${companyAddressLine}.`],
+      },
+      {
+        heading: "Verbraucherstreitbeilegung (§ 36 VSBG)",
+        blocks: ["Wir sind nicht verpflichtet und nicht bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen."],
       },
     ],
   },

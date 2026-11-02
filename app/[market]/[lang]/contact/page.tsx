@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Mail, Phone, Clock, MapPin } from "lucide-react"
-import { COMPANY, EU_PRESENCE, companyAddressLine } from "@/lib/company"
+import { COMPANY, EU_PRESENCE, companyAddressLine, physicalReturnsAddress } from "@/lib/company"
 import { getDictionary, parseStore, storePath } from "@/lib/i18n"
 import { policyHref } from "@/lib/legal/pages"
 import { storeAlternates } from "@/lib/seo"
@@ -71,6 +71,9 @@ export default async function ContactPage({ params }: { params: Params }) {
         <aside className="flex flex-col gap-6 lg:col-span-4">
           <div className="flex flex-col gap-2">
             <h2 className="label-caps">{c.returnsAddress}</h2>
+            <p className="text-sm font-medium leading-relaxed text-foreground">
+              {physicalReturnsAddress}
+            </p>
             <p className="text-sm leading-relaxed text-muted-foreground">
               {c.returnsNote}
             </p>
@@ -79,7 +82,7 @@ export default async function ContactPage({ params }: { params: Params }) {
             <div className="flex flex-col gap-2">
               <h2 className="label-caps">{c.euRep}</h2>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                {EU_PRESENCE.gdprRepresentative.name}, {EU_PRESENCE.gdprRepresentative.address}
+                {EU_PRESENCE.gdprRepresentative.name} · {EU_PRESENCE.gdprRepresentative.address} ({EU_PRESENCE.gdprRepresentative.email})
               </p>
             </div>
           )}

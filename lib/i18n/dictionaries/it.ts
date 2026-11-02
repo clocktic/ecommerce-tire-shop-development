@@ -10,7 +10,7 @@ const area = "tutti i 27 Stati membri dell’UE"
 const exclusions = "i paesi extra UE (tra cui Regno Unito, Svizzera e Norvegia) e le regioni ultraperiferiche dell’UE come le Isole Canarie"
 const duties = "Spedito dagli Stati Uniti. I prezzi non includono dazi e IVA all’importazione, che paghi al corriere o alla dogana alla consegna. Dopo che hai ricevuto l’ordine, ti rimborsiamo l’IVA all’importazione pagata."
 const warranty = "Garanzia legale di conformità UE di 2 anni dalla consegna, in aggiunta all’eventuale garanzia del produttore."
-const bulky = "al massimo circa 25 € per pneumatico o cerchio e 15 € per collo di freni"
+const bulky = "al massimo circa 90 € per pneumatico o cerchio e 45 € per collo di freni per la rispedizione negli Stati Uniti"
 const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "bonifico SEPA" : m)).join(", ")
 
 export const euIt: Dictionary = {
