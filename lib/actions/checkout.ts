@@ -187,7 +187,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
         quantity: i.quantity,
         lineTotalCents: i.lineTotalCents,
       })),
-      paymentMethod: String(formData.get("paymentMethod") ?? "").trim() || (paymentSession.ok ? "Онлайн-оплата" : "По реквизитам / при подтверждении"),
+      paymentMethod: paymentSession.ok ? "Онлайн-оплата картой (CGPayTech)" : "По реквизитам / при подтверждении",
       paymentStatusLabel: paymentSession.ok ? "Перенаправлен на страницу оплаты" : "Ожидает оплаты",
     }),
   ])

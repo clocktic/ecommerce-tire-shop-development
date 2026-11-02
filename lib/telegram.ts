@@ -1,5 +1,4 @@
 import "server-only"
-import fs from "node:fs"
 
 import { COMPANY } from "@/lib/company"
 import { formatPrice, type Market } from "@/lib/markets"
@@ -14,24 +13,7 @@ export function escapeHtml(value: string): string {
 }
 
 function readEnvFallback(key: string): string | undefined {
-  const fromProc = process.env[key]?.trim()
-  if (fromProc) return fromProc
-  for (const envPath of ["/vercel/share/.env.project", "/vercel/share/v0-project/.env.development.local"]) {
-    try {
-      if (!fs.existsSync(envPath)) continue
-      const content = fs.readFileSync(envPath, "utf8")
-      for (const line of content.split("\n")) {
-        const trimmed = line.trim()
-        if (trimmed.startsWith(`${key}=`)) {
-          const val = trimmed.slice(key.length + 1).trim().replace(/^["']|["']$/g, "")
-          if (val) return val
-        }
-      }
-    } catch {
-      // ignore fs read errors in serverless runtime
-    }
-  }
-  return undefined
+  return process.env[key]?.trim() || undefined
 }
 
 export function getTelegramCredentials(): { token?: string; rawChatIds?: string; chatIds: string[] } {
