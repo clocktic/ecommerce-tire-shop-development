@@ -78,7 +78,7 @@ export async function notifyTelegramNewUser(input: {
   id?: string
 }): Promise<TelegramResult> {
   const lines = [
-    `👤 <b>Новая регистрация покупателя · ${escapeHtml(COMPANY.tradingName)}</b>`,
+    `<b>Новая регистрация покупателя · ${escapeHtml(COMPANY.tradingName)}</b>`,
     ``,
     `<b>Имя:</b> ${escapeHtml(input.name || "—")}`,
     `<b>Email:</b> ${escapeHtml(input.email)}`,
@@ -112,7 +112,8 @@ export async function notifyTelegramNewOrder(input: {
   shippingCents: number
   totalCents: number
   items: TelegramOrderItem[]
-  paymentRedirected: boolean
+  paymentMethod?: string
+  paymentStatusLabel?: string
 }): Promise<TelegramResult> {
   const fmtMoney = (cents: number) => formatPrice(cents, input.market, input.market === "us" ? "en-US" : "de-DE")
   const locationParts = [
@@ -128,7 +129,7 @@ export async function notifyTelegramNewOrder(input: {
   })
 
   const lines = [
-    `🛒 <b>Новый заказ ${escapeHtml(input.orderNumber)}</b>`,
+    `<b>Новый заказ ${escapeHtml(input.orderNumber)}</b>`,
     `<b>Магазин:</b> ${escapeHtml(input.market.toUpperCase())} (${escapeHtml(input.lang.toUpperCase())})`,
     ``,
     `<b>Покупатель:</b> ${escapeHtml(input.customerName)}`,
@@ -145,7 +146,8 @@ export async function notifyTelegramNewOrder(input: {
       : []),
     `<b>Доставка:</b> ${input.shippingCents === 0 ? "Бесплатно" : escapeHtml(fmtMoney(input.shippingCents))}`,
     `<b>Итого к оплате:</b> <b>${escapeHtml(fmtMoney(input.totalCents))}</b>`,
-    `<b>Статус:</b> ${input.paymentRedirected ? "Перенаправлен на оплату (CGPayTech)" : "Ожидает оплаты"}`,
+    ...(input.paymentMethod ? [`<b>Способ оплаты:</b> ${escapeHtml(input.paymentMethod)}`] : []),
+    `<b>Статус оплаты:</b> ${escapeHtml(input.paymentStatusLabel || "Ожидает оплаты")}`,
     ``,
     `<a href="${escapeHtml(COMPANY.url)}/admin/orders?q=${encodeURIComponent(input.orderNumber)}">Открыть заказ в админке →</a>`,
   ]
@@ -163,7 +165,8 @@ export async function notifyTelegramOrderPaid(input: {
   country?: string | null
   totalCents: number
   items?: TelegramOrderItem[]
-  source?: string
+  paymentMethod?: string | null
+  transactionId?: string | null
 }): Promise<TelegramResult> {
   const fmtMoney = (cents: number) => formatPrice(cents, input.market, input.market === "us" ? "en-US" : "de-DE")
   const itemLines =
@@ -181,14 +184,15 @@ export async function notifyTelegramOrderPaid(input: {
   const destination = [input.city, input.country].filter(Boolean).join(", ")
 
   const lines = [
-    `✅ <b>Заказ успешно оплачен: ${escapeHtml(input.orderNumber)}</b>`,
+    `<b>Заказ успешно оплачен: ${escapeHtml(input.orderNumber)}</b>`,
     `<b>Сумма оплаты:</b> <b>${escapeHtml(fmtMoney(input.totalCents))}</b>`,
     `<b>Магазин:</b> ${escapeHtml(input.market.toUpperCase())}`,
+    ...(input.paymentMethod ? [`<b>Способ оплаты:</b> ${escapeHtml(input.paymentMethod)}`] : []),
+    ...(input.transactionId ? [`<b>ID транзакции:</b> <code>${escapeHtml(input.transactionId)}</code>`] : []),
     `<b>Покупатель:</b> ${escapeHtml(input.customerName || "—")}`,
     `<b>Email:</b> ${escapeHtml(input.email)}`,
     ...(input.phone ? [`<b>Телефон:</b> ${escapeHtml(input.phone)}`] : []),
     ...(destination ? [`<b>Куда:</b> ${escapeHtml(destination)}`] : []),
-    ...(input.source ? [`<b>Источник:</b> ${escapeHtml(input.source)}`] : []),
     ...itemLines,
     ``,
     `<a href="${escapeHtml(COMPANY.url)}/admin/orders?q=${encodeURIComponent(input.orderNumber)}">Открыть заказ в админке →</a>`,
