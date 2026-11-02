@@ -125,7 +125,7 @@ export const euFr: Dictionary = {
       title: "Les conditions de la boutique UE",
       lead: "Stock, prix et conditions propres à chaque région.",
       shippingTitle: s.freeShipping ? "Livraison gratuite" : "Livraison",
-      shippingText: `Vers ${area}. ${duties}`,
+      shippingText: `Vers ${area}. Lorsque c’est possible, nous expédions via notre propre service de livraison et notre propre coursier ; à défaut, nous faisons appel à d’autres transporteurs (${s.carriers.join(", ")}). ${duties}`,
       returnsTitle: "Droit de rétractation",
       returnsValue: `${eu.returns.windowDays} jours`,
       returnsText: "À compter de la livraison, sans motif. Articles non montés.",
@@ -246,11 +246,11 @@ export const euFr: Dictionary = {
   },
     priceNote: "Hors droits d’importation et TVA · prix à l’unité",
     deliveryTitle: `${s.freeShipping ? "Livraison gratuite" : "Livraison"} en ${days}`,
-    deliveryText: `Vers ${area}. Les commandes passées avant ${cutoff} partent sous ${s.handlingDays[0]} à ${s.handlingDays[1]} jours ouvrés.`,
+    deliveryText: `Vers ${area}. Les commandes passées avant ${cutoff} partent sous ${s.handlingDays[0]} à ${s.handlingDays[1]} jours ouvrés. Expédition par notre propre service de livraison et notre propre coursier lorsque c’est possible, sinon via d’autres transporteurs.`,
     returnsTitle: `Droit de rétractation de ${eu.returns.windowDays} jours`,
     returnsText: "Non monté et non utilisé.",
     warrantyTitle: "Garantie légale de 2 ans",
-    shippingText: `Livraison gratuite vers ${area} en ${days} avec ${s.carriers.join(", ")}. ${duties}`,
+    shippingText: `Livraison gratuite vers ${area} en ${days}. Lorsque c’est possible, nous envoyons votre commande via notre propre service de livraison et notre propre coursier ; s’il n’est pas possible d’utiliser notre propre livraison, nous passons par d’autres transporteurs (${s.carriers.join(", ")}). ${duties}`,
     returnsDetail: `Vous pouvez vous rétracter dans un délai de ${eu.returns.windowDays} jours à compter de la livraison, sans avoir à motiver votre décision. Les pneus et jantes montés ou ayant roulé peuvent perdre de la valeur, ce qui peut réduire le remboursement.`,
     notSold: {
       eyebrow: "Non vendu sur la boutique UE",
@@ -356,7 +356,7 @@ export const euFr: Dictionary = {
         items: [
           {
             q: "Quel est le délai de livraison ?",
-            a: `${days} au total : ${s.handlingDays[0]} à ${s.handlingDays[1]} jours avant expédition et ${s.transitDays[0]} à ${s.transitDays[1]} jours de transport avec ${s.carriers.join(", ")}. Les commandes passées avant ${cutoff} un jour ouvré comptent à partir de ce jour.`,
+            a: `${days} au total : ${s.handlingDays[0]} à ${s.handlingDays[1]} jours avant expédition et ${s.transitDays[0]} à ${s.transitDays[1]} jours de transport. Lorsque c’est possible, nous expédions via notre propre service de livraison et notre propre coursier ; sinon, nous utilisons d’autres transporteurs (${s.carriers.join(", ")}). Les commandes passées avant ${cutoff} un jour ouvré comptent à partir de ce jour.`,
           },
           { q: "Combien coûte la livraison ?", a: "La livraison est gratuite pour toutes les commandes." },
           { q: "Vais-je payer des droits de douane ou la TVA à l’importation ?", a: duties },

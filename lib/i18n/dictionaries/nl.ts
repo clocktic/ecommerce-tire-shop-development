@@ -125,7 +125,7 @@ export const euNl: Dictionary = {
       title: "De voorwaarden van de EU-winkel",
       lead: "Eigen voorraad, prijzen en voorwaarden per regio.",
       shippingTitle: s.freeShipping ? "Gratis verzending" : "Verzending",
-      shippingText: `Naar ${area}. ${duties}`,
+      shippingText: `Naar ${area}. Waar mogelijk verzenden wij met onze eigen bezorgdienst en eigen koerier; als onze eigen bezorging niet mogelijk is, maken wij gebruik van andere vervoerders (${s.carriers.join(", ")}). ${duties}`,
       returnsTitle: "Herroepingsrecht",
       returnsValue: `${eu.returns.windowDays} dagen`,
       returnsText: "Vanaf levering, zonder opgave van redenen. Niet-gemonteerde artikelen.",
@@ -246,11 +246,11 @@ export const euNl: Dictionary = {
   },
     priceNote: "exclusief invoerrechten en btw · prijs per stuk",
     deliveryTitle: `${s.freeShipping ? "Gratis levering" : "Levering"} in ${days}`,
-    deliveryText: `Naar ${area}. Bestellingen vóór ${cutoff} verlaten ons magazijn in de VS binnen ${s.handlingDays[0]}–${s.handlingDays[1]} werkdagen.`,
+    deliveryText: `Naar ${area}. Bestellingen vóór ${cutoff} verlaten ons magazijn in de VS binnen ${s.handlingDays[0]}–${s.handlingDays[1]} werkdagen. Waar mogelijk verzonden met onze eigen bezorgdienst en eigen koerier, anders via andere vervoerders.`,
     returnsTitle: `${eu.returns.windowDays} dagen herroepingsrecht`,
     returnsText: "Niet gemonteerd en ongebruikt.",
     warrantyTitle: "2 jaar wettelijke garantie",
-    shippingText: `Gratis levering naar ${area} in ${days} met ${s.carriers.join(", ")}. ${duties}`,
+    shippingText: `Gratis levering naar ${area} in ${days}. Waar mogelijk verzenden wij uw bestelling met onze eigen bezorgdienst en eigen koerier; als verzending via onze eigen bezorgdienst niet mogelijk is, maken wij gebruik van andere vervoerders (${s.carriers.join(", ")}). ${duties}`,
     returnsDetail: `U kunt de aankoop binnen ${eu.returns.windowDays} dagen na levering zonder opgave van redenen herroepen. Gemonteerde of gereden banden en velgen kunnen in waarde dalen, wat de terugbetaling kan verminderen.`,
     notSold: {
       eyebrow: "Niet verkrijgbaar in de EU-winkel",
@@ -356,7 +356,7 @@ export const euNl: Dictionary = {
         items: [
           {
             q: "Hoe lang duurt de levering?",
-            a: `In totaal ${days}: ${s.handlingDays[0]}–${s.handlingDays[1]} dagen tot verzending en ${s.transitDays[0]}–${s.transitDays[1]} dagen onderweg met ${s.carriers.join(", ")}. Bestellingen vóór ${cutoff} op een werkdag tellen vanaf die dag.`,
+            a: `In totaal ${days}: ${s.handlingDays[0]}–${s.handlingDays[1]} dagen tot verzending en ${s.transitDays[0]}–${s.transitDays[1]} dagen onderweg. Waar mogelijk verzenden wij met onze eigen bezorgdienst en eigen koerier; als dat niet mogelijk is, gebruiken wij andere vervoerders (${s.carriers.join(", ")}). Bestellingen vóór ${cutoff} op een werkdag tellen vanaf die dag.`,
           },
           { q: "Wat kost de verzending?", a: "Verzending is gratis bij elke bestelling." },
           { q: "Betaal ik douanekosten of invoer-btw?", a: duties },

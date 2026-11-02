@@ -125,7 +125,7 @@ export const euIt: Dictionary = {
       title: "Le condizioni del negozio UE",
       lead: "Magazzino, prezzi e condizioni separati per ogni regione.",
       shippingTitle: s.freeShipping ? "Spedizione gratuita" : "Spedizione",
-      shippingText: `In ${area}. ${duties}`,
+      shippingText: `In ${area}. Quando possibile spediamo con il nostro servizio di consegna e il nostro corriere; se non è possibile utilizzare la nostra consegna diretta, ci affidiamo ad altri corrieri (${s.carriers.join(", ")}). ${duties}`,
       returnsTitle: "Diritto di recesso",
       returnsValue: `${eu.returns.windowDays} giorni`,
       returnsText: "Dalla consegna, senza motivazione. Articoli non montati.",
@@ -246,11 +246,11 @@ export const euIt: Dictionary = {
   },
     priceNote: "Esclusi dazi e IVA all’importazione · prezzo cadauno",
     deliveryTitle: `${s.freeShipping ? "Consegna gratuita" : "Consegna"} in ${days}`,
-    deliveryText: `In ${area}. Gli ordini effettuati entro le ${cutoff} partono entro ${s.handlingDays[0]}–${s.handlingDays[1]} giorni lavorativi.`,
+    deliveryText: `In ${area}. Gli ordini effettuati entro le ${cutoff} partono entro ${s.handlingDays[0]}–${s.handlingDays[1]} giorni lavorativi. Spedizione tramite il nostro servizio di consegna e il nostro corriere quando possibile, oppure tramite altri corrieri.`,
     returnsTitle: `Diritto di recesso di ${eu.returns.windowDays} giorni`,
     returnsText: "Non montato e non utilizzato.",
     warrantyTitle: "Garanzia legale di 2 anni",
-    shippingText: `Consegna gratuita in ${area} in ${days} con ${s.carriers.join(", ")}. ${duties}`,
+    shippingText: `Consegna gratuita in ${area} in ${days}. Quando possibile spediamo la merce con il nostro servizio di consegna e il nostro corriere; se non è possibile inviare tramite la nostra consegna, utilizziamo altri corrieri (${s.carriers.join(", ")}). ${duties}`,
     returnsDetail: `Puoi recedere dall’acquisto entro ${eu.returns.windowDays} giorni dalla consegna senza indicarne il motivo. Pneumatici e cerchi montati o utilizzati su strada possono perdere valore, con possibile riduzione del rimborso.`,
     notSold: {
       eyebrow: "Non venduto nel negozio UE",
@@ -356,7 +356,7 @@ export const euIt: Dictionary = {
         items: [
           {
             q: "Quanto tempo richiede la consegna?",
-            a: `${days} in totale: ${s.handlingDays[0]}–${s.handlingDays[1]} giorni per la spedizione e ${s.transitDays[0]}–${s.transitDays[1]} giorni di transito con ${s.carriers.join(", ")}. Gli ordini effettuati entro le ${cutoff} di un giorno lavorativo decorrono da quel giorno.`,
+            a: `${days} in totale: ${s.handlingDays[0]}–${s.handlingDays[1]} giorni per la spedizione e ${s.transitDays[0]}–${s.transitDays[1]} giorni di transito. Quando possibile spediamo tramite il nostro servizio di consegna e il nostro corriere; se non è possibile utilizzare la nostra consegna, ci avvaliamo di altri corrieri (${s.carriers.join(", ")}). Gli ordini effettuati entro le ${cutoff} di un giorno lavorativo decorrono da quel giorno.`,
           },
           { q: "Quanto costa la spedizione?", a: "La spedizione è gratuita su ogni ordine." },
           { q: "Dovrò pagare dazi o IVA all’importazione?", a: duties },

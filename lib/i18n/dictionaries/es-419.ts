@@ -127,7 +127,7 @@ export const usEs: Dictionary = {
       title: "Condiciones de la tienda EE. UU.",
       lead: "Inventario, precios y políticas propios para cada región.",
       shippingTitle: s.freeShipping ? "Envío gratis" : "Envío",
-      shippingText: `A ${area}. ${duties}`,
+      shippingText: `A ${area}. Siempre que sea posible enviamos con nuestro propio servicio de entrega y nuestro propio mensajero; si no es posible enviar con nuestra entrega propia, utilizamos otras paqueterías (${s.carriers.join(", ")}). ${duties}`,
       returnsTitle: "Devoluciones",
       returnsValue: `${us.returns.windowDays} días`,
       returnsText: "Sin usar ni montar. Sin cargo por reposición.",
@@ -248,11 +248,11 @@ export const usEs: Dictionary = {
   },
     priceNote: "El impuesto sobre las ventas se calcula al pagar · precio por pieza",
     deliveryTitle: `${s.freeShipping ? "Entrega gratis" : "Entrega"} en ${days}`,
-    deliveryText: `A ${area}. Los pedidos hechos antes de las ${cutoff} salen en ${s.handlingDays[0]}–${s.handlingDays[1]} días hábiles.`,
+    deliveryText: `A ${area}. Los pedidos hechos antes de las ${cutoff} salen en ${s.handlingDays[0]}–${s.handlingDays[1]} días hábiles. Enviamos con nuestro propio servicio de entrega y mensajero siempre que sea posible, o con otras paqueterías si no está disponible.`,
     returnsTitle: `Devoluciones en ${us.returns.windowDays} días`,
     returnsText: "Sin montar y sin usar.",
     warrantyTitle: "Garantía del fabricante",
-    shippingText: `Entrega gratis a ${area} en ${days} con ${s.carriers.join(", ")}. ${duties}`,
+    shippingText: `Entrega gratis a ${area} en ${days}. Siempre que sea posible enviamos el producto con nuestro propio servicio de entrega y nuestro propio mensajero; si no es posible enviarlo con nuestra entrega propia, utilizamos otras paqueterías (${s.carriers.join(", ")}). ${duties}`,
     returnsDetail: `Devuelve artículos sin usar y sin montar dentro de los ${us.returns.windowDays} días posteriores a la entrega y te reembolsamos el precio completo. Sin cargo por reposición.`,
     notSold: {
       eyebrow: "No disponible en la tienda EE. UU.",
@@ -346,7 +346,7 @@ export const usEs: Dictionary = {
         items: [
           {
             q: "¿Cuánto tarda la entrega?",
-            a: `${days} en total: ${s.handlingDays[0]}–${s.handlingDays[1]} días para despachar y ${s.transitDays[0]}–${s.transitDays[1]} días en tránsito con ${s.carriers.join(", ")}. Los pedidos hechos antes de las ${cutoff} en día hábil cuentan desde ese día.`,
+            a: `${days} en total: ${s.handlingDays[0]}–${s.handlingDays[1]} días para despachar y ${s.transitDays[0]}–${s.transitDays[1]} días en tránsito. Siempre que sea posible enviamos con nuestro propio servicio de entrega y nuestro propio mensajero; cuando no es posible usar nuestra entrega propia, enviamos con otras paqueterías (${s.carriers.join(", ")}). Los pedidos hechos antes de las ${cutoff} en día hábil cuentan desde ese día.`,
           },
           { q: "¿Cuánto cuesta el envío?", a: "El envío es gratis en todos los pedidos." },
           {

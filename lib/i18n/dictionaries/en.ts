@@ -259,7 +259,7 @@ export const usEn = {
       title: "The US store terms",
       lead: "Separate stock, prices and policies for each region.",
       shippingTitle: us.shipping.freeShipping ? "Free shipping" : "Shipping",
-      shippingText: `To ${us.shipping.area}. ${us.shipping.duties}`,
+      shippingText: `To ${us.shipping.area}. Whenever possible we ship via our own delivery service and our own courier; if our own delivery is not available for your address, we use other delivery carriers (${us.shipping.carriers.join(", ")}). ${us.shipping.duties}`,
       returnsTitle: "Returns",
       returnsValue: `${us.returns.windowDays} days`,
       returnsText: "Unused and unmounted. No restocking fee.",
@@ -346,11 +346,11 @@ export const usEn = {
     ...product,
     priceNote: "Sales tax calculated at checkout · price per unit",
     deliveryTitle: `${us.shipping.freeShipping ? "Free delivery" : "Delivery"} in ${usDays}`,
-    deliveryText: `To ${us.shipping.area}. Orders before ${us.shipping.cutoff} leave within ${us.shipping.handlingDays[0]}–${us.shipping.handlingDays[1]} business days.`,
+    deliveryText: `To ${us.shipping.area}. Orders before ${us.shipping.cutoff} leave within ${us.shipping.handlingDays[0]}–${us.shipping.handlingDays[1]} business days. Sent via our own delivery service and courier whenever possible, or via partner carriers if our own delivery is unavailable.`,
     returnsTitle: `${us.returns.windowDays}-day returns`,
     returnsText: "Unmounted and unused.",
     warrantyTitle: "Manufacturer warranty",
-    shippingText: `Free delivery to ${us.shipping.area} in ${usDays} with ${us.shipping.carriers.join(", ")}. ${us.shipping.duties}`,
+    shippingText: `Free delivery to ${us.shipping.area} in ${usDays}. Whenever possible we ship your order with our own delivery service and our own courier; if our own delivery is not available for your destination, we use other delivery carriers (${us.shipping.carriers.join(", ")}). ${us.shipping.duties}`,
     returnsDetail: `Return unused, unmounted items within ${us.returns.windowDays} days of delivery for a full refund of the item price. No restocking fee.`,
     notSold: {
       eyebrow: "Not sold in the US store",
@@ -413,7 +413,7 @@ export const usEn = {
         items: [
           {
             q: "How long does delivery take?",
-            a: `${usDays} in total: ${us.shipping.handlingDays[0]}–${us.shipping.handlingDays[1]} days to dispatch and ${us.shipping.transitDays[0]}–${us.shipping.transitDays[1]} days in transit with ${us.shipping.carriers.join(", ")}. Orders before ${us.shipping.cutoff} on a business day count from that day.`,
+            a: `${usDays} in total: ${us.shipping.handlingDays[0]}–${us.shipping.handlingDays[1]} days to dispatch and ${us.shipping.transitDays[0]}–${us.shipping.transitDays[1]} days in transit. Whenever possible we ship via our own delivery service and our own courier; when our own delivery is not available for your route, we use other delivery carriers (${us.shipping.carriers.join(", ")}). Orders before ${us.shipping.cutoff} on a business day count from that day.`,
           },
           { q: "How much is shipping?", a: "Shipping is free on every order." },
           {
@@ -554,7 +554,7 @@ export const euEn: Dictionary = {
       title: "The EU store terms",
       lead: "Separate stock, prices and policies for each region.",
       shippingTitle: eu.shipping.freeShipping ? "Free shipping" : "Shipping",
-      shippingText: `To ${eu.shipping.area}. ${eu.shipping.duties}`,
+      shippingText: `To ${eu.shipping.area}. Whenever possible we ship via our own delivery service and our own courier; if our own delivery is not available for your address, we use other delivery carriers (${eu.shipping.carriers.join(", ")}). ${eu.shipping.duties}`,
       returnsTitle: "Right of withdrawal",
       returnsValue: `${eu.returns.windowDays} days`,
       returnsText: "From delivery, no reason needed. Unmounted items.",
@@ -641,11 +641,11 @@ export const euEn: Dictionary = {
     ...product,
     priceNote: "Excl. import duties and VAT · price per unit",
     deliveryTitle: `${eu.shipping.freeShipping ? "Free delivery" : "Delivery"} in ${euDays}`,
-    deliveryText: `To ${eu.shipping.area}. Orders before ${eu.shipping.cutoff} leave within ${eu.shipping.handlingDays[0]}–${eu.shipping.handlingDays[1]} working days.`,
+    deliveryText: `To ${eu.shipping.area}. Orders before ${eu.shipping.cutoff} leave within ${eu.shipping.handlingDays[0]}–${eu.shipping.handlingDays[1]} working days. Sent via our own delivery service and courier whenever possible, or via partner carriers if our own delivery is unavailable.`,
     returnsTitle: `${eu.returns.windowDays}-day right of withdrawal`,
     returnsText: "Unmounted and unused.",
     warrantyTitle: "2-year legal guarantee",
-    shippingText: `Free delivery to ${eu.shipping.area} in ${euDays} with ${eu.shipping.carriers.join(", ")}. ${eu.shipping.duties}`,
+    shippingText: `Free delivery to ${eu.shipping.area} in ${euDays}. Whenever possible we ship your order with our own delivery service and our own courier; if our own delivery is not available for your destination, we use other delivery carriers (${eu.shipping.carriers.join(", ")}). ${eu.shipping.duties}`,
     returnsDetail: `You can withdraw from the purchase within ${eu.returns.windowDays} days of delivery without giving a reason. Tyres and wheels that have been mounted or driven on may lose value, which can reduce the refund.`,
     notSold: {
       eyebrow: "Not sold in the EU store",
@@ -720,7 +720,7 @@ export const euEn: Dictionary = {
         items: [
           {
             q: "How long does delivery take?",
-            a: `${euDays} in total: ${eu.shipping.handlingDays[0]}–${eu.shipping.handlingDays[1]} days to dispatch and ${eu.shipping.transitDays[0]}–${eu.shipping.transitDays[1]} days in transit with ${eu.shipping.carriers.join(", ")}. Orders before ${eu.shipping.cutoff} on a working day count from that day.`,
+            a: `${euDays} in total: ${eu.shipping.handlingDays[0]}–${eu.shipping.handlingDays[1]} days to dispatch and ${eu.shipping.transitDays[0]}–${eu.shipping.transitDays[1]} days in transit. Whenever possible we ship via our own delivery service and our own courier; when our own delivery is not available for your route, we use other delivery carriers (${eu.shipping.carriers.join(", ")}). Orders before ${eu.shipping.cutoff} on a working day count from that day.`,
           },
           { q: "How much is shipping?", a: "Shipping is free on every order." },
           { q: "Will I pay customs or import VAT?", a: eu.shipping.duties },

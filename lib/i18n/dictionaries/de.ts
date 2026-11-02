@@ -125,7 +125,7 @@ export const euDe: Dictionary = {
       title: "Die Bedingungen im EU-Shop",
       lead: "Eigener Bestand, eigene Preise und Bedingungen für jede Region.",
       shippingTitle: s.freeShipping ? "Kostenloser Versand" : "Versand",
-      shippingText: `In ${area}. ${duties}`,
+      shippingText: `In ${area}. Wenn möglich versenden wir mit unserem eigenen Lieferdienst und eigenem Kurier; ist dies für Ihre Adresse nicht möglich, nutzen wir andere Versanddienstleister (${s.carriers.join(", ")}). ${duties}`,
       returnsTitle: "Widerrufsrecht",
       returnsValue: `${eu.returns.windowDays} Tage`,
       returnsText: "Ab Lieferung, ohne Angabe von Gründen. Nicht montierte Artikel.",
@@ -246,11 +246,11 @@ export const euDe: Dictionary = {
   },
     priceNote: "ohne Einfuhrabgaben und MwSt. · Preis pro Stück",
     deliveryTitle: `${s.freeShipping ? "Kostenlose Lieferung" : "Lieferung"} in ${days}`,
-    deliveryText: `In ${area}. Bestellungen bis ${cutoff} verlassen unser Lager in den USA innerhalb von ${s.handlingDays[0]}–${s.handlingDays[1]} Werktagen.`,
+    deliveryText: `In ${area}. Bestellungen bis ${cutoff} verlassen unser Lager in den USA innerhalb von ${s.handlingDays[0]}–${s.handlingDays[1]} Werktagen. Nach Möglichkeit per eigenem Lieferdienst und eigenem Kurier, andernfalls über andere Versanddienstleister.`,
     returnsTitle: `${eu.returns.windowDays} Tage Widerrufsrecht`,
     returnsText: "Nicht montiert und unbenutzt.",
     warrantyTitle: "2 Jahre gesetzliche Gewährleistung",
-    shippingText: `Kostenlose Lieferung in ${area} in ${days} mit ${s.carriers.join(", ")}. ${duties}`,
+    shippingText: `Kostenlose Lieferung in ${area} in ${days}. Wenn möglich versenden wir die Ware mit unserem eigenen Lieferdienst und eigenem Kurier; ist eine Zustellung durch unseren eigenen Lieferdienst nicht möglich, nutzen wir andere Versanddienstleister (${s.carriers.join(", ")}). ${duties}`,
     returnsDetail: `Sie können den Kauf innerhalb von ${eu.returns.windowDays} Tagen ab Lieferung ohne Angabe von Gründen widerrufen. Montierte oder gefahrene Reifen und Felgen können an Wert verlieren, was die Erstattung mindern kann.`,
     notSold: {
       eyebrow: "Nicht im EU-Shop erhältlich",
@@ -356,7 +356,7 @@ export const euDe: Dictionary = {
         items: [
           {
             q: "Wie lange dauert die Lieferung?",
-            a: `Insgesamt ${days}: ${s.handlingDays[0]}–${s.handlingDays[1]} Tage bis zum Versand und ${s.transitDays[0]}–${s.transitDays[1]} Tage Laufzeit mit ${s.carriers.join(", ")}. Bestellungen bis ${cutoff} an einem Werktag zählen ab diesem Tag.`,
+            a: `Insgesamt ${days}: ${s.handlingDays[0]}–${s.handlingDays[1]} Tage bis zum Versand und ${s.transitDays[0]}–${s.transitDays[1]} Tage Laufzeit. Wenn möglich versenden wir mit unserem eigenen Lieferdienst und eigenem Kurier; ist dies nicht möglich, nutzen wir andere Versanddienstleister (${s.carriers.join(", ")}). Bestellungen bis ${cutoff} an einem Werktag zählen ab diesem Tag.`,
           },
           { q: "Was kostet der Versand?", a: "Der Versand ist bei jeder Bestellung kostenlos." },
           { q: "Fallen Zoll oder Einfuhrumsatzsteuer an?", a: duties },
