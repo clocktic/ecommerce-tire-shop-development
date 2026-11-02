@@ -148,17 +148,17 @@ const consentShared = {
 
 const contactShared = {
   title: "Contact",
-  lead: "Our customer service replies within 24–48 hours during working days. Include your order number and, for fitment questions, your vehicle and current tire size.",
+  lead: "We strive for optimal customer satisfaction. Please do not hesitate to contact our specialized customer service team via the contact details below or by filling out the contact form. Your feedback is highly valuable to us. We aim to respond within 24–48 hours.",
   email: "Email",
   phone: "Phone",
-  hours: "Hours",
+  hours: "Opening Hours",
   address: "Company address",
   returnsAddress: "Returns address",
   returnsNote: "Please email or call us first — we issue a return authorization (RMA) number and the return address for your parcel.",
   quickLinks: "Quick links",
-  returns: "Returns",
+  returns: "Return and Refund Policy",
   privacy: "Privacy Policy",
-  terms: "Terms",
+  terms: "Terms of Service",
 }
 
 const aboutShared = {

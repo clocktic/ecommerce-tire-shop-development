@@ -27,7 +27,7 @@ const TIRE_MILES_BY_BRAND: Record<string, { years: number; programUs: string; pr
   },
   Continental: {
     years: 6,
-    programUs: "Continental Total Confidence Plan (Roadside & 60-Day Trial)",
+    programUs: "Continental Total Confidence Plan (Limited Mileage Coverage)",
     programEu: "Continental Europe Commercial Manufacturer Warranty",
   },
   Pirelli: {
@@ -47,7 +47,7 @@ const TIRE_MILES_BY_BRAND: Record<string, { years: number; programUs: string; pr
   },
   Hankook: {
     years: 6,
-    programUs: "Hankook US Limited Warranty & 30-Day Free Trial",
+    programUs: "Hankook US Limited Treadwear Coverage",
     programEu: "Hankook Tire Europe Commercial Manufacturer Guarantee",
   },
   Falken: {
