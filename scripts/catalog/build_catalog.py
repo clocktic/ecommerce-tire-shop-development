@@ -454,9 +454,9 @@ for w in wb:
         }
     add({
         "slug": slugify(f"{w['brand']} {model} {dia}x{wid_s} {pcd} et{et} {finish}"), "category": "wheels", "name": f"{model} {dia}x{wid_s} ET{et} {finish}", "brand": w["brand"],
-        **({"gtin": gtin} if gtin else {}), "supplierSku": w["mpn"].rstrip("#"), "images": [w["image"]],
+        **({"gtin": gtin} if gtin else {}), "mpn": w["mpn"].rstrip("#"), "supplierSku": w["mpn"].rstrip("#"), "images": [w["image"]],
         "shortDescription": f"{EN[constr_key]} {dia}x{wid_s} ET{et}, {pcd}, {finish}.",
-        "description": clip(f"{w['brand']} {model} is a {constr.lower()} alloy wheel, {dia}x{wid_s}, offset ET{et}, bolt pattern {pcd}, centre bore {cb:g} mm, {finish} finish." + (f" Load rating {load} kg per wheel." if load else "") + (f" Weight {weight} kg." if weight else "") + (f" Made in {origin}." if origin else "") + (" TÜV approved." if approvals else "") + (f" EAN {gtin}." if gtin else "") + f" Supplier part {w['mpn'].rstrip('#')}. No published EAN or manufacturer part number was found for this size. Sold individually. Confirm bolt pattern, offset and centre bore against the vehicle before ordering."),
+        "description": clip(f"{w['brand']} {model} is a {constr.lower()} alloy wheel, {dia}x{wid_s}, offset ET{et}, bolt pattern {pcd}, centre bore {cb:g} mm, {finish} finish." + (f" Load rating {load} kg per wheel." if load else "") + (f" Weight {weight} kg." if weight else "") + (f" Made in {origin}." if origin else "") + (" TÜV approved." if approvals else "") + (f" EAN {gtin}." if gtin else "") + f" Part number {w['mpn'].rstrip('#')}. Sold individually. Confirm bolt pattern, offset and centre bore against the vehicle before ordering."),
         "highlights": [f"{dia}x{wid_s} ET{et}", pcd, finish, constr] + ([f"{load} kg load rating"] if load else []) + (["TÜV approved"] if approvals else []) + ["Price per wheel"],
         "specs": specs,
         "offers": {"eu": {"priceCents": pretty_eur(w["priceGbp"]), "availability": "in_stock"}},

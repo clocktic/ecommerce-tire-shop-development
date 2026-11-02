@@ -22,6 +22,28 @@ const GOOGLE_CATEGORY: Record<Product["category"], string> = {
 
 const DESCRIPTION_LIMIT = 5000
 const GTIN = /^\d{8}$|^\d{12,14}$/
+const UNSUPPORTED_IMAGE_EXT = /\.(avif|gif)(?:[?#]|$)/i
+
+function supportedFeedImages(images: string[]): string[] {
+  return images.filter((src) => Boolean(src) && !UNSUPPORTED_IMAGE_EXT.test(src))
+}
+
+function itemGroupId(product: Product): string | null {
+  const slugPart = (value: string) =>
+    value
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "")
+  if (product.category === "tires") {
+    const model = product.tire.model || product.name.replace(/\s+\d{3}\/\d{2}.*$/, "")
+    return `tire-${slugPart(product.brand)}-${slugPart(model)}`.slice(0, 50)
+  }
+  if (product.category === "wheels") {
+    const style = product.name.replace(/\s+\d{1,2}(?:\.\d)?x\d{1,2}(?:\.\d)?\s+ET-?\d+.*$/i, "").trim()
+    return `wheel-${slugPart(product.brand)}-${slugPart(style)}`.slice(0, 50)
+  }
+  return null
+}
 
 function xml(value: string): string {
   return value
@@ -89,8 +111,9 @@ export function feedExclusion(product: Product, market: Market): string | null {
   if (product.sample) return "sample record"
   if (!offer) return "not sold in this market"
   if (offer.priceCents <= 0) return "no price"
-  if (product.images.length === 0) return "no image"
+  if (supportedFeedImages(product.images).length === 0) return "no supported image (JPEG/PNG/WebP required)"
   if (!product.brand) return "no brand"
+  if (!product.gtin && !product.mpn) return "missing both GTIN and MPN"
   if (offer.availability === "preorder" && !offer.availableFrom) return "preorder without availability date"
   if (product.name.length > 150) return "title over 150 characters"
   if (product.gtin && !GTIN.test(product.gtin)) return "invalid GTIN"
@@ -105,12 +128,14 @@ function item(product: Product, store: Store, d: Dictionary): string {
   const offer = offerFor(product, market)!
   const { shipping } = POLICIES[market]
   const link = absoluteUrl(storePath(store, `/product/${product.slug}`))
-  const [hero, ...rest] = product.images.map((src) => absoluteUrl(src))
+  const [hero, ...rest] = supportedFeedImages(product.images).map((src) => absoluteUrl(src))
   const onSale = offer.compareAtCents && offer.compareAtCents > offer.priceCents
   const lines: string[] = []
   const tag = (name: string, value: string | number) => lines.push(`      <g:${name}>${xml(String(value))}</g:${name}>`)
 
   tag("id", feedId(product))
+  const groupId = itemGroupId(product)
+  if (groupId) tag("item_group_id", groupId)
   lines.push(`      <title>${xml(product.name)}</title>`)
   lines.push(`      <description>${xml(description(product))}</description>`)
   lines.push(`      <link>${xml(link)}</link>`)
@@ -130,6 +155,12 @@ function item(product: Product, store: Store, d: Dictionary): string {
   if (product.gtin) tag("gtin", product.gtin)
   if (product.mpn) tag("mpn", product.mpn)
   if (!product.gtin && !product.mpn) tag("identifier_exists", "no")
+  if (product.category === "tires") {
+    tag("size", `${tireSize(product.tire)} ${tireServiceDescription(product.tire)}`)
+  } else if (product.category === "wheels") {
+    tag("size", `${product.wheel.diameter}x${product.wheel.width} ${product.wheel.boltPattern} ET${product.wheel.offset}`)
+    tag("color", product.wheel.finish)
+  }
   tag("google_product_category", GOOGLE_CATEGORY[product.category])
   tag("product_type", d.categories[product.category].name)
 
@@ -161,11 +192,27 @@ export async function buildGoogleFeed(store: Store): Promise<{ xml: string; incl
   const d = getDictionary(store)
   const skipped: FeedSkip[] = []
   const items: string[] = []
+  const seenGtins = new Set<string>()
+  const seenIds = new Set<string>()
   for (const base of await getProducts(market)) {
     const product = localizeProduct(base, store)
     const reason = feedExclusion(product, market)
-    if (reason) skipped.push({ slug: product.slug, reason })
-    else items.push(item(product, store, d))
+    if (reason) {
+      skipped.push({ slug: product.slug, reason })
+      continue
+    }
+    const id = feedId(product)
+    if (seenIds.has(id)) {
+      skipped.push({ slug: product.slug, reason: "duplicate feed ID" })
+      continue
+    }
+    if (product.gtin && seenGtins.has(product.gtin)) {
+      skipped.push({ slug: product.slug, reason: "duplicate GTIN" })
+      continue
+    }
+    seenIds.add(id)
+    if (product.gtin) seenGtins.add(product.gtin)
+    items.push(item(product, store, d))
   }
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>

@@ -1,4 +1,4 @@
-import { offerFor, type Product } from "@/lib/catalog"
+import { offerFor, tireServiceDescription, tireSize, type Product } from "@/lib/catalog"
 import { COMPANY } from "@/lib/company"
 import { MARKETS } from "@/lib/markets"
 import { storePath, type Store } from "@/lib/i18n/config"
@@ -40,6 +40,14 @@ export function productJsonLd(product: Product, store: Store) {
     sku: product.id,
     ...(product.mpn ? { mpn: product.mpn } : {}),
     ...gtinProperty(product.gtin),
+    ...(product.category === "tires"
+      ? { size: `${tireSize(product.tire)} ${tireServiceDescription(product.tire)}` }
+      : product.category === "wheels"
+        ? {
+            size: `${product.wheel.diameter}x${product.wheel.width} ${product.wheel.boltPattern} ET${product.wheel.offset}`,
+            color: product.wheel.finish,
+          }
+        : {}),
     brand: { "@type": "Brand", name: product.brand },
     offers: {
       "@type": "Offer",
