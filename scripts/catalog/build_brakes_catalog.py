@@ -302,6 +302,10 @@ def make_offers(ref_price_usd: float, ref_price_eur: float, seed: str, is_kit: b
     """
     Sets store prices 8%-11% lower than the exact reference prices from
     baer.com, tbmbrakes.com, opsholders.com, wilwood.com/buybrakes.com, spareto.com, powerstop.com.
+
+    The reference price is a third-party price, not a price this store has charged, so it must
+    never be published as compareAtCents: a strike-through price has to be the store's own lowest
+    price of the prior 30 days (EU Omnibus, Directive 98/6/EC Art. 6a; Google Merchant Center sale_price).
     """
     h = int(hashlib.md5(seed.encode()).hexdigest()[:6], 16)
     discount_pct = 0.08 + (h % 4) * 0.01  # 8%, 9%, 10%, or 11% below reference price
@@ -318,13 +322,11 @@ def make_offers(ref_price_usd: float, ref_price_eur: float, seed: str, is_kit: b
     return {
         "us": {
             "priceCents": our_usd_cents,
-            "compareAtCents": ref_usd_cents,
             "availability": "in_stock",
             "stock": stock,
         },
         "eu": {
             "priceCents": our_eur_cents,
-            "compareAtCents": ref_eur_cents,
             "availability": "in_stock",
             "stock": stock,
         },
