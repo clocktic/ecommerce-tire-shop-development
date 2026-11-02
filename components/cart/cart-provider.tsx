@@ -29,7 +29,7 @@ const CartContext = createContext<CartContextValue | null>(null)
 export const MAX_QUANTITY = 8
 
 // Carts are per market: prices and currency differ, so a US cart never leaks into the EU store.
-const storageKey = (market: Market) => `cp-cart-${market}-v1`
+const storageKey = (market: Market) => `ts-cart-${market}-v1`
 
 export function CartProvider({ market, children }: { market: Market; children: React.ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([])

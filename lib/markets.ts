@@ -7,9 +7,9 @@ export type Market = (typeof markets)[number]
 export const defaultMarket: Market = "us"
 
 // Explicit choice made with the region switcher. Always wins over geo.
-export const MARKET_COOKIE = "cp_market"
+export const MARKET_COOKIE = "ts_market"
 // Country-derived market, refreshed by proxy.ts on every page request.
-export const GEO_COOKIE = "cp_geo"
+export const GEO_COOKIE = "ts_geo"
 
 export const EU_COUNTRIES = [
   { code: "AT", name: "Austria" },

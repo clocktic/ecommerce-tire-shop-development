@@ -1,7 +1,7 @@
 import type { Market } from "@/lib/markets"
 
-export const CONSENT_STORAGE_KEY = "cp-consent-v1"
-export const OPEN_CONSENT_EVENT = "cp:open-consent"
+export const CONSENT_STORAGE_KEY = "ts-consent-v1"
+export const OPEN_CONSENT_EVENT = "ts:open-consent"
 // Stored choices expire so EU visitors are asked again (documented in the Cookie Policy).
 export const CONSENT_MAX_AGE_DAYS = 395
 

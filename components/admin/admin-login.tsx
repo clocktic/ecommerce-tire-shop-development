@@ -9,7 +9,7 @@ export function AdminLogin() {
   return (
     <main className="flex min-h-dvh items-center justify-center px-4">
       <form action={action} className="flex w-full max-w-sm flex-col gap-4 border border-border bg-card p-6">
-        <h1 className="font-expanded text-xl font-extrabold uppercase">Contact Patch · Operations</h1>
+        <h1 className="font-expanded text-xl font-extrabold uppercase">TiresShop · Operations</h1>
         <label htmlFor="admin-password" className="label-caps text-muted-foreground">
           Пароль
         </label>

@@ -5,7 +5,7 @@ import { db } from "@/lib/db"
 import { chatConversations, chatMessages, type ChatConversationRow } from "@/lib/db/schema"
 import { newId } from "@/lib/ids"
 
-export const CHAT_COOKIE = "cp_chat"
+export const CHAT_COOKIE = "ts_chat"
 export const MAX_CHAT_MESSAGE = 2000
 
 export type ChatMessageDto = { id: string; role: "visitor" | "admin"; body: string; createdAt: string }

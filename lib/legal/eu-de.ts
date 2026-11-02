@@ -356,11 +356,13 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
         blocks: [
           {
             rows: [
-              ["cp_market", "Speichert die gewählte Shop-Region — 12 Monate"],
-              ["cp_geo", "Aus Ihrem Land abgeleitete Shop-Region — 12 Monate"],
-              ["cp_lang", "Speichert die gewählte Sprache — 12 Monate"],
-              ["cp-cart-eu-v1 (Local Storage)", "Speichert den Inhalt Ihres Warenkorbs — bis zum Löschen"],
-              ["cp-consent-v1 (Local Storage)", `Speichert Ihre Cookie-Auswahl — ${Math.round(CONSENT_MAX_AGE_DAYS / 30.4)} Monate`],
+              ["ts_market", "Speichert die gewählte Shop-Region — 12 Monate"],
+              ["ts_geo", "Aus Ihrem Land abgeleitete Shop-Region — 12 Monate"],
+              ["ts_lang", "Speichert die gewählte Sprache — 12 Monate"],
+              ["ts_garage", "Speichert Ihr gewähltes Fahrzeug oder Ihre Reifengröße — 12 Monate"],
+              ["ts-theme", "Speichert Ihr gewähltes Farbschema (Hell/Dunkel) — 12 Monate"],
+              ["ts-cart-eu-v1 (Local Storage)", "Speichert den Inhalt Ihres Warenkorbs — bis zum Löschen"],
+              ["ts-consent-v1 (Local Storage)", `Speichert Ihre Cookie-Auswahl — ${Math.round(CONSENT_MAX_AGE_DAYS / 30.4)} Monate`],
             ],
           },
         ],

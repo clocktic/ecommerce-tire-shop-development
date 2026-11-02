@@ -14,7 +14,7 @@ export const MARKET_LANGS: Record<Market, readonly Lang[]> = {
 export const DEFAULT_LANG: Lang = "en"
 
 // Explicit language choice from the language switcher. Wins over Accept-Language.
-export const LANG_COOKIE = "cp_lang"
+export const LANG_COOKIE = "ts_lang"
 
 export type Store = { market: Market; lang: Lang }
 

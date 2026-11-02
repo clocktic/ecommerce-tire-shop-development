@@ -5,7 +5,7 @@ import { cookies } from "next/headers"
 
 // Single shared password (ADMIN_PASSWORD) + signed, httpOnly session cookie.
 // Customers sign in with Better Auth; the operator area is deliberately separate.
-const COOKIE_NAME = "cp_admin"
+const COOKIE_NAME = "ts_admin"
 const SESSION_TTL_MS = 1000 * 60 * 60 * 8
 
 function secret(): string {

@@ -18,8 +18,9 @@ const archivo = Archivo({ subsets: ["latin", "latin-ext"], axes: ["wdth"], varia
 const jetbrains = JetBrains_Mono({ subsets: ["latin", "cyrillic"], variable: "--font-jetbrains" })
 
 export const metadata: Metadata = {
-  title: "Contact Patch · Operations",
+  title: "TiresShop · Operations",
   robots: { index: false, follow: false },
+  icons: { icon: "/icon.svg", apple: "/apple-icon.png" },
 }
 
 export const dynamic = "force-dynamic"
@@ -39,7 +40,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               <header className="sticky top-0 z-30 border-b border-border bg-background">
                 <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 md:px-6">
                   <Link href="/admin" className="font-expanded text-sm font-extrabold uppercase">
-                    Contact Patch <span className="text-muted-foreground">· Operations</span>
+                    TiresShop <span className="text-muted-foreground">· Operations</span>
                   </Link>
                   <div className="flex items-center gap-1">
                     <AdminThemeToggle />

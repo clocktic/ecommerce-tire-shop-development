@@ -27,7 +27,7 @@ export default async function AdminMessagesPage() {
                     {STATUS_RU[m.status] ?? m.status}
                   </span>
                   <span className="font-semibold">{m.name}</span>
-                  <a href={`mailto:${m.email}?subject=${encodeURIComponent(`Re: ${m.subject ?? "Contact Patch"}`)}`} className="text-primary underline underline-offset-4">
+                  <a href={`mailto:${m.email}?subject=${encodeURIComponent(`Re: ${m.subject ?? "TiresShop"}`)}`} className="text-primary underline underline-offset-4">
                     {m.email}
                   </a>
                   {m.orderNumber && <span className="font-mono text-xs">{m.orderNumber}</span>}

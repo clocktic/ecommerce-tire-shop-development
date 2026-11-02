@@ -3,7 +3,7 @@
 import { useLayoutEffect } from "react"
 import { THEME_COOKIE } from "@/lib/theme"
 
-const STORAGE_KEY = "cp-theme"
+const STORAGE_KEY = "ts-theme"
 
 function persist(next: "light" | "dark") {
   try {
