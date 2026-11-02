@@ -78,6 +78,14 @@ export default async function OrderPage({ params }: { params: Params }) {
               <dt className="text-muted-foreground">{t.cart.subtotal}</dt>
               <dd className="font-mono tabular-nums">{price(order.subtotalCents)}</dd>
             </div>
+            {order.subtotalCents + order.shippingCents - order.totalCents > 0 && (
+              <div className="flex justify-between text-primary">
+                <dt className="font-medium">{x.memberDiscount.cartDiscountRow}</dt>
+                <dd className="font-mono font-semibold tabular-nums">
+                  −{price(order.subtotalCents + order.shippingCents - order.totalCents)}
+                </dd>
+              </div>
+            )}
             <div className="flex justify-between">
               <dt className="text-muted-foreground">{t.cart.shipping}</dt>
               <dd className="font-mono tabular-nums">{order.shippingCents === 0 ? t.common.free : price(order.shippingCents)}</dd>

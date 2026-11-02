@@ -102,7 +102,7 @@ export function CheckoutForm() {
             {session?.user ? (
               fmt(x.checkout.signedInAs, { email: session.user.email })
             ) : (
-              <Link href={storePath(store, "/account")} className="underline underline-offset-4">
+              <Link href={storePath(store, "/account?mode=sign-up")} className="underline underline-offset-4">
                 {x.checkout.signInHint}
               </Link>
             )}

@@ -11,8 +11,8 @@ import { signUpWithCaptcha, type SignUpState } from "@/lib/actions/auth"
 
 const initialSignUp: SignUpState = { status: "idle", attempt: 0 }
 
-export function EmailAuthForm() {
-  const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in")
+export function EmailAuthForm({ initialMode = "sign-in" }: { initialMode?: "sign-in" | "sign-up" }) {
+  const [mode, setMode] = useState<"sign-in" | "sign-up">(initialMode)
   const { x } = useI18n()
   const a = x.account
 

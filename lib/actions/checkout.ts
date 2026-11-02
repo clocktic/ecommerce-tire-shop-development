@@ -12,6 +12,7 @@ import { localeMeta, parseStore } from "@/lib/i18n/config"
 import { extrasFor } from "@/lib/i18n/extras"
 import { fmt } from "@/lib/i18n/fmt"
 import { MARKETS, formatPrice } from "@/lib/markets"
+import { computeMemberDiscountCents } from "@/lib/member-discount"
 import { createCgPayTechPaymentForm } from "@/lib/payments/cgpaytech"
 import { POLICIES } from "@/lib/policies"
 
@@ -97,9 +98,10 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
 
   const subtotalCents = items.reduce((sum, i) => sum + i.lineTotalCents, 0)
   const shippingCents = POLICIES[store.market].shipping.rateCents
-  const totalCents = subtotalCents + shippingCents
   const reqHeaders = await headers()
   const user = await getSessionUser(reqHeaders)
+  const discountCents = computeMemberDiscountCents(subtotalCents, Boolean(user))
+  const totalCents = Math.max(0, subtotalCents - discountCents) + shippingCents
   const orderNumber = newOrderNumber(store.market)
 
   await db.insert(orders).values({
@@ -121,6 +123,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
     shippingRegion: fields.state || null,
     shippingPostalCode: fields.postal,
     shippingCountry: fields.country,
+    notes: discountCents > 0 ? "member_discount_7pct" : null,
   })
   await db.insert(orderItems).values(items)
 

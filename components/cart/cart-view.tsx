@@ -2,13 +2,15 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { Minus, Plus, X } from "lucide-react"
+import { ArrowRight, CheckCircle2, Minus, Plus, Tag, X } from "lucide-react"
 import { buttonVariants } from "@/components/ui/button"
 import { MAX_QUANTITY, useCart } from "@/components/cart/cart-provider"
 import { useI18n } from "@/components/i18n/i18n-provider"
+import { useSession } from "@/lib/auth-client"
 import { fmt } from "@/lib/i18n/fmt"
 import { storePath } from "@/lib/i18n/config"
 import { formatPrice } from "@/lib/markets"
+import { computeMemberDiscountCents, computePotentialMemberDiscountCents } from "@/lib/member-discount"
 import { POLICIES } from "@/lib/policies"
 import { cn } from "@/lib/utils"
 
@@ -99,34 +101,71 @@ export function CartView() {
   )
 }
 
-export function SummaryRows({ subtotalCents }: { subtotalCents: number }) {
-  const { store, t, intl } = useI18n()
+export function SummaryRows({ subtotalCents, onNavigate }: { subtotalCents: number; onNavigate?: () => void }) {
+  const { store, t, x, intl } = useI18n()
   const { market } = store
+  const { data: session } = useSession()
+  const isMember = Boolean(session?.user)
+  const discountCents = computeMemberDiscountCents(subtotalCents, isMember)
+  const potentialDiscountCents = computePotentialMemberDiscountCents(subtotalCents)
   const shipping = POLICIES[market].shipping
-  const total = subtotalCents + shipping.rateCents
+  const total = Math.max(0, subtotalCents - discountCents) + shipping.rateCents
+
   return (
-    <dl className="flex flex-col gap-2 text-sm">
-      <div className="flex justify-between">
-        <dt className="text-muted-foreground">{t.cart.subtotal}</dt>
-        <dd className="font-mono tabular-nums">{formatPrice(subtotalCents, market, intl)}</dd>
-      </div>
-      <div className="flex justify-between">
-        <dt className="text-muted-foreground">{t.cart.shipping}</dt>
-        <dd className="font-mono tabular-nums">
-          {shipping.rateCents === 0 ? t.common.free : formatPrice(shipping.rateCents, market, intl)}
-        </dd>
-      </div>
-      {t.cart.tax && (
-        <div className="flex justify-between gap-4">
-          <dt className="text-muted-foreground">{t.cart.tax.label}</dt>
-          <dd className="font-mono text-muted-foreground">{t.cart.tax.value}</dd>
+    <div className="flex flex-col gap-3">
+      {isMember ? (
+        <div className="flex items-center gap-2 border border-primary/40 bg-primary/10 px-3 py-2 text-xs font-medium text-foreground">
+          <CheckCircle2 className="size-3.5 shrink-0 text-primary" aria-hidden="true" />
+          <span>{fmt(x.memberDiscount.cartActiveNotice, { amount: formatPrice(discountCents, market, intl) })}</span>
+        </div>
+      ) : (
+        <div className="flex items-center justify-between gap-2 border border-primary/35 bg-primary/8 px-3 py-2.5 text-xs">
+          <div className="flex items-start gap-2">
+            <Tag className="mt-0.5 size-3.5 shrink-0 text-primary" aria-hidden="true" />
+            <span className="leading-snug text-foreground">
+              {fmt(x.memberDiscount.cartGuestPrompt, { amount: formatPrice(potentialDiscountCents, market, intl) })}
+            </span>
+          </div>
+          <Link
+            href={storePath(store, "/account?mode=sign-up")}
+            onClick={onNavigate}
+            className="inline-flex shrink-0 items-center gap-1 bg-primary px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-primary-foreground transition-opacity hover:opacity-90"
+          >
+            <span>{x.memberDiscount.cartGuestCta}</span>
+            <ArrowRight className="size-3" aria-hidden="true" />
+          </Link>
         </div>
       )}
-      <div className="flex justify-between border-t border-border pt-2 text-base font-semibold">
-        <dt>{t.cart.total}</dt>
-        <dd className="font-mono tabular-nums">{formatPrice(total, market, intl)}</dd>
-      </div>
-      {t.cart.priceNote && <p className="text-xs text-muted-foreground">{t.cart.priceNote}</p>}
-    </dl>
+
+      <dl className="flex flex-col gap-2 text-sm">
+        <div className="flex justify-between">
+          <dt className="text-muted-foreground">{t.cart.subtotal}</dt>
+          <dd className="font-mono tabular-nums">{formatPrice(subtotalCents, market, intl)}</dd>
+        </div>
+        {isMember && discountCents > 0 && (
+          <div className="flex justify-between text-primary">
+            <dt className="font-medium">{x.memberDiscount.cartDiscountRow}</dt>
+            <dd className="font-mono font-semibold tabular-nums">−{formatPrice(discountCents, market, intl)}</dd>
+          </div>
+        )}
+        <div className="flex justify-between">
+          <dt className="text-muted-foreground">{t.cart.shipping}</dt>
+          <dd className="font-mono tabular-nums">
+            {shipping.rateCents === 0 ? t.common.free : formatPrice(shipping.rateCents, market, intl)}
+          </dd>
+        </div>
+        {t.cart.tax && (
+          <div className="flex justify-between gap-4">
+            <dt className="text-muted-foreground">{t.cart.tax.label}</dt>
+            <dd className="font-mono text-muted-foreground">{t.cart.tax.value}</dd>
+          </div>
+        )}
+        <div className="flex justify-between border-t border-border pt-2 text-base font-semibold">
+          <dt>{t.cart.total}</dt>
+          <dd className="font-mono tabular-nums">{formatPrice(total, market, intl)}</dd>
+        </div>
+        {t.cart.priceNote && <p className="text-xs text-muted-foreground">{t.cart.priceNote}</p>}
+      </dl>
+    </div>
   )
 }
