@@ -15,6 +15,7 @@ import { MARKETS, formatPrice } from "@/lib/markets"
 import { computeMemberDiscountCents } from "@/lib/member-discount"
 import { createCgPayTechPaymentForm } from "@/lib/payments/cgpaytech"
 import { POLICIES } from "@/lib/policies"
+import { notifyTelegramNewOrder } from "@/lib/telegram"
 
 const MAX_PER_LINE = 8
 const MAX_PER_ORDER = 24
@@ -153,16 +154,42 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
 
   const meta = localeMeta(store)
   const x = extrasFor(meta.content)
-  await sendMail({
-    to: email,
-    subject: fmt(x.email.orderSubject, { number: orderNumber }),
-    paragraphs: [
-      fmt(x.email.orderBody, { number: orderNumber, total: formatPrice(totalCents, store.market, meta.intlLocale) }),
-      ...items.map((i) => `${i.quantity} × ${i.productName}`),
-      x.order.payment,
-    ],
-    signoff: x.email.signoff,
-  })
+  await Promise.all([
+    sendMail({
+      to: email,
+      subject: fmt(x.email.orderSubject, { number: orderNumber }),
+      paragraphs: [
+        fmt(x.email.orderBody, { number: orderNumber, total: formatPrice(totalCents, store.market, meta.intlLocale) }),
+        ...items.map((i) => `${i.quantity} × ${i.productName}`),
+        x.order.payment,
+      ],
+      signoff: x.email.signoff,
+    }),
+    notifyTelegramNewOrder({
+      orderNumber,
+      market: store.market,
+      lang: store.lang,
+      customerName: `${fields.firstName} ${fields.lastName}`,
+      email,
+      phone: fields.phone,
+      address: fields.address,
+      postalCode: fields.postal,
+      city: fields.city,
+      region: fields.state || null,
+      country: fields.country,
+      subtotalCents,
+      discountCents,
+      shippingCents,
+      totalCents,
+      items: items.map((i) => ({
+        productName: i.productName,
+        brandName: i.brandName,
+        quantity: i.quantity,
+        lineTotalCents: i.lineTotalCents,
+      })),
+      paymentRedirected: paymentSession.ok,
+    }),
+  ])
 
   if (paymentSession.ok) {
     return { ok: true, orderNumber, forwardUrl: paymentSession.forwardUrl }

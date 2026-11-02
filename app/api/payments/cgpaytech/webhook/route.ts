@@ -1,7 +1,9 @@
 import { eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 import { db } from "@/lib/db"
-import { orders } from "@/lib/db/schema"
+import { orderItems, orders } from "@/lib/db/schema"
+import type { Market } from "@/lib/markets"
+import { notifyTelegramOrderPaid } from "@/lib/telegram"
 
 export async function POST(request: Request) {
   try {
@@ -30,15 +32,46 @@ export async function POST(request: Request) {
       .toLowerCase()
 
     if (externalId) {
+      const [existing] = await db
+        .select()
+        .from(orders)
+        .where(eq(orders.orderNumber, externalId))
+        .limit(1)
+
       if (["success", "succeeded", "captured", "settled", "approved", "paid", "completed"].includes(rawStatus)) {
         await db
           .update(orders)
-          .set({ status: "paid" })
+          .set({ status: "paid", updatedAt: new Date() })
           .where(eq(orders.orderNumber, externalId))
+
+        if (existing && existing.status !== "paid") {
+          const items = await db
+            .select()
+            .from(orderItems)
+            .where(eq(orderItems.orderId, existing.id))
+
+          await notifyTelegramOrderPaid({
+            orderNumber: existing.orderNumber,
+            market: (existing.market === "eu" ? "eu" : "us") as Market,
+            customerName: existing.shippingName,
+            email: existing.email,
+            phone: existing.phone,
+            city: existing.shippingCity,
+            country: existing.shippingCountry,
+            totalCents: existing.totalCents,
+            items: items.map((i) => ({
+              productName: i.productName,
+              brandName: i.brandName,
+              quantity: i.quantity,
+              lineTotalCents: i.lineTotalCents,
+            })),
+            source: "CGPayTech (эквайринг)",
+          })
+        }
       } else if (["failed", "declined", "error", "expired", "canceled", "cancelled"].includes(rawStatus)) {
         await db
           .update(orders)
-          .set({ status: "cancelled" })
+          .set({ status: "cancelled", updatedAt: new Date() })
           .where(eq(orders.orderNumber, externalId))
       }
     }

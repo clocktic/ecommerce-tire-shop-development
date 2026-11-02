@@ -6,9 +6,9 @@ import { count, eq } from "drizzle-orm"
 import { createAdminSession, destroyAdminSession, requireAdmin, verifyPassword } from "@/lib/admin-auth"
 import { addMessage } from "@/lib/chat"
 import { db } from "@/lib/db"
-import { chatConversations, contactMessages, orders, products } from "@/lib/db/schema"
+import { chatConversations, contactMessages, orderItems, orders, products } from "@/lib/db/schema"
 import { isCategory, type Availability, type Offer, type Product } from "@/lib/catalog"
-import { markets } from "@/lib/markets"
+import { markets, type Market } from "@/lib/markets"
 import { ensureShipmentOnShip, insertShipmentEvent, sendShipmentEventEmail } from "@/lib/shipping/events"
 import { ORDER_STATUSES, isShipmentStatus, type OrderStatus } from "@/lib/shipping/tracking"
 import { extrasFor } from "@/lib/i18n/extras"
@@ -16,6 +16,7 @@ import { fmt } from "@/lib/i18n/fmt"
 import { localeMeta } from "@/lib/i18n/config"
 import { sendMail } from "@/lib/email"
 import { orderStore } from "@/lib/shipping/events"
+import { notifyTelegramOrderPaid, sendTelegramNotification } from "@/lib/telegram"
 
 export type ActionResult = { ok: true; message?: string } | { ok: false; error: string }
 
@@ -44,10 +45,32 @@ export async function getUnreadChatCount(): Promise<number> {
 export async function setOrderStatus(orderId: string, status: string): Promise<ActionResult> {
   await requireAdmin()
   if (!(ORDER_STATUSES as readonly string[]).includes(status)) return { ok: false, error: "Неизвестный статус" }
+  const [prevOrder] = await db.select().from(orders).where(eq(orders.id, orderId)).limit(1)
   await db
     .update(orders)
     .set({ status: status as OrderStatus, updatedAt: new Date() })
     .where(eq(orders.id, orderId))
+
+  if (status === "paid" && prevOrder && prevOrder.status !== "paid") {
+    const items = await db.select().from(orderItems).where(eq(orderItems.orderId, orderId))
+    await notifyTelegramOrderPaid({
+      orderNumber: prevOrder.orderNumber,
+      market: (prevOrder.market === "eu" ? "eu" : "us") as Market,
+      customerName: prevOrder.shippingName,
+      email: prevOrder.email,
+      phone: prevOrder.phone,
+      city: prevOrder.shippingCity,
+      country: prevOrder.shippingCountry,
+      totalCents: prevOrder.totalCents,
+      items: items.map((i) => ({
+        productName: i.productName,
+        brandName: i.brandName,
+        quantity: i.quantity,
+        lineTotalCents: i.lineTotalCents,
+      })),
+      source: "Отмечено в админке",
+    })
+  }
 
   if (status === "shipped") {
     const result = await ensureShipmentOnShip(orderId)
@@ -63,6 +86,24 @@ export async function setOrderStatus(orderId: string, status: string): Promise<A
   }
   revalidatePath("/admin", "layout")
   return { ok: true }
+}
+
+export async function testTelegramBot(): Promise<ActionResult> {
+  await requireAdmin()
+  const res = await sendTelegramNotification(
+    [
+      `🔔 <b>Тестовое уведомление · TiresShop</b>`,
+      `Бот успешно подключён к магазину <b>tiresshop.net</b>.`,
+      `Сюда будут приходить уведомления:`,
+      `• о регистрации нового покупателя`,
+      `• о создании нового заказа`,
+      `• об успешной оплате заказа`,
+    ].join("\n"),
+  )
+  if (!res.ok) {
+    return { ok: false, error: res.error ?? "Ошибка отправки в Telegram" }
+  }
+  return { ok: true, message: "Тестовое сообщение отправлено в Telegram" }
 }
 
 export async function addShipmentEvent(form: FormData): Promise<ActionResult> {
