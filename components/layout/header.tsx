@@ -17,7 +17,7 @@ export function Header({ store }: { store: Store }) {
   const x = getExtras(store)
   const nav = [
     ...CATEGORIES.map((c) => ({ href: storePath(store, `/${c.slug}`), label: t.categories[c.slug].name })),
-    { href: storePath(store, "/tire-models"), label: tireReferenceCopy(store).navLabel },
+    { href: storePath(store, "/tire-models"), label: tireReferenceCopy(store).nav },
     { href: storePath(store, "/track"), label: x.track.nav },
     { href: storePath(store, "/faq"), label: t.common.faq },
     { href: storePath(store, "/about"), label: t.common.about },
