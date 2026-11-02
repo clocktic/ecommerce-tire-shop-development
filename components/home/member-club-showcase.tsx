@@ -51,7 +51,7 @@ export function MemberClubShowcase() {
                 </span>
               </div>
               <span className="font-mono text-[10px] uppercase tracking-wider text-secondary-foreground/70 sm:hidden">
-                Instant Checkout
+                {m.instantCheckout}
               </span>
             </div>
 

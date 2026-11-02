@@ -8,12 +8,14 @@ export function BrandFilterStrip({
   basePath,
   currentFilters,
   allLabel,
+  ariaLabel = "Filter by brand",
 }: {
   brands: Array<{ name: string; count: number }>
   activeBrand?: string
   basePath: string
   currentFilters: Record<string, string | undefined>
   allLabel: string
+  ariaLabel?: string
 }) {
   if (brands.length === 0) return null
 
@@ -32,7 +34,7 @@ export function BrandFilterStrip({
 
   return (
     <nav
-      aria-label="Filter by brand"
+      aria-label={ariaLabel}
       className="flex items-center gap-2 overflow-x-auto border-b border-border py-3.5 [scrollbar-width:thin]"
     >
       <Link

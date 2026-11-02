@@ -13,7 +13,8 @@ export function productCode(product: Product, t: Dictionary): { code: string; me
   }
   if (product.category === "wheels") {
     const w = product.wheel
-    return { code: `${w.diameter}×${w.width} ${w.boltPattern.replace("x", "×")}`, meta: `ET${w.offset} · ${w.construction}` }
+    const constr = t.catalog.constructionLabels[w.construction] ?? w.construction
+    return { code: `${w.diameter}×${w.width} ${w.boltPattern.replace("x", "×")}`, meta: `ET${w.offset} · ${constr}` }
   }
   const b = product.brake
   return {

@@ -35,7 +35,7 @@ export function TireModelCard({ variants, store }: { variants: TireCardVariant[]
   const product = variants.find(p => p.id === selectedId) || defaultProduct
   const offer = product.offers[store.market]!
   const t = getDictionary(store)
-  const labels = tireReferenceCopy(store.lang)
+  const labels = tireReferenceCopy(store.lang, store.market)
   const size = tireSize(product.tire)
   const sizes = [...new Set(variants.map(p => tireSize(p.tire)))]
   const sameSize = variants.filter(p => tireSize(p.tire) === size)

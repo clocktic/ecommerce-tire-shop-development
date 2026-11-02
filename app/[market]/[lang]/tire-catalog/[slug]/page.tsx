@@ -13,13 +13,13 @@ type Props = { params: Promise<{ market: string; lang: string; slug: string }>; 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const p = await params; const store = parseStore(p.market, p.lang); const model = referenceModels.find(m => m.slug === p.slug)
   if (!store || !model) return {}
-  const t = tireReferenceCopy(store.lang)
+  const t = tireReferenceCopy(store.lang, store.market)
   return { title: `${model.brand} ${model.name} | ${t.title}`, description: t.intro, alternates: storeAlternates(store, `/tire-catalog/${model.slug}`) }
 }
 export default async function ReferenceModelPage({ params, searchParams }: Props) {
   const p = await params; const store = parseStore(p.market, p.lang); const model = referenceModels.find(m => m.slug === p.slug)
   if (!store || !model) notFound()
-  const t = tireReferenceCopy(store.lang)
+  const t = tireReferenceCopy(store.lang, store.market)
   const query = await searchParams
   const size = typeof query.size === 'string' ? query.size : ''
   const mpn = typeof query.mpn === 'string' ? query.mpn : ''

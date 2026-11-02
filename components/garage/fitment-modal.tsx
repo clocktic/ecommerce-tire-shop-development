@@ -21,6 +21,7 @@ import {
   type VehicleModel,
 } from "@/lib/catalog/vehicles"
 import { TIRE_OPTIONS } from "@/lib/catalog"
+import { fmt } from "@/lib/i18n/fmt"
 import { storePath } from "@/lib/i18n/config"
 import type { GarageSelection } from "@/lib/garage-cookie"
 import { cn } from "@/lib/utils"
@@ -423,7 +424,7 @@ export function FitmentModal({
                       {g.vehicleTitle}
                     </h2>
                     <p className="font-mono text-xs text-muted-foreground">
-                      {makes.length} {g.make.toLowerCase()}s · {allVehicles.length} OEM fitments
+                      {fmt(g.makesCount, { makes: makes.length, fitments: allVehicles.length })}
                     </p>
                   </div>
                 </div>
@@ -478,7 +479,7 @@ export function FitmentModal({
                       onClick={() => setShowAllMakes((s) => !s)}
                       className="font-mono text-[11px] font-semibold uppercase tracking-wider text-primary hover:underline"
                     >
-                      {showAllMakes ? "Top makes" : `All makes (${filteredMakes.length})`}
+                      {showAllMakes ? g.topMakes : fmt(g.allMakes, { n: filteredMakes.length })}
                     </button>
                   )}
                 </div>
@@ -763,7 +764,7 @@ export function FitmentModal({
               <div className="flex flex-col gap-1.5">
                 <span className="flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   <Sparkles aria-hidden="true" className="size-3 text-primary" />
-                  Popular OEM Sizes
+                  {g.popularSizes}
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {popularSizes.map((s) => {

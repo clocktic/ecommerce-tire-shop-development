@@ -4,6 +4,7 @@ import type { Dictionary } from "@/lib/i18n/dictionaries/en"
 
 const eu = POLICIES.eu
 const s = eu.shipping
+const cutoff = "14 h 00 PT (heure du Pacifique É.-U.)"
 const [min, max] = deliveryDays("eu")
 const days = `${min} à ${max} jours ouvrés`
 const area = "les 27 États membres de l’UE"
@@ -166,6 +167,23 @@ export const euFr: Dictionary = {
     over: "{n} et plus",
     yes: "Oui",
     no: "Non",
+    sort: "Trier",
+    sortFeatured: "Sélection",
+    sortPriceAsc: "Prix : croissant",
+    sortPriceDesc: "Prix : décroissant",
+    sortBrandAsc: "Marque : A → Z",
+    segment: "Segment",
+    segmentLabels: {
+      premium: "Haute Performance Premium (65 %)",
+      mid: "Gamme Moyenne OE+ (35 %)",
+    },
+    constructionLabels: {
+      Cast: "Coulée",
+      "Flow-Formed": "Flow-forming",
+      "Flow-formed": "Flow-forming",
+      Forged: "Forgée",
+    } as Record<string, string>,
+    filterByBrand: "Filtrer par marque",
     finishFamily: {
       black: "Noir",
       silver: "Argent",
@@ -228,7 +246,7 @@ export const euFr: Dictionary = {
   },
     priceNote: "Hors droits d’importation et TVA · prix à l’unité",
     deliveryTitle: `${s.freeShipping ? "Livraison gratuite" : "Livraison"} en ${days}`,
-    deliveryText: `Vers ${area}. Les commandes passées avant ${s.cutoff} partent sous ${s.handlingDays[0]} à ${s.handlingDays[1]} jours ouvrés.`,
+    deliveryText: `Vers ${area}. Les commandes passées avant ${cutoff} partent sous ${s.handlingDays[0]} à ${s.handlingDays[1]} jours ouvrés.`,
     returnsTitle: `Droit de rétractation de ${eu.returns.windowDays} jours`,
     returnsText: "Non monté et non utilisé.",
     warrantyTitle: "Garantie légale de 2 ans",
@@ -338,7 +356,7 @@ export const euFr: Dictionary = {
         items: [
           {
             q: "Quel est le délai de livraison ?",
-            a: `${days} au total : ${s.handlingDays[0]} à ${s.handlingDays[1]} jours avant expédition et ${s.transitDays[0]} à ${s.transitDays[1]} jours de transport avec ${s.carriers.join(", ")}. Les commandes passées avant ${s.cutoff} un jour ouvré comptent à partir de ce jour.`,
+            a: `${days} au total : ${s.handlingDays[0]} à ${s.handlingDays[1]} jours avant expédition et ${s.transitDays[0]} à ${s.transitDays[1]} jours de transport avec ${s.carriers.join(", ")}. Les commandes passées avant ${cutoff} un jour ouvré comptent à partir de ce jour.`,
           },
           { q: "Combien coûte la livraison ?", a: "La livraison est gratuite pour toutes les commandes." },
           { q: "Vais-je payer des droits de douane ou la TVA à l’importation ?", a: duties },

@@ -44,12 +44,12 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
         blocks: [
           {
             rows: [
-              ["Uiterste besteltijd", `${s.cutoff}, maandag t/m vrijdag`],
+              ["Uiterste besteltijd", "14.00 uur PT (Amerikaanse westkusttijd), maandag t/m vrijdag"],
               ["Verwerkingstijd", `${s.handlingDays[0]}–${s.handlingDays[1]} werkdagen`],
               ["Transittijd", `${s.transitDays[0]}–${s.transitDays[1]} werkdagen`],
               ["Totale levertijd", t.days],
               ["Vervoerders", s.carriers.join(", ")],
-              ["Verzonden vanuit", EU_PRESENCE.dispatchCountry],
+              ["Verzonden vanuit", "Verenigde Staten (Californië)"],
             ],
           },
           "Als wij niet binnen 30 dagen na uw bestelling kunnen leveren en geen latere datum met u afspreken, kunt u de bestelling annuleren en krijgt u het volledige bedrag terug.",

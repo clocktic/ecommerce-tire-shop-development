@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { storePath, type Store } from "@/lib/i18n"
+import { storePath, type ContentLang, type Store } from "@/lib/i18n"
 
 const copy = {
   en: {
@@ -32,13 +32,19 @@ const copy = {
     reference: "Consultar la guía de neumáticos",
     contact: "Contactar",
   },
+  "es-419": {
+    title: "Catálogo temporalmente no disponible",
+    body: "No podemos cargar los productos, precios ni disponibilidad. Inténtalo más tarde. Puedes consultar nuestra guía de llantas o contactarnos.",
+    reference: "Consultar la guía de llantas",
+    contact: "Contactar",
+  },
   nl: {
     title: "Actuele catalogus tijdelijk niet beschikbaar",
     body: "Producten, prijzen en beschikbaarheid kunnen niet worden geladen. Probeer het later opnieuw. Je kunt nog steeds onze bandengids bekijken of contact opnemen.",
     reference: "Bekijk de bandengids",
     contact: "Contact opnemen",
   },
-} satisfies Record<Store["lang"], { title: string; body: string; reference: string; contact: string }>
+} satisfies Record<ContentLang, { title: string; body: string; reference: string; contact: string }>
 
 const accountCopy = {
   en: { title: "Saved vehicles temporarily unavailable", body: "Your saved vehicles could not be loaded. Your account and saved data have not been changed. Please try again later." },
@@ -50,7 +56,8 @@ const accountCopy = {
 } satisfies Record<Store["lang"], { title: string; body: string }>
 
 export function CatalogUnavailable({ store, scope = "catalog" }: { store: Store; scope?: "catalog" | "account" }) {
-  const text = scope === "account" ? { ...copy[store.lang], ...accountCopy[store.lang] } : copy[store.lang]
+  const baseCopy = store.market === "us" && store.lang === "es" ? copy["es-419"] : copy[store.lang]
+  const text = scope === "account" ? { ...baseCopy, ...accountCopy[store.lang] } : baseCopy
   return (
     <section role="status" className="mx-auto my-8 flex max-w-7xl flex-col items-start gap-4 border border-border bg-card p-6 md:p-8">
       <h2 className="font-expanded text-xl font-extrabold uppercase">{text.title}</h2>

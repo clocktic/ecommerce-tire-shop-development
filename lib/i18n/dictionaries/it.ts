@@ -4,6 +4,7 @@ import type { Dictionary } from "@/lib/i18n/dictionaries/en"
 
 const eu = POLICIES.eu
 const s = eu.shipping
+const cutoff = "14:00 PT (ora del Pacifico USA)"
 const [min, max] = deliveryDays("eu")
 const days = `${min}–${max} giorni lavorativi`
 const area = "tutti i 27 Stati membri dell’UE"
@@ -166,6 +167,23 @@ export const euIt: Dictionary = {
     over: "Oltre {n}",
     yes: "Sì",
     no: "No",
+    sort: "Ordina",
+    sortFeatured: "In evidenza",
+    sortPriceAsc: "Prezzo: crescente",
+    sortPriceDesc: "Prezzo: decrescente",
+    sortBrandAsc: "Marca: A → Z",
+    segment: "Segmento",
+    segmentLabels: {
+      premium: "Premium Alte Prestazioni (65%)",
+      mid: "Fascia Media OE+ (35%)",
+    },
+    constructionLabels: {
+      Cast: "Fuso",
+      "Flow-Formed": "Flow-forming",
+      "Flow-formed": "Flow-forming",
+      Forged: "Forgiato",
+    } as Record<string, string>,
+    filterByBrand: "Filtra per marca",
     finishFamily: {
       black: "Nero",
       silver: "Argento",
@@ -228,7 +246,7 @@ export const euIt: Dictionary = {
   },
     priceNote: "Esclusi dazi e IVA all’importazione · prezzo cadauno",
     deliveryTitle: `${s.freeShipping ? "Consegna gratuita" : "Consegna"} in ${days}`,
-    deliveryText: `In ${area}. Gli ordini effettuati entro le ${s.cutoff} partono entro ${s.handlingDays[0]}–${s.handlingDays[1]} giorni lavorativi.`,
+    deliveryText: `In ${area}. Gli ordini effettuati entro le ${cutoff} partono entro ${s.handlingDays[0]}–${s.handlingDays[1]} giorni lavorativi.`,
     returnsTitle: `Diritto di recesso di ${eu.returns.windowDays} giorni`,
     returnsText: "Non montato e non utilizzato.",
     warrantyTitle: "Garanzia legale di 2 anni",
@@ -338,7 +356,7 @@ export const euIt: Dictionary = {
         items: [
           {
             q: "Quanto tempo richiede la consegna?",
-            a: `${days} in totale: ${s.handlingDays[0]}–${s.handlingDays[1]} giorni per la spedizione e ${s.transitDays[0]}–${s.transitDays[1]} giorni di transito con ${s.carriers.join(", ")}. Gli ordini effettuati entro le ${s.cutoff} di un giorno lavorativo decorrono da quel giorno.`,
+            a: `${days} in totale: ${s.handlingDays[0]}–${s.handlingDays[1]} giorni per la spedizione e ${s.transitDays[0]}–${s.transitDays[1]} giorni di transito con ${s.carriers.join(", ")}. Gli ordini effettuati entro le ${cutoff} di un giorno lavorativo decorrono da quel giorno.`,
           },
           { q: "Quanto costa la spedizione?", a: "La spedizione è gratuita su ogni ordine." },
           { q: "Dovrò pagare dazi o IVA all’importazione?", a: duties },

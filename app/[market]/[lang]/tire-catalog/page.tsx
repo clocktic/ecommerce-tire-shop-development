@@ -13,7 +13,7 @@ type Props = { params: Promise<{ market: string; lang: string }>; searchParams: 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const p = await params; const store = parseStore(p.market, p.lang)
   if (!store) return {}
-  const t = tireReferenceCopy(store.lang)
+  const t = tireReferenceCopy(store.lang, store.market)
   return { title: t.title, description: t.intro, alternates: storeAlternates(store, '/tire-catalog') }
 }
 export default async function ReferenceCatalogue({ params, searchParams }: Props) {
@@ -21,7 +21,7 @@ export default async function ReferenceCatalogue({ params, searchParams }: Props
   if (!store) notFound()
   const raw = await searchParams
   const filters = Object.fromEntries(Object.entries(raw).filter((entry): entry is [string, string] => typeof entry[1] === 'string'))
-  const t = tireReferenceCopy(store.lang)
+  const t = tireReferenceCopy(store.lang, store.market)
   const models = filterReferenceModels(filters)
   const brandCounts = referenceBrands.map((name) => ({
     name,

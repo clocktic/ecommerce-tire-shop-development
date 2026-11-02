@@ -4,6 +4,7 @@ import type { Dictionary } from "@/lib/i18n/dictionaries/en"
 
 const eu = POLICIES.eu
 const s = eu.shipping
+const cutoff = "14:00 Uhr PT (US-Pazifikzeit)"
 const [min, max] = deliveryDays("eu")
 const days = `${min}–${max} Werktage`
 const area = "alle 27 EU-Mitgliedstaaten"
@@ -166,6 +167,23 @@ export const euDe: Dictionary = {
     over: "Ab {n}",
     yes: "Ja",
     no: "Nein",
+    sort: "Sortierung",
+    sortFeatured: "Empfohlen",
+    sortPriceAsc: "Preis: aufsteigend",
+    sortPriceDesc: "Preis: absteigend",
+    sortBrandAsc: "Marke: A → Z",
+    segment: "Segment",
+    segmentLabels: {
+      premium: "Premium-Performance (65 %)",
+      mid: "Mittelklasse OE+ (35 %)",
+    },
+    constructionLabels: {
+      Cast: "Gussfelge",
+      "Flow-Formed": "Flow-Forming",
+      "Flow-formed": "Flow-Forming",
+      Forged: "Schmiedefelge",
+    } as Record<string, string>,
+    filterByBrand: "Nach Marke filtern",
     finishFamily: {
       black: "Schwarz",
       silver: "Silber",
@@ -228,7 +246,7 @@ export const euDe: Dictionary = {
   },
     priceNote: "ohne Einfuhrabgaben und MwSt. · Preis pro Stück",
     deliveryTitle: `${s.freeShipping ? "Kostenlose Lieferung" : "Lieferung"} in ${days}`,
-    deliveryText: `In ${area}. Bestellungen bis ${s.cutoff} verlassen unser Lager in den USA innerhalb von ${s.handlingDays[0]}–${s.handlingDays[1]} Werktagen.`,
+    deliveryText: `In ${area}. Bestellungen bis ${cutoff} verlassen unser Lager in den USA innerhalb von ${s.handlingDays[0]}–${s.handlingDays[1]} Werktagen.`,
     returnsTitle: `${eu.returns.windowDays} Tage Widerrufsrecht`,
     returnsText: "Nicht montiert und unbenutzt.",
     warrantyTitle: "2 Jahre gesetzliche Gewährleistung",
@@ -338,7 +356,7 @@ export const euDe: Dictionary = {
         items: [
           {
             q: "Wie lange dauert die Lieferung?",
-            a: `Insgesamt ${days}: ${s.handlingDays[0]}–${s.handlingDays[1]} Tage bis zum Versand und ${s.transitDays[0]}–${s.transitDays[1]} Tage Laufzeit mit ${s.carriers.join(", ")}. Bestellungen bis ${s.cutoff} an einem Werktag zählen ab diesem Tag.`,
+            a: `Insgesamt ${days}: ${s.handlingDays[0]}–${s.handlingDays[1]} Tage bis zum Versand und ${s.transitDays[0]}–${s.transitDays[1]} Tage Laufzeit mit ${s.carriers.join(", ")}. Bestellungen bis ${cutoff} an einem Werktag zählen ab diesem Tag.`,
           },
           { q: "Was kostet der Versand?", a: "Der Versand ist bei jeder Bestellung kostenlos." },
           { q: "Fallen Zoll oder Einfuhrumsatzsteuer an?", a: duties },

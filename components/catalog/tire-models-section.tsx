@@ -5,7 +5,7 @@ import { storePath, type Store } from '@/lib/i18n'
 import { tireReferenceCopy } from '@/lib/i18n/tire-reference'
 
 export function TireModelsSection({ store, filters }: { store: Store; filters: Record<string, string | undefined> }) {
-  const t = tireReferenceCopy(store.lang)
+  const t = tireReferenceCopy(store.lang, store.market)
   if (filters.price || filters.stock) return null
   const models = referenceModels.filter(m => (!filters.brand || m.brand === filters.brand) && (!filters.season || m.seasons.includes(filters.season)))
     .map(m => ({ ...m, variants: m.variants.filter(v =>

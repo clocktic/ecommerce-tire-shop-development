@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { localizeProduct, offerFor, tireServiceDescription, tireSize } from "@/lib/catalog"
 import { readProducts } from "@/lib/catalog/queries"
-import { parseStore } from "@/lib/i18n"
+import { getDictionary, parseStore } from "@/lib/i18n"
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -9,6 +9,7 @@ export async function GET(request: Request) {
   const market = searchParams.get("market") ?? "eu"
   const lang = searchParams.get("lang") ?? "en"
   const store = parseStore(market, lang) ?? { market: "eu" as const, lang: "en" as const }
+  const t = getDictionary(store)
 
   const catalog = await readProducts(store.market)
   if (!catalog.ok) {
@@ -35,13 +36,14 @@ export async function GET(request: Request) {
     let specMeta = ""
     if (p.category === "tires") {
       specCode = tireSize(p.tire)
-      specMeta = `${tireServiceDescription(p.tire)} · ${p.tire.season}`
+      specMeta = `${tireServiceDescription(p.tire)} · ${t.labels.season[p.tire.season]}`
     } else if (p.category === "wheels") {
+      const constr = t.catalog.constructionLabels[p.wheel.construction] ?? p.wheel.construction
       specCode = `${p.wheel.diameter}×${p.wheel.width} ${p.wheel.boltPattern}`
-      specMeta = `ET${p.wheel.offset} · ${p.wheel.construction}`
+      specMeta = `ET${p.wheel.offset} · ${constr}`
     } else {
-      specCode = p.brake.discDiameterMm ? `Ø${p.brake.discDiameterMm} mm` : p.brake.kind
-      specMeta = `${p.brake.kind} · ${p.brake.axle}`
+      specCode = p.brake.discDiameterMm ? `Ø${p.brake.discDiameterMm} mm` : t.labels.brakeKind[p.brake.kind]
+      specMeta = `${t.labels.brakeKind[p.brake.kind]} · ${t.labels.axle[p.brake.axle]}`
     }
 
     const haystack = [

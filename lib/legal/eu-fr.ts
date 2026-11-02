@@ -45,12 +45,12 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
         blocks: [
           {
             rows: [
-              ["Heure limite de commande", `${s.cutoff}, du lundi au vendredi`],
+              ["Heure limite de commande", "14 h 00 PT (heure du Pacifique É.-U.), du lundi au vendredi"],
               ["Délai de préparation", `${s.handlingDays[0]} à ${s.handlingDays[1]} jours ouvrés`],
               ["Délai d’acheminement", `${s.transitDays[0]} à ${s.transitDays[1]} jours ouvrés`],
               ["Délai total de livraison", t.days],
               ["Transporteurs", s.carriers.join(", ")],
-              ["Expédié depuis", EU_PRESENCE.dispatchCountry],
+              ["Expédié depuis", "États-Unis (Californie)"],
             ],
           },
           "Si nous ne pouvons pas livrer dans les 30 jours suivant votre commande et qu’aucune date ultérieure n’a été convenue avec vous, vous pouvez annuler la commande et être intégralement remboursé.",

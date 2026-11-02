@@ -4,6 +4,7 @@ import type { Dictionary } from "@/lib/i18n/dictionaries/en"
 
 const eu = POLICIES.eu
 const s = eu.shipping
+const cutoff = "14.00 uur PT (Amerikaanse westkusttijd)"
 const [min, max] = deliveryDays("eu")
 const days = `${min}–${max} werkdagen`
 const area = "alle 27 EU-lidstaten"
@@ -166,6 +167,23 @@ export const euNl: Dictionary = {
     over: "{n}+",
     yes: "Ja",
     no: "Nee",
+    sort: "Sorteren",
+    sortFeatured: "Aanbevolen",
+    sortPriceAsc: "Prijs: laag → hoog",
+    sortPriceDesc: "Prijs: hoog → laag",
+    sortBrandAsc: "Merk: A → Z",
+    segment: "Segment",
+    segmentLabels: {
+      premium: "Premium High-Performance (65%)",
+      mid: "Middenklasse OE+ (35%)",
+    },
+    constructionLabels: {
+      Cast: "Gegoten",
+      "Flow-Formed": "Flow-forming",
+      "Flow-formed": "Flow-forming",
+      Forged: "Gesmeed",
+    } as Record<string, string>,
+    filterByBrand: "Filter op merk",
     finishFamily: {
       black: "Zwart",
       silver: "Zilver",
@@ -228,7 +246,7 @@ export const euNl: Dictionary = {
   },
     priceNote: "exclusief invoerrechten en btw · prijs per stuk",
     deliveryTitle: `${s.freeShipping ? "Gratis levering" : "Levering"} in ${days}`,
-    deliveryText: `Naar ${area}. Bestellingen vóór ${s.cutoff} verlaten ons magazijn in de VS binnen ${s.handlingDays[0]}–${s.handlingDays[1]} werkdagen.`,
+    deliveryText: `Naar ${area}. Bestellingen vóór ${cutoff} verlaten ons magazijn in de VS binnen ${s.handlingDays[0]}–${s.handlingDays[1]} werkdagen.`,
     returnsTitle: `${eu.returns.windowDays} dagen herroepingsrecht`,
     returnsText: "Niet gemonteerd en ongebruikt.",
     warrantyTitle: "2 jaar wettelijke garantie",
@@ -338,7 +356,7 @@ export const euNl: Dictionary = {
         items: [
           {
             q: "Hoe lang duurt de levering?",
-            a: `In totaal ${days}: ${s.handlingDays[0]}–${s.handlingDays[1]} dagen tot verzending en ${s.transitDays[0]}–${s.transitDays[1]} dagen onderweg met ${s.carriers.join(", ")}. Bestellingen vóór ${s.cutoff} op een werkdag tellen vanaf die dag.`,
+            a: `In totaal ${days}: ${s.handlingDays[0]}–${s.handlingDays[1]} dagen tot verzending en ${s.transitDays[0]}–${s.transitDays[1]} dagen onderweg met ${s.carriers.join(", ")}. Bestellingen vóór ${cutoff} op een werkdag tellen vanaf die dag.`,
           },
           { q: "Wat kost de verzending?", a: "Verzending is gratis bij elke bestelling." },
           { q: "Betaal ik douanekosten of invoer-btw?", a: duties },

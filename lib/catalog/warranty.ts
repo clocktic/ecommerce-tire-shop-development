@@ -176,14 +176,26 @@ export function getProductWarranty(product: Product, store: Store): ResolvedWarr
     ...buildMarketWarrantyPair(product),
     ...(product.warranty ?? {}),
   }
+  const meta = TIRE_MILES_BY_BRAND[product.brand]
+  const years = meta?.years ?? 5
+  const miles = inferTireMileage(product)
+  const km = miles ? Math.round((miles * 1.60934) / 5000) * 5000 : null
 
   if (store.market === "us") {
     if (store.lang === "es") {
+      const esUsSpec =
+        product.category === "brakes"
+          ? `Garantía limitada del fabricante ${product.brand} en EE. UU. (2 años / 24,000 millas en materiales y mano de obra)`
+          : product.category === "wheels"
+            ? `Garantía estructural limitada de por vida + 2 años / 24,000 millas en acabado (${product.brand} EE. UU.)`
+            : miles
+              ? `Garantía limitada de ${years} años en materiales y fabricación + ${miles.toLocaleString("en-US")} millas en banda de rodadura (${product.brand} EE. UU.)`
+              : `Garantía limitada de ${years} años en materiales y fabricación (${product.brand} EE. UU.)`
       return {
         specLabel: "Garantía del fabricante (EE. UU.)",
-        specValue: pair.us,
+        specValue: esUsSpec,
         accordionTitle: "Garantía (EE. UU.)",
-        detailParagraph: `${pair.us}. Cubre defectos de materiales y fabricación conforme a la ley federal Magnuson-Moss de EE. UU. Tramitamos la reclamación directamente con ${product.brand} sin cargo por gestión.`,
+        detailParagraph: `${esUsSpec}. Cubre defectos de materiales y fabricación conforme a la ley federal Magnuson-Moss de EE. UU. Tramitamos la reclamación directamente con ${product.brand} sin cargo por gestión.`,
         policyLinkLabel: "Política completa de garantía (EE. UU.)",
       }
     }
@@ -198,46 +210,91 @@ export function getProductWarranty(product: Product, store: Store): ResolvedWarr
 
   // EU market — localized by store language
   switch (store.lang) {
-    case "de":
+    case "de": {
+      const deSpec =
+        product.category === "brakes"
+          ? `2 Jahre gesetzliche EU-Gewährleistung (RL 2019/771) + 24 Monate ${product.brand} Herstellergarantie (ECE R90 / TÜV)`
+          : product.category === "wheels"
+            ? `2 Jahre gesetzliche EU-Gewährleistung (RL 2019/771) + 5 Jahre Struktur- & 24 Monate Lackgarantie (${product.brand})`
+            : km
+              ? `2 Jahre gesetzliche EU-Gewährleistung (RL 2019/771) + ${years} Jahre / ${km.toLocaleString("de-DE")} km ${product.brand} Herstellergarantie`
+              : `2 Jahre gesetzliche EU-Gewährleistung (RL 2019/771) + ${years} Jahre ${product.brand} Herstellergarantie`
       return {
         specLabel: "Gewährleistung & Garantie (EU)",
-        specValue: pair.eu,
+        specValue: deSpec,
         accordionTitle: "Gewährleistung & Garantie (EU)",
-        detailParagraph: `Gesetzliche EU-Gewährleistung von 2 Jahren ab Lieferung gemäß Richtlinie (EU) 2019/771 (kostenlose Nachbesserung, Ersatzlieferung oder Erstattung bei Mängeln) zuzüglich der europäischen Herstellergarantie von ${product.brand}: ${pair.eu}.`,
+        detailParagraph: `Gesetzliche EU-Gewährleistung von 2 Jahren ab Lieferung gemäß Richtlinie (EU) 2019/771 (kostenlose Nachbesserung, Ersatzlieferung oder Erstattung bei Mängeln) zuzüglich der europäischen Herstellergarantie von ${product.brand}: ${deSpec}.`,
         policyLinkLabel: "Vollständige EU-Garantiebedingungen",
       }
-    case "fr":
+    }
+    case "fr": {
+      const frSpec =
+        product.category === "brakes"
+          ? `Garantie légale UE de 2 ans (directive 2019/771) + garantie commerciale ${product.brand} de 24 mois (ECE R90 / TÜV)`
+          : product.category === "wheels"
+            ? `Garantie légale UE de 2 ans (directive 2019/771) + garantie structurelle 5 ans et finition 24 mois (${product.brand})`
+            : km
+              ? `Garantie légale UE de 2 ans (directive 2019/771) + garantie fabricant ${product.brand} ${years} ans / ${km.toLocaleString("fr-FR")} km`
+              : `Garantie légale UE de 2 ans (directive 2019/771) + garantie fabricant ${product.brand} de ${years} ans`
       return {
         specLabel: "Garantie légale & fabricant (UE)",
-        specValue: pair.eu,
+        specValue: frSpec,
         accordionTitle: "Garantie (UE)",
-        detailParagraph: `Garantie légale de conformité de l’UE de 2 ans à compter de la livraison conformément à la directive (UE) 2019/771, complétée par la garantie commerciale européenne ${product.brand} : ${pair.eu}.`,
+        detailParagraph: `Garantie légale de conformité de l’UE de 2 ans à compter de la livraison conformément à la directive (UE) 2019/771 (réparation, remplacement ou remboursement sans frais), complétée par la garantie commerciale européenne ${product.brand} : ${frSpec}.`,
         policyLinkLabel: "Conditions complètes de garantie UE",
       }
-    case "es":
+    }
+    case "es": {
+      const esSpec =
+        product.category === "brakes"
+          ? `Garantía legal UE de 2 años (Directiva 2019/771) + 24 meses de garantía comercial ${product.brand} (ECE R90 / TÜV)`
+          : product.category === "wheels"
+            ? `Garantía legal UE de 2 años (Directiva 2019/771) + 5 años estructural y 24 meses en acabado (${product.brand})`
+            : km
+              ? `Garantía legal UE de 2 años (Directiva 2019/771) + ${years} años / ${km.toLocaleString("es-ES")} km de garantía ${product.brand}`
+              : `Garantía legal UE de 2 años (Directiva 2019/771) + ${years} años de garantía comercial ${product.brand}`
       return {
         specLabel: "Garantía legal y del fabricante (UE)",
-        specValue: pair.eu,
+        specValue: esSpec,
         accordionTitle: "Garantía (UE)",
-        detailParagraph: `Garantía legal de conformidad de la UE de 2 años desde la entrega según la Directiva (UE) 2019/771 (reparación, sustitución o reembolso sin cargo), además de la garantía comercial europea de ${product.brand}: ${pair.eu}.`,
+        detailParagraph: `Garantía legal de conformidad de la UE de 2 años desde la entrega según la Directiva (UE) 2019/771 (reparación, sustitución o reembolso sin cargo), además de la garantía comercial europea de ${product.brand}: ${esSpec}.`,
         policyLinkLabel: "Política completa de garantía UE",
       }
-    case "it":
+    }
+    case "it": {
+      const itSpec =
+        product.category === "brakes"
+          ? `Garanzia legale UE di 2 anni (Direttiva 2019/771) + 24 mesi di garanzia commerciale ${product.brand} (ECE R90 / TÜV)`
+          : product.category === "wheels"
+            ? `Garanzia legale UE di 2 anni (Direttiva 2019/771) + 5 anni strutturale e 24 mesi sulla finitura (${product.brand})`
+            : km
+              ? `Garanzia legale UE di 2 anni (Direttiva 2019/771) + ${years} anni / ${km.toLocaleString("it-IT")} km di garanzia ${product.brand}`
+              : `Garanzia legale UE di 2 anni (Direttiva 2019/771) + ${years} anni di garanzia commerciale ${product.brand}`
       return {
         specLabel: "Garanzia legale e del produttore (UE)",
-        specValue: pair.eu,
+        specValue: itSpec,
         accordionTitle: "Garanzia (UE)",
-        detailParagraph: `Garanzia legale di conformità UE di 2 anni dalla consegna ai sensi della Direttiva (UE) 2019/771 (riparazione, sostituzione o rimborso gratuiti), oltre alla garanzia commerciale europea ${product.brand}: ${pair.eu}.`,
+        detailParagraph: `Garanzia legale di conformità UE di 2 anni dalla consegna ai sensi della Direttiva (UE) 2019/771 (riparazione, sostituzione o rimborso gratuiti), oltre alla garanzia commerciale europea ${product.brand}: ${itSpec}.`,
         policyLinkLabel: "Condizioni complete di garanzia UE",
       }
-    case "nl":
+    }
+    case "nl": {
+      const nlSpec =
+        product.category === "brakes"
+          ? `2 jaar wettelijke EU-garantie (Richtlijn 2019/771) + 24 maanden ${product.brand} fabrieksgarantie (ECE R90 / TÜV)`
+          : product.category === "wheels"
+            ? `2 jaar wettelijke EU-garantie (Richtlijn 2019/771) + 5 jaar constructie- & 24 maanden lakgarantie (${product.brand})`
+            : km
+              ? `2 jaar wettelijke EU-garantie (Richtlijn 2019/771) + ${years} jaar / ${km.toLocaleString("nl-NL")} km ${product.brand} fabrieksgarantie`
+              : `2 jaar wettelijke EU-garantie (Richtlijn 2019/771) + ${years} jaar ${product.brand} fabrieksgarantie`
       return {
         specLabel: "Wettelijke & fabrieksgarantie (EU)",
-        specValue: pair.eu,
+        specValue: nlSpec,
         accordionTitle: "Garantie (EU)",
-        detailParagraph: `Wettelijke EU-conformiteitsgarantie van 2 jaar na levering volgens Richtlijn (EU) 2019/771, aangevuld met de Europese commerciële fabrieksgarantie van ${product.brand}: ${pair.eu}.`,
+        detailParagraph: `Wettelijke EU-conformiteitsgarantie van 2 jaar na levering volgens Richtlijn (EU) 2019/771 (kosteloos herstel, vervanging of terugbetaling), aangevuld met de Europese fabrieksgarantie van ${product.brand}: ${nlSpec}.`,
         policyLinkLabel: "Volledige EU-garantievoorwaarden",
       }
+    }
     default:
       return {
         specLabel: "Warranty & legal guarantee (EU)",

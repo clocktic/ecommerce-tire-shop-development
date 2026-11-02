@@ -73,6 +73,10 @@ export type Extras = {
     pageLead: string
     inStock: string
     listed: string
+    makesCount: string
+    topMakes: string
+    allMakes: string
+    popularSizes: string
   }
   orderStatus: Record<OrderStatus, string>
   order: {
@@ -153,6 +157,7 @@ export type Extras = {
     accountBannerLead: string
     accountActiveTitle: string
     accountActiveLead: string
+    instantCheckout: string
   }
 }
 
@@ -230,6 +235,10 @@ const en: Extras = {
     pageLead: "Vehicles and tire sizes you've looked up. The active one shows under the header everywhere you shop.",
     inStock: "In stock",
     listed: "Size saved — matching tires coming soon",
+    makesCount: "{makes} makes · {fitments} OEM fitments",
+    topMakes: "Top makes",
+    allMakes: "All makes ({n})",
+    popularSizes: "Popular OEM Sizes",
   },
   orderStatus: {
     pending: "Awaiting payment",
@@ -327,6 +336,7 @@ const en: Extras = {
     accountBannerLead: "Register or sign in below — your 7% member discount is applied automatically in the cart and at checkout.",
     accountActiveTitle: "7% Member Privilege Active",
     accountActiveLead: "Your 7% discount is automatically applied to every order you place while signed in.",
+    instantCheckout: "Instant Checkout",
   },
 }
 
@@ -404,6 +414,10 @@ const es419: Extras = {
     pageLead: "Vehículos y medidas de llanta que has buscado. El activo aparece bajo el encabezado en todo el sitio.",
     inStock: "En existencia",
     listed: "Medida guardada — llantas disponibles pronto",
+    makesCount: "{makes} marcas · {fitments} aplicaciones OEM",
+    topMakes: "Principales marcas",
+    allMakes: "Todas las marcas ({n})",
+    popularSizes: "Medidas OEM populares",
   },
   orderStatus: {
     pending: "Pendiente de pago",
@@ -501,6 +515,7 @@ const es419: Extras = {
     accountBannerLead: "Crea tu cuenta o inicia sesión abajo — el 7% se aplica automáticamente en tu carrito y al pagar.",
     accountActiveTitle: "Privilegio de Miembro −7% Activo",
     accountActiveLead: "Tu descuento del 7% se aplica automáticamente en cada pedido que realices con tu cuenta.",
+    instantCheckout: "Descuento automático",
   },
 }
 
@@ -625,6 +640,10 @@ const de: Extras = {
     pageLead: "Fahrzeuge und Reifengrößen, die Sie gesucht haben. Das aktive erscheint überall unter der Kopfzeile.",
     inStock: "Auf Lager",
     listed: "Größe gespeichert — passende Reifen folgen in Kürze",
+    makesCount: "{makes} Marken · {fitments} OEM-Fahrzeuge",
+    topMakes: "Top-Marken",
+    allMakes: "Alle Marken ({n})",
+    popularSizes: "Beliebte Seriengrößen",
   },
   orderStatus: {
     pending: "Zahlung ausstehend",
@@ -722,6 +741,7 @@ const de: Extras = {
     accountBannerLead: "Registrieren Sie sich oder melden Sie sich unten an — Ihr 7 %-Vorteil wird automatisch im Warenkorb abgezogen.",
     accountActiveTitle: "7 % Mitgliedervorteil Aktiv",
     accountActiveLead: "Ihr 7 %-Rabatt wird bei jeder Bestellung, die Sie angemeldet aufgeben, automatisch abgezogen.",
+    instantCheckout: "Sofortabzug an der Kasse",
   },
 }
 
@@ -799,6 +819,10 @@ const fr: Extras = {
     pageLead: "Véhicules et dimensions de pneus que vous avez recherchés. Le véhicule actif s'affiche sous l'en-tête sur tout le site.",
     inStock: "En stock",
     listed: "Dimension enregistrée — pneus correspondants bientôt disponibles",
+    makesCount: "{makes} marques · {fitments} véhicules OEM",
+    topMakes: "Marques principales",
+    allMakes: "Toutes les marques ({n})",
+    popularSizes: "Dimensions OEM populaires",
   },
   orderStatus: {
     pending: "En attente de paiement",
@@ -896,6 +920,7 @@ const fr: Extras = {
     accountBannerLead: "Créez un compte ou connectez-vous ci-dessous — vos 7 % sont déduits automatiquement au panier.",
     accountActiveTitle: "Privilège Membre −7 % Actif",
     accountActiveLead: "Votre remise de 7 % est automatiquement appliquée à chaque commande passée avec votre compte.",
+    instantCheckout: "Remise immédiate",
   },
 }
 
@@ -973,6 +998,10 @@ const it: Extras = {
     pageLead: "Veicoli e misure di pneumatici che hai cercato. Quello attivo compare sotto l'intestazione in tutto il sito.",
     inStock: "Disponibile",
     listed: "Misura salvata — pneumatici corrispondenti in arrivo",
+    makesCount: "{makes} marchi · {fitments} modelli OEM",
+    topMakes: "Marchi principali",
+    allMakes: "Tutti i marchi ({n})",
+    popularSizes: "Misure OEM popolari",
   },
   orderStatus: {
     pending: "In attesa di pagamento",
@@ -1070,6 +1099,7 @@ const it: Extras = {
     accountBannerLead: "Registrati o accedi qui sotto: il tuo sconto del 7% viene applicato automaticamente nel carrello.",
     accountActiveTitle: "Privilegio Membri −7% Attivo",
     accountActiveLead: "Il tuo sconto del 7% viene applicato automaticamente a ogni ordine effettuato da connesso.",
+    instantCheckout: "Sconto immediato",
   },
 }
 
@@ -1147,6 +1177,10 @@ const nl: Extras = {
     pageLead: "Voertuigen en bandenmaten die je hebt opgezocht. De actieve verschijnt overal onder de header.",
     inStock: "Op voorraad",
     listed: "Maat opgeslagen — passende banden volgen binnenkort",
+    makesCount: "{makes} merken · {fitments} OEM-modellen",
+    topMakes: "Topmerken",
+    allMakes: "Alle merken ({n})",
+    popularSizes: "Populaire OEM-maten",
   },
   orderStatus: {
     pending: "Wacht op betaling",
@@ -1244,6 +1278,7 @@ const nl: Extras = {
     accountBannerLead: "Registreer of log hieronder in — je 7% ledenkorting wordt automatisch verrekend in de winkelwagen.",
     accountActiveTitle: "7% Ledenvoordeel Actief",
     accountActiveLead: "Je 7% korting wordt automatisch toegepast op elke bestelling die je ingelogd plaatst.",
+    instantCheckout: "Direct verrekend",
   },
 }
 

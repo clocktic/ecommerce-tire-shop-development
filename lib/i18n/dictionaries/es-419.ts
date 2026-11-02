@@ -169,6 +169,23 @@ export const usEs: Dictionary = {
     over: "Más de {n}",
     yes: "Sí",
     no: "No",
+    sort: "Ordenar",
+    sortFeatured: "Destacados",
+    sortPriceAsc: "Precio: menor a mayor",
+    sortPriceDesc: "Precio: mayor a menor",
+    sortBrandAsc: "Marca: A → Z",
+    segment: "Segmento",
+    segmentLabels: {
+      premium: "Premium Alto Desempeño (65%)",
+      mid: "Gama Media OE+ (35%)",
+    },
+    constructionLabels: {
+      Cast: "Fundido",
+      "Flow-Formed": "Flow-formed",
+      "Flow-formed": "Flow-formed",
+      Forged: "Forjado",
+    } as Record<string, string>,
+    filterByBrand: "Filtrar por marca",
     finishFamily: {
       black: "Negro",
       silver: "Plata",

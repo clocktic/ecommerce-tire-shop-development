@@ -45,12 +45,12 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
         blocks: [
           {
             rows: [
-              ["Hora límite de pedido", `${s.cutoff}, de lunes a viernes`],
+              ["Hora límite de pedido", "14:00 PT (hora del Pacífico de EE. UU.), de lunes a viernes"],
               ["Tiempo de preparación", `${s.handlingDays[0]}–${s.handlingDays[1]} días laborables`],
               ["Tiempo de tránsito", `${s.transitDays[0]}–${s.transitDays[1]} días laborables`],
               ["Plazo total de entrega", t.days],
               ["Transportistas", s.carriers.join(", ")],
-              ["Enviado desde", EU_PRESENCE.dispatchCountry],
+              ["Enviado desde", "Estados Unidos (California)"],
             ],
           },
           "Si no podemos entregar en un plazo de 30 días desde tu pedido y no acordamos contigo una fecha posterior, puedes cancelar el pedido y recibir el reembolso íntegro.",

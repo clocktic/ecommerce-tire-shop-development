@@ -28,6 +28,8 @@ export function MobileCatalogToolbar({
   clearHref,
   clearLabel,
   applyLabel,
+  sortLabel = "Sort",
+  allLabel = "All",
   sortValue,
   sortOptions,
   quickPills,
@@ -40,6 +42,8 @@ export function MobileCatalogToolbar({
   clearHref: string
   clearLabel: string
   applyLabel: string
+  sortLabel?: string
+  allLabel?: string
   sortValue?: string
   sortOptions: Array<{ value: string; label: string }>
   quickPills?: QuickPill[]
@@ -147,7 +151,7 @@ export function MobileCatalogToolbar({
             aria-hidden="true"
           />
           <select
-            aria-label="Sort"
+            aria-label={sortLabel}
             value={sortValue ?? ""}
             onChange={(e) => updateParam("sort", e.target.value)}
             className="h-11 w-full truncate appearance-none border border-border bg-card pl-7 pr-6 font-mono text-[11px] font-semibold uppercase tracking-wide text-foreground focus-visible:outline-2 focus-visible:outline-ring"
@@ -178,7 +182,7 @@ export function MobileCatalogToolbar({
                 : "border-border bg-card text-muted-foreground hover:text-foreground",
             )}
           >
-            All
+            {allLabel}
           </button>
           {quickPills.map((pill) => {
             const isSelected = activeQuickValue === pill.value

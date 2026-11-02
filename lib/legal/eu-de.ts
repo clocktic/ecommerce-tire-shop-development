@@ -45,12 +45,12 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
         blocks: [
           {
             rows: [
-              ["Bestellschluss", `${s.cutoff}, Montag–Freitag`],
+              ["Bestellschluss", "14:00 Uhr PT (US-Pazifikzeit), Montag–Freitag"],
               ["Bearbeitungszeit", `${s.handlingDays[0]}–${s.handlingDays[1]} Werktage`],
               ["Versandlaufzeit", `${s.transitDays[0]}–${s.transitDays[1]} Werktage`],
               ["Gesamte Lieferzeit", t.days],
               ["Versanddienstleister", s.carriers.join(", ")],
-              ["Versand aus", EU_PRESENCE.dispatchCountry],
+              ["Versand aus", "Vereinigte Staaten (Kalifornien)"],
             ],
           },
           "Können wir nicht innerhalb von 30 Tagen nach Ihrer Bestellung liefern und vereinbaren wir keinen späteren Termin mit Ihnen, können Sie die Bestellung stornieren und erhalten den vollen Betrag zurück.",

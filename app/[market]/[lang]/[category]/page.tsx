@@ -116,10 +116,10 @@ export default async function CategoryPage({ params, searchParams }: { params: P
   }
 
   const sortOptions = [
-    { value: "", label: "Sort: Featured" },
-    { value: "price-asc", label: "Price: Low → High" },
-    { value: "price-desc", label: "Price: High → Low" },
-    { value: "brand-asc", label: "Brand: A → Z" },
+    { value: "", label: `${t.catalog.sort}: ${t.catalog.sortFeatured}` },
+    { value: "price-asc", label: t.catalog.sortPriceAsc },
+    { value: "price-desc", label: t.catalog.sortPriceDesc },
+    { value: "brand-asc", label: t.catalog.sortBrandAsc },
   ]
   const quickPills =
     category === "tires"
@@ -169,6 +169,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
         basePath={storePath(store, `/${category}`)}
         currentFilters={filters}
         allLabel={t.catalog.any}
+        ariaLabel={t.catalog.filterByBrand}
       />
 
       <MobileCatalogToolbar
@@ -177,6 +178,8 @@ export default async function CategoryPage({ params, searchParams }: { params: P
         clearHref={storePath(store, `/${category}`)}
         clearLabel={t.catalog.clear}
         applyLabel={t.catalog.apply}
+        sortLabel={t.catalog.sort}
+        allLabel={t.catalog.any}
         sortValue={filters.sort}
         sortOptions={sortOptions}
         quickPills={quickPills}
@@ -206,18 +209,21 @@ export default async function CategoryPage({ params, searchParams }: { params: P
 
       {activeEntries.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 pt-4">
-          {activeEntries.map(([key, val]) => (
-            <Link key={key} href={removeFilterHref(key)}>
-              <Badge
-                variant="secondary"
-                className="h-7 gap-1.5 rounded-none border border-border px-2.5 font-mono text-xs uppercase hover:border-primary"
-              >
-                <span className="text-muted-foreground">{key}:</span>
-                <span className="font-semibold text-foreground">{val}</span>
-                <X className="size-3 text-muted-foreground" aria-hidden="true" />
-              </Badge>
-            </Link>
-          ))}
+          {activeEntries.map(([key, val]) => {
+            const chip = formatFilterChip(key, val, store, t)
+            return (
+              <Link key={key} href={removeFilterHref(key)}>
+                <Badge
+                  variant="secondary"
+                  className="h-7 gap-1.5 rounded-none border border-border px-2.5 font-mono text-xs uppercase hover:border-primary"
+                >
+                  <span className="text-muted-foreground">{chip.label}:</span>
+                  <span className="font-semibold text-foreground">{chip.value}</span>
+                  <X className="size-3 text-muted-foreground" aria-hidden="true" />
+                </Badge>
+              </Link>
+            )
+          })}
         </div>
       )}
 
@@ -319,14 +325,14 @@ function CategoryFilters({
       />
       <FilterSelect
         name="sort"
-        label="Sort"
-        any="Featured"
+        label={c.sort}
+        any={c.sortFeatured}
         value={filters.sort}
         options={["price-asc", "price-desc", "brand-asc"]}
         labels={{
-          "price-asc": "Price: Low → High",
-          "price-desc": "Price: High → Low",
-          "brand-asc": "Brand: A → Z",
+          "price-asc": c.sortPriceAsc,
+          "price-desc": c.sortPriceDesc,
+          "brand-asc": c.sortBrandAsc,
         }}
       />
     </>
@@ -376,7 +382,7 @@ function CategoryFilters({
         <FilterSelect name="offset" label={c.offset} any={any} value={filters.offset} options={[...offsets]} labels={c.offsetBand} />
         <FilterSelect name="bore" label={c.bore} any={any} value={filters.bore} options={bores} labels={Object.fromEntries(bores.map((b) => [b, `${b} mm`]))} />
         <FilterSelect name="finish" label={c.finish} any={any} value={filters.finish} options={[...finishes]} labels={c.finishFamily} />
-        <FilterSelect name="construction" label={c.construction} any={any} value={filters.construction} options={constructions} />
+        <FilterSelect name="construction" label={c.construction} any={any} value={filters.construction} options={constructions} labels={c.constructionLabels} />
         {shared}
       </>
     )
@@ -390,14 +396,11 @@ function CategoryFilters({
     <>
       <FilterSelect
         name="segment"
-        label="Segment"
+        label={c.segment}
         any={any}
         value={filters.segment}
         options={["premium", "mid"]}
-        labels={{
-          premium: "Premium Performance (65%)",
-          mid: "Mid-Range OE+ (35%)",
-        }}
+        labels={c.segmentLabels}
       />
       <FilterSelect name="kind" label={c.type} any={any} value={filters.kind} options={Object.keys(t.labels.brakeKind)} labels={t.labels.brakeKind} />
       <FilterSelect name="axle" label={c.axle} any={any} value={filters.axle} options={["front", "rear"]} labels={t.labels.axleShort} />
@@ -406,6 +409,48 @@ function CategoryFilters({
       {shared}
     </>
   )
+}
+
+function formatFilterChip(key: string, val: string, store: Store, t: Dictionary): { label: string; value: string } {
+  const c = t.catalog
+  const keyMap: Record<string, string> = {
+    brand: c.brand,
+    price: c.price,
+    stock: c.stock,
+    width: c.width,
+    aspect: c.profile,
+    rim: c.rim,
+    season: c.season,
+    speed: c.speed,
+    load: c.load,
+    runFlat: c.runFlat,
+    extraLoad: c.extraLoad,
+    diameter: c.diameter,
+    bolt: c.bolt,
+    offset: c.offset,
+    bore: c.bore,
+    finish: c.finish,
+    construction: c.construction,
+    segment: c.segment,
+    kind: c.type,
+    axle: c.axle,
+    pistons: c.pistons,
+    disc: c.disc,
+  }
+  const label = keyMap[key] ?? key
+  let value = val
+  if (key === "season") value = t.labels.season[val as keyof typeof t.labels.season] ?? val
+  else if (key === "stock") value = t.labels.availability[val as keyof typeof t.labels.availability] ?? val
+  else if (key === "price") value = priceLabels(store, t)[val] ?? val
+  else if (key === "runFlat" || key === "extraLoad") value = val === "yes" ? c.yes : val === "no" ? c.no : val
+  else if (key === "finish") value = c.finishFamily[val as keyof typeof c.finishFamily] ?? val
+  else if (key === "offset") value = c.offsetBand[val as keyof typeof c.offsetBand] ?? val
+  else if (key === "construction") value = c.constructionLabels[val] ?? val
+  else if (key === "segment") value = c.segmentLabels[val as keyof typeof c.segmentLabels] ?? val
+  else if (key === "kind") value = t.labels.brakeKind[val as keyof typeof t.labels.brakeKind] ?? val
+  else if (key === "axle") value = t.labels.axleShort[val as keyof typeof t.labels.axleShort] ?? val
+  else if (key === "rim") value = `R${val}`
+  return { label, value }
 }
 
 function priceLabels(store: Store, t: Dictionary): Record<string, string> {
