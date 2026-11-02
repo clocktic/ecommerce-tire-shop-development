@@ -107,8 +107,6 @@ export async function testTelegramChatBot(): Promise<ActionResult> {
   }
   return { ok: true, message: "Тест отправлен в бот онлайн-чата" }
 }
-  return { ok: true, message: "Тестовое сообщение отправлено в Telegram" }
-}
 
 export async function addShipmentEvent(form: FormData): Promise<ActionResult> {
   await requireAdmin()
