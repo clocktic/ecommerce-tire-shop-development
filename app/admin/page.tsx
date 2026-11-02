@@ -1,8 +1,10 @@
 import Link from "next/link"
 import { count, eq, inArray } from "drizzle-orm"
+import { TelegramTestCard } from "@/components/admin/telegram-test-card"
 import { isAdmin } from "@/lib/admin-auth"
 import { db } from "@/lib/db"
 import { chatConversations, contactMessages, orders, products } from "@/lib/db/schema"
+import { isTelegramConfigured } from "@/lib/telegram"
 
 export default async function AdminDashboard() {
   if (!(await isAdmin())) return null
@@ -37,6 +39,7 @@ export default async function AdminDashboard() {
           </li>
         ))}
       </ul>
+      <TelegramTestCard configured={isTelegramConfigured()} />
     </div>
   )
 }

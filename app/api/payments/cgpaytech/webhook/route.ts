@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 import { db } from "@/lib/db"
 import { orders } from "@/lib/db/schema"
+import { confirmOrderPayment } from "@/lib/payments/confirm"
 
 export async function POST(request: Request) {
   try {
@@ -20,6 +21,13 @@ export async function POST(request: Request) {
         ""
     ).trim()
 
+    const transactionId = String(
+      transactionObj.id ??
+        transactionObj.transactionId ??
+        body.transactionId ??
+        ""
+    ).trim() || null
+
     const rawStatus = String(
       body.status ??
         transactionObj.status ??
@@ -31,14 +39,15 @@ export async function POST(request: Request) {
 
     if (externalId) {
       if (["success", "succeeded", "captured", "settled", "approved", "paid", "completed"].includes(rawStatus)) {
-        await db
-          .update(orders)
-          .set({ status: "paid" })
-          .where(eq(orders.orderNumber, externalId))
+        await confirmOrderPayment({
+          orderNumber: externalId,
+          paymentMethod: "Карта (CGPayTech)",
+          transactionId,
+        })
       } else if (["failed", "declined", "error", "expired", "canceled", "cancelled"].includes(rawStatus)) {
         await db
           .update(orders)
-          .set({ status: "cancelled" })
+          .set({ status: "cancelled", updatedAt: new Date() })
           .where(eq(orders.orderNumber, externalId))
       }
     }

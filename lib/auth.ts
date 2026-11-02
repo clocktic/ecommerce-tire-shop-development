@@ -3,6 +3,7 @@ import "server-only"
 import { betterAuth } from "better-auth"
 import { nextCookies } from "better-auth/next-js"
 import { pool } from "@/lib/db"
+import { notifyTelegramNewUser } from "@/lib/telegram"
 
 export type SocialProvider = "google" | "apple" | "facebook"
 
@@ -69,6 +70,19 @@ export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 30,
     updateAge: 60 * 60 * 24,
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (createdUser) => {
+          await notifyTelegramNewUser({
+            id: createdUser.id,
+            name: createdUser.name,
+            email: createdUser.email,
+          })
+        },
+      },
+    },
   },
   ...(process.env.NODE_ENV === "development"
     ? {
