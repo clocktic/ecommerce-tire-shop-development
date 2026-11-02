@@ -79,17 +79,20 @@ export async function testTelegramBot(): Promise<ActionResult> {
   await requireAdmin()
   const res = await sendTelegramNotification(
     [
-      `🔔 <b>Тестовое уведомление · TiresShop</b>`,
+      `<b>Тестовое уведомление · TiresShop</b>`,
       `Бот успешно подключён к магазину <b>tiresshop.net</b>.`,
-      `Сюда будут приходить уведомления:`,
+      `Сюда приходят уведомления:`,
       `• о регистрации нового покупателя`,
       `• о создании нового заказа`,
       `• об успешной оплате заказа`,
+      `• сообщения покупателей из онлайн-чата (с возможностью отвечать прямо из Telegram через Reply или кнопку)`,
     ].join("\n"),
   )
   if (!res.ok) {
     return { ok: false, error: res.error ?? "Ошибка отправки в Telegram" }
   }
+  return { ok: true, message: "Тестовое сообщение отправлено в Telegram" }
+}
   return { ok: true, message: "Тестовое сообщение отправлено в Telegram" }
 }
 

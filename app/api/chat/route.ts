@@ -11,6 +11,8 @@ import {
   updateConversationContact,
 } from "@/lib/chat"
 import { parseStore } from "@/lib/i18n/config"
+import { notifyTelegramChatMessage } from "@/lib/telegram"
+import { syncTelegramChatUpdates } from "@/lib/telegram-chat"
 
 export const dynamic = "force-dynamic"
 
@@ -20,6 +22,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 export async function GET() {
   const visitorId = (await cookies()).get(CHAT_COOKIE)?.value
   if (!visitorId) return NextResponse.json({ messages: [], visitor: null })
+  await syncTelegramChatUpdates()
   const conversation = await conversationByVisitor(visitorId)
   if (!conversation) return NextResponse.json({ messages: [], visitor: null })
   return NextResponse.json({
@@ -65,6 +68,14 @@ export async function POST(request: Request) {
 
   if (body) {
     await addMessage(conversation.id, "visitor", body)
+    await notifyTelegramChatMessage({
+      conversationId: conversation.id,
+      name,
+      email,
+      market: store.market,
+      lang: store.lang,
+      body,
+    })
   }
 
   const isHttps = request.url.startsWith("https:")

@@ -35,9 +35,8 @@ export function TelegramTestCard({ configured }: { configured: boolean }) {
           </span>
         </div>
         <p className="text-xs leading-relaxed text-muted-foreground">
-          События: регистрация нового покупателя, создание нового заказа, успешная оплата заказа (переменные{" "}
-          <code className="font-mono text-foreground">TELEGRAM_BOT_TOKEN</code> и{" "}
-          <code className="font-mono text-foreground">TELEGRAM_CHAT_ID</code>).
+          События: регистрация нового покупателя, создание нового заказа, успешная оплата заказа и двусторонний{" "}
+          <strong className="font-semibold text-foreground">онлайн-чат с покупателями</strong> (отвечайте через Reply или кнопку прямо в Telegram).
         </p>
         {feedback && (
           <p className={`font-mono text-xs ${feedback.ok ? "text-emerald-500" : "text-destructive"}`}>
