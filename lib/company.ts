@@ -7,12 +7,16 @@
 
 export const COMPANY = {
   tradingName: "TiresShop",
+  domain: "tiresshop.net",
   legalName: "Semen Ti Trading LLC",
   entityType: "Limited liability company",
   stateOfFormation: "California",
   registrationNumber: "B20260459523",
+  registrationAuthority: "California Secretary of State",
   sellerPermit: "209-079264-00001",
   sellerPermitAuthority: "California Department of Tax and Fee Administration (CDTFA)",
+  caSellersPermit: "209-079264-00001",
+  caSellersPermitIssuer: "California Department of Tax and Fee Administration (CDTFA)",
   representative: "Semen Titov",
   representativeRole: "Managing Member",
   street: "265 W Tujunga Ave, Apt 126",
