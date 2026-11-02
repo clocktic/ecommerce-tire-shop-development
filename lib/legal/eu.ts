@@ -150,7 +150,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
       },
       {
         heading: "Faulty, damaged or wrong items",
-        blocks: ["If an item arrives damaged, defective or not what you ordered, your statutory rights under the 2-year EU legal guarantee of conformity apply and we pay 100% of the return shipping and replacement/refund costs (€0.00 cost to you). See Legal Guarantee & Warranty."],
+        blocks: ["If an item arrives damaged, defective or not what you ordered, your statutory rights under the 2-year EU legal guarantee of conformity apply and we pay the full return shipping and replacement/refund costs (€0.00 cost to you). See Legal Guarantee & Warranty."],
       },
       SNIP.returnsSection,
       { heading: "Contact", blocks: [`${COMPANY.legalName}, ${companyAddressLine} · ${contactLine}`] },

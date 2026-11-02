@@ -3,7 +3,7 @@ import type { Block, PolicyDoc } from "@/lib/legal/types"
 import { policyLinks } from "@/lib/legal"
 import { policyHref } from "@/lib/legal/pages"
 import { getDictionary, localeMeta, storePath, type Store } from "@/lib/i18n"
-import { COMPANY } from "@/lib/company"
+import { COMPANY, companyAddressLine } from "@/lib/company"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
 import { cn } from "@/lib/utils"
 
@@ -72,15 +72,59 @@ export function ProsePage({
           {children}
 
           <footer className="border-t border-border pt-6 text-sm leading-relaxed text-muted-foreground">
-            {t.prose.questions}{" "}
-            <a href={`mailto:${COMPANY.email}`} className="underline underline-offset-4">
-              {COMPANY.email}
-            </a>{" "}
-            {t.prose.or}{" "}
-            <Link href={storePath(store, "/contact")} className="underline underline-offset-4">
-              {t.prose.allContact}
-            </Link>
-            .
+            <p className="font-semibold text-foreground">{t.prose.questions}</p>
+            <dl className="mt-3 grid gap-2 text-xs sm:grid-cols-2">
+              <div>
+                <dt className="font-semibold uppercase tracking-wider text-muted-foreground">Website name</dt>
+                <dd className="mt-0.5 text-foreground">
+                  {COMPANY.tradingName} ({COMPANY.domain})
+                </dd>
+              </div>
+              <div>
+                <dt className="font-semibold uppercase tracking-wider text-muted-foreground">{t.about.company}</dt>
+                <dd className="mt-0.5 text-foreground">{COMPANY.legalName}</dd>
+              </div>
+              <div className="sm:col-span-2">
+                <dt className="font-semibold uppercase tracking-wider text-muted-foreground">{t.about.address}</dt>
+                <dd className="mt-0.5 text-foreground">{companyAddressLine}</dd>
+              </div>
+              <div>
+                <dt className="font-semibold uppercase tracking-wider text-muted-foreground">{t.about.email}</dt>
+                <dd className="mt-0.5 text-foreground">{COMPANY.email}</dd>
+              </div>
+              <div>
+                <dt className="font-semibold uppercase tracking-wider text-muted-foreground">{t.common.contact}</dt>
+                <dd className="mt-0.5">
+                  <Link href={storePath(store, "/contact")} className="font-semibold text-foreground underline underline-offset-4">
+                    {t.prose.allContact}
+                  </Link>
+                </dd>
+              </div>
+              <div>
+                <dt className="font-semibold uppercase tracking-wider text-muted-foreground">{t.about.phone}</dt>
+                <dd className="mt-0.5 text-foreground">
+                  <a href={`tel:${COMPANY.phoneTel}`} className="underline underline-offset-4">
+                    {COMPANY.phoneDisplay}
+                  </a>
+                </dd>
+              </div>
+              <div>
+                <dt className="font-semibold uppercase tracking-wider text-muted-foreground">{t.about.hours}</dt>
+                <dd className="mt-0.5 text-foreground">{t.company.hours}</dd>
+              </div>
+              <div>
+                <dt className="font-semibold uppercase tracking-wider text-muted-foreground">Company number</dt>
+                <dd className="mt-0.5 text-foreground">
+                  {COMPANY.registrationNumber} ({COMPANY.registrationAuthority})
+                </dd>
+              </div>
+              <div>
+                <dt className="font-semibold uppercase tracking-wider text-muted-foreground">TAX Number</dt>
+                <dd className="mt-0.5 text-foreground">
+                  {COMPANY.caSellersPermit} ({COMPANY.caSellersPermitIssuer})
+                </dd>
+              </div>
+            </dl>
           </footer>
         </article>
       </div>

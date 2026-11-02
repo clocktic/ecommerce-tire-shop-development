@@ -134,7 +134,7 @@ export const US_POLICIES: Record<string, PolicyDoc> = {
       {
         heading: "Return shipping costs & restocking fees",
         blocks: [
-          "Damaged, defective or incorrect items: If an item arrived damaged in transit, has a manufacturing defect on arrival, or is not the part number you ordered, we cover 100% of the return shipping cost and provide a prepaid return label at no charge ($0.00).",
+          "Damaged, defective or incorrect items: If an item arrived damaged in transit, has a manufacturing defect on arrival, or is not the part number you ordered, we cover the full return shipping cost and provide a prepaid return label at no charge ($0.00).",
           r.returnShippingPaidBy === "merchant"
             ? "Unwanted items: Return shipping is free."
             : `Unwanted items / buyer's remorse / wrong size ordered: You are responsible for return shipping. If you use our discounted prepaid carrier label, the return shipping cost is ${r.bulkyReturnCostEstimate}, which is deducted from your refund. Alternatively, you may ship the item back using your own insured ground carrier with tracking after receiving your RMA number.`,
@@ -166,7 +166,7 @@ export const US_POLICIES: Record<string, PolicyDoc> = {
       {
         heading: "Order cancellations and exchanges",
         blocks: [
-          "Cancellations before shipment: You can cancel your order free of charge at any time before it is dispatched by emailing or calling us. We will void the payment authorization or refund 100% of the amount paid immediately.",
+          "Cancellations before shipment: You can cancel your order free of charge at any time before it is dispatched by emailing or calling us. We will void the payment authorization or refund the full amount paid immediately.",
           "Exchanges: To exchange an item for a different tire size, wheel specification or brake kit, please initiate a return for the original item and place a new order for the replacement item so your new part ships immediately without waiting for the return transit.",
         ],
       },
@@ -285,7 +285,7 @@ export const US_POLICIES: Record<string, PolicyDoc> = {
       {
         heading: "Orders and contract formation",
         blocks: [
-          "Submitting an order at checkout constitutes an offer to purchase the selected products under these Terms. We send an automated email acknowledging receipt of your order details; acceptance of your offer and formation of the contract of sale occur when we dispatch the products and send your shipping confirmation email. We reserve the right to decline or cancel an order before shipment—for example, due to stock unavailability, an inability to verify billing/shipping information, suspected payment fraud, or a manifest pricing or typographical error—in which case we will notify you promptly and refund 100% of any amount paid.",
+          "Submitting an order at checkout constitutes an offer to purchase the selected products under these Terms. We send an automated email acknowledging receipt of your order details; acceptance of your offer and formation of the contract of sale occur when we dispatch the products and send your shipping confirmation email. We reserve the right to decline or cancel an order before shipment—for example, due to stock unavailability, an inability to verify billing/shipping information, suspected payment fraud, or a manifest pricing or typographical error—in which case we will notify you promptly and refund the full amount paid.",
         ],
       },
       {

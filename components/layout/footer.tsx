@@ -41,15 +41,19 @@ export function Footer({ store }: { store: Store }) {
             </nav>
           </div>
           <address className="flex flex-wrap gap-x-2 text-sm not-italic leading-relaxed text-secondary-foreground/70">
+            <span>{COMPANY.legalName}</span>
+            <span aria-hidden="true">{"·"}</span>
+            <span>Reg. No. {COMPANY.registrationNumber}</span>
+            <span aria-hidden="true">{"·"}</span>
+            <span>TAX No. {COMPANY.caSellersPermit}</span>
+            <span aria-hidden="true">{"·"}</span>
             <span>{companyAddressLine}</span>
             <span aria-hidden="true">{"·"}</span>
             <a href={`tel:${COMPANY.phoneTel}`} className="hover:text-secondary-foreground">
               {COMPANY.phoneDisplay}
             </a>
             <span aria-hidden="true">{"·"}</span>
-            <a href={`mailto:${COMPANY.email}`} className="hover:text-secondary-foreground">
-              {COMPANY.email}
-            </a>
+            <span>{COMPANY.email}</span>
             <span aria-hidden="true">{"·"}</span>
             <span>{t.company.hours}</span>
           </address>

@@ -26,11 +26,15 @@ export default async function ContactPage({ params }: { params: Params }) {
   const t = getDictionary(store)
   const c = t.contact
 
-  const cards = [
-    { icon: Mail, label: c.email, value: COMPANY.email, href: `mailto:${COMPANY.email}` },
+  const cards: { icon: typeof Mail; label: string; value: string; href?: string }[] = [
+    { icon: Mail, label: c.email, value: COMPANY.email },
     { icon: Phone, label: c.phone, value: COMPANY.phoneDisplay, href: `tel:${COMPANY.phoneTel}` },
     { icon: Clock, label: c.hours, value: t.company.hours },
-    { icon: MapPin, label: c.address, value: companyAddressLine },
+    {
+      icon: MapPin,
+      label: c.address,
+      value: `${COMPANY.legalName} — ${companyAddressLine} · Company No. ${COMPANY.registrationNumber} · TAX No. ${COMPANY.caSellersPermit}`,
+    },
   ]
   const links = [
     { href: storePath(store, "/faq"), label: t.common.faq },

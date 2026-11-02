@@ -148,7 +148,7 @@ const consentShared = {
 
 const contactShared = {
   title: "Contact",
-  lead: "We reply to emails within 1 business day. Include your order number and, for fitment questions, your vehicle and current tire size.",
+  lead: "Our customer service replies within 24–48 hours during working days. Include your order number and, for fitment questions, your vehicle and current tire size.",
   email: "Email",
   phone: "Phone",
   hours: "Hours",
@@ -164,7 +164,7 @@ const contactShared = {
 const aboutShared = {
   title: "About us",
   description: `Who runs ${COMPANY.tradingName}.`,
-  lead: `${COMPANY.tradingName} sells tires, wheels and brake systems online from two regional stores: one for the United States, one for the European Union. Each store has its own stock, prices and policies, written for the law that applies where you live.`,
+  lead: `${COMPANY.tradingName} is operated by ${COMPANY.legalName}, a California limited liability company based in Burbank, California. We sell tires, alloy wheels and brake systems online through two dedicated regional stores — one for the United States and one for the European Union — each with its own inventory, transparent pricing, fitment verification tools and customer support team.`,
   details: "Company details",
   company: "Company",
   legalForm: "Legal form",
@@ -768,7 +768,7 @@ export const euEn: Dictionary = {
   },
   contact: {
     ...contactShared,
-    lead: "We reply to emails within 1 working day. Include your order number and, for fitment questions, your vehicle and current tyre size.",
+    lead: "Our customer service replies within 24–48 hours during working days. Include your order number and, for fitment questions, your vehicle and current tyre size.",
     description: `Contact ${COMPANY.tradingName} customer service.`,
     eyebrow: "European Union store",
     euRep: "EU representative (GDPR)",

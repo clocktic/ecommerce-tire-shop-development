@@ -404,7 +404,7 @@ export const euNl: Dictionary = {
   },
   contact: {
     title: "Contact",
-    lead: "Wij beantwoorden e-mails binnen 1 werkdag. Vermeld uw bestelnummer en, bij vragen over pasvorm, uw voertuig en huidige bandenmaat.",
+    lead: "Onze klantenservice antwoordt binnen 24 tot 48 uur op werkdagen. Vermeld uw bestelnummer en, bij vragen over pasvorm, uw voertuig en huidige bandenmaat.",
     email: "E-mail",
     phone: "Telefoon",
     hours: "Bereikbaarheid",
