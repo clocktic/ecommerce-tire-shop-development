@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { ReferenceModel } from '@/lib/catalog/reference'
 import { ReferenceVariantPicker } from '@/components/catalog/reference-variant-picker'
+import { BrandMark } from '@/components/product/brand-mark'
 import { tireReferenceCopy } from '@/lib/i18n/tire-reference'
 import { storePath, type Store } from '@/lib/i18n'
 
@@ -12,7 +13,7 @@ export function ReferenceModelCard({ model, store }: { model: ReferenceModel; st
         <Image src={model.images[0]} alt={`${model.brand} ${model.name}`} fill quality={95} sizes="(max-width: 640px) 90vw, (max-width: 1024px) 300px, 260px" className="object-contain p-6 transition-transform duration-300 motion-safe:group-hover:scale-105" />
       </div>
     <div className="flex flex-1 flex-col gap-3 p-5">
-      <p className="label-caps text-primary">{model.brand}</p>
+      <BrandMark brand={model.brand} size="xs" textClassName="text-primary" />
       <h2 className="text-xl font-bold leading-tight"><Link href={storePath(store, `/tire-catalog/${model.slug}`)}>{model.name}</Link></h2>
       <p className="text-sm text-muted-foreground">{model.seasons.map(s => t[s as 'summer' | 'winter' | 'all-season']).join(' · ')}</p>
       <ReferenceVariantPicker variants={model.variants} href={storePath(store, `/tire-catalog/${model.slug}`)} labels={t} />

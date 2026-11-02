@@ -22,6 +22,7 @@ import { ALL_STORES, fmt, getDictionary, parseStore, storePath, type Dictionary,
 import { storeAlternates } from "@/lib/seo"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
 import { ProductCard } from "@/components/product/product-card"
+import { BrandFilterStrip } from "@/components/catalog/brand-filter-strip"
 import { FilterSelect } from "@/components/catalog/filter-select"
 import { MobileCatalogToolbar } from "@/components/catalog/mobile-filter-sheet"
 import { FitmentBanner } from "@/components/garage/fitment-banner"
@@ -65,6 +66,13 @@ export default async function CategoryPage({ params, searchParams }: { params: P
   const catalog = await readProductsByCategory(store.market, category)
   if (!catalog.ok) return <div className="mx-auto max-w-7xl px-4 md:px-6"><CatalogUnavailable store={store} /></div>
   const all = catalog.data.map((p) => localizeProduct(p, store))
+  const brandCounts = new Map<string, number>()
+  for (const p of all) {
+    brandCounts.set(p.brand, (brandCounts.get(p.brand) ?? 0) + 1)
+  }
+  const brandStripItems = [...brandCounts.entries()]
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => a.name.localeCompare(b.name))
   const filtered = filterProducts(all, filters, store.market)
   const sortMode = filters.sort ?? "featured"
   const products = [...filtered].sort((a, b) => {
@@ -154,6 +162,14 @@ export default async function CategoryPage({ params, searchParams }: { params: P
       </header>
 
       <FitmentBanner category={category} filters={filters} matchingCount={products.length} />
+
+      <BrandFilterStrip
+        brands={brandStripItems}
+        activeBrand={filters.brand}
+        basePath={storePath(store, `/${category}`)}
+        currentFilters={filters}
+        allLabel={t.catalog.any}
+      />
 
       <MobileCatalogToolbar
         title={fmt(t.catalog.filter, { category: copy.name })}

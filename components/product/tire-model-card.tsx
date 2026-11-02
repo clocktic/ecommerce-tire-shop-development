@@ -14,6 +14,7 @@ import { tireReferenceCopy } from '@/lib/i18n/tire-reference'
 import { Price } from './price'
 import { EuTyreLabel } from './eu-tyre-label'
 import { EprelReference } from './eprel-reference'
+import { BrandMark } from './brand-mark'
 
 export type TireCardVariant = Pick<TireProduct, 'id' | 'slug' | 'brand' | 'name' | 'mpn' | 'gtin' | 'images' | 'offers' | 'tire'>
 
@@ -57,7 +58,7 @@ export function TireModelCard({ variants, store }: { variants: TireCardVariant[]
       </Link>
       <div className="flex flex-1 flex-col gap-2.5 p-3.5 sm:gap-3 sm:p-4">
         <div className="flex flex-wrap items-center justify-between gap-1.5">
-          <p className="label-caps text-muted-foreground">{product.brand}</p>
+          <BrandMark brand={product.brand} size="xs" />
           <ProductFitmentBadge
             compact
             target={{

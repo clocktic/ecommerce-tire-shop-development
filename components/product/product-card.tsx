@@ -4,6 +4,7 @@ import { offerFor, tireServiceDescription, tireSize, type Product } from "@/lib/
 import { getDictionary, storePath, type Dictionary, type Store } from "@/lib/i18n"
 import { Price } from "@/components/product/price"
 import { EuTyreLabel } from "@/components/product/eu-tyre-label"
+import { BrandMark } from "@/components/product/brand-mark"
 
 export function productCode(product: Product, t: Dictionary): { code: string; meta: string } {
   const { season, brakeKind, axle } = t.labels
@@ -45,8 +46,8 @@ export function ProductCard({ product, store }: { product: Product; store: Store
         )}
       </div>
       <div className="flex flex-1 flex-col gap-2 p-3 sm:gap-3 sm:p-4">
-        <div className="flex flex-col gap-0.5 sm:gap-1">
-          <p className="label-caps truncate text-[10px] text-muted-foreground sm:text-xs">{product.brand}</p>
+        <div className="flex flex-col gap-1 sm:gap-1.5">
+          <BrandMark brand={product.brand} size="xs" />
           <h3 className="line-clamp-2 text-pretty text-xs font-semibold leading-snug sm:text-base">
             <Link href={storePath(store, `/product/${product.slug}`)} className="after:absolute after:inset-0">
               {product.name}

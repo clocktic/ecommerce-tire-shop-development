@@ -7,6 +7,7 @@ import { tireReferenceCopy } from '@/lib/i18n/tire-reference'
 import { referenceModels, referenceSize, referenceSizes } from '@/lib/catalog/reference'
 import { storeAlternates } from '@/lib/seo'
 import { FilterSelect } from '@/components/catalog/filter-select'
+import { BrandBadge, BrandMark } from '@/components/product/brand-mark'
 
 type Props = { params: Promise<{ market: string; lang: string; slug: string }>; searchParams: Promise<{ size?: string | string[]; mpn?: string | string[]; gtin?: string | string[] }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -27,13 +28,13 @@ export default async function ReferenceModelPage({ params, searchParams }: Props
   const rims = [...new Set(model.variants.map(v => v.rim))].sort((a, b) => a - b)
   return <div className="mx-auto max-w-7xl px-4 py-8 md:px-6">
     <Link href={storePath(store, `/tire-catalog?brand=${encodeURIComponent(model.brand)}`)} className="text-sm text-muted-foreground underline underline-offset-4">← {t.back}</Link>
-    <header className="my-8 flex flex-col gap-3"><p className="label-caps text-primary">{model.brand}</p><h1 className="font-expanded break-words text-3xl font-extrabold uppercase sm:text-4xl md:text-6xl">{model.name}</h1><p className="font-mono text-sm text-muted-foreground">{referenceSizes(model).length} {t.sizes} · {model.variants.length} {t.variants}</p></header>
+    <header className="my-8 flex flex-col gap-3"><BrandBadge brand={model.brand} href={storePath(store, `/tire-catalog?brand=${encodeURIComponent(model.brand)}`)} /><h1 className="font-expanded break-words text-3xl font-extrabold uppercase sm:text-4xl md:text-6xl">{model.name}</h1><p className="font-mono text-sm text-muted-foreground">{referenceSizes(model).length} {t.sizes} · {model.variants.length} {t.variants}</p></header>
     <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
       <figure className="flex flex-col gap-3"><div className="grid grid-cols-2 gap-3">{model.images.map((src, i) => <div key={src} className="relative h-52 border border-border bg-white sm:h-60"><Image src={src} alt={`${model.brand} ${model.name} — ${i+1}`} fill priority={i===0} quality={95} sizes="(max-width: 1024px) 40vw, 280px" className="object-contain p-7 sm:p-9" /></div>)}</div><figcaption className="text-xs leading-relaxed text-muted-foreground">{t.photos}</figcaption></figure>
       <aside className="flex flex-col items-start gap-5 border border-border bg-card p-6 shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)]">
         <p className="label-caps text-primary">{t.title}</p>
         <dl className="grid w-full gap-3 border-y border-border py-4 text-sm">
-          <div className="flex items-center justify-between gap-4"><dt className="text-muted-foreground">{t.brand}</dt><dd className="font-semibold">{model.brand}</dd></div>
+          <div className="flex items-center justify-between gap-4"><dt className="text-muted-foreground">{t.brand}</dt><dd className="font-semibold"><BrandMark brand={model.brand} size="xs" textClassName="text-foreground font-semibold" /></dd></div>
           <div className="flex items-center justify-between gap-4"><dt className="text-muted-foreground">{t.season}</dt><dd className="font-semibold">{model.seasons.map(s => t[s as 'summer' | 'winter' | 'all-season']).join(' · ')}</dd></div>
           <div className="flex items-center justify-between gap-4"><dt className="text-muted-foreground">{t.rim}</dt><dd className="font-mono font-semibold">{rims.map(r => `R${r}`).join(' · ')}</dd></div>
           <div className="flex items-center justify-between gap-4"><dt className="text-muted-foreground">{t.sizes}</dt><dd className="font-mono font-semibold">{referenceSizes(model).length}</dd></div>
