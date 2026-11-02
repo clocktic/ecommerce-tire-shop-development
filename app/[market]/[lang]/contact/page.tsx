@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { Mail, Phone, Clock, MapPin } from "lucide-react"
 import { COMPANY, EU_PRESENCE, companyAddressLine, physicalReturnsAddress } from "@/lib/company"
 import { getDictionary, parseStore, storePath } from "@/lib/i18n"
+import { getPolicy } from "@/lib/legal"
 import { policyHref } from "@/lib/legal/pages"
 import { storeAlternates } from "@/lib/seo"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
@@ -27,18 +28,20 @@ export default async function ContactPage({ params }: { params: Params }) {
   const c = t.contact
 
   const cards: { icon: typeof Mail; label: string; value: string; href?: string }[] = [
-    { icon: Mail, label: c.email, value: COMPANY.email },
+    { icon: Mail, label: c.email, value: COMPANY.email, href: `mailto:${COMPANY.email}` },
     { icon: Phone, label: c.phone, value: COMPANY.phoneDisplay, href: `tel:${COMPANY.phoneTel}` },
     { icon: Clock, label: c.hours, value: t.company.hours },
     {
       icon: MapPin,
-      label: c.address,
-      value: `${COMPANY.legalName} — ${companyAddressLine} · Company No. ${COMPANY.registrationNumber} · TAX No. ${COMPANY.caSellersPermit}`,
+      label: `${COMPANY.legalName} - ${COMPANY.tradingName}`,
+      value: `${companyAddressLine} · Company No. ${COMPANY.registrationNumber} · TAX No. ${COMPANY.caSellersPermit}`,
     },
   ]
   const links = [
     { href: storePath(store, "/faq"), label: t.common.faq },
     { href: policyHref(store, "returns"), label: c.returns },
+    { href: policyHref(store, "shipping"), label: getPolicy(store, "shipping")?.title ?? "Shipping Policy" },
+    { href: policyHref(store, "payments"), label: getPolicy(store, "payments")?.title ?? t.footer.payments },
     { href: policyHref(store, "privacy"), label: c.privacy },
     { href: policyHref(store, "terms"), label: c.terms },
   ]

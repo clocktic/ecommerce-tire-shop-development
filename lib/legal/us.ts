@@ -10,13 +10,13 @@ const contactLine = `${COMPANY.email} · ${COMPANY.phoneDisplay} (${COMPANY.hour
 export const US_POLICIES: Record<string, PolicyDoc> = {
   shipping: {
     title: "Shipping Policy",
-    description: `Free standard shipping to ${s.area}. Delivered in ${deliveryLabel("us")}.`,
-    intro: `This Shipping Policy applies to all orders placed in the ${COMPANY.tradingName} US store (operated by ${COMPANY.legalName}, prices in USD).`,
+    description: `Standard ground shipping to ${s.area}. Delivered in ${deliveryLabel("us")}.`,
+    intro: `${COMPANY.legalName} ("we", "us", or "our") operates the website ${COMPANY.url} (the "Site"). This Shipping Policy applies to all orders placed in the ${COMPANY.tradingName} US store (prices in USD) and ensures a seamless, transparent shipping process.`,
     sections: [
       {
         heading: "Where we ship",
         blocks: [
-          `We ship across ${s.area}. We do not ship to ${s.exclusions} — tires, alloy wheels and brake kits are heavy or oversized parcels that require a physical street address for carrier delivery.`,
+          `We currently ship across ${s.area}. We do not ship to ${s.exclusions} — tires, alloy wheels and brake kits are heavy or oversized parcels that require a physical street address for carrier delivery. We are continually considering expanding our delivery areas.`,
           "You may have your order shipped directly to a local tire shop, dealership or independent installer. Enter the shop's name in the company or address field at checkout and let your installer know the shipment is on the way.",
         ],
       },
@@ -60,10 +60,17 @@ export const US_POLICIES: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Damaged, defective or missing parcels",
+        heading: "Damaged, defective or lost parcels",
         blocks: [
-          "Please inspect all parcels upon delivery. If a parcel arrives visibly damaged, note the damage with the carrier driver if possible and email photos of the item and packaging to our support team within 7 calendar days of delivery. If tracking shows delivered but you cannot locate the parcel, contact us within 7 calendar days so we can initiate a carrier trace.",
-          "Items damaged in transit, defective upon arrival, or lost by the carrier are replaced or refunded in full at $0 cost to you (including free return shipping where a return is required).",
+          "Please inspect all parcels upon delivery. If your order arrives damaged, please contact us within 48 hours (and no later than 7 calendar days) of delivery with photos of the item and packaging so we can initiate a prompt resolution. If your order is lost or does not arrive within the estimated timeframe, please reach out to us so we can initiate an investigation with the shipping carrier.",
+          "Items damaged in transit, defective upon arrival, or lost by the carrier are replaced or refunded in full at $0 cost to you (including return shipping covered by us where a return is required).",
+        ],
+      },
+      {
+        heading: "Returns",
+        blocks: [
+          "For detailed return instructions, eligibility, and timelines, please refer to our Return & Refund Policy.",
+          { link: { href: "/policies/returns", label: "Return & Refund Policy" } },
         ],
       },
       {
@@ -87,13 +94,15 @@ export const US_POLICIES: Record<string, PolicyDoc> = {
           {
             rows: [
               ["Return window", `${r.windowDays} calendar days from the date of delivery`],
-              ["Item condition required", "New, unused, unmounted, in original packaging with all labels and accessories"],
+              ["Item condition required", "New, unused, unmounted, in original packaging with all tags, labels and accessories"],
+              ["Receipt or proof of purchase", "Required for all returns (order number or confirmation email)"],
               ["Return method", "By mail / parcel carrier after requesting a Return Merchandise Authorization (RMA)"],
               ["Restocking fee", "$0.00 (0% — we never charge a restocking fee)"],
-              ["Return shipping (defective / wrong item)", "Free ($0.00 — we provide a prepaid return label)"],
+              ["Return shipping (defective / wrong item)", "$0.00 — covered by us (prepaid return label provided)"],
               ["Return shipping (unwanted / wrong size ordered)", `${r.bulkyReturnCostEstimate} using our prepaid label (deducted from refund)`],
-              ["Refund processing time", `Within ${r.refundDays} business days after return inspection (inspected within 2 business days of arrival)`],
+              ["Inspection & refund processing time", `Inspected within 2 business days of receipt; refund issued within ${r.refundDays} business days after inspection`],
               ["Physical return address", US_PRESENCE.returnsAddress],
+              ["Customer service contact", `${COMPANY.email} · ${COMPANY.phoneDisplay}`],
             ],
           },
         ],
@@ -166,8 +175,8 @@ export const US_POLICIES: Record<string, PolicyDoc> = {
       {
         heading: "Order cancellations and exchanges",
         blocks: [
-          "Cancellations before shipment: You can cancel your order free of charge at any time before it is dispatched by emailing or calling us. We will void the payment authorization or refund the full amount paid immediately.",
-          "Exchanges: To exchange an item for a different tire size, wheel specification or brake kit, please initiate a return for the original item and place a new order for the replacement item so your new part ships immediately without waiting for the return transit.",
+          "Cancellations before shipment: You may cancel your order within two hours of purchase or at any time before it is dispatched by emailing or calling our customer service team. We will void the payment authorization or refund the full amount paid promptly. If your order has already been shipped, please follow the steps in our Return Instructions above.",
+          "Exchanges: We offer exchanges for incorrect or defective items at no return shipping cost to you. If an incorrect size, wheel specification or brake kit was ordered, please follow the return process for the original item and place a new order for the replacement item so your new part ships promptly without waiting for the return transit.",
         ],
       },
       { heading: "Contact", blocks: [`${COMPANY.legalName}, ${companyAddressLine} · ${contactLine}`] },
@@ -214,7 +223,7 @@ export const US_POLICIES: Record<string, PolicyDoc> = {
       {
         heading: "Your statutory rights (Magnuson-Moss Warranty Act)",
         blocks: [
-          "Nothing on this page limits or disclaims any implied warranties of merchantability or fitness for a particular purpose, or any other rights and remedies available to you under the federal Magnuson-Moss Warranty Act (15 U.S.C. § 2301 et seq.) or the consumer protection laws of your state.",
+          "Nothing on this page limits or disclaims any implied warranties of merchantability or fitness for a particular purpose, or any other rights and legal protections available to you under the federal Magnuson-Moss Warranty Act (15 U.S.C. § 2301 et seq.) or the consumer protection laws of your state.",
         ],
       },
       { heading: "Contact", blocks: [`${COMPANY.legalName}, ${companyAddressLine} · ${contactLine}`] },
@@ -224,35 +233,58 @@ export const US_POLICIES: Record<string, PolicyDoc> = {
   payments: {
     title: "Payment Methods",
     description: `Secure checkout in USD with ${p.paymentMethods.join(", ")}.`,
-    intro: `All prices in the ${COMPANY.tradingName} US store are stated and charged in US Dollars (USD).`,
+    intro: `At ${COMPANY.tradingName} (${COMPANY.url}), we highly value your safety and convenience. We offer payment methods in US Dollars (USD) that are easy to use and strictly comply with United States payment security and consumer legislation.`,
     sections: [
       {
-        heading: "Accepted payment methods",
+        heading: "Policy overview & merchant details",
         blocks: [
-          "We accept the following major credit and debit cards at checkout:",
-          { list: p.paymentMethods },
+          {
+            rows: [
+              ["Website name", COMPANY.tradingName],
+              ["Website URL", COMPANY.url],
+              ["Selling country / region", "United States (48 contiguous states)"],
+              ["Customer service email", COMPANY.email],
+              ["Customer service phone", COMPANY.phoneDisplay],
+              ["Company address", `${COMPANY.legalName}, ${companyAddressLine}`],
+              ["Billing currency", "US Dollars (USD)"],
+            ],
+          },
         ],
       },
       {
-        heading: "How payment processing works",
+        heading: "1. Credit & Debit Cards (Visa, Mastercard, American Express, Discover)",
         blocks: [
-          "When you click \"Place order\" at checkout, you are directed to our encrypted 3D Secure 2.0 payment page to complete your card payment. Your payment is authorized when you submit the transaction and captured for order fulfillment. If an order is canceled prior to shipment or cannot be fulfilled from stock, the payment authorization is released or refunded in full immediately.",
+          "Encrypted 3D Secure 2.0 Card Checkout — We accept major credit and debit cards (Visa, Mastercard, American Express, Discover) processed securely in USD. Here is how it works:",
+          {
+            list: [
+              "Choose Credit / Debit Card as your payment method at checkout.",
+              "Click \"Place order\" to open our encrypted 3D Secure 2.0 payment page.",
+              "Enter your card details and billing information and follow your card-issuing bank's security verification steps to authorize the transaction.",
+              "Once the transaction is confirmed, you are redirected back to our site and receive an order confirmation email.",
+              "If an order is canceled prior to shipment or cannot be fulfilled from stock, the payment authorization is released or refunded in full promptly.",
+            ],
+          },
         ],
       },
       {
         heading: "Pricing, sales tax & total transparency",
         blocks: [
-          "The price shown on each product page is the price per unit in USD. Standard ground shipping is free ($0.00). Applicable state and local sales tax is calculated at checkout based on your delivery ZIP code before you submit payment. We never add hidden handling fees, payment surcharges, or post-checkout charges.",
+          "The price shown on each product page is the price per unit in USD. Standard ground shipping is $0.00. Applicable state and local sales tax is calculated at checkout based on your delivery ZIP code before you submit payment. We never add handling fees, payment surcharges, or post-checkout charges.",
         ],
       },
       {
-        heading: "Payment security & fraud prevention",
+        heading: "Security and protection",
         blocks: [
-          "All card transactions are processed over TLS-encrypted connections through a PCI-DSS Level 1 compliant payment gateway with 3D Secure 2.0 authentication and Address Verification System (AVS) checks. We never store raw card numbers or CVV security codes on our servers.",
+          "Your security is our highest priority. All card transactions are encrypted over TLS connections and processed through a PCI-DSS Level 1 compliant payment gateway with 3D Secure 2.0 authentication and Address Verification System (AVS) checks. Our website is constantly monitored and updated to comply with the latest security standards and regulatory requirements. We never store raw card numbers or CVV security codes on our servers.",
         ],
       },
       { heading: "No payment surcharges", blocks: ["We do not charge any additional fee or surcharge for any accepted payment method."] },
-      { heading: "Contact", blocks: [`${COMPANY.legalName}, ${companyAddressLine} · ${contactLine}`] },
+      {
+        heading: "Customer service",
+        blocks: [
+          `If you encounter any issues or have questions about your payment, please do not hesitate to contact our customer service team at ${COMPANY.email} or ${COMPANY.phoneDisplay} (${COMPANY.hours}).`,
+        ],
+      },
     ],
   },
 
@@ -279,8 +311,27 @@ export const US_POLICIES: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Eligibility",
-        blocks: ["You must be at least 18 years old, able to form legally binding contracts under applicable law, and have a valid physical delivery address within the 48 contiguous United States to place an order."],
+        heading: "Acceptance of Terms, license & definitions",
+        blocks: [
+          `By accessing and using ${COMPANY.url} (the "Site"), you confirm that you agree to comply with these Terms of Service. Subject to your compliance with these Terms, we grant you a revocable, non-exclusive, non-transferable license to access and use our Site for personal, non-commercial shopping purposes.`,
+          {
+            rows: [
+              ["Company", `${COMPANY.legalName}, ${companyAddressLine}`],
+              ["Website / Site", `${COMPANY.tradingName} (${COMPANY.url})`],
+              ["Country", "United States of America"],
+              ["Device", "Any internet-connected device (phone, tablet, computer) used to visit the Site"],
+              ["Cookie", "A small data file saved by your web browser to remember preferences, cart state, or session information"],
+              ["You", "Any customer, visitor, or registered account holder using the Site"],
+            ],
+          },
+        ],
+      },
+      {
+        heading: "Eligibility, user responsibilities & restrictions",
+        blocks: [
+          "You must be at least 18 years old, able to form legally binding contracts under applicable law, and have a valid physical delivery address within the 48 contiguous United States to place an order.",
+          "You agree to provide accurate, current, and complete information when creating an account or placing an order, maintain the security of your account credentials, notify us promptly of any unauthorized account use, and not commercially exploit, reverse engineer, modify, or remove proprietary copyright or trademark notices from any part of the Site.",
+        ],
       },
       {
         heading: "Orders and contract formation",
@@ -320,6 +371,13 @@ export const US_POLICIES: Record<string, PolicyDoc> = {
         heading: "Governing law and dispute resolution",
         blocks: [
           `These Terms and any purchase from the US store are governed by the laws of the State of ${COMPANY.stateOfFormation}, without regard to conflict-of-law principles. If you have any concern, please contact us first at ${COMPANY.email} or ${COMPANY.phoneDisplay}—most issues are resolved within 1–2 business days. Either party may bring an eligible individual claim in small claims court; otherwise, any legal proceeding shall be brought exclusively in the state or federal courts located in Los Angeles County, ${COMPANY.stateOfFormation}.`,
+        ],
+      },
+      {
+        heading: "Indemnification, suggestions & third-party links",
+        blocks: [
+          `You agree to indemnify, defend, and hold harmless ${COMPANY.legalName}, its affiliates, and employees from any claims, losses, liabilities, or expenses arising out of your misuse of the Site or violation of these Terms.`,
+          `Any feedback, comments, or suggestions provided by you regarding the Site may be used by ${COMPANY.tradingName} to improve our products and services without obligation. Our Site may contain links to third-party websites (such as manufacturer warranty pages or carrier tracking portals) that are governed by their own terms and privacy policies.`,
         ],
       },
       { heading: "Updates to these Terms", blocks: ["We may update these Terms from time to time. The version published on the store at the time you place your order governs that order."] },
@@ -402,8 +460,20 @@ export const US_POLICIES: Record<string, PolicyDoc> = {
         heading: "Children's privacy",
         blocks: ["Our store is intended for adults aged 18 and older. We do not knowingly collect, use, or share personal information from children under 16 years of age."],
       },
+      {
+        heading: "International users & cross-border processing",
+        blocks: [
+          "Our primary operations and servers are located in the United States. If you access our Site from outside the United States, please note that your personal information may be transferred to, stored, and processed in the United States under recognized data protection safeguards, including the European Commission's Standard Contractual Clauses where applicable.",
+        ],
+      },
       { heading: "Changes to this policy", blocks: ["We will post any updates to this Privacy Policy on this page and update the effective date at the top of the page."] },
-      { heading: "Contact", blocks: [`${COMPANY.legalName}, ${companyAddressLine} · ${COMPANY.privacyEmail} · ${COMPANY.phoneDisplay}`] },
+      {
+        heading: "Contact",
+        blocks: [
+          `${COMPANY.legalName}, ${companyAddressLine} · ${COMPANY.privacyEmail} · ${COMPANY.phoneDisplay}`,
+          { link: { href: "/contact", label: "Contact Form & Customer Support" } },
+        ],
+      },
     ],
   },
 
@@ -415,7 +485,7 @@ export const US_POLICIES: Record<string, PolicyDoc> = {
       {
         heading: "Opt out instantly in this browser",
         blocks: [
-          "Click the \"Open privacy settings\" button below (or the \"Do Not Sell or Share My Personal Information\" link in the site footer) and switch off Advertising (and Analytics if desired), then click \"Save choices\". This immediately updates Google Consent Mode v2 in your browser to deny ad_storage, ad_user_data, and ad_personalization.",
+          "Click the \"Open privacy settings\" button below (or the \"Do Not Sell or Share My Personal Information\" link in the site footer) and switch off Advertising (and Analytics if desired), then click \"Save choices\". This updates Google Consent Mode v2 in your browser to deny ad_storage, ad_user_data, and ad_personalization.",
           "If your browser or extension sends a Global Privacy Control (GPC) signal, our site detects it automatically and disables advertising cookies and sharing without any action needed from you.",
         ],
       },

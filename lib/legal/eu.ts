@@ -21,7 +21,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
       {
         heading: "Delivery area",
         blocks: [
-          `We deliver to ${s.area}. We do not deliver to ${s.exclusions} — tyres, alloy wheels and brake kits are heavy parcels that require a physical street address for carrier delivery and customs clearance.`,
+          `We currently deliver to ${s.area}. We do not deliver to ${s.exclusions} — tyres, alloy wheels and brake kits are heavy parcels that require a physical street address for carrier delivery and customs clearance. We are continually considering expanding our delivery areas.`,
           "You may have tyres, wheels and brake components delivered directly to a local fitting centre or workshop. Enter the workshop's name in the Company field at checkout and let them know the shipment is arriving.",
         ],
       },
@@ -62,8 +62,15 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
       {
         heading: "Damaged or lost parcels & passing of risk",
         blocks: [
-          "Please check parcels on delivery and, if possible, note any visible transit damage with the driver and email photos to us as soon as you can. Your statutory consumer rights are never affected if you do not do this — it simply helps us file a claim with the carrier.",
+          "Please check parcels on delivery and, if your order arrives damaged, please contact us within 48 hours if possible with photos of the item and packaging so we can initiate a prompt resolution. Your statutory consumer rights are never affected if you report later — it simply helps us file a carrier claim. If your order is lost in transit, please reach out to us so we can initiate an investigation with the carrier.",
           "Under EU consumer law (Directive 2011/83/EU, Art. 20), the risk of loss of or damage to the goods passes to you only when you, or a third party indicated by you other than the carrier, acquire physical possession of the goods. Parcels lost or damaged in transit are replaced or refunded in full at no cost to you.",
+        ],
+      },
+      {
+        heading: "Returns",
+        blocks: [
+          "For detailed return and withdrawal instructions, please refer to our Right of Withdrawal & Returns Policy.",
+          { link: { href: "/policies/returns", label: "Right of Withdrawal & Returns" } },
         ],
       },
       { heading: "Contact", blocks: [`${COMPANY.legalName}, ${companyAddressLine} · ${contactLine}`] },
@@ -146,7 +153,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
       },
       {
         heading: "Cancellation before dispatch",
-        blocks: ["You can cancel your order free of charge at any time before dispatch — email us and we will release the payment authorisation or refund you in full immediately."],
+        blocks: ["You may cancel your order within two hours of purchase or at any time before dispatch — email us and we will release the payment authorisation or refund you in full promptly."],
       },
       {
         heading: "Faulty, damaged or wrong items",
@@ -196,11 +203,11 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Your statutory remedies",
+        heading: "Your statutory rights under the legal guarantee",
         blocks: [
           {
             list: [
-              "Free repair or free replacement of the non-conforming goods, at your choice, within a reasonable time and without significant inconvenience to you, unless the chosen remedy is impossible or would impose disproportionate costs.",
+              "Repair or replacement of the non-conforming goods at no charge, at your choice, within a reasonable time and without significant inconvenience to you, unless the chosen option is impossible or would impose disproportionate costs.",
               "A proportionate price reduction or termination of the contract with a full refund, if repair or replacement is impossible, fails to bring the goods into conformity, or is not completed within a reasonable time.",
             ],
           },
@@ -235,22 +242,53 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
     intro: SNIP.paymentsIntro,
     sections: [
       {
-        heading: "Accepted payment methods",
+        heading: "Policy overview & merchant details",
         blocks: [
-          "We accept the following payment methods in the EU store (all charged in EUR):",
-          { list: p.paymentMethods },
+          {
+            rows: [
+              ["Website name", COMPANY.tradingName],
+              ["Website URL", COMPANY.url],
+              ["Selling countries", "European Union (all 27 EU Member States)"],
+              ["Customer service email", COMPANY.email],
+              ["Customer service phone", COMPANY.phoneDisplay],
+              ["Company address", `${COMPANY.legalName}, ${companyAddressLine}`],
+              ["Billing currency", "Euro (EUR)"],
+            ],
+          },
         ],
       },
       {
-        heading: "When you are charged",
+        heading: "1. Credit & Debit Cards (Visa, Mastercard, American Express)",
         blocks: [
-          "Card payments (Visa, Mastercard, American Express) are processed on our encrypted 3D Secure 2.0 payment page when you place the order. If an order is cancelled before dispatch or cannot be fulfilled, any payment or authorisation is released or refunded in full immediately. If you wish to pay by SEPA bank transfer, contact us or follow the payment instructions in your order confirmation email; the order is dispatched as soon as the transfer is received.",
+          "3D Secure 2.0 Online Card Payment — We accept Visa, Mastercard, and American Express in EUR across all 27 EU Member States. Here is how it works:",
+          {
+            list: [
+              "Choose Credit / Debit Card as your payment method at checkout.",
+              "Click the order button to open our encrypted 3D Secure 2.0 payment page.",
+              "Enter your card details and authorize the transaction using your bank's Strong Customer Authentication (PSD2 SCA) procedure.",
+              "Once confirmed, you are redirected back to our site and receive an order confirmation email.",
+              "If an order is cancelled before dispatch or cannot be fulfilled, any payment or authorisation is released or refunded in full promptly.",
+            ],
+          },
         ],
       },
       {
-        heading: "Strong Customer Authentication (3-D Secure 2.0)",
+        heading: "2. SEPA Bank Transfer (EUR)",
         blocks: [
-          "All card payments use TLS encryption and Strong Customer Authentication (3-D Secure 2.0) in accordance with the EU Payment Services Directive (PSD2, Directive (EU) 2015/2366) through a PCI-DSS Level 1 certified payment gateway. We never store full card numbers or CVV security codes on our servers.",
+          "Direct European Bank Transfer — Available across the Single Euro Payments Area (SEPA):",
+          {
+            list: [
+              "Contact our customer service or follow the SEPA transfer instructions in your order confirmation email.",
+              "Initiate a EUR transfer from your online banking environment quoting your order number as the payment reference.",
+              "Your order is dispatched as soon as the transfer is received.",
+            ],
+          },
+        ],
+      },
+      {
+        heading: "Security and protection (3-D Secure 2.0 & PSD2)",
+        blocks: [
+          "Your security is our highest priority. All card payments use TLS encryption and Strong Customer Authentication (3-D Secure 2.0) in accordance with the EU Payment Services Directive (PSD2, Directive (EU) 2015/2366) through a PCI-DSS Level 1 certified payment gateway. Our website is constantly monitored and updated to comply with the latest security standards and regulatory requirements. We never store full card numbers or CVV security codes on our servers.",
         ],
       },
       {
@@ -258,7 +296,10 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
         blocks: ["In accordance with PSD2 (Art. 62(4)), we do not charge any fee or surcharge for any payment method."],
       },
       SNIP.paymentsVat,
-      { heading: "Contact", blocks: [`${COMPANY.legalName}, ${companyAddressLine} · ${contactLine}`] },
+      {
+        heading: "Customer service",
+        blocks: [`If you encounter any issues or have questions about your payment, please contact our customer service at ${COMPANY.email} or ${COMPANY.phoneDisplay} (${COMPANY.hours}).`],
+      },
     ],
   },
 
@@ -285,10 +326,11 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Conclusion of the contract",
+        heading: "Conclusion of the contract, license & user responsibilities",
         blocks: [
-          "Product listings in the store are a non-binding invitation to order. By clicking the checkout button \"Order with obligation to pay\" (Art. 8(2) Directive 2011/83/EU), you submit a binding offer to purchase the goods in your cart. We acknowledge receipt of your order immediately by email; this acknowledgement does not yet constitute acceptance of your offer. The contract is concluded when we send the dispatch confirmation email or, at the latest, when the goods are delivered.",
+          "Product listings in the store are a non-binding invitation to order. By clicking the checkout button \"Order with obligation to pay\" (Art. 8(2) Directive 2011/83/EU), you submit a binding offer to purchase the goods in your cart. We acknowledge receipt of your order promptly by email; this acknowledgement does not yet constitute acceptance of your offer. The contract is concluded when we send the dispatch confirmation email or, at the latest, when the goods are delivered.",
           "The contract language is the language of the store version in which you place the order (English, German, French, Italian, Spanish or Dutch). Before submitting your order, you can review and correct all input fields in the cart and checkout. We store the contract text and send you the order details and a link to these Terms on a durable medium (by email).",
+          "Subject to these Terms, we grant you a revocable, non-exclusive, non-transferable license to access and use our website for personal, non-commercial purposes. You agree to provide accurate account and order information, keep your account credentials secure, and not reverse engineer, commercially exploit, or remove proprietary notices from the website.",
         ],
       },
       {
@@ -311,7 +353,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
       {
         heading: "Liability",
         blocks: [
-          "We are liable without limitation for intent and gross negligence, as well as for damages resulting from injury to life, body or health. Mandatory statutory liability under EU/national product liability law and under the statutory legal guarantee of conformity remains unaffected. In cases of slight negligence, we are only liable for the breach of essential contractual obligations (cardinal duties), and such liability is limited to the foreseeable damage typical for this type of contract.",
+          "We are liable without limitation for intent and gross negligence, as well as for damages resulting from injury to life or personal injury. Mandatory statutory liability under EU/national product liability law and under the statutory legal guarantee of conformity remains unaffected. In cases of slight negligence, we are only liable for the breach of essential contractual obligations (cardinal duties), and such liability is limited to the foreseeable damage typical for this type of contract.",
         ],
       },
       {
@@ -404,6 +446,13 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
         blocks: ["We do not engage in automated decision-making or profiling within the meaning of Art. 22 GDPR that produces legal or similarly significant effects on you."],
       },
       { heading: "Changes to this policy", blocks: ["We will publish any updates on this page with a revised effective date."] },
+      {
+        heading: "Contact",
+        blocks: [
+          `${COMPANY.legalName}, ${companyAddressLine} · ${COMPANY.privacyEmail} · ${COMPANY.phoneDisplay}`,
+          { link: { href: "/contact", label: "Contact Form & Customer Support" } },
+        ],
+      },
     ],
   },
 
