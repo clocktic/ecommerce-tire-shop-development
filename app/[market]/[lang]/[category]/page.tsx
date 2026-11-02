@@ -23,6 +23,7 @@ import { storeAlternates } from "@/lib/seo"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
 import { ProductCard } from "@/components/product/product-card"
 import { FilterSelect } from "@/components/catalog/filter-select"
+import { MobileCatalogToolbar } from "@/components/catalog/mobile-filter-sheet"
 import { FitmentBanner } from "@/components/garage/fitment-banner"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -106,24 +107,70 @@ export default async function CategoryPage({ params, searchParams }: { params: P
     return `${storePath(store, `/${category}`)}?${query}`
   }
 
+  const sortOptions = [
+    { value: "", label: "Sort: Featured" },
+    { value: "price-asc", label: "Price: Low → High" },
+    { value: "price-desc", label: "Price: High → Low" },
+    { value: "brand-asc", label: "Brand: A → Z" },
+  ]
+  const quickPills =
+    category === "tires"
+      ? Object.entries(t.labels.season).map(([value, label]) => ({
+          key: "season",
+          value,
+          label,
+        }))
+      : category === "wheels"
+        ? FINISH_FAMILIES.map((family) => ({
+            key: "finish",
+            value: family,
+            label: t.catalog.finishFamily[family] ?? family,
+          }))
+        : Object.entries(t.labels.brakeKind).map(([value, label]) => ({
+            key: "kind",
+            value,
+            label,
+          }))
+  const quickParamKey = category === "tires" ? "season" : category === "wheels" ? "finish" : "kind"
+
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-6">
       <Breadcrumbs label={t.common.breadcrumb} items={[{ href: storePath(store), label: t.common.home }, { label: copy.name }]} />
 
-      <header className="flex flex-col gap-4 border-b border-border pb-8 md:flex-row md:items-end md:justify-between">
-        <div className="flex flex-col gap-3">
-          <p className="label-caps text-primary">{t.catalog.eyebrow}</p>
-          <h1 className="font-expanded text-4xl font-extrabold uppercase leading-none md:text-6xl">{copy.name}</h1>
-          <p className="max-w-xl text-pretty leading-relaxed text-muted-foreground">{copy.blurb}</p>
+      <header className="flex flex-col gap-2.5 border-b border-border pb-5 md:flex-row md:items-end md:justify-between md:gap-4 md:pb-8">
+        <div className="flex flex-col gap-2 md:gap-3">
+          <div className="flex items-center justify-between gap-2">
+            <p className="label-caps text-primary">{t.catalog.eyebrow}</p>
+            <p className="font-mono text-xs text-muted-foreground md:hidden">
+              {fmt(t.catalog.count, { shown: products.length, total: all.length })}
+            </p>
+          </div>
+          <h1 className="font-expanded text-3xl font-extrabold uppercase leading-none sm:text-4xl md:text-6xl">{copy.name}</h1>
+          <p className="max-w-xl text-pretty text-sm leading-relaxed text-muted-foreground md:text-base">{copy.blurb}</p>
         </div>
-        <p className="font-mono text-sm text-muted-foreground">
+        <p className="hidden font-mono text-sm text-muted-foreground md:block">
           {fmt(t.catalog.count, { shown: products.length, total: all.length })}
         </p>
       </header>
 
       <FitmentBanner category={category} filters={filters} matchingCount={products.length} />
 
-      <form method="get" className="flex flex-col gap-4 border-b border-border py-6 md:flex-row md:items-end">
+      <MobileCatalogToolbar
+        title={fmt(t.catalog.filter, { category: copy.name })}
+        activeCount={activeEntries.length}
+        clearHref={storePath(store, `/${category}`)}
+        clearLabel={t.catalog.clear}
+        applyLabel={t.catalog.apply}
+        sortValue={filters.sort}
+        sortOptions={sortOptions}
+        quickPills={quickPills}
+        activeQuickValue={filters[quickParamKey]}
+        quickParamKey={quickParamKey}
+      >
+        <CategoryFilters category={category} products={all} filters={filters} store={store} t={t} />
+      </MobileCatalogToolbar>
+
+      <form method="get" className="hidden flex-col gap-4 border-b border-border py-6 md:flex md:flex-row md:items-end">
         {filters.vehicle && <input type="hidden" name="vehicle" value={filters.vehicle} />}
         <fieldset className="grid flex-1 grid-cols-2 gap-3 lg:grid-cols-4">
           <legend className="sr-only">{fmt(t.catalog.filter, { category: copy.name })}</legend>

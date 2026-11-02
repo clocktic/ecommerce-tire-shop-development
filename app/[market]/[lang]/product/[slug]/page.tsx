@@ -199,11 +199,11 @@ export default async function ProductPage({ params }: { params: Params }) {
       </div>
 
       {related.length > 0 && (
-        <section aria-labelledby="related-title" className="border-t border-border pt-12">
-          <h2 id="related-title" className="mb-6 font-expanded text-xl font-extrabold uppercase">
+        <section aria-labelledby="related-title" className="border-t border-border pt-10 sm:pt-12">
+          <h2 id="related-title" className="mb-5 font-expanded text-lg font-extrabold uppercase sm:mb-6 sm:text-xl">
             {fmt(t.product.related, { category: categoryName.toLowerCase() })}
           </h2>
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
             {related.map((p) => (
               <ProductCard key={p.slug} product={p} store={store} />
             ))}

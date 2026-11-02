@@ -5,6 +5,7 @@ import { notFound } from "next/navigation"
 import { Analytics } from "@vercel/analytics/next"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
+import { MobileBottomBar } from "@/components/layout/mobile-bottom-bar"
 import { GeoBanner } from "@/components/layout/geo-banner"
 import { CartProvider } from "@/components/cart/cart-provider"
 import { GarageProvider } from "@/components/garage/garage-provider"
@@ -103,6 +104,7 @@ export default async function StoreLayout({ children, params }: { children: Reac
                 {children}
               </main>
               <Footer store={store} />
+              <MobileBottomBar />
               <CookieConsent />
               <ChatWidget />
             </GarageProvider>

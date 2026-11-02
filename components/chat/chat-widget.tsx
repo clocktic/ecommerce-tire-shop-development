@@ -85,11 +85,11 @@ export function ChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-3 right-3 z-40 flex flex-col items-end gap-3 sm:bottom-4 sm:right-4">
+    <div className="fixed bottom-[7.75rem] right-3 z-40 flex flex-col items-end gap-2.5 md:bottom-4 md:right-4">
       {open && (
         <section
           aria-label={x.chat.title}
-          className="flex h-[min(32rem,calc(100dvh-7rem))] w-[min(22rem,calc(100vw-2rem))] flex-col border border-border bg-card text-card-foreground shadow-[0_4px_12px_rgba(0,0,0,0.25),0_20px_50px_-12px_rgba(0,0,0,0.55)]"
+          className="flex h-[min(26rem,calc(100dvh-12.5rem))] w-[min(22rem,calc(100vw-1.5rem))] flex-col border border-border bg-card text-card-foreground shadow-[0_4px_12px_rgba(0,0,0,0.25),0_20px_50px_-12px_rgba(0,0,0,0.55)] md:h-[min(32rem,calc(100dvh-7rem))]"
         >
           <header className="flex items-center justify-between gap-3 bg-secondary px-4 py-3 text-secondary-foreground">
             <div className="flex min-w-0 flex-col">

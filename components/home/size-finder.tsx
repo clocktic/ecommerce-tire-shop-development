@@ -9,6 +9,7 @@ import { useGarage } from "@/components/garage/garage-provider"
 import { FitmentModal } from "@/components/garage/fitment-modal"
 import { TireSizeIcon, VehicleIcon } from "@/components/garage/fitment-icons"
 import { TIRE_OPTIONS } from "@/lib/catalog"
+import { POPULAR_TIRE_SIZES } from "@/lib/catalog/vehicles"
 import { storePath } from "@/lib/i18n/config"
 import { cn } from "@/lib/utils"
 
@@ -61,7 +62,7 @@ export function SizeFinder() {
         }
         submit(size)
       }}
-      className="relative flex flex-col gap-6 border border-foreground/80 bg-card p-5 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_20px_50px_-12px_rgba(0,0,0,0.55)] md:p-7"
+      className="relative flex flex-col gap-4 border border-foreground/80 bg-card p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_20px_50px_-12px_rgba(0,0,0,0.55)] sm:gap-5 sm:p-5 md:p-7"
       aria-labelledby="size-finder-title"
     >
       <CornerMarks />
@@ -88,7 +89,7 @@ export function SizeFinder() {
 
       <p
         aria-live="polite"
-        className="flex min-w-0 items-baseline gap-1 font-expanded text-[clamp(1.7rem,10vw,3.75rem)] font-black leading-none tracking-tight"
+        className="flex min-w-0 items-baseline gap-1 font-expanded text-[clamp(1.7rem,9.5vw,3.5rem)] font-black leading-none tracking-tight"
       >
         <span>{size.width}</span>
         <span className="text-primary">/</span>
@@ -97,15 +98,50 @@ export function SizeFinder() {
         <span>{size.rim}</span>
       </p>
 
+      {/* Quick 1-Tap Popular Tire Sizes */}
+      <div className="-mx-1 flex items-center gap-1.5 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {POPULAR_TIRE_SIZES[store.market].slice(0, 5).map((preset) => {
+          const isPresetSelected =
+            size.width === String(preset.width) &&
+            size.aspect === String(preset.aspect) &&
+            size.rim === String(preset.rim)
+          const label = `${preset.width}/${preset.aspect}R${preset.rim}`
+          return (
+            <button
+              key={label}
+              type="button"
+              onClick={() => {
+                const next = {
+                  width: String(preset.width),
+                  aspect: String(preset.aspect),
+                  rim: String(preset.rim),
+                }
+                setSize(next)
+                setTyped("")
+                setError(null)
+              }}
+              className={cn(
+                "shrink-0 border px-2 py-1 font-mono text-[11px] font-semibold transition-colors",
+                isPresetSelected
+                  ? "border-primary bg-primary/15 text-primary"
+                  : "border-border bg-background/70 text-muted-foreground hover:border-foreground hover:text-foreground",
+              )}
+            >
+              {preset.width}/{preset.aspect} R{preset.rim}
+            </button>
+          )
+        })}
+      </div>
+
       <div className="grid grid-cols-3 gap-2 *:min-w-0">
         <Segment id="width" label={f.width} unit="mm" value={size.width} options={TIRE_OPTIONS.width} onChange={(width) => setSize((s) => ({ ...s, width }))} />
         <Segment id="aspect" label={f.profile} unit="%" value={size.aspect} options={TIRE_OPTIONS.aspect} onChange={(aspect) => setSize((s) => ({ ...s, aspect }))} />
         <Segment id="rim" label={f.rim} unit="in" value={size.rim} options={TIRE_OPTIONS.rim} onChange={(rim) => setSize((s) => ({ ...s, rim }))} />
       </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-        <div className="flex flex-1 flex-col gap-1.5">
-          <label htmlFor="typed-size" className="label-caps text-muted-foreground">
+      <div className="flex items-end gap-2 sm:gap-3">
+        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+          <label htmlFor="typed-size" className="label-caps truncate text-[10px] text-muted-foreground sm:text-xs">
             {f.orType}
           </label>
           <input
@@ -117,10 +153,10 @@ export function SizeFinder() {
             autoComplete="off"
             aria-invalid={!!error}
             aria-describedby={error ? "typed-size-error" : undefined}
-            className="h-12 border border-border bg-background px-3 font-mono text-sm uppercase shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-ring"
+            className="h-11 w-full border border-border bg-background px-2.5 font-mono text-xs uppercase shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-ring sm:h-12 sm:px-3 sm:text-sm"
           />
         </div>
-        <Button type="submit" size="lg" className="sm:min-w-48">
+        <Button type="submit" size="lg" className="h-11 shrink-0 px-4 sm:h-12 sm:min-w-44 sm:px-6">
           {f.submit}
           <ArrowRight aria-hidden="true" />
         </Button>

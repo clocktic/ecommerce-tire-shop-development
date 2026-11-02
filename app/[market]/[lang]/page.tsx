@@ -28,9 +28,9 @@ export default async function HomePage({ params }: { params: Promise<{ market: s
       <VehicleBrandGrid />
       <SidewallDecoder t={t} />
 
-      <section aria-labelledby="featured-title" className="mx-auto max-w-7xl px-4 pt-24 md:px-6">
-        <div className="mb-8 flex items-end justify-between gap-4">
-          <h2 id="featured-title" className="font-expanded text-2xl font-extrabold uppercase md:text-3xl">
+      <section aria-labelledby="featured-title" className="mx-auto max-w-7xl px-4 pt-12 sm:pt-24 md:px-6">
+        <div className="mb-5 flex items-end justify-between gap-4 sm:mb-8">
+          <h2 id="featured-title" className="font-expanded text-xl font-extrabold uppercase sm:text-2xl md:text-3xl">
             {t.home.featured}
           </h2>
           <Link
@@ -41,7 +41,7 @@ export default async function HomePage({ params }: { params: Promise<{ market: s
           </Link>
         </div>
         {catalog.ok ? (
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
             {featured.map((p) => (
               <ProductCard key={p.slug} product={p} store={store} />
             ))}
