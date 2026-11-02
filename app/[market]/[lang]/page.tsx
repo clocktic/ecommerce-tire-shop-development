@@ -6,6 +6,7 @@ import { CatalogUnavailable } from "@/components/catalog/catalog-unavailable"
 import { getDictionary, parseStore, storePath } from "@/lib/i18n"
 import { Hero } from "@/components/home/hero"
 import { CategoryTiles } from "@/components/home/category-tiles"
+import { MemberClubShowcase } from "@/components/home/member-club-showcase"
 import { VehicleBrandGrid } from "@/components/home/vehicle-brand-grid"
 import { SidewallDecoder } from "@/components/home/sidewall-decoder"
 import { MarketPromise } from "@/components/home/market-promise"
@@ -23,6 +24,7 @@ export default async function HomePage({ params }: { params: Promise<{ market: s
     <>
       <Hero store={store} />
       <CategoryTiles store={store} />
+      <MemberClubShowcase />
       <VehicleBrandGrid />
       <SidewallDecoder t={t} />
 

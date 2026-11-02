@@ -18,6 +18,7 @@ import { Price } from "@/components/product/price"
 import { ProductCard, productCode } from "@/components/product/product-card"
 import { ProductDetails } from "@/components/product/product-details"
 import { ProductGallery } from "@/components/product/product-gallery"
+import { ProductMemberCallout } from "@/components/product/product-member-callout"
 import { Utqg } from "@/components/product/utqg"
 import { TireVariants } from "@/components/product/tire-variants"
 import { ProductFitmentBadge } from "@/components/garage/product-fitment-badge"
@@ -112,6 +113,8 @@ export default async function ProductPage({ params }: { params: Params }) {
               {t.labels.availability[offer.availability]}
             </span>
           </div>
+
+          <ProductMemberCallout priceCents={offer.priceCents} />
 
           <ProductFitmentBadge
             target={

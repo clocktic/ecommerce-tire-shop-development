@@ -4,8 +4,8 @@ import pg from "pg"
 import { put } from "@vercel/blob"
 
 const CATALOG_PATH = "lib/catalog/opening-catalog.json"
-const MANIFEST_PATH = "/tmp/wheel-galleries/manifest.json"
-const BLOB_DIR = "/tmp/wheel-galleries/blobs"
+const MANIFEST_PATH = "/tmp/wheel-galleries-clean/manifest.json"
+const BLOB_DIR = "/tmp/wheel-galleries-clean/blobs"
 const CONCURRENCY = 16
 
 if (!process.env.BLOB_READ_WRITE_TOKEN) {
@@ -31,7 +31,7 @@ async function uploadWorker() {
     if (!fn) break
     const filePath = path.join(BLOB_DIR, fn)
     const buf = fs.readFileSync(filePath)
-    const key = `products/v2-${fn}`
+    const key = `products/v3-${fn}`
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
         const blob = await put(key, buf, {
@@ -66,9 +66,17 @@ function groupKeyForWheel(p) {
 }
 
 function buildImagesForWheel(p) {
-  const primary = p.image || p.images?.[0]
   const gk = groupKeyForWheel(p)
   const entry = manifest[gk]
+  let primary = p.image || p.images?.[0]
+  if (gk === "PPT|||Rotiform|||KPR|||Silver") {
+    primary = "https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/products/rotiform-kpr-20x10-5x112-et35-satin-silver-1.jpg"
+  }
+  if (entry?.primary_override) {
+    const [okind, oval] = entry.primary_override
+    const overUrl = okind === "EXTERNAL_URL" ? oval : uploadedMap.get(oval)
+    if (overUrl) primary = overUrl
+  }
   if (!entry) return p.images || [primary]
   const urls = [primary]
   for (const [kind, val] of entry.extra) {

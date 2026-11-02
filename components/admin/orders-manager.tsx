@@ -123,6 +123,14 @@ function OrderDetail({ order }: { order: AdminOrder }) {
               </li>
             ))}
           </ul>
+          {order.subtotalCents + order.shippingCents - order.totalCents > 0 && (
+            <p className="flex justify-between text-xs font-medium text-primary">
+              <span>Скидка за регистрацию (−7%)</span>
+              <span className="font-mono tabular-nums">
+                −{formatPrice(order.subtotalCents + order.shippingCents - order.totalCents, market, "ru-RU")}
+              </span>
+            </p>
+          )}
           <p className="flex justify-between border-t border-border pt-1 font-semibold">
             <span>Итого</span>
             <span className="font-mono tabular-nums">{formatPrice(order.totalCents, market, "ru-RU")}</span>

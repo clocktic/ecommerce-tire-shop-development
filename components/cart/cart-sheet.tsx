@@ -166,7 +166,7 @@ export function CartSheet() {
             </ul>
 
             <SheetFooter className="shrink-0 border-t border-border bg-card px-4 py-3 sm:px-5 sm:py-4">
-              <SummaryRows subtotalCents={subtotalCents} />
+              <SummaryRows subtotalCents={subtotalCents} onNavigate={() => setOpen(false)} />
               <Separator className="my-1" />
               <div className="flex flex-col gap-2">
                 <Link

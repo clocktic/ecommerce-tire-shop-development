@@ -131,6 +131,29 @@ export type Extras = {
     trackCta: string
     signoff: string
   }
+  memberDiscount: {
+    topbarTag: string
+    badge: string
+    activeBadge: string
+    eyebrow: string
+    headline: string
+    activeHeadline: string
+    lead: string
+    activeLead: string
+    perks: [string, string, string]
+    ctaRegister: string
+    ctaShop: string
+    productCallout: string
+    productActive: string
+    cartDiscountRow: string
+    cartGuestPrompt: string
+    cartGuestCta: string
+    cartActiveNotice: string
+    accountBannerTitle: string
+    accountBannerLead: string
+    accountActiveTitle: string
+    accountActiveLead: string
+  }
 }
 
 const en: Extras = {
@@ -278,6 +301,33 @@ const en: Extras = {
     trackCta: "Track your parcel",
     signoff: "The Contact Patch team",
   },
+  memberDiscount: {
+    topbarTag: "−7% Member Discount on Registration",
+    badge: "MEMBER PRIVILEGE · −7%",
+    activeBadge: "MEMBER PRIVILEGE ACTIVE · −7%",
+    eyebrow: "Drivers Club · Instant Registration Reward",
+    headline: "Register your account & unlock 7% off every order",
+    activeHeadline: "Your 7% member discount is active across the store",
+    lead: "Create a free Contact Patch account in 30 seconds. Your 7% privilege applies automatically at checkout to tires, wheels, and brake kits — plus saved vehicle fitment and live shipment tracking.",
+    activeLead: "Signed in as {email}. A 7% member discount is automatically deducted from every cart and checkout total.",
+    perks: [
+      "Instant −7% on all tires, wheels & brakes",
+      "Saved garage & verified OEM fitment",
+      "Priority dispatch & one-click order tracking",
+    ],
+    ctaRegister: "Create account & get −7%",
+    ctaShop: "Shop with −7% applied",
+    productCallout: "Member price: {price} (save {save} · −7%) when you register",
+    productActive: "Member privilege −7% active: {price} at checkout (save {save})",
+    cartDiscountRow: "Member discount (−7%)",
+    cartGuestPrompt: "Register or sign in to save {amount} (−7%) on this order",
+    cartGuestCta: "Unlock −7%",
+    cartActiveNotice: "−7% member discount applied (−{amount})",
+    accountBannerTitle: "Unlock 7% off every order",
+    accountBannerLead: "Register or sign in below — your 7% member discount is applied automatically in the cart and at checkout.",
+    accountActiveTitle: "7% Member Privilege Active",
+    accountActiveLead: "Your 7% discount is automatically applied to every order you place while signed in.",
+  },
 }
 
 const es419: Extras = {
@@ -424,6 +474,33 @@ const es419: Extras = {
     shipBody: "Hay una actualización de tu pedido {number}: {status}.",
     trackCta: "Rastrear tu paquete",
     signoff: "El equipo de Contact Patch",
+  },
+  memberDiscount: {
+    topbarTag: "−7% de descuento al registrarte",
+    badge: "PRIVILEGIO MIEMBRO · −7%",
+    activeBadge: "DESCUENTO MIEMBRO ACTIVO · −7%",
+    eyebrow: "Club de Conductores · Beneficio por Registro",
+    headline: "Regístrate y obtén un 7% de descuento en cada pedido",
+    activeHeadline: "Tu 7% de descuento de miembro está activo en toda la tienda",
+    lead: "Crea tu cuenta gratuita de Contact Patch en segundos. El 7% de descuento se aplica automáticamente al finalizar la compra en llantas, rines y frenos, además de guardar tu garage.",
+    activeLead: "Sesión iniciada como {email}. Se descuenta automáticamente un 7% en tu carrito y al pagar.",
+    perks: [
+      "−7% inmediato en llantas, rines y frenos",
+      "Garage guardado y ajuste OEM verificado",
+      "Despacho prioritario y rastreo en vivo",
+    ],
+    ctaRegister: "Crear cuenta y obtener −7%",
+    ctaShop: "Comprar con −7% activo",
+    productCallout: "Precio miembro: {price} (ahorras {save} · −7%) al registrarte",
+    productActive: "Descuento miembro −7% activo: {price} al pagar (ahorras {save})",
+    cartDiscountRow: "Descuento de miembro (−7%)",
+    cartGuestPrompt: "Regístrate o inicia sesión para ahorrar {amount} (−7%) en este pedido",
+    cartGuestCta: "Activar −7%",
+    cartActiveNotice: "−7% de descuento de miembro aplicado (−{amount})",
+    accountBannerTitle: "Obtén 7% de descuento en cada pedido",
+    accountBannerLead: "Crea tu cuenta o inicia sesión abajo — el 7% se aplica automáticamente en tu carrito y al pagar.",
+    accountActiveTitle: "Privilegio de Miembro −7% Activo",
+    accountActiveLead: "Tu descuento del 7% se aplica automáticamente en cada pedido que realices con tu cuenta.",
   },
 }
 
@@ -619,6 +696,33 @@ const de: Extras = {
     trackCta: "Paket verfolgen",
     signoff: "Ihr Contact-Patch-Team",
   },
+  memberDiscount: {
+    topbarTag: "−7 % Kundenrabatt bei Registrierung",
+    badge: "MITGLIEDERVORTEIL · −7 %",
+    activeBadge: "MITGLIEDERRABATT AKTIV · −7 %",
+    eyebrow: "Drivers Club · Sofortrabatt für registrierte Käufer",
+    headline: "Konto erstellen & dauerhaft 7 % auf jede Bestellung sichern",
+    activeHeadline: "Ihr 7 % Mitgliederrabatt ist im gesamten Shop aktiviert",
+    lead: "Erstellen Sie in 30 Sekunden Ihr kostenloses Contact-Patch-Konto. Ihre 7 % Preisvorteil werden im Warenkorb und an der Kasse automatisch auf Reifen, Felgen und Bremsen abgezogen.",
+    activeLead: "Angemeldet als {email}. 7 % Mitgliederrabatt werden automatisch im Warenkorb und beim Checkout abgezogen.",
+    perks: [
+      "Sofort −7 % auf alle Reifen, Felgen & Bremsen",
+      "Gespeicherte Garage & geprüfte OEM-Passform",
+      "Priorisierter Versand & Live-Sendungsverfolgung",
+    ],
+    ctaRegister: "Konto erstellen & −7 % sichern",
+    ctaShop: "Mit −7 % Vorteil einkaufen",
+    productCallout: "Mitgliederpreis: {price} ({save} sparen · −7 %) mit Kundenkonto",
+    productActive: "Mitgliedervorteil −7 % aktiv: {price} an der Kasse ({save} gespart)",
+    cartDiscountRow: "Mitgliederrabatt (−7 %)",
+    cartGuestPrompt: "Registrieren oder anmelden und sofort {amount} (−7 %) bei dieser Bestellung sparen",
+    cartGuestCta: "−7 % aktivieren",
+    cartActiveNotice: "−7 % Mitgliederrabatt angewendet (−{amount})",
+    accountBannerTitle: "7 % Rabatt auf jede Bestellung sichern",
+    accountBannerLead: "Registrieren Sie sich oder melden Sie sich unten an — Ihr 7 %-Vorteil wird automatisch im Warenkorb abgezogen.",
+    accountActiveTitle: "7 % Mitgliedervorteil Aktiv",
+    accountActiveLead: "Ihr 7 %-Rabatt wird bei jeder Bestellung, die Sie angemeldet aufgeben, automatisch abgezogen.",
+  },
 }
 
 const fr: Extras = {
@@ -765,6 +869,33 @@ const fr: Extras = {
     shipBody: "Du nouveau pour votre commande {number} : {status}.",
     trackCta: "Suivre votre colis",
     signoff: "L'équipe Contact Patch",
+  },
+  memberDiscount: {
+    topbarTag: "−7 % de remise membre dès l'inscription",
+    badge: "PRIVILÈGE MEMBRE · −7 %",
+    activeBadge: "REMISE MEMBRE ACTIVE · −7 %",
+    eyebrow: "Drivers Club · Avantage Inscription Immédiat",
+    headline: "Créez votre compte et profitez de −7 % sur chaque commande",
+    activeHeadline: "Votre remise membre de 7 % est active sur toute la boutique",
+    lead: "Inscrivez-vous gratuitement en 30 secondes. Votre remise de 7 % s'applique automatiquement au panier et au paiement sur tous les pneus, jantes et freins.",
+    activeLead: "Connecté en tant que {email}. Votre remise membre de 7 % est déduite automatiquement de chaque commande.",
+    perks: [
+      "−7 % immédiat sur pneus, jantes et freins",
+      "Garage enregistré et compatibilité OEM vérifiée",
+      "Expédition prioritaire et suivi de colis en direct",
+    ],
+    ctaRegister: "Créer un compte et obtenir −7 %",
+    ctaShop: "Acheter avec −7 % appliqué",
+    productCallout: "Prix membre : {price} (économisez {save} · −7 %) en vous inscrivant",
+    productActive: "Avantage membre −7 % actif : {price} au paiement (économie {save})",
+    cartDiscountRow: "Remise membre (−7 %)",
+    cartGuestPrompt: "Inscrivez-vous ou connectez-vous pour économiser {amount} (−7 %) sur cette commande",
+    cartGuestCta: "Activer −7 %",
+    cartActiveNotice: "Remise membre −7 % appliquée (−{amount})",
+    accountBannerTitle: "Débloquez 7 % de remise sur chaque commande",
+    accountBannerLead: "Créez un compte ou connectez-vous ci-dessous — vos 7 % sont déduits automatiquement au panier.",
+    accountActiveTitle: "Privilège Membre −7 % Actif",
+    accountActiveLead: "Votre remise de 7 % est automatiquement appliquée à chaque commande passée avec votre compte.",
   },
 }
 
@@ -913,6 +1044,33 @@ const it: Extras = {
     trackCta: "Traccia il pacco",
     signoff: "Il team Contact Patch",
   },
+  memberDiscount: {
+    topbarTag: "−7% di sconto clienti con registrazione",
+    badge: "PRIVILEGIO MEMBRI · −7%",
+    activeBadge: "SCONTO MEMBRI ATTIVO · −7%",
+    eyebrow: "Drivers Club · Vantaggio Immediato alla Registrazione",
+    headline: "Registrati ora e ottieni il 7% di sconto su ogni ordine",
+    activeHeadline: "Il tuo sconto membro del 7% è attivo in tutto il negozio",
+    lead: "Crea un account gratuito Contact Patch in 30 secondi. Il tuo sconto del 7% viene applicato automaticamente nel carrello e al checkout su pneumatici, cerchi e freni.",
+    activeLead: "Accesso effettuato come {email}. Lo sconto membro del 7% viene detratto automaticamente da ogni ordine.",
+    perks: [
+      "−7% immediato su pneumatici, cerchi e freni",
+      "Garage salvato e compatibilità OEM verificata",
+      "Spedizione prioritaria e tracciamento in tempo reale",
+    ],
+    ctaRegister: "Crea account e ottieni −7%",
+    ctaShop: "Acquista con −7% attivo",
+    productCallout: "Prezzo membri: {price} (risparmi {save} · −7%) registrandoti",
+    productActive: "Privilegio membri −7% attivo: {price} al checkout (risparmi {save})",
+    cartDiscountRow: "Sconto membri (−7%)",
+    cartGuestPrompt: "Registrati o accedi per risparmiare {amount} (−7%) su questo ordine",
+    cartGuestCta: "Sblocca −7%",
+    cartActiveNotice: "Sconto membri −7% applicato (−{amount})",
+    accountBannerTitle: "Sblocca il 7% di sconto su ogni ordine",
+    accountBannerLead: "Registrati o accedi qui sotto: il tuo sconto del 7% viene applicato automaticamente nel carrello.",
+    accountActiveTitle: "Privilegio Membri −7% Attivo",
+    accountActiveLead: "Il tuo sconto del 7% viene applicato automaticamente a ogni ordine effettuato da connesso.",
+  },
 }
 
 const nl: Extras = {
@@ -1059,6 +1217,33 @@ const nl: Extras = {
     shipBody: "Er is nieuws over je bestelling {number}: {status}.",
     trackCta: "Volg je pakket",
     signoff: "Het Contact Patch-team",
+  },
+  memberDiscount: {
+    topbarTag: "−7% ledenkorting bij registratie",
+    badge: "LEDENVOORDEEL · −7%",
+    activeBadge: "LEDENKORTING ACTIEF · −7%",
+    eyebrow: "Drivers Club · Direct Voordeel bij Registratie",
+    headline: "Maak een account aan en ontvang 7% korting op elke bestelling",
+    activeHeadline: "Je 7% ledenkorting is actief in de hele winkel",
+    lead: "Maak binnen 30 seconden een gratis Contact Patch-account aan. Je 7% korting wordt automatisch verrekend in je winkelwagen en bij het afrekenen op alle banden, velgen en remmen.",
+    activeLead: "Ingelogd als {email}. Er wordt automatisch 7% ledenkorting afgetrokken van elke bestelling.",
+    perks: [
+      "Direct −7% op alle banden, velgen & remmen",
+      "Opgeslagen garage & gecontroleerde OEM-pasvorm",
+      "Prioritaire verzending & live pakketvolging",
+    ],
+    ctaRegister: "Account aanmaken & −7% krijgen",
+    ctaShop: "Winkelen met −7% korting",
+    productCallout: "Ledenprijs: {price} (bespaar {save} · −7%) bij registratie",
+    productActive: "Ledenvoordeel −7% actief: {price} bij afrekenen (bespaar {save})",
+    cartDiscountRow: "Ledenkorting (−7%)",
+    cartGuestPrompt: "Registreer of log in om {amount} (−7%) te besparen op deze bestelling",
+    cartGuestCta: "Activeer −7%",
+    cartActiveNotice: "−7% ledenkorting toegepast (−{amount})",
+    accountBannerTitle: "Ontgrendel 7% korting op elke bestelling",
+    accountBannerLead: "Registreer of log hieronder in — je 7% ledenkorting wordt automatisch verrekend in de winkelwagen.",
+    accountActiveTitle: "7% Ledenvoordeel Actief",
+    accountActiveLead: "Je 7% korting wordt automatisch toegepast op elke bestelling die je ingelogd plaatst.",
   },
 }
 

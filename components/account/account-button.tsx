@@ -12,9 +12,20 @@ export function AccountButton() {
   const label = data?.user ? x.account.account : x.account.signIn
 
   return (
-    <Link href={storePath(store, "/account")} className="relative p-2 transition-colors hover:text-primary" aria-label={label} title={label}>
+    <Link
+      href={storePath(store, data?.user ? "/account" : "/account?mode=sign-up")}
+      className="relative inline-flex items-center gap-1 p-2 transition-colors hover:text-primary"
+      aria-label={label}
+      title={label}
+    >
       <User className="size-5" aria-hidden="true" />
-      {data?.user && <span aria-hidden="true" className="absolute right-1.5 top-1.5 size-2 rounded-full bg-primary" />}
+      {data?.user ? (
+        <span aria-hidden="true" className="absolute right-1.5 top-1.5 size-2 rounded-full bg-primary" />
+      ) : (
+        <span className="hidden bg-primary px-1 py-0.5 font-mono text-[9px] font-bold leading-none tracking-wider text-primary-foreground sm:inline-block">
+          −7%
+        </span>
+      )}
     </Link>
   )
 }
