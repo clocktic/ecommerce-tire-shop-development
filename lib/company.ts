@@ -29,6 +29,7 @@ export const COMPANY = {
   mailingAddress: "6550 Yucca Street, Apt 205, Los Angeles, CA 90028, United States",
   phoneDisplay: "+1 (747) 287-6583",
   phoneTel: "+17472876583",
+  whatsappUrl: "https://wa.me/17472876583",
   email: "info@tiresshop.net",
   privacyEmail: "info@tiresshop.net",
   hours: "Mon–Fri, 9:00 AM – 6:00 PM PT",
