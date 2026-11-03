@@ -84,6 +84,10 @@ export type Extras = {
     lead: string
     number: string
     payment: string
+    pendingTitle: string
+    pendingLead: string
+    pendingPayment: string
+    payNow: string
     track: string
     viewAccount: string
     continue: string
@@ -253,7 +257,11 @@ const en: Extras = {
     title: "Order received",
     lead: "Thank you. Your order {number} is saved and a confirmation is on its way to {email}.",
     number: "Order number",
-    payment: "Card payment confirmed via secure 3D Secure checkout. Your order is now queued for warehouse dispatch and we will email your tracking number as soon as it ships.",
+    payment: "Payment confirmed via Stripe Checkout. Your order is now queued for warehouse dispatch and we will email your tracking number as soon as it ships.",
+    pendingTitle: "Awaiting payment",
+    pendingLead: "Your order {number} is saved for {email}, but payment has not been completed yet.",
+    pendingPayment: "Payment was not completed or was cancelled on the payment page. Click below to return to Stripe Checkout and finish paying — we will queue your order for dispatch as soon as payment is confirmed.",
+    payNow: "Complete payment",
     track: "Track this order",
     viewAccount: "View in your account",
     continue: "Continue shopping",
@@ -432,7 +440,11 @@ const es419: Extras = {
     title: "Pedido recibido",
     lead: "Gracias. Guardamos tu pedido {number} y enviamos la confirmación a {email}.",
     number: "Número de pedido",
-    payment: "Pago con tarjeta confirmado mediante 3D Secure. Tu pedido ya está en preparación para despacho y te enviaremos el número de rastreo por correo en cuanto salga del almacén.",
+    payment: "Pago confirmado a través de Stripe Checkout. Tu pedido ya está en preparación para despacho y te enviaremos el número de rastreo por correo en cuanto salga del almacén.",
+    pendingTitle: "Pendiente de pago",
+    pendingLead: "Guardamos tu pedido {number} para {email}, pero el pago aún no se ha completado.",
+    pendingPayment: "El pago no se completó o se canceló en la pasarela. Haz clic abajo para volver a Stripe Checkout y finalizar el pago; prepararemos tu pedido en cuanto se confirme.",
+    payNow: "Completar pago",
     track: "Rastrear este pedido",
     viewAccount: "Ver en tu cuenta",
     continue: "Seguir comprando",
@@ -530,7 +542,8 @@ const es: Extras = {
   },
   order: {
     ...es419.order,
-    payment: "Pago con tarjeta confirmado mediante 3D Secure. Tu pedido ya está en preparación para el envío y te enviaremos el número de seguimiento por correo en cuanto salga del almacén.",
+    payment: "Pago confirmado a través de Stripe Checkout. Tu pedido ya está en preparación para el envío y te enviaremos el número de seguimiento por correo en cuanto salga del almacén.",
+    pendingPayment: "El pago no se ha completado o se ha cancelado en la página de pago. Haz clic abajo para volver a Stripe Checkout y finalizar el pago; enviaremos tu pedido en cuanto se confirme.",
     track: "Seguir este pedido",
   },
   track: {
@@ -658,7 +671,11 @@ const de: Extras = {
     title: "Bestellung eingegangen",
     lead: "Vielen Dank. Ihre Bestellung {number} ist gespeichert, die Bestätigung geht an {email}.",
     number: "Bestellnummer",
-    payment: "Kartenzahlung über 3D Secure bestätigt. Ihre Bestellung wird jetzt im Lager für den Versand vorbereitet — Sie erhalten die Sendungsnummer per E-Mail, sobald das Paket übergeben wurde.",
+    payment: "Zahlung über Stripe Checkout bestätigt. Ihre Bestellung wird jetzt im Lager für den Versand vorbereitet — Sie erhalten die Sendungsnummer per E-Mail, sobald das Paket übergeben wurde.",
+    pendingTitle: "Zahlung ausstehend",
+    pendingLead: "Ihre Bestellung {number} ist für {email} reserviert, aber die Zahlung wurde noch nicht abgeschlossen.",
+    pendingPayment: "Die Zahlung wurde nicht abgeschlossen oder auf der Bezahlseite abgebrochen. Klicken Sie unten, um zu Stripe Checkout zurückzukehren und die Zahlung abzuschließen — wir geben Ihre Bestellung sofort nach Zahlungseingang in den Versand.",
+    payNow: "Zahlung abschließen",
     track: "Diese Bestellung verfolgen",
     viewAccount: "Im Konto ansehen",
     continue: "Weiter einkaufen",
@@ -837,7 +854,11 @@ const fr: Extras = {
     title: "Commande reçue",
     lead: "Merci. Votre commande {number} est enregistrée et la confirmation part à {email}.",
     number: "Numéro de commande",
-    payment: "Paiement par carte confirmé via 3D Secure. Votre commande est en cours de préparation pour l'expédition et vous recevrez le numéro de suivi par e-mail dès son départ.",
+    payment: "Paiement confirmé via Stripe Checkout. Votre commande est en cours de préparation pour l'expédition et vous recevrez le numéro de suivi par e-mail dès son départ.",
+    pendingTitle: "Paiement en attente",
+    pendingLead: "Votre commande {number} est réservée pour {email}, mais le paiement n'a pas encore été finalisé.",
+    pendingPayment: "Le paiement n'a pas été finalisé ou a été annulé sur la page de paiement. Cliquez ci-dessous pour retourner sur Stripe Checkout et régler votre commande — elle sera expédiée dès confirmation du paiement.",
+    payNow: "Finaliser le paiement",
     track: "Suivre cette commande",
     viewAccount: "Voir dans votre compte",
     continue: "Continuer mes achats",
@@ -1016,7 +1037,11 @@ const it: Extras = {
     title: "Ordine ricevuto",
     lead: "Grazie. Il tuo ordine {number} è registrato e la conferma è in arrivo a {email}.",
     number: "Numero d'ordine",
-    payment: "Pagamento con carta confermato tramite 3D Secure. Il tuo ordine è ora in preparazione per la spedizione e riceverai il numero di tracciamento via e-mail appena partirà.",
+    payment: "Pagamento confermato tramite Stripe Checkout. Il tuo ordine è ora in preparazione per la spedizione e riceverai il numero di tracciamento via e-mail appena partirà.",
+    pendingTitle: "In attesa di pagamento",
+    pendingLead: "Il tuo ordine {number} è stato salvato per {email}, ma il pagamento non è ancora stato completato.",
+    pendingPayment: "Il pagamento non è stato completato o è stato annullato nella pagina di pagamento. Clicca qui sotto per tornare su Stripe Checkout e completare il pagamento: spediremo l'ordine non appena confermato.",
+    payNow: "Completa il pagamento",
     track: "Traccia questo ordine",
     viewAccount: "Vedi nel tuo account",
     continue: "Continua lo shopping",
@@ -1195,7 +1220,11 @@ const nl: Extras = {
     title: "Bestelling ontvangen",
     lead: "Bedankt. Je bestelling {number} is opgeslagen en de bevestiging gaat naar {email}.",
     number: "Bestelnummer",
-    payment: "Kaartbetaling bevestigd via 3D Secure. Je bestelling wordt nu in het magazijn klaargemaakt voor verzending en je ontvangt het trackingnummer per e-mail zodra het pakket vertrekt.",
+    payment: "Betaling bevestigd via Stripe Checkout. Je bestelling wordt nu in het magazijn klaargemaakt voor verzending en je ontvangt het trackingnummer per e-mail zodra het pakket vertrekt.",
+    pendingTitle: "Wacht op betaling",
+    pendingLead: "Je bestelling {number} is gereserveerd voor {email}, maar de betaling is nog niet voltooid.",
+    pendingPayment: "De betaling is niet voltooid of werd geannuleerd op de betaalpagina. Klik hieronder om terug te gaan naar Stripe Checkout en de betaling af te ronden — we verzenden je bestelling zodra de betaling is bevestigd.",
+    payNow: "Betaling voltooien",
     track: "Deze bestelling volgen",
     viewAccount: "Bekijk in je account",
     continue: "Verder winkelen",
