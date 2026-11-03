@@ -38,9 +38,9 @@ These parameters were configured in Checkout Studio and are already set correctl
 
 ## Setup
 
-1. **Environment variables** (already present in the Vercel project): `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`, `DOMAIN`. Set `DOMAIN` to `https://tiresshop.net` in production (with or without `https://`).
-2. **Terms of Service URL**: `consent_collection.terms_of_service: "required"` fails unless a Terms of Service URL is set in Stripe Dashboard → Settings → Public details (https://dashboard.stripe.com/settings/public). Use `https://tiresshop.net/us/en/policies/terms` (or `/eu/en/policies/terms`).
-3. **Webhook endpoint**: Stripe Dashboard → Workbench → Webhooks (https://dashboard.stripe.com/workbench/webhooks) → add `https://tiresshop.net/api/payments/stripe/webhook` with events `checkout.session.completed` and `checkout.session.async_payment_succeeded`. Copy the signing secret into `STRIPE_WEBHOOK_SECRET`.
+1. **Environment variables** (already present in the Vercel project): `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`. Success/cancel URLs are built from the request host, so they work on `firewheels.vercel.app` now and on the custom domain later without changes.
+2. **Terms of Service URL**: `consent_collection.terms_of_service: "required"` fails unless a Terms of Service URL is set in Stripe Dashboard → Settings → Public details (https://dashboard.stripe.com/settings/public). Currently `https://firewheels.vercel.app/us/en/policies/terms` (or `/eu/en/policies/terms`); update to the custom domain when it goes live.
+3. **Webhook endpoint**: Stripe Dashboard → Workbench → Webhooks (https://dashboard.stripe.com/workbench/webhooks) → add `https://firewheels.vercel.app/api/payments/stripe/webhook` (switch to the custom domain later; the signing secret changes if you create a new endpoint) with events `checkout.session.completed` and `checkout.session.async_payment_succeeded`. Copy the signing secret into `STRIPE_WEBHOOK_SECRET`.
 4. **Dependency**: `stripe` (v23.1.0) was added to `package.json`. The API version is not pinned in code, so the SDK default is used.
 
 ## New Files

@@ -6,9 +6,14 @@ import { orderItems, orders } from "@/lib/db/schema"
 import { parseStore, storePath } from "@/lib/i18n/config"
 import { stripe } from "@/lib/stripe"
 
+// Return URLs follow the host the shopper is on (e.g. firewheels.vercel.app today,
+// the custom domain later), so no config change is needed when the domain moves.
 function siteOrigin(request: Request): string {
-  const domain = process.env.DOMAIN?.trim().replace(/\/+$/, "")
-  if (domain) return domain.startsWith("http") ? domain : `https://${domain}`
+  const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host")
+  if (host) {
+    const proto = request.headers.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https")
+    return `${proto}://${host}`
+  }
   return new URL(request.url).origin
 }
 
