@@ -38,7 +38,7 @@ export function Hero({ store }: { store: Store }) {
             >
               {t.home.title}
             </h1>
-            <p className="max-w-md text-pretty text-sm leading-relaxed text-foreground/85 sm:text-base">{t.home.lead}</p>
+            <p className="hidden max-w-md text-pretty text-sm sm:block leading-relaxed text-foreground/85 sm:text-base">{t.home.lead}</p>
           </div>
           <SizeFinder />
         </div>

@@ -25,8 +25,8 @@ export function Header({ store }: { store: Store }) {
   ]
 
   return (
-    <header className="sticky top-0 z-40 shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)]">
-      <div className="bg-secondary text-secondary-foreground">
+    <>
+      <div className="relative z-40 bg-secondary text-secondary-foreground">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-1 sm:px-4 sm:py-1.5 md:px-6">
           <p className="min-w-0 truncate font-mono text-[10px] uppercase leading-relaxed tracking-[0.12em] text-secondary-foreground/80 sm:text-xs sm:tracking-[0.18em]">
             <span className="text-secondary-foreground">{t.topbar.shipsTo}</span>
@@ -51,6 +51,7 @@ export function Header({ store }: { store: Store }) {
         </div>
       </div>
 
+      <header className="sticky top-0 z-40 shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)]">
       <div className="@container/header border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-3 py-2.5 sm:px-4 sm:py-3 md:px-6">
           <Logo store={store} label={t.common.logoHome} />
@@ -83,6 +84,7 @@ export function Header({ store }: { store: Store }) {
       </div>
 
       <FitmentBar />
-    </header>
+      </header>
+    </>
   )
 }

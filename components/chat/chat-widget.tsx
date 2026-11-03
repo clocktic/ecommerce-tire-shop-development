@@ -85,7 +85,7 @@ export function ChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-[calc(4.15rem+env(safe-area-inset-bottom))] right-3 z-40 flex flex-col items-end gap-2.5 md:bottom-4 md:right-4">
+    <div className="chat-launcher fixed bottom-[calc(4.15rem+env(safe-area-inset-bottom))] right-3 transition-[bottom] duration-200 z-40 flex flex-col items-end gap-2.5 md:bottom-4 md:right-4">
       {open && (
         <section
           aria-label={x.chat.title}
