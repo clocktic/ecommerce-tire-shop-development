@@ -4,7 +4,7 @@ import type Stripe from "stripe"
 import type { OrderRow } from "@/lib/db/schema"
 import { parseStore, storePath, type Lang } from "@/lib/i18n/config"
 import { confirmOrderPayment } from "@/lib/payments/confirm"
-import { stripe } from "@/lib/stripe"
+import { getStripeSecretKey, stripe } from "@/lib/stripe"
 
 const STRIPE_LOCALE_MAP: Record<Lang, Stripe.Checkout.SessionCreateParams.Locale> = {
   en: "en",
@@ -69,8 +69,7 @@ export function buildStripeLineItems(
 }
 
 function isStripeConfigured(): boolean {
-  const key = process.env.STRIPE_SECRET_KEY?.trim()
-  return Boolean(key && !key.endsWith("...") && key.length > 20)
+  return Boolean(getStripeSecretKey())
 }
 
 export async function createStripeCheckoutSession(input: {
