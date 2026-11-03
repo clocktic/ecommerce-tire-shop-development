@@ -4,8 +4,6 @@ import { useEffect, useRef, useState } from "react"
 import useSWR from "swr"
 import { MessageCircle, Send, X } from "lucide-react"
 import { useI18n } from "@/components/i18n/i18n-provider"
-import { WhatsAppIcon } from "@/components/ui/whatsapp-icon"
-import { COMPANY } from "@/lib/company"
 import { cn } from "@/lib/utils"
 
 type ChatMessage = { id: string; role: "visitor" | "admin"; body: string; createdAt: string }
@@ -87,11 +85,11 @@ export function ChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-[7.75rem] right-3 z-40 flex flex-col items-end gap-2.5 md:bottom-4 md:right-4">
+    <div className="fixed bottom-[calc(4.15rem+env(safe-area-inset-bottom))] right-3 z-40 flex flex-col items-end gap-2.5 md:bottom-4 md:right-4">
       {open && (
         <section
           aria-label={x.chat.title}
-          className="flex h-[min(26rem,calc(100dvh-12.5rem))] w-[min(22rem,calc(100vw-1.5rem))] flex-col border border-border bg-card text-card-foreground shadow-[0_4px_12px_rgba(0,0,0,0.25),0_20px_50px_-12px_rgba(0,0,0,0.55)] md:h-[min(32rem,calc(100dvh-7rem))]"
+          className="flex h-[min(26rem,calc(100dvh-9rem))] w-[min(22rem,calc(100vw-1.5rem))] flex-col border border-border bg-card text-card-foreground shadow-[0_4px_12px_rgba(0,0,0,0.25),0_20px_50px_-12px_rgba(0,0,0,0.55)] md:h-[min(32rem,calc(100dvh-7rem))]"
         >
           <header className="flex items-center justify-between gap-3 bg-secondary px-4 py-3 text-secondary-foreground">
             <div className="flex min-w-0 flex-col">
@@ -223,30 +221,16 @@ export function ChatWidget() {
         </section>
       )}
 
-      <div className="flex items-center gap-2">
-        <a
-          href={COMPANY.whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`WhatsApp ${COMPANY.phoneDisplay}`}
-          title={`WhatsApp: ${COMPANY.phoneDisplay}`}
-          className="flex size-11 items-center justify-center gap-2 bg-[#25D366] p-0 text-sm font-semibold uppercase tracking-wide text-white shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#1ebe5b] sm:size-auto sm:px-4 sm:py-3"
-        >
-          <WhatsAppIcon className="size-5" />
-          <span className="hidden sm:inline">WhatsApp</span>
-        </a>
-
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-label={open ? x.chat.close : x.chat.open}
-          className="flex size-11 items-center justify-center gap-2 border border-secondary-foreground/15 bg-secondary p-0 text-sm font-semibold uppercase tracking-wide text-secondary-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary hover:text-primary-foreground sm:size-auto sm:px-4 sm:py-3"
-        >
-          {open ? <X className="size-5" aria-hidden="true" /> : <MessageCircle className="size-5" aria-hidden="true" />}
-          <span className="hidden sm:inline">{open ? x.chat.close : x.chat.open}</span>
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-label={open ? x.chat.close : x.chat.open}
+        className="flex size-11 items-center justify-center gap-2 border border-secondary-foreground/15 bg-secondary p-0 text-sm font-semibold uppercase tracking-wide text-secondary-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary hover:text-primary-foreground sm:size-auto sm:px-4 sm:py-3"
+      >
+        {open ? <X className="size-5" aria-hidden="true" /> : <MessageCircle className="size-5" aria-hidden="true" />}
+        <span className="hidden sm:inline">{open ? x.chat.close : x.chat.open}</span>
+      </button>
     </div>
   )
 }
