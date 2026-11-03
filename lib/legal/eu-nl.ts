@@ -295,6 +295,7 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
               ["EU-vertegenwoordiger (art. 27 AVG)", `${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address}, ${EU_PRESENCE.gdprRepresentative.email}`],
             ],
           },
+          { link: { href: EU_PRESENCE.gdprRepresentative.mandatePdf, label: "Mandaat EU-vertegenwoordiger (PDF)" } },
         ],
       },
       {
@@ -412,8 +413,11 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Contactpunt gegevensbescherming in de EU (AVG)",
-        blocks: [`${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address} · E-mail: ${EU_PRESENCE.gdprRepresentative.email}`],
+        heading: "EU-vertegenwoordiger (art. 27 AVG)",
+        blocks: [
+          `${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address} · E-mail: ${EU_PRESENCE.gdprRepresentative.email}`,
+          { link: { href: EU_PRESENCE.gdprRepresentative.mandatePdf, label: "Mandaat EU-vertegenwoordiger (PDF)" } },
+        ],
       },
       {
         heading: "Verantwoordelijk voor de inhoud",

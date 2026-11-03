@@ -296,6 +296,7 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
               ["EU-Vertreter (Art. 27 DSGVO)", `${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address}, ${EU_PRESENCE.gdprRepresentative.email}`],
             ],
           },
+          { link: { href: EU_PRESENCE.gdprRepresentative.mandatePdf, label: "Vertretervereinbarung EU-Vertreter (PDF)" } },
         ],
       },
       {
@@ -413,8 +414,11 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Datenschutz-Kontaktstelle (DSGVO)",
-        blocks: [`${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address} · E-Mail: ${EU_PRESENCE.gdprRepresentative.email}`],
+        heading: "EU-Vertreter (Art. 27 DSGVO)",
+        blocks: [
+          `${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address} · E-Mail: ${EU_PRESENCE.gdprRepresentative.email}`,
+          { link: { href: EU_PRESENCE.gdprRepresentative.mandatePdf, label: "Vertretervereinbarung EU-Vertreter (PDF)" } },
+        ],
       },
       {
         heading: "Inhaltlich verantwortlich (§ 18 Abs. 2 MStV)",

@@ -296,6 +296,7 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
               ["Rappresentante nell’UE (art. 27 GDPR)", `${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address}, ${EU_PRESENCE.gdprRepresentative.email}`],
             ],
           },
+          { link: { href: EU_PRESENCE.gdprRepresentative.mandatePdf, label: "Mandato del rappresentante nell’UE (PDF)" } },
         ],
       },
       {
@@ -413,8 +414,11 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Contatto protezione dati nell’UE (GDPR)",
-        blocks: [`${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address} · E-mail: ${EU_PRESENCE.gdprRepresentative.email}`],
+        heading: "Rappresentante nell’UE (art. 27 GDPR)",
+        blocks: [
+          `${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address} · E-mail: ${EU_PRESENCE.gdprRepresentative.email}`,
+          { link: { href: EU_PRESENCE.gdprRepresentative.mandatePdf, label: "Mandato del rappresentante nell’UE (PDF)" } },
+        ],
       },
       {
         heading: "Responsabile dei contenuti",
