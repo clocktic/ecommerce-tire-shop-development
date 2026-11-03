@@ -32,13 +32,22 @@ export function AddToCart({ slug, name, image, priceCents, defaultQuantity, show
     if (!el || typeof IntersectionObserver === "undefined") return
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setShowSticky(!entry.isIntersecting && entry.boundingClientRect.top < 0)
+        setShowSticky(!entry.isIntersecting && entry.boundingClientRect.top < 72)
       },
-      { threshold: 0 },
+      { threshold: 0, rootMargin: "-72px 0px 0px 0px" },
     )
     observer.observe(el)
     return () => observer.disconnect()
   }, [])
+
+  useEffect(() => {
+    const root = document.documentElement
+    if (showSticky) root.dataset.stickyBuy = ""
+    else delete root.dataset.stickyBuy
+    return () => {
+      delete root.dataset.stickyBuy
+    }
+  }, [showSticky])
 
   const handleAdd = () => {
     add({ slug, name, image, priceCents, quantity })
@@ -106,7 +115,7 @@ export function AddToCart({ slug, name, image, priceCents, defaultQuantity, show
 
       {/* Mobile Sticky Quick-Buy Bar when main CTA scrolls above viewport */}
       {showSticky && (
-        <div className="fixed inset-x-0 bottom-14 z-30 border-t border-border bg-card/95 px-3 py-2.5 shadow-[0_-8px_24px_rgba(0,0,0,0.35)] backdrop-blur-md md:hidden">
+        <div className="fixed inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom))] z-30 animate-in fade-in slide-in-from-bottom-4 duration-200 border-t border-border bg-card/95 px-3 py-2.5 shadow-[0_-8px_24px_rgba(0,0,0,0.35)] backdrop-blur-md md:hidden">
           <div className="mx-auto flex max-w-md items-center justify-between gap-2.5">
             <div className="flex min-w-0 flex-col">
               <span className="truncate text-xs font-semibold">{name}</span>

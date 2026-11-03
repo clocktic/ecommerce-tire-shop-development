@@ -126,7 +126,15 @@
   }
   html {
     -webkit-tap-highlight-color: transparent;
+    scroll-padding-top: 5rem;
   }
+  button,
+  a,
+  select,
+  [role="button"] {
+    touch-action: manipulation;
+  }
+
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }
@@ -155,4 +163,11 @@ details > summary {
 }
 details > summary::-webkit-details-marker {
   display: none;
+}
+
+/* Unlayered so it overrides the launcher bottom utility while the mobile quick-buy bar is visible. */
+@media (max-width: 767px) {
+  html[data-sticky-buy] .chat-launcher {
+    bottom: calc(7.75rem + env(safe-area-inset-bottom));
+  }
 }

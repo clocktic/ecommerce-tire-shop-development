@@ -9,6 +9,7 @@ import { CategoryTiles } from "@/components/home/category-tiles"
 import { MemberClubShowcase } from "@/components/home/member-club-showcase"
 import { SidewallDecoder } from "@/components/home/sidewall-decoder"
 import { MarketPromise } from "@/components/home/market-promise"
+import { TrustStrip } from "@/components/home/trust-strip"
 import { ProductCard } from "@/components/product/product-card"
 
 export default async function HomePage({ params }: { params: Promise<{ market: string; lang: string }> }) {
@@ -22,6 +23,7 @@ export default async function HomePage({ params }: { params: Promise<{ market: s
   return (
     <>
       <Hero store={store} />
+      <TrustStrip store={store} />
       <CategoryTiles store={store} />
       <MemberClubShowcase />
       <SidewallDecoder t={t} />

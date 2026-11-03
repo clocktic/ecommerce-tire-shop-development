@@ -21,12 +21,14 @@ export function CartButton() {
         <span className="hidden font-mono text-xs uppercase tracking-[0.18em] @min-[1100px]/header:inline">
           {t.common.cart}
         </span>
-        <span
-          aria-hidden="true"
-          className="absolute -top-0.5 -right-0.5 flex min-w-4 items-center justify-center bg-primary px-1 font-mono text-[10px] font-bold text-primary-foreground @min-[1100px]/header:static @min-[1100px]/header:min-w-5 @min-[1100px]/header:text-xs"
-        >
-          {count}
-        </span>
+        {count > 0 && (
+          <span
+            aria-hidden="true"
+            className="absolute -top-0.5 -right-0.5 flex min-w-4 items-center justify-center bg-primary px-1 font-mono text-[10px] font-bold text-primary-foreground tabular-nums animate-in zoom-in-50 @min-[1100px]/header:static @min-[1100px]/header:min-w-5 @min-[1100px]/header:text-xs"
+          >
+            {count}
+          </span>
+        )}
       </button>
       <CartSheet />
     </>

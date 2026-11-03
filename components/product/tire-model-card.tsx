@@ -43,7 +43,7 @@ export function TireModelCard({ variants, store }: { variants: TireCardVariant[]
 
   return (
     <article className="flex min-w-0 flex-col border border-border bg-card shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-1 hover:border-foreground">
-      <Link href={href} className="relative h-40 overflow-hidden bg-white sm:h-48">
+      <Link href={href} className="group relative h-36 overflow-hidden bg-white sm:h-48">
         <Image
           src={product.images[0]}
           alt={`${product.brand} ${product.tire.model || product.name}`}
@@ -141,7 +141,6 @@ export function TireModelCard({ variants, store }: { variants: TireCardVariant[]
           <Button
             type="button"
             size="sm"
-            variant="outline"
             disabled={offer.availability === 'out_of_stock'}
             onClick={() =>
               add({
@@ -152,9 +151,9 @@ export function TireModelCard({ variants, store }: { variants: TireCardVariant[]
                 quantity: 4,
               })
             }
-            className="h-9 gap-1.5 border-primary/40 bg-primary/10 px-3 font-mono text-xs font-bold uppercase hover:bg-primary hover:text-primary-foreground"
+            className="h-10 gap-1.5 px-4 font-mono text-xs font-bold uppercase"
           >
-            <ShoppingBag className="size-3.5 text-primary" aria-hidden="true" />
+            <ShoppingBag className="size-3.5" aria-hidden="true" />
             <span>+ 4×</span>
           </Button>
         </div>

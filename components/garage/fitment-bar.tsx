@@ -37,7 +37,9 @@ export function FitmentBar() {
       : null
 
   return (
-    <div className="border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/85">
+    <div
+      className={`border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/85 ${active ? "" : "hidden md:block"}`}
+    >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-1 sm:px-4 sm:py-1.5 md:px-6">
         {active ? (
           <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
