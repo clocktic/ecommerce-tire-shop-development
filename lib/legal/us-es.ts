@@ -234,7 +234,7 @@ export const US_POLICIES_ES: Record<string, PolicyDoc> = {
       {
         heading: "Métodos de pago aceptados",
         blocks: [
-          "Aceptamos las siguientes tarjetas de crédito y débito al finalizar la compra:",
+          "Aceptamos los siguientes métodos de pago a través de Stripe Checkout al finalizar la compra:",
           { list: p.paymentMethods },
         ],
       },
