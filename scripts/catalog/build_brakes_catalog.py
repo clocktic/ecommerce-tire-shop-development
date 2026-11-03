@@ -44,15 +44,6 @@ def clean_ops_imgs(imgs: list[str], brand: str, kind: str) -> list[str]:
             continue
         if u not in out:
             out.append(u)
-    if len(out) == 1 and brand == "EBC":
-        if kind == "discs":
-            extra = "https://opsholders.com/wp-content/uploads/2026/03/Gen3_USR_Disc_Generic_Vented_1500x1500px.jpg"
-            if extra not in out:
-                out.append(extra)
-        elif kind == "pads-and-discs":
-            extra = "https://opsholders.com/wp-content/uploads/2026/03/Gen3_D_Disc_Generic_Vented_1500x1500px.jpg"
-            if extra not in out:
-                out.append(extra)
     return out
 
 
