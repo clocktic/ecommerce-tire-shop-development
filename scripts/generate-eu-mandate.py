@@ -11,7 +11,8 @@ from reportlab.platypus import KeepTogether, Paragraph, SimpleDocTemplate, Space
 
 OUT = Path(__file__).resolve().parent.parent / "public" / "docs" / "eu-representative-mandate.pdf"
 REF = "TS-EU-REP-2026-01"
-EFFECTIVE = "3 November 2026"
+SIGNED = "3 November 2026"
+EFFECTIVE = "16 October 2026"
 
 INK = colors.HexColor("#111111")
 MUTED = colors.HexColor("#555555")
@@ -51,7 +52,7 @@ def sig_block(heading, entity, name, title):
         [Paragraph("Signature: ______________________________", s_cell)],
         [Paragraph(f"Name: {name}", s_cell)],
         [Paragraph(f"Title: {title}", s_cell)],
-        [Paragraph("Date: ______________________________", s_cell)],
+        [Paragraph(f"Date: {SIGNED}", s_cell)],
         [Paragraph("Place: ______________________________", s_cell)],
     ]
     t = Table(rows, colWidths=[82 * mm])
@@ -85,7 +86,7 @@ story = [
     Spacer(1, 3),
     Paragraph("pursuant to Article 27 of Regulation (EU) 2016/679 (General Data Protection Regulation — “GDPR”)", s_sub),
     Spacer(1, 4),
-    Paragraph(f"Document reference: <b>{REF}</b> &nbsp;&nbsp;·&nbsp;&nbsp; Effective date: <b>{EFFECTIVE}</b>", s_sub),
+    Paragraph(f"Document reference: <b>{REF}</b> &nbsp;&nbsp;·&nbsp;&nbsp; Date of signature: <b>{SIGNED}</b> &nbsp;&nbsp;·&nbsp;&nbsp; Effective from: <b>{EFFECTIVE}</b>", s_sub),
     Spacer(1, 10),
     P("<b>This Agreement is made between:</b>"),
 
@@ -126,7 +127,7 @@ story = [
     L("1.3&nbsp;&nbsp;This Agreement constitutes the written mandate required by Article 27(1) GDPR and Recital 80 GDPR. The EU Representative may present it to any supervisory authority as proof of its designation."),
 
     H("2. DUTIES OF THE EU REPRESENTATIVE"),
-    L("2.1&nbsp;&nbsp;<b>Point of contact.</b> Act as the Controller’s point of contact in the European Union for data subjects and supervisory authorities, and accept correspondence addressed to the Controller at its registered office."),
+    L("2.1&nbsp;&nbsp;<b>Point of contact.</b> Act as the Controller��s point of contact in the European Union for data subjects and supervisory authorities, and accept correspondence addressed to the Controller at its registered office."),
     L("2.2&nbsp;&nbsp;<b>Forwarding.</b> Forward to the Controller at info@tiresshop.net, without undue delay and in any event within two (2) business days of receipt, every request, complaint or communication received in that capacity, including data subject requests under Articles 15 to 22 GDPR."),
     L("2.3&nbsp;&nbsp;<b>Record of processing.</b> Hold a current copy of the Controller’s record of processing activities and make it available to a supervisory authority on request (Article 30(1), (2) and (4) GDPR)."),
     L("2.4&nbsp;&nbsp;<b>Cooperation.</b> Cooperate with the supervisory authorities, on request and in coordination with the Controller, in the performance of their tasks (Article 31 GDPR)."),
@@ -148,7 +149,7 @@ story = [
     L("5.1&nbsp;&nbsp;Any fee for the services under this Agreement shall be agreed separately in writing between the Parties. Each Party bears its own costs unless otherwise agreed."),
 
     H("6. TERM AND TERMINATION"),
-    L("6.1&nbsp;&nbsp;This Agreement enters into force on the Effective Date and continues for an indefinite term."),
+    L(f"6.1&nbsp;&nbsp;This Agreement is signed on {SIGNED}. By mutual agreement of the Parties, it takes effect retroactively from {EFFECTIVE}, the date of formation of the Controller (the “<b>Effective Date</b>”), and covers all communications received by the EU Representative on the Controller’s behalf since that date. It continues for an indefinite term."),
     L("6.2&nbsp;&nbsp;Either Party may terminate it by giving thirty (30) days’ written notice (email being sufficient). Either Party may terminate with immediate effect if the other materially breaches this Agreement and fails to remedy the breach within ten (10) days of written notice."),
     L("6.3&nbsp;&nbsp;Upon termination, the Controller shall promptly update its website disclosures, and the EU Representative shall continue to forward any communication received for a period of sixty (60) days."),
 
