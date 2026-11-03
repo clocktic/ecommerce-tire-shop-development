@@ -422,7 +422,7 @@ export const US_POLICIES: Record<string, PolicyDoc> = {
       {
         heading: "How we disclose personal information & Google Consent Mode v2",
         blocks: [
-          "Service providers (processors): We share necessary data with contractual service providers who act solely on our behalf—specifically our payment gateway (CGPayTech), shipping carriers (UPS, FedEx, USPS) and US warehouse partners, cloud hosting (Vercel / Neon), and transactional email delivery.",
+              "Service providers (processors): We share necessary data with contractual service providers who act solely on our behalf—specifically our payment gateway (Stripe), shipping carriers (UPS, FedEx, USPS) and US warehouse partners, cloud hosting (Vercel / Neon), and transactional email delivery.",
           "Advertising & analytics partners (Google): When advertising/analytics cookies are active, we use Google Analytics and Google Ads / Google Merchant Center conversion tags to measure ad performance and show relevant product listings. Under the CCPA/CPRA and certain other US state privacy laws, allowing third-party advertising tags to collect device identifiers may constitute \"sharing\" or \"selling\" personal information for cross-context behavioral advertising. We do not sell personal information for monetary consideration.",
           "We implement Google Consent Mode v2. If you opt out on our Your Privacy Choices page or if your browser sends a Global Privacy Control (GPC) signal, ad_storage, ad_user_data, and ad_personalization are automatically set to \"denied\".",
           "Legal obligations: We may disclose information when required by law, subpoena, court order, or NHTSA safety recall regulations.",

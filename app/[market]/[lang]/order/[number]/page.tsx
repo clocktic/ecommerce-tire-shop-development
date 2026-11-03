@@ -10,14 +10,15 @@ import { formatPrice, type Market } from "@/lib/markets"
 import { getOrderByNumber, maskEmail } from "@/lib/orders"
 
 type Params = Promise<{ market: string; lang: string; number: string }>
+type SearchParams = Promise<{ session_id?: string }>
 
 export const metadata: Metadata = { robots: { index: false, follow: false } }
 
-export default async function OrderPage({ params }: { params: Params }) {
-  const { market, lang, number } = await params
+export default async function OrderPage({ params, searchParams }: { params: Params; searchParams: SearchParams }) {
+  const [{ market, lang, number }, { session_id }] = await Promise.all([params, searchParams])
   const store = parseStore(market, lang)
   if (!store) notFound()
-  const order = await getOrderByNumber(decodeURIComponent(number))
+  const order = await getOrderByNumber(decodeURIComponent(number), session_id)
   if (!order || order.market !== store.market) notFound()
   const t = getDictionary(store)
   const x = getExtras(store)
@@ -37,7 +38,18 @@ export default async function OrderPage({ params }: { params: Params }) {
           </p>
           <p className="max-w-xl border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">{x.order.payment}</p>
           <div className="flex flex-wrap gap-3">
-            <Link href={storePath(store, `/track/${order.orderNumber}`)} className={buttonVariants({ size: "lg" })}>
+            {order.status === "pending" && (
+              <form action="/api/payments/stripe/checkout" method="POST">
+                <input type="hidden" name="orderNumber" value={order.orderNumber} />
+                <button type="submit" className={buttonVariants({ size: "lg" })}>
+                  {t.checkout.submit}
+                </button>
+              </form>
+            )}
+            <Link
+              href={storePath(store, `/track/${order.orderNumber}`)}
+              className={buttonVariants({ size: "lg", variant: order.status === "pending" ? "outline" : "default" })}
+            >
               {x.order.track}
             </Link>
             {order.userId && (

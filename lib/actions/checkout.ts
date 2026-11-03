@@ -13,7 +13,7 @@ import { extrasFor } from "@/lib/i18n/extras"
 import { fmt } from "@/lib/i18n/fmt"
 import { MARKETS, formatPrice } from "@/lib/markets"
 import { computeMemberDiscountCents } from "@/lib/member-discount"
-import { createCgPayTechPaymentForm } from "@/lib/payments/cgpaytech"
+import { createStripeCheckoutSession } from "@/lib/payments/stripe"
 import { POLICIES } from "@/lib/policies"
 import { notifyTelegramNewOrder } from "@/lib/telegram"
 
@@ -131,24 +131,20 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
   const host = reqHeaders.get("x-forwarded-host") || reqHeaders.get("host") || "localhost:3000"
   const proto = reqHeaders.get("x-forwarded-proto") || (host.startsWith("localhost") ? "http" : "https")
   const origin = `${proto}://${host}`
-  const forwardedFor = reqHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() || "8.8.8.8"
 
-  const paymentSession = await createCgPayTechPaymentForm({
-    market: store.market,
-    lang: store.lang,
-    orderNumber,
-    amountCents: totalCents,
-    currency: MARKETS[store.market].currency,
-    email,
-    phone: fields.phone,
-    firstName: fields.firstName,
-    lastName: fields.lastName,
-    address: fields.address,
-    city: fields.city,
-    postalCode: fields.postal,
-    state: fields.state || undefined,
-    countryIso2: fields.country,
-    ipAddress: forwardedFor,
+  const paymentSession = await createStripeCheckoutSession({
+    order: {
+      id: orderId,
+      orderNumber,
+      market: store.market,
+      lang: store.lang,
+      email,
+      currency: MARKETS[store.market].currency,
+      subtotalCents,
+      shippingCents,
+      totalCents,
+    },
+    items,
     origin,
   })
 
@@ -187,8 +183,8 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
         quantity: i.quantity,
         lineTotalCents: i.lineTotalCents,
       })),
-      paymentMethod: paymentSession.ok ? "Онлайн-оплата картой (CGPayTech)" : "По реквизитам / при подтверждении",
-      paymentStatusLabel: paymentSession.ok ? "Перенаправлен на страницу оплаты" : "Ожидает оплаты",
+      paymentMethod: paymentSession.ok ? "Stripe Checkout" : "По реквизитам / при подтверждении",
+      paymentStatusLabel: paymentSession.ok ? "Перенаправлен на оплату (Stripe)" : "Ожидает оплаты",
     }),
   ])
 

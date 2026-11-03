@@ -10,7 +10,7 @@ export type PaymentConfirmationOptions = {
   /** Order lookup key — provide either orderId (UUID) or orderNumber (e.g. TS-US-XXXXXX) */
   orderId?: string
   orderNumber?: string
-  /** Human-readable payment provider or method (e.g. "Stripe", "PayPal", "SEPA Bank Transfer", "CGPayTech", "Подтверждено в админке") */
+  /** Human-readable payment provider or method (e.g. "Stripe Checkout", "PayPal", "SEPA Bank Transfer", "Подтверждено в админке") */
   paymentMethod?: string | null
   /** Optional provider transaction / payment intent / capture ID */
   transactionId?: string | null
@@ -22,7 +22,7 @@ export type PaymentConfirmationOptions = {
  * from a non-paid status to "paid".
  *
  * Use this from any payment integration (Stripe webhook, PayPal webhook/capture,
- * CGPayTech webhook, SEPA/Bank Transfer confirmation, or manual confirmation in Admin).
+ * SEPA/Bank Transfer confirmation, or manual confirmation in Admin).
  */
 export async function confirmOrderPayment(
   options: PaymentConfirmationOptions,

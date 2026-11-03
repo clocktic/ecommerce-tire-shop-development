@@ -1,10 +1,9 @@
 import { eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
-import type Stripe from "stripe"
 import { db } from "@/lib/db"
 import { orderItems, orders } from "@/lib/db/schema"
 import { parseStore, storePath } from "@/lib/i18n/config"
-import { stripe } from "@/lib/stripe"
+import { createStripeCheckoutSession } from "@/lib/payments/stripe"
 
 // Return URLs follow the host the shopper is on (e.g. firewheels.vercel.app today,
 // the custom domain later), so no config change is needed when the domain moves.
@@ -29,57 +28,18 @@ export async function POST(request: Request) {
   const store = parseStore(order.market, order.lang)
   if (!store) return NextResponse.json({ error: "Invalid store" }, { status: 400 })
 
-  // Amounts come from the stored order (computed server-side at placement), never from the client.
-  const currency = order.currency.toLowerCase()
   const items = await db.select().from(orderItems).where(eq(orderItems.orderId, order.id))
-  const itemized = order.subtotalCents + order.shippingCents === order.totalCents
-  const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = itemized
-    ? [
-        ...items.map((i) => ({
-          quantity: i.quantity,
-          price_data: {
-            currency,
-            unit_amount: i.unitPriceCents,
-            product_data: { name: i.brandName ? `${i.brandName} ${i.productName}` : i.productName },
-          },
-        })),
-        ...(order.shippingCents > 0
-          ? [{ quantity: 1, price_data: { currency, unit_amount: order.shippingCents, product_data: { name: "Shipping" } } }]
-          : []),
-      ]
-    : [
-        {
-          quantity: 1,
-          price_data: { currency, unit_amount: order.totalCents, product_data: { name: `Order ${order.orderNumber}` } },
-        },
-      ]
-
   const origin = siteOrigin(request)
-  const orderUrl = `${origin}${storePath(store, `/order/${encodeURIComponent(order.orderNumber)}`)}`
 
-  const session = await stripe.checkout.sessions.create(
-    {
-      ui_mode: "hosted_page",
-      mode: "payment",
-      billing_address_collection: "auto",
-      phone_number_collection: { enabled: true },
-      automatic_tax: { enabled: false },
-      allow_promotion_codes: false,
-      submit_type: "auto",
-      consent_collection: { terms_of_service: "required" },
-      integration_identifier: "hosted_web_0001",
-      origin_context: "web",
-      customer_email: order.email,
-      client_reference_id: order.orderNumber,
-      metadata: { orderNumber: order.orderNumber, orderId: order.id },
-      payment_intent_data: { metadata: { orderNumber: order.orderNumber } },
-      line_items: lineItems,
-      success_url: `${orderUrl}?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: orderUrl,
-    },
-    { idempotencyKey: `checkout_${order.id}_${order.totalCents}` },
-  )
+  const session = await createStripeCheckoutSession({
+    order,
+    items,
+    origin,
+    idempotencySuffix: String(Math.floor(Date.now() / 60000)),
+  })
 
-  if (!session.url) return NextResponse.json({ error: "No checkout URL" }, { status: 502 })
-  return NextResponse.redirect(session.url, 303)
+  if (!session.ok) {
+    return NextResponse.redirect(`${origin}${storePath(store, `/order/${encodeURIComponent(order.orderNumber)}`)}`, 303)
+  }
+  return NextResponse.redirect(session.forwardUrl, 303)
 }

@@ -410,7 +410,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
       {
         heading: "Recipients and processors",
         blocks: [
-          "We share personal data only to the extent necessary with: (1) our PCI-DSS Level 1 payment service provider (CGPayTech) to process payments; (2) international shipping carriers (DHL Express, UPS, FedEx) and our US warehouse to fulfil and clear your order through customs; (3) cloud hosting, database and transactional email providers (Vercel, Neon); and (4) — strictly only if you grant prior consent in the cookie banner — Google Ireland Limited / Google LLC for Google Analytics and Google Ads / Google Merchant Center conversion measurement. All processors are bound by data processing agreements under Art. 28 GDPR.",
+          "We share personal data only to the extent necessary with: (1) our PCI-DSS Level 1 payment service provider (Stripe) to process payments; (2) international shipping carriers (DHL Express, UPS, FedEx) and our US warehouse to fulfil and clear your order through customs; (3) cloud hosting, database and transactional email providers (Vercel, Neon); and (4) — strictly only if you grant prior consent in the cookie banner — Google Ireland Limited / Google LLC for Google Analytics and Google Ads / Google Merchant Center conversion measurement. All processors are bound by data processing agreements under Art. 28 GDPR.",
         ],
       },
       {

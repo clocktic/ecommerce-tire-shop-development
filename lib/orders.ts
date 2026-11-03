@@ -3,8 +3,7 @@ import "server-only"
 import { and, desc, eq, inArray } from "drizzle-orm"
 import { db } from "@/lib/db"
 import { orderItems, orders, type OrderItemRow, type OrderRow } from "@/lib/db/schema"
-import type { Market } from "@/lib/markets"
-import { syncCgPayTechOrderStatus } from "@/lib/payments/cgpaytech"
+import { syncStripeOrderStatus } from "@/lib/payments/stripe"
 
 export type OrderWithItems = OrderRow & { items: OrderItemRow[] }
 
@@ -25,13 +24,12 @@ export async function getOrdersForUser(userId: string, market: string): Promise<
   return attachItems(rows)
 }
 
-export async function getOrderByNumber(orderNumber: string): Promise<OrderWithItems | null> {
+export async function getOrderByNumber(orderNumber: string, stripeSessionId?: string | null): Promise<OrderWithItems | null> {
   const [row] = await db.select().from(orders).where(eq(orders.orderNumber, orderNumber.toUpperCase())).limit(1)
   if (!row) return null
-  if (row.status === "pending" && (row.market === "us" || row.market === "eu")) {
-    const synced = await syncCgPayTechOrderStatus(row.market as Market, row.orderNumber)
+  if (row.status === "pending" && stripeSessionId) {
+    const synced = await syncStripeOrderStatus(row.orderNumber, stripeSessionId)
     if (synced) {
-      await db.update(orders).set({ status: synced }).where(eq(orders.id, row.id))
       row.status = synced
     }
   }

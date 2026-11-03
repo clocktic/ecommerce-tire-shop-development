@@ -368,7 +368,7 @@ export const US_POLICIES_ES: Record<string, PolicyDoc> = {
       {
         heading: "Con quién compartimos datos y Google Consent Mode v2",
         blocks: [
-          "Proveedores de servicios (encargados): Compartimos únicamente los datos necesarios con proveedores que actúan en nuestro nombre bajo contrato: pasarela de pagos (CGPayTech), paqueterías (UPS, FedEx, USPS) y almacenes en EE. UU., alojamiento en la nube (Vercel / Neon) y servicio de correo transaccional.",
+              "Proveedores de servicios (encargados): Compartimos únicamente los datos necesarios con proveedores que actúan en nuestro nombre bajo contrato: pasarela de pagos (Stripe), paqueterías (UPS, FedEx, USPS) y almacenes en EE. UU., alojamiento en la nube (Vercel / Neon) y servicio de correo transaccional.",
           "Socios de publicidad y análisis (Google): Cuando las cookies publicitarias están activas, utilizamos Google Analytics y etiquetas de conversión de Google Ads / Google Merchant Center. Según la CCPA/CPRA y ciertas leyes estatales, el uso de cookies publicitarias puede considerarse «compartir» o «vender» información personal para publicidad conductual entre contextos. No vendemos datos personales a cambio de dinero.",
           "Implementamos Google Consent Mode v2. Si ejerces tu exclusión en Tus opciones de privacidad o si tu navegador envía la señal Global Privacy Control (GPC), ad_storage, ad_user_data y ad_personalization pasan automáticamente a estado «denied».",
           "Autoridades: Cuando sea requerido por ley, orden judicial o normativa de seguridad vehicular de la NHTSA.",
