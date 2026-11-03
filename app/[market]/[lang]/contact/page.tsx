@@ -91,6 +91,14 @@ export default async function ContactPage({ params }: { params: Params }) {
               <p className="text-sm leading-relaxed text-muted-foreground">
                 {EU_PRESENCE.gdprRepresentative.name} · {EU_PRESENCE.gdprRepresentative.address} ({EU_PRESENCE.gdprRepresentative.email})
               </p>
+              <a
+                href={EU_PRESENCE.gdprRepresentative.mandatePdf}
+                target="_blank"
+                rel="noopener"
+                className="w-fit font-mono text-xs uppercase tracking-[0.18em] underline underline-offset-4 hover:text-primary"
+              >
+                {c.euRep} · PDF
+              </a>
             </div>
           )}
           <div className="flex flex-col gap-2">

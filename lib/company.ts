@@ -43,12 +43,32 @@ export const physicalReturnsAddress = `${COMPANY.legalName} — Returns Departme
 // Orders for the EU are shipped from the United States and sold DAP: the
 // customer pays import duties and import VAT to the carrier / customs on
 // delivery, and we refund the import VAT upon proof of payment.
+// EU representative (Art. 27 GDPR) — source: deed of incorporation published in
+// the Belgian Official Gazette (Belgisch Staatsblad) on 14/12/2022, ref. 22381428.
+export const EU_REPRESENTATIVE = {
+  legalName: "BBC TYRES BV",
+  legalForm: "Besloten vennootschap (BV), Belgium",
+  enterpriseNumber: "0794.652.803",
+  register: "Crossroads Bank for Enterprises (KBO/BCE), Belgium",
+  street: "Luitenant Graffplein 15",
+  postalCode: "1780",
+  city: "Wemmel",
+  country: "Belgium",
+  director: "Berkay Cetin",
+  directorRole: "Director (bestuurder)",
+  email: COMPANY.privacyEmail,
+  mandatePdf: "/docs/eu-representative-mandate.pdf",
+  mandateRef: "TS-EU-REP-2026-01",
+} as const
+
+export const euRepresentativeAddress = `${EU_REPRESENTATIVE.street}, ${EU_REPRESENTATIVE.postalCode} ${EU_REPRESENTATIVE.city}, ${EU_REPRESENTATIVE.country}`
+
 export const EU_PRESENCE = {
-  // Direct GDPR & EU privacy contact desk (no bracketed placeholders).
   gdprRepresentative: {
-    name: `${COMPANY.legalName} — EU Data Protection & Privacy Desk`,
-    address: companyAddressLine,
-    email: COMPANY.privacyEmail,
+    name: `${EU_REPRESENTATIVE.legalName} (KBO/BCE ${EU_REPRESENTATIVE.enterpriseNumber})`,
+    address: euRepresentativeAddress,
+    email: EU_REPRESENTATIVE.email,
+    mandatePdf: EU_REPRESENTATIVE.mandatePdf,
   },
   // Goods are dispatched from California; returns go back to the US facility with an RMA number.
   returnsAddress: physicalReturnsAddress,

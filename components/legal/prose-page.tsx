@@ -159,6 +159,19 @@ function BlockView({ block, store }: { block: Block; store: Store }) {
     )
   }
   if ("note" in block) return <p className="text-sm text-muted-foreground">{block.note}</p>
+  if (block.link.href.endsWith(".pdf")) {
+    return (
+      <a
+        href={block.link.href}
+        target="_blank"
+        rel="noopener"
+        className="inline-flex w-fit items-center gap-2 border border-border bg-card px-3 py-2 font-mono text-xs uppercase tracking-[0.18em] underline-offset-4 transition-colors hover:border-primary hover:text-primary"
+      >
+        <span aria-hidden="true">PDF</span>
+        <span className="underline">{block.link.label}</span>
+      </a>
+    )
+  }
   return (
     <Link href={storePath(store, block.link.href)} className="font-mono text-xs uppercase tracking-[0.18em] underline underline-offset-4">
       {block.link.label}

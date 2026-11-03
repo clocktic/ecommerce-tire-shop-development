@@ -296,6 +296,7 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
               ["Représentant dans l’UE (art. 27 RGPD)", `${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address}, ${EU_PRESENCE.gdprRepresentative.email}`],
             ],
           },
+          { link: { href: EU_PRESENCE.gdprRepresentative.mandatePdf, label: "Mandat du représentant dans l’UE (PDF)" } },
         ],
       },
       {
@@ -413,8 +414,11 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Contact protection des données dans l’UE (RGPD)",
-        blocks: [`${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address} · E-mail : ${EU_PRESENCE.gdprRepresentative.email}`],
+        heading: "Représentant dans l’UE (art. 27 RGPD)",
+        blocks: [
+          `${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address} · E-mail : ${EU_PRESENCE.gdprRepresentative.email}`,
+          { link: { href: EU_PRESENCE.gdprRepresentative.mandatePdf, label: "Mandat du représentant dans l’UE (PDF)" } },
+        ],
       },
       {
         heading: "Directeur de la publication",

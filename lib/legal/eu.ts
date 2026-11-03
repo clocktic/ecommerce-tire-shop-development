@@ -386,9 +386,10 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
               ["Represented by", `${COMPANY.representative}, ${COMPANY.representativeRole}`],
               ["Privacy & GDPR contact email", COMPANY.privacyEmail],
               ["Telephone", COMPANY.phoneDisplay],
-              ["EU Data Protection & Privacy Desk", `${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address} (${EU_PRESENCE.gdprRepresentative.email})`],
+              ["EU representative (Art. 27 GDPR)", `${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address} (${EU_PRESENCE.gdprRepresentative.email})`],
             ],
           },
+          { link: { href: EU_PRESENCE.gdprRepresentative.mandatePdf, label: "EU representative mandate (PDF)" } },
         ],
       },
       {
@@ -521,8 +522,11 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "EU data protection & privacy contact",
-        blocks: [`${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address} · Email: ${EU_PRESENCE.gdprRepresentative.email}`],
+        heading: "EU representative (Art. 27 GDPR)",
+        blocks: [
+          `${EU_PRESENCE.gdprRepresentative.name}, ${EU_PRESENCE.gdprRepresentative.address} · Email: ${EU_PRESENCE.gdprRepresentative.email}`,
+          { link: { href: EU_PRESENCE.gdprRepresentative.mandatePdf, label: "EU representative mandate (PDF)" } },
+        ],
       },
       {
         heading: "Person responsible for editorial content",
