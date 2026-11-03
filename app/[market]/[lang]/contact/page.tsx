@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Mail, Phone, Clock, MapPin } from "lucide-react"
+import { WhatsAppIcon } from "@/components/ui/whatsapp-icon"
 import { COMPANY, EU_PRESENCE, companyAddressLine, physicalReturnsAddress } from "@/lib/company"
 import { getDictionary, parseStore, storePath } from "@/lib/i18n"
 import { getPolicy } from "@/lib/legal"
@@ -27,9 +28,10 @@ export default async function ContactPage({ params }: { params: Params }) {
   const t = getDictionary(store)
   const c = t.contact
 
-  const cards: { icon: typeof Mail; label: string; value: string; href?: string }[] = [
+  const cards: { icon: React.ComponentType<{ className?: string }>; label: string; value: string; href?: string; external?: boolean }[] = [
     { icon: Mail, label: c.email, value: COMPANY.email, href: `mailto:${COMPANY.email}` },
     { icon: Phone, label: c.phone, value: COMPANY.phoneDisplay, href: `tel:${COMPANY.phoneTel}` },
+    { icon: WhatsAppIcon, label: "WhatsApp", value: COMPANY.phoneDisplay, href: COMPANY.whatsappUrl, external: true },
     { icon: Clock, label: c.hours, value: t.company.hours },
     {
       icon: MapPin,
@@ -58,12 +60,17 @@ export default async function ContactPage({ params }: { params: Params }) {
       <div className="grid gap-10 py-10 lg:grid-cols-12">
         <div className="flex flex-col gap-10 lg:col-span-8">
         <ul className="grid gap-px border border-border bg-border sm:grid-cols-2">
-          {cards.map(({ icon: Icon, label, value, href }) => (
+          {cards.map(({ icon: Icon, label, value, href, external }) => (
             <li key={label} className="flex flex-col gap-3 bg-card p-6">
               <Icon className="size-5 text-primary" aria-hidden="true" />
               <span className="label-caps text-muted-foreground">{label}</span>
               {href ? (
-                <a href={href} className="break-words font-semibold hover:text-primary">
+                <a
+                  href={href}
+                  target={external ? "_blank" : undefined}
+                  rel={external ? "noopener noreferrer" : undefined}
+                  className="break-words font-semibold hover:text-primary"
+                >
                   {value}
                 </a>
               ) : (

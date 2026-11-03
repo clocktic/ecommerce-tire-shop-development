@@ -3,6 +3,7 @@ import { Logo } from "@/components/layout/logo"
 import { LanguageSwitcher, RegionSwitcher } from "@/components/layout/region-switcher"
 import { CookieSettingsButton } from "@/components/legal/cookie-settings-button"
 import { PaymentBadges } from "@/components/ui/payment-badges"
+import { WhatsAppIcon } from "@/components/ui/whatsapp-icon"
 import { CATEGORIES } from "@/lib/catalog"
 import { COMPANY, companyAddressLine } from "@/lib/company"
 import { getDictionary, storePath, type Store } from "@/lib/i18n"
@@ -51,6 +52,16 @@ export function Footer({ store }: { store: Store }) {
             <span aria-hidden="true">{"·"}</span>
             <a href={`tel:${COMPANY.phoneTel}`} className="hover:text-secondary-foreground">
               {COMPANY.phoneDisplay}
+            </a>
+            <span aria-hidden="true">{"·"}</span>
+            <a
+              href={COMPANY.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 font-semibold text-[#25D366] hover:underline"
+            >
+              <WhatsAppIcon className="size-3.5" />
+              <span>WhatsApp</span>
             </a>
             <span aria-hidden="true">{"·"}</span>
             <span>{COMPANY.email}</span>
