@@ -205,7 +205,7 @@ export function CartSheet() {
                   <ShieldCheck className="mt-0.5 size-3.5 shrink-0 text-primary" aria-hidden="true" />
                   <span>{t.policy.warranty}</span>
                 </div>
-                <PaymentBadges size="sm" limit={5} />
+                <PaymentBadges size="sm" limit={8} />
               </div>
             </SheetFooter>
           </>
