@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { CheckCircle2 } from "lucide-react"
+import { CheckCircle2, Clock } from "lucide-react"
 import { buttonVariants } from "@/components/ui/button"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
 import { fmt, getDictionary, localeMeta, parseStore, storePath } from "@/lib/i18n"
@@ -25,24 +25,38 @@ export default async function OrderPage({ params, searchParams }: { params: Para
   const meta = localeMeta(store)
   const price = (cents: number) => formatPrice(cents, order.market as Market, meta.intlLocale)
   const statusKey = (order.status in x.orderStatus ? order.status : "paid") as keyof typeof x.orderStatus
+  const isPending = order.status === "pending"
+  const pageTitle = isPending ? x.order.pendingTitle : x.order.title
+  const pageLead = isPending ? x.order.pendingLead : x.order.lead
+  const paymentNote = isPending ? x.order.pendingPayment : x.order.payment
 
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-6">
-      <Breadcrumbs label={t.common.breadcrumb} items={[{ href: storePath(store), label: t.common.home }, { label: x.order.title }]} />
+      <Breadcrumbs label={t.common.breadcrumb} items={[{ href: storePath(store), label: t.common.home }, { label: pageTitle }]} />
       <div className="grid gap-10 pb-20 pt-4 lg:grid-cols-12">
         <section className="flex flex-col gap-6 lg:col-span-7">
-          <CheckCircle2 className="size-10 text-primary" aria-hidden="true" />
-          <h1 className="font-expanded text-4xl font-extrabold uppercase text-balance">{x.order.title}</h1>
+          {isPending ? (
+            <Clock className="size-10 text-amber-500" aria-hidden="true" />
+          ) : (
+            <CheckCircle2 className="size-10 text-primary" aria-hidden="true" />
+          )}
+          <h1 className="font-expanded text-4xl font-extrabold uppercase text-balance">{pageTitle}</h1>
           <p className="max-w-xl leading-relaxed">
-            {fmt(x.order.lead, { number: order.orderNumber, email: maskEmail(order.email) })}
+            {fmt(pageLead, { number: order.orderNumber, email: maskEmail(order.email) })}
           </p>
-          <p className="max-w-xl border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">{x.order.payment}</p>
+          <p
+            className={`max-w-xl border-l-2 pl-4 text-sm leading-relaxed text-muted-foreground ${
+              isPending ? "border-amber-500" : "border-primary"
+            }`}
+          >
+            {paymentNote}
+          </p>
           <div className="flex flex-wrap gap-3">
-            {order.status === "pending" && (
+            {isPending && (
               <form action="/api/payments/stripe/checkout" method="POST">
                 <input type="hidden" name="orderNumber" value={order.orderNumber} />
                 <button type="submit" className={buttonVariants({ size: "lg" })}>
-                  {t.checkout.submit}
+                  {x.order.payNow}
                 </button>
               </form>
             )}
