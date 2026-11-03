@@ -252,14 +252,13 @@ export const US_POLICIES: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "1. Credit & Debit Cards (Visa, Mastercard, American Express, Discover)",
+        heading: "1. Credit & Debit Cards, Digital Wallets & Buy Now Pay Later (Stripe Checkout)",
         blocks: [
-          "Encrypted 3D Secure 2.0 Card Checkout — We accept major credit and debit cards (Visa, Mastercard, American Express, Discover) processed securely in USD. Here is how it works:",
+          "Encrypted 3D Secure 2.0 Checkout via Stripe — We accept major credit and debit cards (Visa, Mastercard, American Express, Discover), digital wallets (Apple Pay, Google Pay, Amazon Pay, Cash App Pay, Stripe Link), Buy Now Pay Later options (Klarna, Afterpay), and ACH Direct Debit processed securely in USD. Here is how it works:",
           {
             list: [
-              "Choose Credit / Debit Card as your payment method at checkout.",
-              "Click \"Place order\" to open our encrypted 3D Secure 2.0 payment page.",
-              "Enter your card details and billing information and follow your card-issuing bank's security verification steps to authorize the transaction.",
+              "Proceed to checkout and click \"Place order\" to open our encrypted Stripe Checkout page.",
+              "Select your preferred payment method (card, Apple Pay, Google Pay, Klarna, Afterpay, Amazon Pay, Cash App Pay, ACH Direct Debit, or Link) and complete verification.",
               "Once the transaction is confirmed, you are redirected back to our site and receive an order confirmation email.",
               "If an order is canceled prior to shipment or cannot be fulfilled from stock, the payment authorization is released or refunded in full promptly.",
             ],

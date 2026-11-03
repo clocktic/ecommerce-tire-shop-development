@@ -258,14 +258,13 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "1. Credit & Debit Cards (Visa, Mastercard, American Express)",
+        heading: "1. Cards, Wallets & Local Payment Methods (Stripe Checkout)",
         blocks: [
-          "3D Secure 2.0 Online Card Payment — We accept Visa, Mastercard, and American Express in EUR across all 27 EU Member States. Here is how it works:",
+          "3D Secure 2.0 Online Checkout via Stripe — We accept Visa, Mastercard, American Express, Discover, Apple Pay, Google Pay, Klarna, Afterpay, Amazon Pay, Cash App Pay, ACH Direct Debit, Bancontact, and Stripe Link in EUR across all 27 EU Member States. Here is how it works:",
           {
             list: [
-              "Choose Credit / Debit Card as your payment method at checkout.",
-              "Click the order button to open our encrypted 3D Secure 2.0 payment page.",
-              "Enter your card details and authorize the transaction using your bank's Strong Customer Authentication (PSD2 SCA) procedure.",
+              "Click the order button at checkout to open our encrypted Stripe Checkout payment page.",
+              "Select your preferred card, wallet, or local payment method and authorize the transaction using Strong Customer Authentication (PSD2 SCA).",
               "Once confirmed, you are redirected back to our site and receive an order confirmation email.",
               "If an order is cancelled before dispatch or cannot be fulfilled, any payment or authorisation is released or refunded in full promptly.",
             ],
