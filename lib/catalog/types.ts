@@ -107,11 +107,11 @@ export type WheelProduct = ProductBase & {
 }
 
 export const BRAKE_KINDS = [
+  "kit",
+  "pads-and-discs",
   "discs",
   "pads",
-  "pads-and-discs",
   "caliper",
-  "kit",
   "drum",
   "shoes",
   "hose",
