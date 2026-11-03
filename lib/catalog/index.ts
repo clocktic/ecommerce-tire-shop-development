@@ -165,13 +165,75 @@ export const TIRE_OPTIONS = {
 
 export const SEASON_LABEL = { summer: "Summer", winter: "Winter", "all-season": "All-season" } as const
 export const BRAKE_KIND_LABEL = {
+  kit: "Big brake kit",
+  "pads-and-discs": "Pads + discs kit",
   discs: "Brake discs",
   pads: "Brake pads",
-  "pads-and-discs": "Pads + discs kit",
   caliper: "Brake caliper",
-  kit: "Big brake kit",
   drum: "Brake drum",
   shoes: "Brake shoes",
   hose: "Brake hose",
   sensor: "Wear sensor",
 } as const
+
+function interleaveByKey<T>(items: T[], keyFn: (item: T) => string): T[] {
+  const buckets = new Map<string, T[]>()
+  for (const item of items) {
+    const key = keyFn(item)
+    const bucket = buckets.get(key)
+    if (bucket) bucket.push(item)
+    else buckets.set(key, [item])
+  }
+  const queues = [...buckets.values()]
+  const result: T[] = []
+  let idx = 0
+  while (result.length < items.length) {
+    for (const q of queues) {
+      if (idx < q.length) result.push(q[idx])
+    }
+    idx++
+  }
+  return result
+}
+
+function mixBrakeTier<T extends Product>(items: T[]): T[] {
+  const byBrand = new Map<string, T[]>()
+  for (const item of items) {
+    const list = byBrand.get(item.brand)
+    if (list) list.push(item)
+    else byBrand.set(item.brand, [item])
+  }
+  const brandQueues = [...byBrand.values()].map((list) =>
+    interleaveByKey(list, (p) => (p.category === "brakes" ? `${p.brake.kind}:${p.brake.axle}` : p.id)),
+  )
+  const result: T[] = []
+  let idx = 0
+  while (result.length < items.length) {
+    for (const q of brandQueues) {
+      if (idx < q.length) result.push(q[idx])
+    }
+    idx++
+  }
+  return result
+}
+
+export function orderBrakeProducts<T extends Product>(products: T[]): T[] {
+  const kits: T[] = []
+  const discs: T[] = []
+  const rest: T[] = []
+  for (const product of products) {
+    if (product.category !== "brakes") {
+      rest.push(product)
+      continue
+    }
+    const kind = product.brake.kind
+    if (kind === "kit" || kind === "pads-and-discs") {
+      kits.push(product)
+    } else if (kind === "discs") {
+      discs.push(product)
+    } else {
+      rest.push(product)
+    }
+  }
+  return [...mixBrakeTier(kits), ...mixBrakeTier(discs), ...mixBrakeTier(rest)]
+}

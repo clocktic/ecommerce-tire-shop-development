@@ -5,6 +5,7 @@ import { and, asc, eq } from "drizzle-orm"
 import { db } from "@/lib/db"
 import { products } from "@/lib/db/schema"
 import type { Category, Product } from "@/lib/catalog/types"
+import { orderBrakeProducts } from "@/lib/catalog"
 import type { Market } from "@/lib/markets"
 import { readDatabase, type DatabaseReadResult } from "@/lib/db/availability"
 
@@ -26,7 +27,9 @@ export async function readProducts(market: Market): Promise<DatabaseReadResult<P
 
 export async function readProductsByCategory(market: Market, category: Category): Promise<DatabaseReadResult<Product[]>> {
   const result = await readProducts(market)
-  return result.ok ? { ok: true, data: result.data.filter((p) => p.category === category) } : result
+  if (!result.ok) return result
+  const filtered = result.data.filter((p) => p.category === category)
+  return { ok: true, data: category === "brakes" ? orderBrakeProducts(filtered) : filtered }
 }
 
 export const readProductBySlug = cache((slug: string) => readDatabase(async (): Promise<Product | undefined> => {

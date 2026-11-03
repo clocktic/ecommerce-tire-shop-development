@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import {
+  BRAKE_KINDS,
   CATEGORIES,
   DISC_OPTIONS,
   FINISH_FAMILIES,
@@ -13,6 +14,7 @@ import {
   isCategory,
   localizeProduct,
   offsetBand,
+  orderBrakeProducts,
   type Category,
   type Product,
 } from "@/lib/catalog"
@@ -75,14 +77,17 @@ export default async function CategoryPage({ params, searchParams }: { params: P
     .sort((a, b) => a.name.localeCompare(b.name))
   const filtered = filterProducts(all, filters, store.market)
   const sortMode = filters.sort ?? "featured"
-  const products = [...filtered].sort((a, b) => {
-    const priceA = a.offers[store.market]?.priceCents ?? 0
-    const priceB = b.offers[store.market]?.priceCents ?? 0
-    if (sortMode === "price-asc") return priceA - priceB
-    if (sortMode === "price-desc") return priceB - priceA
-    if (sortMode === "brand-asc") return a.brand.localeCompare(b.brand)
-    return 0
-  })
+  const products =
+    category === "brakes" && sortMode === "featured"
+      ? orderBrakeProducts(filtered)
+      : [...filtered].sort((a, b) => {
+          const priceA = a.offers[store.market]?.priceCents ?? 0
+          const priceB = b.offers[store.market]?.priceCents ?? 0
+          if (sortMode === "price-asc") return priceA - priceB
+          if (sortMode === "price-desc") return priceB - priceA
+          if (sortMode === "brand-asc") return a.brand.localeCompare(b.brand)
+          return 0
+        })
   const activeEntries = Object.entries(filters).filter(
     (entry): entry is [string, string] =>
       Boolean(entry[1]) && entry[0] !== "page" && entry[0] !== "sort",
@@ -134,10 +139,10 @@ export default async function CategoryPage({ params, searchParams }: { params: P
             value: family,
             label: t.catalog.finishFamily[family] ?? family,
           }))
-        : Object.entries(t.labels.brakeKind).map(([value, label]) => ({
+        : BRAKE_KINDS.map((kind) => ({
             key: "kind",
-            value,
-            label,
+            value: kind,
+            label: t.labels.brakeKind[kind],
           }))
   const quickParamKey = category === "tires" ? "season" : category === "wheels" ? "finish" : "kind"
 
@@ -404,7 +409,7 @@ function CategoryFilters({
         options={["premium", "mid"]}
         labels={c.segmentLabels}
       />
-      <FilterSelect name="kind" label={c.type} any={any} value={filters.kind} options={Object.keys(t.labels.brakeKind)} labels={t.labels.brakeKind} />
+      <FilterSelect name="kind" label={c.type} any={any} value={filters.kind} options={[...BRAKE_KINDS]} labels={t.labels.brakeKind} />
       <FilterSelect name="axle" label={c.axle} any={any} value={filters.axle} options={["front", "rear"]} labels={t.labels.axleShort} />
       <FilterSelect name="pistons" label={c.pistons} any={any} value={filters.pistons} options={[...PISTON_OPTIONS]} />
       <FilterSelect name="disc" label={c.disc} any={any} value={filters.disc} options={discs} labels={Object.fromEntries(discs.map((d) => [d, `${d} mm`]))} />
