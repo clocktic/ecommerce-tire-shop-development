@@ -917,7 +917,7 @@ function StepHeader({ n, label, current }: { n: number; label: string; current?:
   return (
     <div className="flex items-center justify-between gap-2">
       <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-foreground">
-        <span className="flex size-5 shrink-0 items-center justify-center bg-primary font-mono text-[11px] font-bold text-primary-foreground">
+        <span className="flex size-5 shrink-0 rounded-md items-center justify-center bg-primary font-mono text-[11px] font-bold text-primary-foreground">
           {n}
         </span>
         {label}

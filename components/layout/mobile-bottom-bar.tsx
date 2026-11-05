@@ -2,11 +2,10 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, ShoppingBag } from "lucide-react"
 import { useCart } from "@/components/cart/cart-provider"
 import { useGarage } from "@/components/garage/garage-provider"
 import { FitmentModal } from "@/components/garage/fitment-modal"
-import { TireSizeIcon, VehicleIcon, WheelRimIcon } from "@/components/garage/fitment-icons"
+import { BagIcon3D, HomeIcon3D, TireSizeIcon, VehicleIcon, WheelRimIcon } from "@/components/garage/fitment-icons"
 import { useI18n } from "@/components/i18n/i18n-provider"
 import { storePath } from "@/lib/i18n/config"
 import { cn } from "@/lib/utils"
@@ -40,7 +39,7 @@ export function MobileBottomBar() {
           )}
         >
           {isHome && <span aria-hidden="true" className="absolute inset-x-3 top-0 h-0.5 bg-primary" />}
-          <Home className="size-4" aria-hidden="true" />
+          <HomeIcon3D className="size-6" />
           <span className="max-w-[4.25rem] truncate">{t.common.home}</span>
         </Link>
 
@@ -53,7 +52,7 @@ export function MobileBottomBar() {
           )}
         >
           {isTires && <span aria-hidden="true" className="absolute inset-x-3 top-0 h-0.5 bg-primary" />}
-          <TireSizeIcon className="size-4" />
+          <TireSizeIcon className="size-6" />
           <span className="max-w-[4.25rem] truncate">{t.categories.tires.name}</span>
         </Link>
 
@@ -66,7 +65,7 @@ export function MobileBottomBar() {
           )}
         >
           {isWheels && <span aria-hidden="true" className="absolute inset-x-3 top-0 h-0.5 bg-primary" />}
-          <WheelRimIcon className="size-4" />
+          <WheelRimIcon className="size-6" />
           <span className="max-w-[4.25rem] truncate">{t.categories.wheels.name}</span>
         </Link>
 
@@ -81,7 +80,7 @@ export function MobileBottomBar() {
               )}
             >
               <span className="relative flex items-center justify-center">
-                <VehicleIcon className={cn("size-4 w-5", active && "text-primary")} />
+                <VehicleIcon className="size-6 w-8" />
                 {active && (
                   <span
                     aria-hidden="true"
@@ -102,7 +101,7 @@ export function MobileBottomBar() {
           className="relative flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground"
         >
           <span className="relative flex items-center justify-center">
-            <ShoppingBag className="size-4" aria-hidden="true" />
+            <BagIcon3D className="size-6" />
             {count > 0 && (
               <span className="absolute -right-2.5 -top-1.5 flex h-4 min-w-4 items-center justify-center bg-primary px-1 font-mono text-[9px] font-bold text-primary-foreground tabular-nums">
                 {count}

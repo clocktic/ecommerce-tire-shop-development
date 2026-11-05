@@ -23,7 +23,7 @@ type Tone = "dark" | "light"
 
 function itemClass(active: boolean, tone: Tone) {
   return cn(
-    "font-mono text-xs uppercase tracking-[0.18em] px-2 py-1 transition-colors",
+    "rounded-md font-mono text-xs uppercase tracking-[0.18em] px-2 py-1 transition-colors",
     tone === "dark"
       ? active
         ? "bg-secondary-foreground text-secondary"
