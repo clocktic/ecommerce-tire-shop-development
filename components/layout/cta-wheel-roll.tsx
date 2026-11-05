@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 
 const DELAY_MS = 110
-const DURATION_MS = 620
+const DURATION_MS = 900
 const WHEEL_SRC = "/images/parallax-wheel.webp"
 
 function findCta(target: EventTarget | null): HTMLElement | null {
