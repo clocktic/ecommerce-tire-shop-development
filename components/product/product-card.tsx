@@ -30,18 +30,18 @@ export function ProductCard({ product, store }: { product: Product; store: Store
   const { code, meta } = productCode(product, t)
 
   return (
-    <article className="group relative flex min-w-0 flex-col border border-border bg-card shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-1 hover:border-foreground">
-      <div className="relative h-36 overflow-hidden bg-white sm:h-48">
+    <article className="group relative flex min-w-0 flex-col overflow-hidden border border-border bg-card shadow-lifted lift-hover hover:border-foreground/60">
+      <div className="relative m-1.5 mb-0 h-36 overflow-hidden rounded-[var(--radius-lg)] bg-white sm:h-48">
         <Image
           src={product.images[0] || "/placeholder.svg"}
           alt={product.name}
           fill
           quality={95}
           sizes="(min-width: 1024px) 260px, (min-width: 768px) 300px, (min-width: 640px) 45vw, 50vw"
-          className="object-contain p-4 transition-transform duration-500 group-hover:scale-[1.03] sm:p-6"
+          className="object-contain p-4 transition-transform duration-700 ease-out group-hover:-rotate-6 group-hover:scale-[1.05] motion-reduce:transition-none sm:p-6"
         />
         {product.sample && (
-          <span className="absolute left-2 top-2 bg-background px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] sm:left-3 sm:top-3 sm:px-2 sm:py-1 sm:text-xs">
+          <span className="absolute left-2 top-2 bg-background px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] shadow-chip sm:left-3 sm:top-3 sm:px-2 sm:py-1 sm:text-xs">
             {t.product.demo}
           </span>
         )}
@@ -69,7 +69,7 @@ export function ProductCard({ product, store }: { product: Product; store: Store
         {t.product.euLabel && product.category === "tires" && product.tire.euLabel && (
           <EuTyreLabel label={product.tire.euLabel} text={t.product.euLabel} compact />
         )}
-        <div className="mt-auto flex flex-wrap items-end justify-between gap-1.5 border-t border-border pt-2.5 sm:gap-2 sm:pt-3">
+        <div className="mt-auto flex flex-wrap items-end justify-between gap-1.5 border-t border-border pt-2.5 transition-colors duration-300 group-hover:border-primary/50 sm:gap-2 sm:pt-3">
           <Price offer={offer} store={store} />
           <span className="text-right font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground sm:text-xs">
             {t.labels.availability[offer.availability]}

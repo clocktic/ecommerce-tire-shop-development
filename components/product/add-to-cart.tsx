@@ -58,7 +58,7 @@ export function AddToCart({ slug, name, image, priceCents, defaultQuantity, show
     <div ref={containerRef} className="flex flex-col gap-3">
       <div className="flex items-stretch gap-2">
         <div
-          className="flex items-center border border-border bg-card shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5"
+          className="flex items-center border border-border bg-card shadow-chip transition-transform duration-200 hover:-translate-y-0.5"
           role="group"
           aria-label={t.product.quantity}
         >

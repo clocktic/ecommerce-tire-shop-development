@@ -3,7 +3,9 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState, useTransition } from "react"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
+import { Icon3D, type Icon3DName } from "@/components/ui/icon-3d"
+import { PayButton } from "@/components/checkout/pay-button"
 import { useCart } from "@/components/cart/cart-provider"
 import { SummaryRows } from "@/components/cart/cart-view"
 import { useI18n } from "@/components/i18n/i18n-provider"
@@ -97,8 +99,8 @@ export function CheckoutForm() {
       }}
     >
       <div className="flex flex-col gap-8 lg:col-span-7">
-        <fieldset className="flex flex-col gap-4">
-          <legend className="label-caps mb-4">{t.contact}</legend>
+        <fieldset className="flex flex-col gap-4 rounded-xl border border-border bg-card p-4 shadow-lifted sm:p-6">
+          <SectionLegend icon="contact">{t.contact}</SectionLegend>
           <p className="text-sm text-muted-foreground">
             {session?.user ? (
               fmt(x.checkout.signedInAs, { email: session.user.email })
@@ -120,8 +122,8 @@ export function CheckoutForm() {
           <Field label={t.phone} name="phone" type="tel" autoComplete="tel" required />
         </fieldset>
 
-        <fieldset className="grid gap-4 sm:grid-cols-2">
-          <legend className="label-caps mb-4">{t.address}</legend>
+        <fieldset className="grid gap-4 sm:grid-cols-2 rounded-xl border border-border bg-card p-4 shadow-lifted sm:p-6">
+          <SectionLegend icon="address">{t.address}</SectionLegend>
           <Field label={t.firstName} name="given-name" autoComplete="given-name" required />
           <Field label={t.lastName} name="family-name" autoComplete="family-name" required />
           <div className="sm:col-span-2">
@@ -140,7 +142,7 @@ export function CheckoutForm() {
               autoComplete="country"
               required
               defaultValue={isEu ? "" : "US"}
-              className="h-12 border border-border bg-card px-3 text-sm"
+              className="h-12 border border-border bg-background px-3 text-sm transition-colors hover:border-foreground/40"
             >
               {isEu && <option value="">{t.selectCountry}</option>}
               {countries.map((c) => (
@@ -155,8 +157,8 @@ export function CheckoutForm() {
           </p>
         </fieldset>
 
-        <fieldset className="flex flex-col gap-3">
-          <legend className="label-caps mb-4">{t.payment}</legend>
+        <fieldset className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-lifted sm:p-6">
+          <SectionLegend icon="payment">{t.payment}</SectionLegend>
           <p className="text-sm leading-relaxed text-muted-foreground">
             {t.accepted}
           </p>
@@ -164,8 +166,11 @@ export function CheckoutForm() {
         </fieldset>
       </div>
 
-      <aside className="flex flex-col gap-5 border border-border bg-card p-5 lg:col-span-5 lg:self-start">
-        <h2 className="label-caps">{t.yourOrder}</h2>
+      <aside className="flex flex-col gap-5 border border-border bg-card p-5 shadow-lifted lg:col-span-5 lg:self-start sm:p-6">
+        <h2 className="flex items-center gap-3 label-caps">
+          <Icon3D name="order" size="md" />
+          {t.yourOrder}
+        </h2>
         <ul className="flex flex-col gap-2 text-sm">
           {lines.map((l) => (
             <li key={l.slug} className="flex justify-between gap-4">
@@ -205,9 +210,9 @@ export function CheckoutForm() {
         </label>
 
         {/* EU Directive 2011/83, Art. 8(2): the order button must state the obligation to pay. */}
-        <Button type="submit" size="lg" className="w-full" disabled={!accepted || pending}>
+        <PayButton pending={pending} disabled={!accepted}>
           {pending ? x.checkout.placing : t.submit}
-        </Button>
+        </PayButton>
         {failed && (
           <p role="alert" className="text-sm text-primary">
             {x.checkout.error}
@@ -248,7 +253,21 @@ function Field({ label, name, ...props }: { label: string; name: string } & Reac
       <label htmlFor={id} className="label-caps text-muted-foreground">
         {label}
       </label>
-      <input id={id} name={name} className="h-12 border border-border bg-card px-3 text-sm focus-visible:outline-2 focus-visible:outline-ring" {...props} />
+      <input
+        id={id}
+        name={name}
+        className="h-12 border border-border bg-background px-3 text-sm transition-colors hover:border-foreground/40 focus-visible:outline-2 focus-visible:outline-ring"
+        {...props}
+      />
     </div>
+  )
+}
+
+function SectionLegend({ icon, children }: { icon: Icon3DName; children: React.ReactNode }) {
+  return (
+    <legend className="label-caps float-left mb-2 flex w-full items-center gap-3 sm:col-span-2">
+      <Icon3D name={icon} size="md" />
+      {children}
+    </legend>
   )
 }

@@ -18,7 +18,7 @@ export function MemberClubShowcase() {
 
   return (
     <section aria-labelledby="member-privilege-title" className="mx-auto max-w-7xl px-4 pt-12 sm:pt-20 md:px-6">
-      <div className="relative overflow-hidden border border-border bg-secondary text-secondary-foreground shadow-[0_4px_12px_rgba(0,0,0,0.25),0_20px_50px_-12px_rgba(0,0,0,0.55)]">
+      <div className="relative overflow-hidden border border-border bg-secondary text-secondary-foreground shadow-lifted">
         {/* Caliper-red top telemetry stripe */}
         <div aria-hidden="true" className="h-1.5 w-full bg-primary" />
 

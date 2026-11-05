@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { Truck, RotateCcw, ShieldCheck } from "lucide-react"
+import { Icon3D } from "@/components/ui/icon-3d"
 import { getProductWarranty, localizeProduct, offerFor, type Product } from "@/lib/catalog"
 import { readProductBySlug, readProductsByCategory } from "@/lib/catalog/queries"
 import { CatalogUnavailable } from "@/components/catalog/catalog-unavailable"
@@ -165,16 +165,16 @@ export default async function ProductPage({ params }: { params: Params }) {
           />
           {product.sample && <p className="text-sm text-muted-foreground">{t.product.demoNote}</p>}
 
-          <ul className="flex flex-col divide-y divide-border border border-border bg-card text-sm shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)]">
-            <li className="flex items-start gap-3 p-4">
-              <Truck className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+          <ul className="flex flex-col divide-y divide-border overflow-hidden border border-border bg-card text-sm shadow-lifted">
+            <li className="group flex items-center gap-3.5 p-4 transition-colors hover:bg-muted/40">
+              <Icon3D name="shipping" size="sm" />
               <span>
                 <span className="font-semibold">{t.product.deliveryTitle}</span>
                 <span className="block text-muted-foreground">{t.product.deliveryText}</span>
               </span>
             </li>
-            <li className="flex items-start gap-3 p-4">
-              <RotateCcw className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+            <li className="group flex items-center gap-3.5 p-4 transition-colors hover:bg-muted/40">
+              <Icon3D name="returns" size="sm" />
               <span>
                 <span className="font-semibold">{t.product.returnsTitle}</span>
                 <span className="block text-muted-foreground">
@@ -185,8 +185,8 @@ export default async function ProductPage({ params }: { params: Params }) {
                 </span>
               </span>
             </li>
-            <li className="flex items-start gap-3 p-4">
-              <ShieldCheck className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+            <li className="group flex items-center gap-3.5 p-4 transition-colors hover:bg-muted/40">
+              <Icon3D name="warranty" size="sm" />
               <span>
                 <span className="font-semibold">{t.product.warrantyTitle}</span>
                 <span className="block text-muted-foreground">

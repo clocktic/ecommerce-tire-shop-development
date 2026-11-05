@@ -1,20 +1,21 @@
 import Link from "next/link"
 import { counterpart, getDictionary, storePath, type Store } from "@/lib/i18n"
 import { policyHref } from "@/lib/legal/pages"
+import { Icon3D, type Icon3DName } from "@/components/ui/icon-3d"
 
 export function MarketPromise({ store }: { store: Store }) {
   const t = getDictionary(store)
   const p = t.home.promise
   const other = counterpart(store)
   const items = [
-    { title: p.shippingTitle, value: t.policy.days, text: p.shippingText, href: policyHref(store, "shipping") },
-    { title: p.returnsTitle, value: p.returnsValue, text: p.returnsText, href: policyHref(store, "returns") },
-    { title: p.warrantyTitle, value: p.warrantyValue, text: p.warrantyText, href: policyHref(store, "warranty") },
-  ]
+    { icon: "shipping", title: p.shippingTitle, value: t.policy.days, text: p.shippingText, href: policyHref(store, "shipping") },
+    { icon: "returns", title: p.returnsTitle, value: p.returnsValue, text: p.returnsText, href: policyHref(store, "returns") },
+    { icon: "warranty", title: p.warrantyTitle, value: p.warrantyValue, text: p.warrantyText, href: policyHref(store, "warranty") },
+  ] satisfies { icon: Icon3DName; title: string; value: string; text: string; href: string }[]
 
   return (
     <section aria-labelledby="promise-title" className="mx-auto max-w-7xl px-4 pt-16 sm:pt-24 md:px-6">
-      <div className="overflow-hidden bg-secondary text-secondary-foreground shadow-[0_4px_12px_rgba(0,0,0,0.25),0_20px_50px_-12px_rgba(0,0,0,0.55)]">
+      <div className="overflow-hidden bg-secondary text-secondary-foreground shadow-lifted">
         <div className="flex flex-col gap-2 border-b border-secondary-foreground/15 p-5 sm:p-6 md:flex-row md:items-end md:justify-between md:p-8">
           <h2 id="promise-title" className="break-words font-expanded text-xl font-extrabold uppercase sm:text-2xl md:text-3xl">
             {p.title}
@@ -32,9 +33,15 @@ export function MarketPromise({ store }: { store: Store }) {
               key={item.href}
               className="@container min-w-0 overflow-hidden border-b border-secondary-foreground/15 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0"
             >
-              <Link href={item.href} className="group flex h-full min-w-0 flex-col gap-2.5 p-5 sm:gap-3 sm:p-6 lg:p-8">
-                <span className="label-caps break-words text-secondary-foreground/60">{item.title}</span>
-                <span className="max-w-full break-words text-balance font-expanded text-[clamp(0.95rem,6.8cqi,1.875rem)] font-black uppercase leading-none tracking-tight group-hover:text-primary">
+              <Link
+                href={item.href}
+                className="group flex h-full min-w-0 flex-col gap-2.5 p-5 transition-colors hover:bg-secondary-foreground/[0.04] sm:gap-3 sm:p-6 lg:p-8"
+              >
+                <span className="flex items-center gap-3">
+                  <Icon3D name={item.icon} size="md" />
+                  <span className="label-caps break-words text-secondary-foreground/60">{item.title}</span>
+                </span>
+                <span className="max-w-full break-words text-balance font-expanded text-[clamp(0.95rem,6.8cqi,1.875rem)] font-black uppercase leading-none tracking-tight transition-colors group-hover:text-primary">
                   {item.value}
                 </span>
                 <span className="text-sm leading-relaxed text-secondary-foreground/75">{item.text}</span>

@@ -42,7 +42,7 @@ export function EuTyreLabel({ label, text, compact = false }: { label: Label; te
   return (
     <section
       aria-labelledby="eu-label-title"
-      className="border border-border bg-card shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5"
+      className="border border-border bg-card shadow-chip transition-transform duration-200 hover:-translate-y-0.5"
     >
       <div className="flex items-center justify-between border-b border-border px-4 py-2">
         <h3 id="eu-label-title" className="label-caps">
@@ -105,7 +105,7 @@ function Scale({ icon, title, value, classAria }: { icon: React.ReactNode; title
             className={cn(
               "flex h-7 flex-1 items-center justify-center font-mono text-xs transition-transform duration-200 hover:-translate-y-0.5",
               c === value
-                ? "bg-primary font-semibold text-primary-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)]"
+                ? "bg-primary font-semibold text-primary-foreground shadow-chip"
                 : "bg-muted text-muted-foreground",
             )}
           >

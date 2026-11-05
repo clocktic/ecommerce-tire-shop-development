@@ -40,6 +40,10 @@
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
+
+  --shadow-lifted: var(--elev-lifted);
+  --shadow-lifted-hover: var(--elev-lifted-hover);
+  --shadow-chip: var(--elev-chip);
 }
 
 /*
@@ -67,7 +71,21 @@
   --input: oklch(0.84 0.008 250);
   --ring: oklch(0.54 0.205 27);
   --photo: oklch(0.86 0.011 255);
-  --radius: 0.25rem;
+  --radius: 0.5rem;
+
+  /* "Peeled sticker" elevation: top edge sits on the page, bottom edge lifts and casts the longer shadow. */
+  --elev-lifted:
+    inset 0 1px 0 0 oklch(1 0 0 / 0.75), 0 1px 2px oklch(0.21 0.012 255 / 0.08),
+    0 12px 18px -12px oklch(0.21 0.012 255 / 0.28), 0 28px 36px -26px oklch(0.21 0.012 255 / 0.3);
+  --elev-lifted-hover:
+    inset 0 1px 0 0 oklch(1 0 0 / 0.75), 0 2px 4px oklch(0.21 0.012 255 / 0.08),
+    0 20px 26px -14px oklch(0.21 0.012 255 / 0.32), 0 44px 54px -32px oklch(0.21 0.012 255 / 0.34);
+  --elev-chip:
+    inset 0 1px 0 0 oklch(1 0 0 / 0.35), 0 1px 2px oklch(0.21 0.012 255 / 0.1),
+    0 8px 14px -8px oklch(0.21 0.012 255 / 0.35);
+  --icon-well: oklch(0.85 0.012 262);
+  --parallax-ink: oklch(0.21 0.012 255 / 0.04);
+  --parallax-glow: oklch(0.54 0.205 27 / 0.07);
 }
 
 /* Night garage: same five roles, graphite ground. Photo wells stay light so product shots keep their studio grey. */
@@ -92,6 +110,18 @@
   --input: oklch(0.32 0.012 255);
   --ring: oklch(0.62 0.2 27);
   --photo: oklch(0.8 0.011 255);
+  --elev-lifted:
+    inset 0 1px 0 0 oklch(1 0 0 / 0.06), 0 1px 2px oklch(0 0 0 / 0.35),
+    0 14px 20px -12px oklch(0 0 0 / 0.6), 0 32px 40px -26px oklch(0 0 0 / 0.65);
+  --elev-lifted-hover:
+    inset 0 1px 0 0 oklch(1 0 0 / 0.08), 0 2px 4px oklch(0 0 0 / 0.35),
+    0 22px 28px -14px oklch(0 0 0 / 0.65), 0 48px 56px -30px oklch(0 0 0 / 0.7);
+  --elev-chip:
+    inset 0 1px 0 0 oklch(1 0 0 / 0.08), 0 1px 2px oklch(0 0 0 / 0.4),
+    0 8px 16px -8px oklch(0 0 0 / 0.6);
+  --icon-well: oklch(0.84 0.012 262);
+  --parallax-ink: oklch(0.94 0.004 250 / 0.03);
+  --parallax-glow: oklch(0.62 0.2 27 / 0.1);
 }
 
 /* System dark with no stored choice. .light opts out; no script is required to pick this up. */
@@ -117,6 +147,18 @@
     --input: oklch(0.32 0.012 255);
     --ring: oklch(0.62 0.2 27);
     --photo: oklch(0.8 0.011 255);
+    --elev-lifted:
+      inset 0 1px 0 0 oklch(1 0 0 / 0.06), 0 1px 2px oklch(0 0 0 / 0.35),
+      0 14px 20px -12px oklch(0 0 0 / 0.6), 0 32px 40px -26px oklch(0 0 0 / 0.65);
+    --elev-lifted-hover:
+      inset 0 1px 0 0 oklch(1 0 0 / 0.08), 0 2px 4px oklch(0 0 0 / 0.35),
+      0 22px 28px -14px oklch(0 0 0 / 0.65), 0 48px 56px -30px oklch(0 0 0 / 0.7);
+    --elev-chip:
+      inset 0 1px 0 0 oklch(1 0 0 / 0.08), 0 1px 2px oklch(0 0 0 / 0.4),
+      0 8px 16px -8px oklch(0 0 0 / 0.6);
+    --icon-well: oklch(0.84 0.012 262);
+    --parallax-ink: oklch(0.94 0.004 250 / 0.03);
+    --parallax-glow: oklch(0.62 0.2 27 / 0.1);
   }
 }
 
@@ -135,8 +177,20 @@
     touch-action: manipulation;
   }
 
+  /* Transparent so the fixed parallax backdrop (z -1) shows through; <html> carries bg-background. */
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply text-foreground font-sans antialiased;
+  }
+
+  /* Zero-specificity defaults: any explicit rounded-* utility still wins. */
+  :where(.shadow-lifted) {
+    border-radius: var(--radius-xl);
+  }
+  :where(.shadow-chip) {
+    border-radius: var(--radius-md);
+  }
+  :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="hidden"]), select, textarea) {
+    border-radius: var(--radius-md);
   }
 }
 
@@ -154,6 +208,160 @@
   /* nowrap screen-reader text otherwise widens the page, worst in longer languages. */
   .sr-only {
     clip-path: inset(50%);
+  }
+}
+
+/* Interactive card: lifts on hover, deepening the peeled-edge shadow. */
+@utility lift-hover {
+  transition:
+    translate 300ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 300ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    border-color 200ms ease;
+  &:hover {
+    translate: 0 -4px;
+    box-shadow: var(--elev-lifted-hover);
+  }
+  &:active {
+    translate: 0 -1px;
+  }
+}
+
+/* Light sweep across primary buttons, like light running along a polished rim. */
+@utility btn-sheen {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(105deg, transparent 35%, oklch(1 0 0 / 0.22) 50%, transparent 65%);
+    translate: -110% 0;
+    transition: translate 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  &:hover::after {
+    translate: 110% 0;
+  }
+}
+
+/* ---------- Parallax backdrop ---------- */
+.parallax-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.parallax-layer {
+  position: absolute;
+  inset: -5% 0 -45% 0;
+  will-change: transform;
+}
+/* Directional tread blocks, tinted by the theme ink through a mask. */
+.parallax-tread {
+  background-color: var(--parallax-ink);
+  mask-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='40' viewBox='0 0 64 40'%3E%3Cpath d='M4 30 18 14h8L12 30zM38 30l14-16h8L46 30z' fill='%23000'/%3E%3Cpath d='M28 10h8v4h-8z' fill='%23000'/%3E%3C/svg%3E"),
+    linear-gradient(to bottom, #000 0%, #000 35%, transparent 75%);
+  mask-composite: intersect;
+  mask-size: 64px 40px, 100% 100%;
+  mask-repeat: repeat, no-repeat;
+}
+.parallax-glow {
+  background:
+    radial-gradient(40rem 26rem at 88% 4%, var(--parallax-glow), transparent 70%),
+    radial-gradient(34rem 24rem at 4% 58%, var(--parallax-ink), transparent 70%);
+}
+
+@keyframes parallax-drift {
+  to {
+    transform: translate3d(0, var(--parallax-shift, -10vh), 0);
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .parallax-layer {
+      animation: parallax-drift linear both;
+      animation-timeline: scroll(root block);
+    }
+    .parallax-tread {
+      --parallax-shift: -30vh;
+    }
+    .parallax-glow {
+      --parallax-shift: -12vh;
+    }
+  }
+}
+
+/* ---------- Pay button: a wheel rolls the fill from start to finish ---------- */
+.pay-button:disabled:not([data-pending]) {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.pay-fill {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  z-index: -1;
+  width: 0;
+  background: linear-gradient(90deg, oklch(0 0 0 / 0.1), oklch(0 0 0 / 0.26));
+}
+.pay-wheel {
+  position: absolute;
+  top: 50%;
+  left: 0.75rem;
+  translate: 0 -50%;
+  transition: rotate 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.pay-button:hover:not(:disabled) .pay-wheel {
+  rotate: 0.5turn;
+}
+.pay-button:active:not(:disabled) .pay-wheel {
+  rotate: 0.75turn;
+  transition-duration: 200ms;
+}
+.pay-button[data-pending] .pay-fill {
+  animation: pay-fill 1.6s cubic-bezier(0.45, 0, 0.2, 1) infinite;
+}
+.pay-button[data-pending] .pay-wheel {
+  animation: pay-roll 1.6s cubic-bezier(0.45, 0, 0.2, 1) infinite;
+}
+@keyframes pay-fill {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+@keyframes pay-roll {
+  from {
+    left: 0.75rem;
+    rotate: 0turn;
+  }
+  to {
+    left: calc(100% - 2.25rem);
+    rotate: 2.5turn;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-sheen::after,
+  .pay-wheel {
+    transition: none;
+  }
+  .pay-button[data-pending] .pay-fill,
+  .pay-button[data-pending] .pay-wheel {
+    animation: none;
+  }
+  .pay-button[data-pending] .pay-fill {
+    width: 100%;
+  }
+  .lift-hover:hover {
+    translate: none;
   }
 }
 

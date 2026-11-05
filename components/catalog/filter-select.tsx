@@ -26,7 +26,7 @@ export function FilterSelect({
           id={id}
           name={name}
           defaultValue={value ?? ""}
-          className="h-10 w-full appearance-none border border-border bg-card pl-3 pr-8 font-mono text-xs shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-ring sm:h-12 sm:pr-9 sm:text-sm"
+          className="h-10 w-full appearance-none border border-border bg-card pl-3 pr-8 font-mono text-xs shadow-chip transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-ring sm:h-12 sm:pr-9 sm:text-sm"
         >
           <option value="">{any}</option>
           {options.map((o) => (

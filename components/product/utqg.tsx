@@ -12,7 +12,7 @@ export function Utqg({ grades, text }: { grades: UtqgGrades; text: Text }) {
   return (
     <section
       aria-labelledby="utqg-title"
-      className="border border-border bg-card shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5"
+      className="border border-border bg-card shadow-chip transition-transform duration-200 hover:-translate-y-0.5"
     >
       <div className="flex items-center justify-between border-b border-border px-4 py-2">
         <h3 id="utqg-title" className="label-caps">

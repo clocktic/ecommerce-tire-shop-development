@@ -27,7 +27,7 @@ export function SidewallDecoder({ t }: { t: Dictionary }) {
           </div>
         </div>
 
-        <ol className="grid min-w-0 grid-cols-2 border-l border-t border-border bg-card/50 shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] sm:grid-cols-3 lg:col-span-8 lg:grid-cols-6">
+        <ol className="grid min-w-0 grid-cols-2 overflow-hidden border-l border-t border-border bg-card/50 shadow-lifted sm:grid-cols-3 lg:col-span-8 lg:grid-cols-6">
           {d.parts.map((p, i) => (
             <li key={CODES[i]} className="flex min-w-0 flex-col gap-2 overflow-hidden border-b border-r border-border p-3 transition-transform duration-200 hover:-translate-y-0.5 sm:gap-3 sm:p-4">
               <div className="flex items-baseline justify-between gap-2">

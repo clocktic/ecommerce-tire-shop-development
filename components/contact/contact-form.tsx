@@ -1,5 +1,6 @@
 "use client"
 
+import { Icon3D } from "@/components/ui/icon-3d"
 import { useActionState } from "react"
 import { Button } from "@/components/ui/button"
 import { useI18n } from "@/components/i18n/i18n-provider"
@@ -15,7 +16,7 @@ export function ContactForm() {
 
   if (state.status === "sent") {
     return (
-      <p role="status" className="border border-border bg-card p-6 leading-relaxed">
+      <p role="status" className="border border-border bg-card p-6 leading-relaxed shadow-lifted">
         {c.sent}
       </p>
     )
@@ -24,9 +25,12 @@ export function ContactForm() {
   return (
     <form
       action={action}
-      className="flex flex-col gap-4 border border-border bg-card p-6 shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)]"
+      className="flex flex-col gap-4 border border-border bg-card p-6 shadow-lifted"
     >
-      <h2 className="label-caps">{c.title}</h2>
+      <h2 className="flex items-center gap-3 label-caps">
+        <Icon3D name="contact" size="md" />
+        {c.title}
+      </h2>
       <input type="hidden" name="market" value={store.market} />
       <input type="hidden" name="lang" value={store.lang} />
       <div aria-hidden="true" className="hidden">

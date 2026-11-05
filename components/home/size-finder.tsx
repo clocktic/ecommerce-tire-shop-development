@@ -62,7 +62,7 @@ export function SizeFinder() {
         }
         submit(size)
       }}
-      className="relative flex flex-col gap-4 border border-foreground/80 bg-card p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_20px_50px_-12px_rgba(0,0,0,0.55)] sm:gap-5 sm:p-5 md:p-7"
+      className="relative flex flex-col gap-4 border border-foreground/80 bg-card p-4 shadow-lifted sm:gap-5 sm:p-5 md:p-7"
       aria-labelledby="size-finder-title"
     >
       <CornerMarks />
@@ -78,7 +78,7 @@ export function SizeFinder() {
           trigger={
             <button
               type="button"
-              className="inline-flex items-center gap-1.5 border border-border bg-muted/40 px-2.5 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-primary hover:text-primary"
+              className="inline-flex items-center gap-1.5 border border-border bg-muted/40 px-2.5 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5 hover:border-primary hover:text-primary"
             >
               <VehicleIcon className="size-4 w-5 text-primary" />
               {g.vehicleTab}
@@ -153,7 +153,7 @@ export function SizeFinder() {
             autoComplete="off"
             aria-invalid={!!error}
             aria-describedby={error ? "typed-size-error" : undefined}
-            className="h-11 w-full border border-border bg-background px-2.5 font-mono text-xs uppercase shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-ring sm:h-12 sm:px-3 sm:text-sm"
+            className="h-11 w-full border border-border bg-background px-2.5 font-mono text-xs uppercase shadow-chip transition-transform duration-200 hover:-translate-y-0.5 placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-ring sm:h-12 sm:px-3 sm:text-sm"
           />
         </div>
         <Button type="submit" size="lg" className="h-11 shrink-0 px-4 sm:h-12 sm:min-w-44 sm:px-6">
@@ -196,7 +196,7 @@ function Segment({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          "h-12 w-full appearance-none border border-border bg-background px-2.5 font-mono text-base font-semibold shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 sm:px-3",
+          "h-12 w-full appearance-none border border-border bg-background px-2.5 font-mono text-base font-semibold shadow-chip transition-transform duration-200 hover:-translate-y-0.5 sm:px-3",
           "focus-visible:outline-2 focus-visible:outline-ring",
         )}
       >

@@ -48,7 +48,7 @@ export default async function AccountPage({ params, searchParams }: { params: Pa
             <p className="leading-relaxed text-muted-foreground">{x.account.lead}</p>
           </header>
 
-          <div className="relative overflow-hidden border border-primary/45 bg-secondary p-4 text-secondary-foreground shadow-[0_4px_12px_rgba(0,0,0,0.22)]">
+          <div className="relative overflow-hidden border border-primary/45 bg-secondary p-4 text-secondary-foreground shadow-lifted">
             <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1 bg-primary" />
             <div className="flex items-start justify-between gap-3 pt-1">
               <div className="flex flex-col gap-1">
