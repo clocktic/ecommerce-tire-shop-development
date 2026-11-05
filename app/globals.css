@@ -275,55 +275,39 @@
     radial-gradient(34rem 24rem at 4% 58%, var(--parallax-ink), transparent 70%);
 }
 
-/* Near plane: a tire seen head-on at the edge, its tread rolls with scroll. */
-.parallax-tire {
+/* Near plane: one large wheel, centered so both sides are symmetric. Rotation is driven from JS. */
+.parallax-wheel {
+  --wheel-size: max(150vw, 92vh);
   position: absolute;
-  top: -6vh;
-  bottom: -6vh;
-  right: clamp(-3rem, -2vw, -1rem);
-  width: clamp(150px, 20vw, 340px);
-  perspective: 900px;
-  opacity: 0.22;
+  left: 50%;
+  top: 56%;
+  width: var(--wheel-size);
+  height: var(--wheel-size);
+  margin-left: calc(var(--wheel-size) / -2);
+  margin-top: calc(var(--wheel-size) / -2);
+  opacity: 0.1;
+  mask-image: radial-gradient(closest-side, #000 62%, rgb(0 0 0 / 0.55) 82%, transparent 100%);
 }
-.dark .parallax-tire {
-  opacity: 0.38;
+.dark .parallax-wheel {
+  opacity: 0.16;
 }
-.parallax-tire-band {
-  position: absolute;
-  inset: 0;
-  border-radius: 2.5rem;
-  background-image: url("/images/tread.webp");
-  background-size: 100% auto;
-  background-repeat: repeat-y;
-  background-position: 50% 0;
-  transform: rotateY(-22deg);
-  transform-origin: right center;
-  mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+@media (min-width: 768px) {
+  .parallax-wheel {
+    --wheel-size: max(112vw, 120vh);
+    top: 62%;
+  }
 }
-/* Cylindrical shading so the flat photo reads as a curved tire surface. */
-.parallax-tire-band::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(
-    to right,
-    rgb(0 0 0 / 0.75),
-    rgb(0 0 0 / 0.15) 22%,
-    rgb(255 255 255 / 0.08) 45%,
-    rgb(0 0 0 / 0.1) 70%,
-    rgb(0 0 0 / 0.8)
-  );
+.parallax-wheel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  will-change: transform;
+  user-select: none;
 }
 
 @keyframes parallax-drift {
   to {
     transform: translate3d(0, var(--parallax-shift, -10vh), 0);
-  }
-}
-@keyframes parallax-roll {
-  to {
-    background-position: 50% -140vh;
   }
 }
 
@@ -338,10 +322,6 @@
     }
     .parallax-glow {
       --parallax-shift: -12vh;
-    }
-    .parallax-tire-band {
-      animation: parallax-roll linear both;
-      animation-timeline: scroll(root block);
     }
   }
 }
