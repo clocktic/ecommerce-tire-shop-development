@@ -1,99 +1,117 @@
+import { Suspense } from "react"
 import Image from "next/image"
-import { ExternalLink } from "lucide-react"
+import { ArrowUpRight } from "lucide-react"
+import { ScamAdviserLogo } from "@/components/layout/scamadviser-logo"
 import { COMPANY } from "@/lib/company"
+import { getCheckShopScore } from "@/lib/trust-scores"
 
-type TrustBadge = {
-  name: string
-  href: string
-  logo: React.ReactNode
-  verdict: string
-  score: number
-  barClass: string
-  verdictClass: string
+const cardClass =
+  "group flex h-full w-48 flex-col justify-between gap-2 rounded-md border border-secondary-foreground/15 bg-secondary-foreground/[0.04] px-3 py-2 transition-colors hover:border-secondary-foreground/35 hover:bg-secondary-foreground/[0.08] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+
+function CardHeader({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="flex h-4 items-center justify-between gap-2">
+      {children}
+      <ArrowUpRight
+        aria-hidden="true"
+        className="size-3.5 shrink-0 text-secondary-foreground/40 transition-colors group-hover:text-secondary-foreground"
+      />
+    </span>
+  )
+}
+
+function CheckShopMark() {
+  return (
+    <span className="flex items-center gap-1">
+      <Image src="/images/trust/checkshop.svg" alt="" width={16} height={16} className="size-4" />
+      <span className="text-[13px] font-bold leading-none tracking-tight text-secondary-foreground">
+        CheckShop<span className="text-emerald-500">.eu</span>
+      </span>
+    </span>
+  )
+}
+
+function ScoreBar({ score }: { score: number | null }) {
+  return (
+    <span aria-hidden="true" className="relative h-1 w-full overflow-hidden rounded-full bg-secondary-foreground/15">
+      {score !== null ? (
+        <span
+          className="absolute inset-y-0 left-0 rounded-full bg-emerald-500"
+          style={{ width: `${score}%` }}
+        />
+      ) : null}
+    </span>
+  )
+}
+
+async function CheckShopBadge() {
+  const result = await getCheckShopScore()
+  return <CheckShopCard score={result?.score ?? null} verdict={result?.verdict ?? null} />
+}
+
+function CheckShopCard({ score, verdict }: { score: number | null; verdict: string | null }) {
+  const label =
+    score !== null ? `CheckShop.eu Trust Score ${score}/100, ${verdict}` : "CheckShop.eu trust report"
+  return (
+    <a
+      href={`https://checkshop.eu/shop/${COMPANY.domain}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`${label} (opens in a new tab)`}
+      className={cardClass}
+    >
+      <CardHeader>
+        <CheckShopMark />
+      </CardHeader>
+      <span className="flex items-baseline justify-between gap-2">
+        <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-emerald-500">
+          {verdict ?? "Trust Score"}
+        </span>
+        <span className="tabular-nums leading-none text-secondary-foreground">
+          <span className="text-lg font-bold">{score ?? "—"}</span>
+          <span className="text-[11px] text-secondary-foreground/60">/100</span>
+        </span>
+      </span>
+      <ScoreBar score={score} />
+    </a>
+  )
 }
 
 /*
- * Scores are copied from each service's public report for the domain and do
- * not update automatically — refresh them when the services re-score the shop.
+ * ScamAdviser forbids sites from displaying its score or seal (it flags such
+ * badges as fake) and offers no public score API, so this card only links to
+ * the live report.
  */
-const BADGES: TrustBadge[] = [
-  {
-    name: "ScamAdviser",
-    href: `https://www.scamadviser.com/check-website/${COMPANY.domain}`,
-    logo: (
-      <Image
-        src="/images/trust/scamadviser.svg"
-        alt=""
-        width={112}
-        height={22}
-        className="h-5 w-auto"
-      />
-    ),
-    verdict: "Very likely safe",
-    score: 71,
-    barClass: "bg-gradient-to-r from-lime-500 to-green-600",
-    verdictClass: "text-green-700",
-  },
-  {
-    name: "CheckShop.eu",
-    href: `https://checkshop.eu/shop/${COMPANY.domain}`,
-    logo: (
-      <span className="flex items-center gap-1.5">
-        <Image src="/images/trust/checkshop.svg" alt="" width={20} height={20} className="size-5" />
-        <span className="font-sans text-[15px] font-bold leading-none tracking-tight text-neutral-900">
-          CheckShop<span className="text-emerald-600">.eu</span>
-        </span>
+function ScamAdviserCard() {
+  return (
+    <a
+      href={`https://www.scamadviser.com/check-website/${COMPANY.domain}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Check our live rating on ScamAdviser (opens in a new tab)"
+      className={cardClass}
+    >
+      <CardHeader>
+        <ScamAdviserLogo className="h-4 w-auto text-secondary-foreground" />
+      </CardHeader>
+      <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-secondary-foreground/70 transition-colors group-hover:text-secondary-foreground">
+        Check our live rating
       </span>
-    ),
-    verdict: "Excellent",
-    score: 93,
-    barClass: "bg-gradient-to-r from-emerald-400 to-emerald-600",
-    verdictClass: "text-emerald-700",
-  },
-]
+    </a>
+  )
+}
 
 export function TrustBadges({ ariaLabel }: { ariaLabel: string }) {
   return (
-    <ul aria-label={ariaLabel} className="flex flex-wrap gap-3">
-      {BADGES.map((badge) => (
-        <li key={badge.name}>
-          <a
-            href={badge.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`${badge.name} Trust Score ${badge.score}/100 — ${badge.verdict} (opens in a new tab)`}
-            className="group flex w-60 flex-col gap-2.5 rounded-lg bg-white px-3.5 py-3 text-neutral-900 shadow-sm ring-1 ring-black/5 transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-          >
-            <span className="flex h-5 items-center justify-between gap-2">
-              {badge.logo}
-              <ExternalLink
-                aria-hidden="true"
-                className="size-3.5 shrink-0 text-neutral-400 transition-colors group-hover:text-neutral-700"
-              />
-            </span>
-
-            <span className="flex items-end justify-between gap-2">
-              <span className="flex flex-col">
-                <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-neutral-500">
-                  Trust Score
-                </span>
-                <span className={`text-xs font-semibold ${badge.verdictClass}`}>{badge.verdict}</span>
-              </span>
-              <span className="flex items-baseline font-sans tabular-nums leading-none">
-                <span className="text-2xl font-bold">{badge.score}</span>
-                <span className="text-xs font-medium text-neutral-500">/100</span>
-              </span>
-            </span>
-
-            <span aria-hidden="true" className="relative h-1.5 w-full overflow-hidden rounded-full bg-neutral-200">
-              <span
-                className={`absolute inset-y-0 left-0 rounded-full ${badge.barClass}`}
-                style={{ width: `${badge.score}%` }}
-              />
-            </span>
-          </a>
-        </li>
-      ))}
+    <ul aria-label={ariaLabel} className="flex flex-wrap items-stretch gap-2">
+      <li>
+        <ScamAdviserCard />
+      </li>
+      <li>
+        <Suspense fallback={<CheckShopCard score={null} verdict={null} />}>
+          <CheckShopBadge />
+        </Suspense>
+      </li>
     </ul>
   )
 }
