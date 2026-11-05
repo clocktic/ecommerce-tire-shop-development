@@ -5,9 +5,9 @@ import nodemailer from "nodemailer"
 import { COMPANY } from "@/lib/company"
 import { formatPrice, type Market } from "@/lib/markets"
 
-const DEFAULT_SMTP_HOST = "smtp.zoho.com"
+const DEFAULT_SMTP_HOST = "smtppro.zoho.com"
 const DEFAULT_SMTP_PORT = 465
-const DEFAULT_IMAP_HOST = "imap.zoho.com"
+const DEFAULT_IMAP_HOST = "imappro.zoho.com"
 const DEFAULT_IMAP_PORT = 993
 
 export function getSmtpConfig() {

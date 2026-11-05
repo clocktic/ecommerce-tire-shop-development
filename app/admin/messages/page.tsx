@@ -91,7 +91,7 @@ export default async function AdminMessagesPage() {
           <h2 className="font-expanded text-lg font-extrabold uppercase">
             Входящие ящика {COMPANY.email} (IMAP Zoho)
           </h2>
-          <span className="font-mono text-xs text-muted-foreground">imap.zoho.com:993</span>
+          <span className="font-mono text-xs text-muted-foreground">imappro.zoho.com:993 · smtppro.zoho.com:465</span>
         </div>
         {!imapInbox.configured ? (
           <p className="border border-border bg-card p-5 text-sm text-muted-foreground">
