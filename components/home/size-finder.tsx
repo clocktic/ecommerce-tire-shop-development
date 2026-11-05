@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { useI18n } from "@/components/i18n/i18n-provider"
 import { useGarage } from "@/components/garage/garage-provider"
 import { FitmentModal } from "@/components/garage/fitment-modal"
-import { TireSizeIcon, VehicleIcon } from "@/components/garage/fitment-icons"
+import { Icon3D } from "@/components/ui/icon-3d"
 import { TIRE_OPTIONS } from "@/lib/catalog"
 import { POPULAR_TIRE_SIZES } from "@/lib/catalog/vehicles"
 import { storePath } from "@/lib/i18n/config"
@@ -62,13 +62,13 @@ export function SizeFinder() {
         }
         submit(size)
       }}
-      className="relative flex flex-col gap-4 border border-foreground/80 bg-card p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_20px_50px_-12px_rgba(0,0,0,0.55)] sm:gap-5 sm:p-5 md:p-7"
+      className="relative flex flex-col gap-4 border border-foreground/80 bg-card p-4 shadow-lifted sm:gap-5 sm:p-5 md:p-7"
       aria-labelledby="size-finder-title"
     >
       <CornerMarks />
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
         <div className="flex items-center gap-2">
-          <TireSizeIcon className="size-5 text-primary" />
+          <Icon3D name="tiresize" size="sm" />
           <h2 id="size-finder-title" className="label-caps">
             {f.title}
           </h2>
@@ -78,9 +78,9 @@ export function SizeFinder() {
           trigger={
             <button
               type="button"
-              className="inline-flex items-center gap-1.5 border border-border bg-muted/40 px-2.5 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-primary hover:text-primary"
+              className="group inline-flex items-center gap-2 rounded-md border border-border bg-muted/40 py-1 pl-1 pr-2.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5 hover:border-primary hover:text-primary"
             >
-              <VehicleIcon className="size-4 w-5 text-primary" />
+              <Icon3D name="vehicle" size="xs" />
               {g.vehicleTab}
             </button>
           }
@@ -153,7 +153,7 @@ export function SizeFinder() {
             autoComplete="off"
             aria-invalid={!!error}
             aria-describedby={error ? "typed-size-error" : undefined}
-            className="h-11 w-full border border-border bg-background px-2.5 font-mono text-xs uppercase shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-ring sm:h-12 sm:px-3 sm:text-sm"
+            className="h-11 w-full border border-border bg-background px-2.5 font-mono text-xs uppercase shadow-chip transition-transform duration-200 hover:-translate-y-0.5 placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-ring sm:h-12 sm:px-3 sm:text-sm"
           />
         </div>
         <Button type="submit" size="lg" className="h-11 shrink-0 px-4 sm:h-12 sm:min-w-44 sm:px-6">
@@ -196,7 +196,7 @@ function Segment({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          "h-12 w-full appearance-none border border-border bg-background px-2.5 font-mono text-base font-semibold shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 sm:px-3",
+          "h-12 w-full appearance-none border border-border bg-background px-2.5 font-mono text-base font-semibold shadow-chip transition-transform duration-200 hover:-translate-y-0.5 sm:px-3",
           "focus-visible:outline-2 focus-visible:outline-ring",
         )}
       >

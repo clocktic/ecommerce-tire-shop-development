@@ -24,7 +24,7 @@ export function ProductGallery({ images, alt, badge }: { images: string[]; alt: 
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="relative h-64 overflow-hidden border border-border bg-white shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] sm:h-72 md:h-[340px] lg:h-[380px]">
+      <div className="relative h-64 overflow-hidden border border-border bg-white shadow-lifted sm:h-72 md:h-[340px] lg:h-[380px]">
         <Image
           src={src}
           alt={photos.length > 1 ? `${alt}, ${currentIndex + 1} / ${photos.length}` : alt}
@@ -35,7 +35,7 @@ export function ProductGallery({ images, alt, badge }: { images: string[]; alt: 
           className="object-contain p-6 sm:p-9 lg:p-11"
         />
         {badge && (
-          <span className="absolute left-3 top-3 bg-background px-2 py-1 font-mono text-xs uppercase tracking-[0.18em] shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] sm:left-4 sm:top-4">
+          <span className="rounded-md absolute left-3 top-3 bg-background px-2 py-1 font-mono text-xs uppercase tracking-[0.18em] shadow-chip sm:left-4 sm:top-4">
             {badge}
           </span>
         )}
@@ -57,7 +57,7 @@ export function ProductGallery({ images, alt, badge }: { images: string[]; alt: 
             >
               <ChevronRight className="size-4" aria-hidden="true" />
             </button>
-            <span className="absolute bottom-2.5 right-2.5 border border-border bg-background/90 px-2 py-0.5 font-mono text-[10px] font-semibold tabular-nums text-foreground">
+            <span className="rounded-md absolute bottom-2.5 right-2.5 border border-border bg-background/90 px-2 py-0.5 font-mono text-[10px] font-semibold tabular-nums text-foreground">
               {currentIndex + 1} / {photos.length}
             </span>
           </>

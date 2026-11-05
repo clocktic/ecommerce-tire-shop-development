@@ -42,17 +42,17 @@ export function TireModelCard({ variants, store }: { variants: TireCardVariant[]
   const href = storePath(store, `/product/${product.slug}`)
 
   return (
-    <article className="flex min-w-0 flex-col border border-border bg-card shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-1 hover:border-foreground">
-      <Link href={href} className="group relative h-36 overflow-hidden bg-white sm:h-48">
+    <article className="group flex min-w-0 flex-col overflow-hidden border border-border bg-card shadow-lifted lift-hover hover:border-foreground">
+      <Link href={href} className="relative m-1.5 mb-0 h-36 overflow-hidden rounded-[var(--radius-lg)] bg-white sm:h-48">
         <Image
           src={product.images[0]}
           alt={`${product.brand} ${product.tire.model || product.name}`}
           fill
           quality={95}
           sizes="(min-width:1024px) 260px,(min-width:768px) 300px,(min-width:640px) 45vw,90vw"
-          className="object-contain p-5 transition-transform duration-500 group-hover:scale-[1.03] sm:p-6"
+          className="object-contain p-5 transition-transform duration-700 ease-out group-hover:-rotate-6 group-hover:scale-[1.05] motion-reduce:transition-none sm:p-6"
         />
-        <span className="absolute right-2.5 top-2.5 border border-border/80 bg-background/90 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-foreground backdrop-blur-xs">
+        <span className="absolute right-2.5 top-2.5 rounded-sm border border-border/80 bg-background/90 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-foreground backdrop-blur-xs">
           {t.labels.season[product.tire.season]}
         </span>
       </Link>

@@ -116,9 +116,9 @@ export function ProductFitmentBadge({
   if (!active) {
     if (compact) return null
     return (
-      <div className="flex flex-wrap items-center justify-between gap-3 border border-border bg-muted/30 p-3.5 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border border-border bg-muted/30 p-3.5 shadow-chip transition-transform duration-200 hover:-translate-y-0.5">
         <div className="flex items-center gap-3">
-          <span className="flex size-9 shrink-0 items-center justify-center border border-primary/30 bg-primary/10 text-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)]">
+          <span className="flex size-9 shrink-0 items-center justify-center border border-primary/30 bg-primary/10 text-foreground shadow-chip">
             <VehicleIcon className="size-6 w-8 text-primary" />
           </span>
           <div className="flex flex-col">
@@ -206,7 +206,7 @@ export function ProductFitmentBadge({
   return (
     <div
       className={cn(
-        "flex flex-wrap items-center justify-between gap-3 border p-3.5 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5",
+        "flex flex-wrap items-center justify-between gap-3 border p-3.5 shadow-chip transition-transform duration-200 hover:-translate-y-0.5",
         exactMatch || altVehicleMatch
           ? "border-primary bg-primary/5"
           : "border-border bg-muted/40",
@@ -215,7 +215,7 @@ export function ProductFitmentBadge({
       <div className="flex min-w-0 items-center gap-3">
         <span
           className={cn(
-            "flex size-9 shrink-0 items-center justify-center border shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)]",
+            "flex size-9 shrink-0 items-center justify-center border shadow-chip",
             exactMatch || altVehicleMatch
               ? "border-primary bg-primary/15 text-primary"
               : "border-border bg-muted/60 text-muted-foreground",
@@ -261,7 +261,7 @@ export function ProductFitmentBadge({
         {!exactMatch && (
           <Link
             href={matchingHref}
-            className="border border-primary bg-primary px-2.5 py-1.5 font-mono text-[11px] font-semibold uppercase text-primary-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:opacity-90"
+            className="rounded-md border border-primary bg-primary px-2.5 py-1.5 font-mono text-[11px] font-semibold uppercase text-primary-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5 hover:opacity-90"
           >
             {copy.shopMatching}
           </Link>

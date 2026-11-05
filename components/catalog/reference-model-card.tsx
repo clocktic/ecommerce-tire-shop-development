@@ -8,7 +8,7 @@ import { storePath, type Store } from '@/lib/i18n'
 
 export function ReferenceModelCard({ model, store }: { model: ReferenceModel; store: Store }) {
   const t = tireReferenceCopy(store.lang, store.market)
-  return <article className="group flex flex-col overflow-hidden border border-border bg-card shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-1 hover:border-primary">
+  return <article className="group flex flex-col overflow-hidden border border-border bg-card shadow-lifted lift-hover hover:border-primary">
       <div className="relative h-44 overflow-hidden bg-white sm:h-48">
         <Image src={model.images[0]} alt={`${model.brand} ${model.name}`} fill quality={95} sizes="(max-width: 640px) 90vw, (max-width: 1024px) 300px, 260px" className="object-contain p-6 transition-transform duration-300 motion-safe:group-hover:scale-105" />
       </div>

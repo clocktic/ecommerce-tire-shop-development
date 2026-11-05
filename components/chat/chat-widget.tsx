@@ -89,7 +89,7 @@ export function ChatWidget() {
       {open && (
         <section
           aria-label={x.chat.title}
-          className="flex h-[min(26rem,calc(100dvh-9rem))] w-[min(22rem,calc(100vw-1.5rem))] flex-col border border-border bg-card text-card-foreground shadow-[0_4px_12px_rgba(0,0,0,0.25),0_20px_50px_-12px_rgba(0,0,0,0.55)] md:h-[min(32rem,calc(100dvh-7rem))]"
+          className="flex h-[min(26rem,calc(100dvh-9rem))] w-[min(22rem,calc(100vw-1.5rem))] flex-col overflow-hidden border border-border bg-card text-card-foreground shadow-lifted md:h-[min(32rem,calc(100dvh-7rem))]"
         >
           <header className="flex items-center justify-between gap-3 bg-secondary px-4 py-3 text-secondary-foreground">
             <div className="flex min-w-0 flex-col">
@@ -150,7 +150,7 @@ export function ChatWidget() {
               <button
                 type="submit"
                 disabled={sending || !nameInput.trim() || !emailInput.trim()}
-                className="flex h-10 w-full items-center justify-center bg-primary px-4 text-sm font-semibold uppercase tracking-wide text-primary-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-50"
+                className="flex h-10 w-full items-center justify-center bg-primary px-4 text-sm font-semibold uppercase tracking-wide text-primary-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-50"
               >
                 {x.chat.open}
               </button>
@@ -206,7 +206,7 @@ export function ChatWidget() {
                   type="submit"
                   disabled={sending || !draft.trim()}
                   aria-label={x.chat.send}
-                  className="flex size-10 shrink-0 items-center justify-center bg-primary text-primary-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-50"
+                  className="flex size-10 shrink-0 items-center justify-center bg-primary text-primary-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-50"
                 >
                   <Send className="size-4" aria-hidden="true" />
                 </button>
@@ -226,7 +226,7 @@ export function ChatWidget() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-label={open ? x.chat.close : x.chat.open}
-        className="flex size-11 items-center justify-center gap-2 border border-secondary-foreground/15 bg-secondary p-0 text-sm font-semibold uppercase tracking-wide text-secondary-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary hover:text-primary-foreground sm:size-auto sm:px-4 sm:py-3"
+        className="flex size-11 items-center justify-center gap-2 border border-secondary-foreground/15 bg-secondary p-0 text-sm font-semibold uppercase tracking-wide text-secondary-foreground shadow-chip transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary hover:text-primary-foreground sm:size-auto sm:px-4 sm:py-3"
       >
         {open ? <X className="size-5" aria-hidden="true" /> : <MessageCircle className="size-5" aria-hidden="true" />}
         <span className="hidden sm:inline">{open ? x.chat.close : x.chat.open}</span>

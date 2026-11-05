@@ -8,6 +8,7 @@ import { useI18n } from "@/components/i18n/i18n-provider"
 import { useGarage } from "@/components/garage/garage-provider"
 import { FitmentModal } from "@/components/garage/fitment-modal"
 import { BrakeDiscIcon, TireSizeIcon, VehicleIcon, WheelRimIcon } from "@/components/garage/fitment-icons"
+import { Icon3D } from "@/components/ui/icon-3d"
 import { findVehicleById, type FactorySize } from "@/lib/catalog/vehicles"
 import type { Category } from "@/lib/catalog/types"
 import { storePath } from "@/lib/i18n/config"
@@ -53,9 +54,9 @@ export function FitmentBanner({
 
   if (!active && !urlVehicle) {
     return (
-      <div className="mt-6 hidden flex-wrap items-center justify-between gap-3 border border-border bg-muted/25 px-4 py-3 shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] md:flex">
+      <div className="mt-6 hidden flex-wrap items-center justify-between gap-3 border border-border bg-muted/25 px-4 py-3 shadow-lifted md:flex">
         <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
-          <span className="flex size-8 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 text-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] sm:size-9">
+          <span className="flex size-8 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 text-foreground shadow-chip sm:size-9">
             {category === "wheels" ? <VehicleIcon className="size-5 w-7 sm:size-6 sm:w-8" /> : <TireSizeIcon className="size-5 sm:size-6" />}
           </span>
           <div className="flex min-w-0 flex-col">
@@ -155,24 +156,18 @@ export function FitmentBanner({
   return (
     <div
       className={cn(
-        "mt-6 flex flex-col gap-3 border px-4 py-3.5 shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] transition-colors",
+        "mt-6 flex flex-col gap-3 border px-4 py-3.5 shadow-lifted transition-colors",
         isFilteredByFitment ? "border-primary bg-primary/5" : "border-primary/40 bg-muted/30",
       )}
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
-          <span className="flex size-10 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 text-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5">
-            {vehicle || active?.kind === "vehicle" ? (
-              <VehicleIcon className="size-7 w-9" />
-            ) : (
-              <TireSizeIcon className="size-7" />
-            )}
-          </span>
+          <Icon3D name={vehicle || active?.kind === "vehicle" ? "vehicle" : "tiresize"} className="size-10" />
           <div className="flex min-w-0 flex-col gap-0.5">
             <div className="flex flex-wrap items-center gap-2">
               <span className="truncate font-semibold">{label}</span>
               {isFilteredByFitment && (
-                <span className="inline-flex items-center gap-1 bg-primary px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase text-primary-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5">
+                <span className="rounded-md inline-flex items-center gap-1 bg-primary px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase text-primary-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5">
                   <Check aria-hidden="true" className="size-3" />
                   {g.active} ({matchingCount})
                 </span>
@@ -192,7 +187,7 @@ export function FitmentBanner({
           {!isFilteredByFitment ? (
             <Link
               href={applyFilterHref}
-              className="inline-flex h-9 items-center gap-1.5 bg-primary px-3.5 text-xs font-bold uppercase tracking-wider text-primary-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:opacity-90"
+              className="inline-flex h-9 items-center gap-1.5 bg-primary px-3.5 text-xs font-bold uppercase tracking-wider text-primary-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5 hover:opacity-90"
             >
               <SlidersHorizontal aria-hidden="true" className="size-3.5" />
               {category === "brakes"
@@ -210,7 +205,7 @@ export function FitmentBanner({
                     diameter: String(rim),
                     bolt: boltPattern,
                   }).toString()}`}
-                  className="inline-flex h-9 items-center gap-1.5 border border-border bg-background px-3 font-mono text-xs font-semibold shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-primary"
+                  className="inline-flex h-9 items-center gap-1.5 border border-border bg-background px-3 font-mono text-xs font-semibold shadow-chip transition-transform duration-200 hover:-translate-y-0.5 hover:border-primary"
                 >
                   <WheelRimIcon className="size-3.5 text-primary" />
                   {t.categories.wheels.name} (R{rim} · {boltPattern.replace("x", "×")})
@@ -224,7 +219,7 @@ export function FitmentBanner({
                     aspect: String(aspect),
                     rim: String(rim),
                   }).toString()}`}
-                  className="inline-flex h-9 items-center gap-1.5 border border-border bg-background px-3 font-mono text-xs font-semibold shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-primary"
+                  className="inline-flex h-9 items-center gap-1.5 border border-border bg-background px-3 font-mono text-xs font-semibold shadow-chip transition-transform duration-200 hover:-translate-y-0.5 hover:border-primary"
                 >
                   <TireSizeIcon className="size-3.5 text-primary" />
                   {t.categories.tires.name} ({width}/{aspect}R{rim})
@@ -235,7 +230,7 @@ export function FitmentBanner({
                   href={`${storePath(store, "/brakes")}?${new URLSearchParams({
                     vehicle: vehicle.id,
                   }).toString()}`}
-                  className="inline-flex h-9 items-center gap-1.5 border border-border bg-background px-3 font-mono text-xs font-semibold shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-primary"
+                  className="inline-flex h-9 items-center gap-1.5 border border-border bg-background px-3 font-mono text-xs font-semibold shadow-chip transition-transform duration-200 hover:-translate-y-0.5 hover:border-primary"
                 >
                   <BrakeDiscIcon className="size-3.5 text-primary" />
                   {t.categories.brakes.name}
@@ -283,7 +278,7 @@ export function FitmentBanner({
                 type="button"
                 onClick={() => switchPackageSize(s)}
                 className={cn(
-                  "flex items-center gap-1.5 border px-2.5 py-1 font-mono text-xs shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5",
+                  "flex items-center gap-1.5 border px-2.5 py-1 font-mono text-xs shadow-chip transition-transform duration-200 hover:-translate-y-0.5",
                   isCurrent
                     ? "border-primary bg-primary text-primary-foreground font-bold"
                     : "border-border bg-background text-foreground hover:border-primary",

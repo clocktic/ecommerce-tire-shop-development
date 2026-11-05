@@ -30,7 +30,7 @@ export async function CategoryTiles({ store }: { store: Store }) {
             <li key={c.slug}>
               <Link
                 href={storePath(store, `/${c.slug}`)}
-                className="group grid h-full grid-cols-[7.25rem_1fr] border border-border bg-card shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-1 hover:border-foreground sm:flex sm:flex-col"
+                className="group grid h-full grid-cols-[7.25rem_1fr] overflow-hidden border border-border bg-card shadow-lifted lift-hover hover:border-foreground/60 sm:flex sm:flex-col"
               >
                 <div className="relative min-h-28 overflow-hidden border-r border-border bg-photo sm:aspect-[6/5] sm:w-full sm:border-b sm:border-r-0">
                   <Image
@@ -46,7 +46,7 @@ export async function CategoryTiles({ store }: { store: Store }) {
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="font-expanded text-lg font-extrabold uppercase sm:text-xl">{copy.name}</h3>
                       {count !== null && (
-                        <span className="border border-border bg-muted/40 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground sm:hidden">
+                        <span className="rounded-sm border border-border bg-muted/40 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground sm:hidden">
                           {fmt(t.home.listed, { n: count })}
                         </span>
                       )}

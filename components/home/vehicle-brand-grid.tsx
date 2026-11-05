@@ -103,12 +103,12 @@ export function VehicleBrandGrid() {
                   <button
                     type="button"
                     className={cn(
-                      "group flex h-full w-full flex-col justify-between gap-2 border bg-card p-2.5 text-left shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground sm:gap-3 sm:p-4",
+                      "group flex h-full w-full flex-col justify-between gap-2 border bg-card p-2.5 text-left shadow-lifted lift-hover hover:border-foreground sm:gap-3 sm:p-4",
                       isSelectedMake ? "border-primary bg-primary/5" : "border-border",
                     )}
                   >
                     <div className="flex items-center justify-between gap-1.5 sm:gap-2">
-                      <span className="flex size-8 items-center justify-center border border-border bg-muted/50 p-1.5 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:border-primary/50 sm:size-10 sm:p-2">
+                      <span className="flex size-8 items-center justify-center border border-border bg-muted/50 p-1.5 shadow-chip transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:border-primary/50 sm:size-10 sm:p-2">
                         <img
                           src={getVehicleMakeIconUrl(brand.make) ?? ""}
                           alt={brand.make}

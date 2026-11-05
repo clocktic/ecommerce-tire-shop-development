@@ -254,7 +254,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
             <Link
               href={pageHref(page - 1)}
               rel="prev"
-              className="flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-foreground hover:text-foreground"
+              className="flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5 hover:border-foreground hover:text-foreground"
             >
               ←
             </Link>
@@ -271,8 +271,8 @@ export default async function CategoryPage({ params, searchParams }: { params: P
                 aria-current={item === page ? "page" : undefined}
                 className={
                   item === page
-                    ? "flex h-9 min-w-9 items-center justify-center border border-primary bg-primary px-2.5 font-semibold text-primary-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5"
-                    : "flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-foreground hover:text-foreground"
+                    ? "flex h-9 min-w-9 items-center justify-center border border-primary bg-primary px-2.5 font-semibold text-primary-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5"
+                    : "flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5 hover:border-foreground hover:text-foreground"
                 }
               >
                 {item}
@@ -283,7 +283,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
             <Link
               href={pageHref(page + 1)}
               rel="next"
-              className="flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 hover:border-foreground hover:text-foreground"
+              className="flex h-9 min-w-9 items-center justify-center border border-border bg-card px-2.5 text-muted-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5 hover:border-foreground hover:text-foreground"
             >
               →
             </Link>

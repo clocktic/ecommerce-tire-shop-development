@@ -1,5 +1,6 @@
 "use client"
 
+import { Icon3D } from "@/components/ui/icon-3d"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, CheckCircle2, Minus, Plus, Tag, X } from "lucide-react"
@@ -84,9 +85,10 @@ export function CartView() {
 
       <aside
         aria-labelledby="summary-title"
-        className="flex flex-col gap-4 border border-border bg-card p-5 shadow-[0_4px_12px_rgba(0,0,0,0.22),0_20px_50px_-12px_rgba(0,0,0,0.5)] lg:col-span-4 lg:self-start"
+        className="flex flex-col gap-4 border border-border bg-card p-5 shadow-lifted lg:col-span-4 lg:self-start"
       >
-        <h2 id="summary-title" className="label-caps">
+        <h2 id="summary-title" className="flex items-center gap-3 label-caps">
+          <Icon3D name="order" size="md" />
           {t.cart.summary}
         </h2>
         <SummaryRows subtotalCents={subtotalCents} />
@@ -137,7 +139,7 @@ export function SummaryRows({
           <Link
             href={storePath(store, "/account?mode=sign-up")}
             onClick={onNavigate}
-            className="inline-flex shrink-0 items-center gap-1 bg-primary px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-primary-foreground transition-opacity hover:opacity-90"
+            className="rounded-md inline-flex shrink-0 items-center gap-1 bg-primary px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-primary-foreground transition-opacity hover:opacity-90"
           >
             <span>{x.memberDiscount.cartGuestCta}</span>
             <ArrowRight className="size-3" aria-hidden="true" />

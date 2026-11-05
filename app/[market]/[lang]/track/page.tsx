@@ -6,6 +6,7 @@ import { getExtras } from "@/lib/i18n/extras"
 import { storeAlternates } from "@/lib/seo"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
 import { TrackForm } from "@/components/track/track-form"
+import { Icon3D } from "@/components/ui/icon-3d"
 import { COMPANY, companyAddressLine } from "@/lib/company"
 
 type Params = Promise<{ market: string; lang: string }>
@@ -34,14 +35,18 @@ export default async function TrackPage({ params }: { params: Params }) {
       <Breadcrumbs label={t.common.breadcrumb} items={[{ href: storePath(store), label: t.common.home }, { label: tr.title }]} />
       <div className="flex max-w-2xl flex-col gap-8 pb-24 pt-4">
         <header className="flex flex-col gap-3">
-          <p className="label-caps text-primary">{tr.nav}</p>
+          <p className="flex items-center gap-3 label-caps text-primary">
+            <Icon3D name="track" size="lg" />
+            {tr.nav}
+          </p>
           <h1 className="font-expanded text-4xl font-extrabold uppercase md:text-5xl">{tr.title}</h1>
           <p className="leading-relaxed text-muted-foreground">{tr.lead}</p>
         </header>
         <TrackForm />
 
-        <section className="border border-border bg-card p-6 text-xs text-muted-foreground">
-          <h2 className="font-expanded text-sm font-bold uppercase tracking-wider text-foreground">
+        <section className="border border-border bg-card p-6 text-xs text-muted-foreground shadow-lifted">
+          <h2 className="flex items-center gap-3 font-expanded text-sm font-bold uppercase tracking-wider text-foreground">
+            <Icon3D name="contact" size="sm" />
             {t.contact.title}
           </h2>
           <p className="mt-1.5 leading-relaxed">{t.contact.lead}</p>

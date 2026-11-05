@@ -152,7 +152,7 @@ export function SearchModal() {
       >
         <Search className="size-4" aria-hidden="true" />
         <span className="hidden font-mono text-xs uppercase tracking-[0.14em] sm:inline">{copy.trigger}</span>
-        <kbd className="hidden border border-border bg-muted/60 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground lg:inline">
+        <kbd className="rounded-md hidden border border-border bg-muted/60 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground lg:inline">
           /K
         </kbd>
       </DialogTrigger>
@@ -206,7 +206,7 @@ export function SearchModal() {
                 key={label}
                 type="button"
                 onClick={() => setQuery(`${s.width}/${s.aspect} R${s.rim}`)}
-                className="border border-border bg-background px-2 py-0.5 font-mono text-[11px] transition-colors hover:border-primary hover:text-primary"
+                className="rounded-md border border-border bg-background px-2 py-0.5 font-mono text-[11px] transition-colors hover:border-primary hover:text-primary"
               >
                 {label}
               </button>
@@ -226,21 +226,21 @@ export function SearchModal() {
                 <Link
                   href={storePath(store, "/tires")}
                   onClick={() => setOpen(false)}
-                  className="border border-border bg-background px-3 py-1.5 font-mono text-xs font-semibold uppercase hover:border-primary"
+                  className="rounded-md border border-border bg-background px-3 py-1.5 font-mono text-xs font-semibold uppercase hover:border-primary"
                 >
                   {t.categories.tires.name}
                 </Link>
                 <Link
                   href={storePath(store, "/wheels")}
                   onClick={() => setOpen(false)}
-                  className="border border-border bg-background px-3 py-1.5 font-mono text-xs font-semibold uppercase hover:border-primary"
+                  className="rounded-md border border-border bg-background px-3 py-1.5 font-mono text-xs font-semibold uppercase hover:border-primary"
                 >
                   {t.categories.wheels.name}
                 </Link>
                 <Link
                   href={storePath(store, "/brakes")}
                   onClick={() => setOpen(false)}
-                  className="border border-border bg-background px-3 py-1.5 font-mono text-xs font-semibold uppercase hover:border-primary"
+                  className="rounded-md border border-border bg-background px-3 py-1.5 font-mono text-xs font-semibold uppercase hover:border-primary"
                 >
                   {t.categories.brakes.name}
                 </Link>

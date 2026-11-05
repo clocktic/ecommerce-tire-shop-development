@@ -40,7 +40,7 @@ export function FitmentBar() {
     <div
       className={`border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/85 ${active ? "" : "hidden md:block"}`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-1 sm:px-4 sm:py-1.5 md:px-6">
+      <div className="rounded-md mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-1 sm:px-4 sm:py-1.5 md:px-6">
         {active ? (
           <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
             <div className="flex min-w-0 flex-1 items-center gap-1 sm:flex-initial sm:gap-1.5">
@@ -51,7 +51,7 @@ export function FitmentBar() {
                     type="button"
                     className="group flex min-w-0 flex-1 items-center gap-2 py-0.5 pr-1 text-left text-xs font-semibold transition-colors hover:text-primary sm:flex-initial sm:gap-2.5 sm:py-1 sm:pr-2 sm:text-sm"
                   >
-                    <span className="flex size-6 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 text-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 group-hover:-translate-y-0.5 sm:size-7">
+                    <span className="flex size-6 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 text-foreground shadow-chip transition-transform duration-200 group-hover:-translate-y-0.5 sm:size-7">
                       {active.kind === "vehicle" ? (
                         <VehicleIcon className="size-4 w-5 sm:size-5 sm:w-6" />
                       ) : (
@@ -59,11 +59,11 @@ export function FitmentBar() {
                       )}
                     </span>
                     <span className="min-w-0 flex-1 truncate sm:flex-initial">{active.label}</span>
-                    <span className="shrink-0 border border-border bg-background px-1.5 py-0.5 font-mono text-[11px] text-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 sm:text-xs">
+                    <span className="rounded-md shrink-0 border border-border bg-background px-1.5 py-0.5 font-mono text-[11px] text-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5 sm:text-xs">
                       {active.width}/{active.aspect}R{active.rim}
                     </span>
                     {boltPattern && (
-                      <span className="hidden shrink-0 border border-border bg-background px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5 md:inline">
+                      <span className="rounded-md hidden shrink-0 border border-border bg-background px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5 md:inline">
                         {boltPattern.replace("x", "×")}
                       </span>
                     )}
@@ -110,7 +110,7 @@ export function FitmentBar() {
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="h-auto gap-2 px-2 py-1 text-xs font-semibold normal-case tracking-normal sm:text-sm"
+                  className="rounded-md h-auto gap-2 px-2 py-1 text-xs font-semibold normal-case tracking-normal sm:text-sm"
                 >
                   <VehicleIcon className="size-5 w-6 text-primary" />
                   {g.addFitment}

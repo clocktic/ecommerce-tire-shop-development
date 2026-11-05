@@ -461,7 +461,7 @@ export function PaymentBadges({
         <span
           key={item.id}
           title={item.name}
-          className="inline-flex shadow-[0_10px_25px_-5px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-0.5"
+          className="inline-flex shadow-chip transition-transform duration-200 hover:-translate-y-0.5"
         >
           {item.svg}
         </span>
