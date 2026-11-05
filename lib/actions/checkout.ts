@@ -6,7 +6,7 @@ import { offerFor, localizeProduct } from "@/lib/catalog"
 import { getProductBySlug } from "@/lib/catalog/queries"
 import { db } from "@/lib/db"
 import { orderItems, orders } from "@/lib/db/schema"
-import { sendMail } from "@/lib/email"
+import { sendMail, sendStoreInboxMail } from "@/lib/email"
 import { newId, newOrderNumber } from "@/lib/ids"
 import { localeMeta, parseStore } from "@/lib/i18n/config"
 import { extrasFor } from "@/lib/i18n/extras"
@@ -150,16 +150,29 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
 
   const meta = localeMeta(store)
   const x = extrasFor(meta.content)
+  const formattedTotal = formatPrice(totalCents, store.market, meta.intlLocale)
   await Promise.all([
     sendMail({
       to: email,
       subject: fmt(x.email.orderSubject, { number: orderNumber }),
       paragraphs: [
-        fmt(x.email.orderBody, { number: orderNumber, total: formatPrice(totalCents, store.market, meta.intlLocale) }),
+        fmt(x.email.orderBody, { number: orderNumber, total: formattedTotal }),
         ...items.map((i) => `${i.quantity} × ${i.productName}`),
         x.order.payment,
       ],
       signoff: x.email.signoff,
+    }),
+    sendStoreInboxMail({
+      customerName: `${fields.firstName} ${fields.lastName}`,
+      customerEmail: email,
+      subject: `[Новый заказ] ${orderNumber} — ${formattedTotal} (${store.market.toUpperCase()})`,
+      paragraphs: [
+        `Оформлен новый заказ ${orderNumber} на сумму ${formattedTotal}.`,
+        `Покупатель: ${fields.firstName} ${fields.lastName} <${email}>`,
+        `Телефон: ${fields.phone}`,
+        `Адрес доставки: ${[fields.address, `${fields.postal} ${fields.city}`, fields.state || null, fields.country].filter(Boolean).join(", ")}`,
+        `Состав заказа:\n${items.map((i) => `• ${i.quantity} × ${i.productName} (${formatPrice(i.lineTotalCents, store.market, meta.intlLocale)})`).join("\n")}`,
+      ],
     }),
     notifyTelegramNewOrder({
       orderNumber,

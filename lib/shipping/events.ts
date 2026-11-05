@@ -140,5 +140,6 @@ export async function sendShipmentEventEmail(
     paragraphs,
     cta: order.trackingUrl ? { label: x.email.trackCta, href: order.trackingUrl } : undefined,
     signoff: x.email.signoff,
+    copyStoreInbox: true,
   })
 }
