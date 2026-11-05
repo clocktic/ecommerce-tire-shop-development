@@ -121,6 +121,8 @@ export const euFr: Dictionary = {
     },
     featured: "En rayon",
     allTires: "Tous les pneus",
+    carouselPrev: "Produits précédents",
+    carouselNext: "Produits suivants",
     promise: {
       title: "Les conditions de la boutique UE",
       lead: "Stock, prix et conditions propres à chaque région.",

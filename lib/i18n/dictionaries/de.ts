@@ -121,6 +121,8 @@ export const euDe: Dictionary = {
     },
     featured: "Im Regal",
     allTires: "Alle Reifen",
+    carouselPrev: "Vorherige Produkte",
+    carouselNext: "Weitere Produkte",
     promise: {
       title: "Die Bedingungen im EU-Shop",
       lead: "Eigener Bestand, eigene Preise und Bedingungen für jede Region.",

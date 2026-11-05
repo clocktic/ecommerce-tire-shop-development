@@ -255,6 +255,8 @@ export const usEn = {
     },
     featured: "On the rack",
     allTires: "All tires",
+    carouselPrev: "Previous products",
+    carouselNext: "Next products",
     promise: {
       title: "The US store terms",
       lead: "Separate stock, prices and policies for each region.",
@@ -550,6 +552,8 @@ export const euEn: Dictionary = {
     },
     featured: "On the rack",
     allTires: "All tyres",
+    carouselPrev: "Previous products",
+    carouselNext: "Next products",
     promise: {
       title: "The EU store terms",
       lead: "Separate stock, prices and policies for each region.",
