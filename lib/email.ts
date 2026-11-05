@@ -282,7 +282,7 @@ export async function sendTestStoreEmail(): Promise<{ ok: boolean; error?: strin
       replyTo: COMPANY.email,
       subject: `Тестовое письмо · ${COMPANY.tradingName} (${COMPANY.email})`,
       text: [
-        `Почта ${COMPANY.email} успешно подключена к магазину ${COMPANY.domain}.`,
+        `Почта ${COMPANY.email} успешно подключен�� к магазину ${COMPANY.domain}.`,
         `Сервер исходящей почты (SMTP): ${cfg.host}:${cfg.port}`,
         `Сервер входящей почты (IMAP): ${DEFAULT_IMAP_HOST}:${DEFAULT_IMAP_PORT}`,
         `Все входящие обращения, заказы, оплаты и исходящие уведомления покупателям работают.`,
@@ -373,7 +373,14 @@ export async function fetchZohoInboxMessages(limit = 15): Promise<{
 
       if (step === 1 && /A1 (OK|NO|BAD)/i.test(buffer)) {
         if (!/A1 OK/i.test(buffer)) {
-          finish({ configured: true, messages: [], error: "Ошибка авторизации IMAP (проверьте SMTP_PASS / App Password в Zoho)" })
+          const needsImapToggle = /enable IMAP/i.test(buffer)
+          finish({
+            configured: true,
+            messages: [],
+            error: needsImapToggle
+              ? "В Zoho Mail ещё не включена галочка IMAP: откройте mail.zoho.com → Настройки (шестерёнка) → Почтовые учетные записи → info@tiresshop.net → поставьте галочку «Доступ по протоколу IMAP»."
+              : "Ошибка авторизации IMAP (проверьте SMTP_PASS / App Password в Zoho)",
+          })
           return
         }
         step = 2
