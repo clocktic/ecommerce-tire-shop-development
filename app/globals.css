@@ -275,9 +275,55 @@
     radial-gradient(34rem 24rem at 4% 58%, var(--parallax-ink), transparent 70%);
 }
 
+/* Near plane: a tire seen head-on at the edge, its tread rolls with scroll. */
+.parallax-tire {
+  position: absolute;
+  top: -6vh;
+  bottom: -6vh;
+  right: clamp(-3rem, -2vw, -1rem);
+  width: clamp(150px, 20vw, 340px);
+  perspective: 900px;
+  opacity: 0.22;
+}
+.dark .parallax-tire {
+  opacity: 0.38;
+}
+.parallax-tire-band {
+  position: absolute;
+  inset: 0;
+  border-radius: 2.5rem;
+  background-image: url("/images/tread.webp");
+  background-size: 100% auto;
+  background-repeat: repeat-y;
+  background-position: 50% 0;
+  transform: rotateY(-22deg);
+  transform-origin: right center;
+  mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+}
+/* Cylindrical shading so the flat photo reads as a curved tire surface. */
+.parallax-tire-band::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    to right,
+    rgb(0 0 0 / 0.75),
+    rgb(0 0 0 / 0.15) 22%,
+    rgb(255 255 255 / 0.08) 45%,
+    rgb(0 0 0 / 0.1) 70%,
+    rgb(0 0 0 / 0.8)
+  );
+}
+
 @keyframes parallax-drift {
   to {
     transform: translate3d(0, var(--parallax-shift, -10vh), 0);
+  }
+}
+@keyframes parallax-roll {
+  to {
+    background-position: 50% -140vh;
   }
 }
 
@@ -292,6 +338,10 @@
     }
     .parallax-glow {
       --parallax-shift: -12vh;
+    }
+    .parallax-tire-band {
+      animation: parallax-roll linear both;
+      animation-timeline: scroll(root block);
     }
   }
 }

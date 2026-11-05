@@ -681,14 +681,14 @@ export function FitmentModal({
                 <span />
               )}
 
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:items-center">
                 <Button
                   type="button"
                   variant="outline"
                   size="lg"
                   onClick={() => confirmVehicle("brakes")}
                   disabled={!model || !vehicleSize}
-                  className="gap-1.5 px-3 text-xs sm:text-sm"
+                  className="gap-1.5 px-3 text-sm"
                 >
                   <BrakeDiscIcon className="size-4 text-primary" />
                   {t.categories.brakes.name}
@@ -699,7 +699,7 @@ export function FitmentModal({
                   size="lg"
                   onClick={() => confirmVehicle("wheels")}
                   disabled={!model || !vehicleSize}
-                  className="gap-1.5 px-3 text-xs sm:text-sm"
+                  className="gap-1.5 px-3 text-sm"
                 >
                   <WheelRimIcon className="size-4 text-primary" />
                   {t.categories.wheels.name}
@@ -709,7 +709,7 @@ export function FitmentModal({
                   size="lg"
                   onClick={() => confirmVehicle("tires")}
                   disabled={!model || !vehicleSize}
-                  className="flex-1 sm:flex-initial"
+                  className="order-first col-span-2 h-auto min-h-11 whitespace-normal py-2.5 text-center leading-tight sm:order-none sm:col-span-1"
                 >
                   {g.shopTires}
                 </Button>
