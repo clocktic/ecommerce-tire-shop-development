@@ -154,12 +154,11 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
   await Promise.all([
     sendMail({
       to: email,
+      template: "order",
+      store,
+      details: { orderNumber, subtotalCents, discountCents, shippingCents, totalCents, items },
       subject: fmt(x.email.orderSubject, { number: orderNumber }),
-      paragraphs: [
-        fmt(x.email.orderBody, { number: orderNumber, total: formattedTotal }),
-        ...items.map((i) => `${i.quantity} × ${i.productName}`),
-        x.order.payment,
-      ],
+      paragraphs: [],
       signoff: x.email.signoff,
     }),
     sendStoreInboxMail({

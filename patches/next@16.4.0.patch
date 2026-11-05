@@ -1,0 +1,158 @@
+diff --git a/dist/client/dev/hot-reloader/app/hot-reloader-app.js b/dist/client/dev/hot-reloader/app/hot-reloader-app.js
+index 283f9cc989b156cc893ce251deaceb9d03694efc..f5d3d5c052e335ece01508db017486516c070215 100644
+--- a/dist/client/dev/hot-reloader/app/hot-reloader-app.js
++++ b/dist/client/dev/hot-reloader/app/hot-reloader-app.js
+@@ -61,6 +61,16 @@ let __nextDevClientId = typeof window !== 'undefined' ? Math.round(Math.random()
+ let reloading = false;
+ let webpackStartMsSinceEpoch = null;
+ const turbopackHmr = process.env.TURBOPACK ? new _turbopackhotreloadercommon.TurbopackHmr() : null;
++// Backport https://github.com/vercel/next.js/pull/99298: HMR can arrive before hydration commits.
++let isRouterMounted = false;
++let refreshesWaitingForMount = [];
++function whenRouterMounted(refresh) {
++    if (isRouterMounted) {
++        refresh();
++    } else {
++        refreshesWaitingForMount.push(refresh);
++    }
++}
+ let pendingHotUpdateWebpack = Promise.resolve();
+ let resolvePendingHotUpdateWebpack = ()=>{};
+ function setPendingHotUpdateWebpack() {
+@@ -347,9 +357,11 @@ function processMessage(message, sendMessage, processTurbopackMessage, staticInd
+                     reloading = true;
+                     return window.location.reload();
+                 }
+-                (0, _react.startTransition)(()=>{
+-                    _approuterinstance.publicAppRouterInstance.hmrRefresh();
+-                    _nextdevtools.dispatcher.onRefresh();
++                whenRouterMounted(()=>{
++                    (0, _react.startTransition)(()=>{
++                        _approuterinstance.publicAppRouterInstance.hmrRefresh();
++                        _nextdevtools.dispatcher.onRefresh();
++                    });
+                 });
+                 if (process.env.__NEXT_TEST_MODE) {
+                     if (self.__NEXT_HMR_CB) {
+@@ -370,9 +382,11 @@ function processMessage(message, sendMessage, processTurbopackMessage, staticInd
+                     reloading = true;
+                     return window.location.reload();
+                 }
+-                (0, _react.startTransition)(()=>{
+-                    _approuterinstance.publicAppRouterInstance.hmrRefresh();
+-                    _nextdevtools.dispatcher.onRefresh();
++                whenRouterMounted(()=>{
++                    (0, _react.startTransition)(()=>{
++                        _approuterinstance.publicAppRouterInstance.hmrRefresh();
++                        _nextdevtools.dispatcher.onRefresh();
++                    });
+                 });
+                 return;
+             }
+@@ -392,7 +406,8 @@ function processMessage(message, sendMessage, processTurbopackMessage, staticInd
+             {
+                 turbopackHmr?.onPageAddRemove();
+                 // TODO-APP: potentially only refresh if the currently viewed page was added/removed.
+-                return _approuterinstance.publicAppRouterInstance.hmrRefresh();
++                whenRouterMounted(()=>_approuterinstance.publicAppRouterInstance.hmrRefresh());
++                return;
+             }
+         case _hotreloadertypes.HMR_MESSAGE_SENT_TO_BROWSER.SERVER_ERROR:
+             {
+@@ -506,6 +521,17 @@ function processMessage(message, sendMessage, processTurbopackMessage, staticInd
+     }
+ }
+ function HotReload({ children, globalError, webSocket, staticIndicatorState }) {
++    (0, _react.useEffect)(()=>{
++        isRouterMounted = true;
++        const refreshes = refreshesWaitingForMount;
++        refreshesWaitingForMount = [];
++        for (const refresh of refreshes) {
++            refresh();
++        }
++        return ()=>{
++            isRouterMounted = false;
++        };
++    }, []);
+     (0, _websocket.useWebSocketPing)(webSocket);
+     // We don't want access of the pathname for the dev tools to trigger a dynamic
+     // access (as the dev overlay will never be present in production).
+diff --git a/dist/esm/client/dev/hot-reloader/app/hot-reloader-app.js b/dist/esm/client/dev/hot-reloader/app/hot-reloader-app.js
+index 6512e47b8f22ffd9dfe09944dc9761301a960f24..09317fc517008082f13aee19cae22465d0640892 100644
+--- a/dist/esm/client/dev/hot-reloader/app/hot-reloader-app.js
++++ b/dist/esm/client/dev/hot-reloader/app/hot-reloader-app.js
+@@ -32,6 +32,16 @@ let __nextDevClientId = typeof window !== 'undefined' ? Math.round(Math.random()
+ let reloading = false;
+ let webpackStartMsSinceEpoch = null;
+ const turbopackHmr = process.env.TURBOPACK ? new TurbopackHmr() : null;
++// Backport https://github.com/vercel/next.js/pull/99298: HMR can arrive before hydration commits.
++let isRouterMounted = false;
++let refreshesWaitingForMount = [];
++function whenRouterMounted(refresh) {
++    if (isRouterMounted) {
++        refresh();
++    } else {
++        refreshesWaitingForMount.push(refresh);
++    }
++}
+ let pendingHotUpdateWebpack = Promise.resolve();
+ let resolvePendingHotUpdateWebpack = ()=>{};
+ function setPendingHotUpdateWebpack() {
+@@ -318,9 +328,11 @@ function tryApplyUpdatesWebpack(sendMessage) {
+                     reloading = true;
+                     return window.location.reload();
+                 }
+-                startTransition(()=>{
+-                    publicAppRouterInstance.hmrRefresh();
+-                    dispatcher.onRefresh();
++                whenRouterMounted(()=>{
++                    startTransition(()=>{
++                        publicAppRouterInstance.hmrRefresh();
++                        dispatcher.onRefresh();
++                    });
+                 });
+                 if (process.env.__NEXT_TEST_MODE) {
+                     if (self.__NEXT_HMR_CB) {
+@@ -341,9 +353,11 @@ function tryApplyUpdatesWebpack(sendMessage) {
+                     reloading = true;
+                     return window.location.reload();
+                 }
+-                startTransition(()=>{
+-                    publicAppRouterInstance.hmrRefresh();
+-                    dispatcher.onRefresh();
++                whenRouterMounted(()=>{
++                    startTransition(()=>{
++                        publicAppRouterInstance.hmrRefresh();
++                        dispatcher.onRefresh();
++                    });
+                 });
+                 return;
+             }
+@@ -363,7 +377,8 @@ function tryApplyUpdatesWebpack(sendMessage) {
+             {
+                 turbopackHmr?.onPageAddRemove();
+                 // TODO-APP: potentially only refresh if the currently viewed page was added/removed.
+-                return publicAppRouterInstance.hmrRefresh();
++                whenRouterMounted(()=>publicAppRouterInstance.hmrRefresh());
++                return;
+             }
+         case HMR_MESSAGE_SENT_TO_BROWSER.SERVER_ERROR:
+             {
+@@ -477,6 +492,17 @@ function tryApplyUpdatesWebpack(sendMessage) {
+     }
+ }
+ export default function HotReload({ children, globalError, webSocket, staticIndicatorState }) {
++    useEffect(()=>{
++        isRouterMounted = true;
++        const refreshes = refreshesWaitingForMount;
++        refreshesWaitingForMount = [];
++        for (const refresh of refreshes) {
++            refresh();
++        }
++        return ()=>{
++            isRouterMounted = false;
++        };
++    }, []);
+     useWebSocketPing(webSocket);
+     // We don't want access of the pathname for the dev tools to trigger a dynamic
+     // access (as the dev overlay will never be present in production).

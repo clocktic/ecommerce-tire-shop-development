@@ -1,0 +1,947 @@
+{
+  "en": {
+    "order": "Order",
+    "date": "Date",
+    "total": "Total",
+    "items": "Items",
+    "shipping": "Shipping",
+    "discount": "Member discount",
+    "tracking": "Tracking number",
+    "status": "Status",
+    "payment": "Payment confirmed",
+    "view": "View order",
+    "track": "Track delivery",
+    "shop": "Explore tires",
+    "account": "My account",
+    "reply": "Contact our team",
+    "continue": "Continue the conversation",
+    "pickup": "View collection details",
+    "details": "View details",
+    "footer": "Thank you for choosing TiresShop.",
+    "help": "We are here to help.",
+    "service": "You received this service email about your account, order or inquiry.",
+    "unsubscribe": "Manage email preferences",
+    "member": "YOUR MEMBER ADVANTAGE",
+    "auto": "Applied automatically when you are signed in.",
+    "next": "Your next step",
+    "team": "TiresShop Customer Care",
+    "address": "Delivery address",
+    "collection": "Collection point",
+    "bank": "The time it takes to appear in your account depends on your bank or payment provider.",
+    "notReceipt": "Payment notification. Not a fiscal receipt.",
+    "labelNote": "A tracking number does not yet mean the parcel has been handed to the carrier.",
+    "safe": "Have your tires fitted and balanced by a qualified professional. Follow your vehicle manufacturer’s tire-pressure guidance.",
+    "message": "Your message",
+    "respond": "Reply directly to this email to reach our support team.",
+    "chatNote": "An email reply goes to our support inbox, not back into the live chat widget.",
+    "refundNote": "A returned parcel and a payment refund are separate events. We will confirm any refund in a separate email.",
+    "winter": "Check tread depth, tire pressure and the right fit for your vehicle before the temperature drops.",
+    "benefits": [
+      "Road confidence",
+      "The right fit",
+      "Expert support"
+    ],
+    "copy": [
+      [
+        "Order confirmation",
+        "Thank you for\nyour order!",
+        "Your order is in. Review your selected set and complete payment from your order page."
+      ],
+      [
+        "On the road",
+        "Your order\nis on its way!",
+        "The carrier has accepted your parcel. Follow every update as your order gets closer."
+      ],
+      [
+        "Seasonal campaign",
+        "New season.\nA safer drive.",
+        "Changing roads call for the right tires. Get your vehicle ready for cooler days and new adventures."
+      ],
+      [
+        "Member appreciation",
+        "Thank you for\nbeing with us!",
+        "Thank you for being part of TiresShop. Your member advantage is ready for your next set."
+      ],
+      [
+        "Welcome",
+        "Welcome",
+        "Your TiresShop account is ready. Enjoy your member discount whenever you shop while signed in."
+      ],
+      [
+        "Payment received",
+        "Payment received",
+        "Your payment has been confirmed. We will let you know when your order moves to the next stage."
+      ],
+      [
+        "Preparing your order",
+        "Preparing your order",
+        "Your order is being processed. We are preparing the next steps and will send an update when it is ready."
+      ],
+      [
+        "Tracking created",
+        "Tracking created",
+        "Your shipping label has been created. The first scan will appear after the carrier processes the parcel."
+      ],
+      [
+        "With the courier",
+        "With the courier",
+        "Your parcel is with the delivery courier. Keep your phone nearby and check the carrier’s latest updates."
+      ],
+      [
+        "Ready for collection",
+        "Ready for collection",
+        "Your order is ready for collection. Check the location, opening hours and collection requirements before you go."
+      ],
+      [
+        "Delivered",
+        "Delivered",
+        "The carrier has marked your order as delivered. Thank you for choosing us for the road ahead."
+      ],
+      [
+        "Delivery update",
+        "Delivery update",
+        "The carrier has reported a delivery exception. Check the latest tracking information and contact us if you need help."
+      ],
+      [
+        "Return to sender",
+        "Return to sender",
+        "Your parcel is on its way back to the sender. Contact our team to discuss what happens next."
+      ],
+      [
+        "Order cancelled",
+        "Order cancelled",
+        "Your order has been cancelled. If you already paid, please check the refund status or contact our team."
+      ],
+      [
+        "Refund confirmed",
+        "Refund confirmed",
+        "A refund for your order has been confirmed. The amount will return through the original payment method."
+      ],
+      [
+        "Message received",
+        "Message received",
+        "Your inquiry is with our team. We will reply to this email address. You can add details by replying here."
+      ],
+      [
+        "A personal reply",
+        "A personal reply",
+        "We can help you find the right set. Please share your vehicle model, year and current tire size."
+      ],
+      [
+        "Chat reply",
+        "Chat reply",
+        "A TiresShop specialist has replied to your chat. Return to the store or continue by email."
+      ]
+    ]
+  },
+  "de": {
+    "order": "Bestellung",
+    "date": "Datum",
+    "total": "Gesamt",
+    "items": "Artikel",
+    "shipping": "Versand",
+    "discount": "Mitgliederrabatt",
+    "tracking": "Sendungsnummer",
+    "status": "Status",
+    "payment": "Zahlung bestätigt",
+    "view": "Bestellung ansehen",
+    "track": "Sendung verfolgen",
+    "shop": "Reifen entdecken",
+    "account": "Mein Konto",
+    "reply": "Team kontaktieren",
+    "continue": "Gespräch fortsetzen",
+    "pickup": "Abholdetails ansehen",
+    "details": "Details ansehen",
+    "footer": "Danke, dass Sie TiresShop gewählt haben.",
+    "help": "Wir sind für Sie da.",
+    "service": "Diese Servicenachricht betrifft Ihr Konto, Ihre Bestellung oder Ihre Anfrage.",
+    "unsubscribe": "E-Mail-Einstellungen verwalten",
+    "member": "IHR MITGLIEDERVORTEIL",
+    "auto": "Wird automatisch angewendet, wenn Sie angemeldet sind.",
+    "next": "Ihr nächster Schritt",
+    "team": "TiresShop Kundenservice",
+    "address": "Lieferadresse",
+    "collection": "Abholstelle",
+    "bank": "Die Dauer bis zur Gutschrift hängt von Ihrer Bank oder Ihrem Zahlungsanbieter ab.",
+    "notReceipt": "Zahlungsbenachrichtigung. Kein steuerlicher Beleg.",
+    "labelNote": "Eine Sendungsnummer bedeutet noch nicht, dass das Paket beim Versanddienstleister ist.",
+    "safe": "Lassen Sie die Reifen fachgerecht montieren und auswuchten. Beachten Sie die Reifendruckempfehlungen Ihres Fahrzeugherstellers.",
+    "message": "Ihre Nachricht",
+    "respond": "Antworten Sie auf diese E-Mail, um unser Team zu erreichen.",
+    "chatNote": "Eine E-Mail-Antwort erreicht unseren Posteingang, nicht den Live-Chat.",
+    "refundNote": "Die Rücksendung des Pakets und eine Erstattung sind getrennte Vorgänge. Eine Erstattung bestätigen wir separat.",
+    "winter": "Prüfen Sie vor dem Temperaturabfall Profiltiefe, Reifendruck und die passende Bereifung für Ihr Fahrzeug.",
+    "benefits": [
+      "Sicher unterwegs",
+      "Passende Bereifung",
+      "Kompetente Beratung"
+    ],
+    "copy": [
+      [
+        "Bestellbestätigung",
+        "Vielen Dank für\nIhre Bestellung!",
+        "Ihre Bestellung ist eingegangen. Prüfen Sie Ihren Reifensatz und schließen Sie die Zahlung auf der Bestellseite ab."
+      ],
+      [
+        "Unterwegs",
+        "Ihre Bestellung\nist unterwegs!",
+        "Der Versanddienstleister hat Ihr Paket übernommen. Verfolgen Sie alle weiteren Schritte Ihrer Lieferung."
+      ],
+      [
+        "Saisonkampagne",
+        "Neue Saison.\nSicher unterwegs.",
+        "Andere Straßenverhältnisse brauchen passende Reifen. Bereiten Sie Ihr Fahrzeug auf kühlere Tage vor."
+      ],
+      [
+        "Mitgliedervorteile",
+        "Schön, dass Sie\nbei uns sind!",
+        "Danke, dass Sie Teil von TiresShop sind. Ihr Mitgliedervorteil wartet auf Ihren nächsten Reifensatz."
+      ],
+      [
+        "Willkommen",
+        "Willkommen",
+        "Ihr Konto ist bereit. Profitieren Sie bei angemeldeten Einkäufen von Ihrem Mitgliederrabatt."
+      ],
+      [
+        "Zahlung erhalten",
+        "Zahlung erhalten",
+        "Ihre Zahlung ist bestätigt. Wir informieren Sie über den nächsten Schritt Ihrer Bestellung."
+      ],
+      [
+        "In Bearbeitung",
+        "In Bearbeitung",
+        "Ihre Bestellung wird bearbeitet. Sobald der nächste Schritt abgeschlossen ist, erhalten Sie ein Update."
+      ],
+      [
+        "Sendungsnummer erstellt",
+        "Sendungsnummer erstellt",
+        "Ihr Versandetikett wurde erstellt. Der erste Scan erscheint, sobald der Versanddienstleister das Paket bearbeitet."
+      ],
+      [
+        "Beim Zusteller",
+        "Beim Zusteller",
+        "Ihr Paket ist beim Zusteller. Halten Sie Ihr Telefon bereit und prüfen Sie die aktuellen Lieferinformationen."
+      ],
+      [
+        "Abholbereit",
+        "Abholbereit",
+        "Ihre Bestellung liegt zur Abholung bereit. Prüfen Sie vorher Adresse, Öffnungszeiten und Abholbedingungen."
+      ],
+      [
+        "Zugestellt",
+        "Zugestellt",
+        "Der Versanddienstleister hat die Zustellung bestätigt. Danke, dass Sie uns für Ihren nächsten Weg gewählt haben."
+      ],
+      [
+        "Lieferupdate",
+        "Lieferupdate",
+        "Der Versanddienstleister meldet ein Zustellproblem. Prüfen Sie die Sendungsverfolgung oder kontaktieren Sie uns."
+      ],
+      [
+        "Rücksendung",
+        "Rücksendung",
+        "Ihr Paket wird an den Absender zurückgeschickt. Kontaktieren Sie uns, um die nächsten Schritte zu besprechen."
+      ],
+      [
+        "Storniert",
+        "Storniert",
+        "Ihre Bestellung wurde storniert. Falls Sie bereits bezahlt haben, prüfen Sie die Erstattung oder kontaktieren Sie uns."
+      ],
+      [
+        "Erstattung bestätigt",
+        "Erstattung bestätigt",
+        "Die Erstattung zu Ihrer Bestellung ist bestätigt. Der Betrag wird über die ursprüngliche Zahlungsmethode zurückgezahlt."
+      ],
+      [
+        "Anfrage erhalten",
+        "Anfrage erhalten",
+        "Unser Team hat Ihre Anfrage erhalten und antwortet an diese E-Mail-Adresse. Ergänzungen können Sie direkt senden."
+      ],
+      [
+        "Persönliche Antwort",
+        "Persönliche Antwort",
+        "Wir helfen beim passenden Reifensatz. Senden Sie uns Fahrzeugmodell, Baujahr und aktuelle Reifengröße."
+      ],
+      [
+        "Chat-Antwort",
+        "Chat-Antwort",
+        "Ein TiresShop-Spezialist hat im Chat geantwortet. Kehren Sie zum Shop zurück oder antworten Sie per E-Mail."
+      ]
+    ]
+  },
+  "fr": {
+    "order": "Commande",
+    "date": "Date",
+    "total": "Total",
+    "items": "Articles",
+    "shipping": "Livraison",
+    "discount": "Remise membre",
+    "tracking": "Numéro de suivi",
+    "status": "Statut",
+    "payment": "Paiement confirmé",
+    "view": "Voir ma commande",
+    "track": "Suivre mon colis",
+    "shop": "Découvrir les pneus",
+    "account": "Mon compte",
+    "reply": "Contacter notre équipe",
+    "continue": "Continuer la conversation",
+    "pickup": "Voir les détails du retrait",
+    "details": "Voir les détails",
+    "footer": "Merci de faire confiance à TiresShop.",
+    "help": "Nous sommes à votre écoute.",
+    "service": "Cet e-mail de service concerne votre compte, votre commande ou votre demande.",
+    "unsubscribe": "Gérer mes préférences e-mail",
+    "member": "VOTRE AVANTAGE MEMBRE",
+    "auto": "Appliqué automatiquement lorsque vous êtes connecté.",
+    "next": "La prochaine étape",
+    "team": "Service client TiresShop",
+    "address": "Adresse de livraison",
+    "collection": "Point de retrait",
+    "bank": "Le délai d’apparition sur votre compte dépend de votre banque ou de votre prestataire de paiement.",
+    "notReceipt": "Avis de paiement. Ne constitue pas une facture.",
+    "labelNote": "Un numéro de suivi ne signifie pas encore que le colis a été remis au transporteur.",
+    "safe": "Confiez le montage et l’équilibrage à un professionnel. Respectez la pression recommandée par le constructeur de votre véhicule.",
+    "message": "Votre message",
+    "respond": "Répondez directement à cet e-mail pour contacter notre équipe.",
+    "chatNote": "Une réponse par e-mail arrive dans notre boîte de réception, pas dans le chat en ligne.",
+    "refundNote": "Le retour du colis et le remboursement sont deux opérations distinctes. Tout remboursement sera confirmé séparément.",
+    "winter": "Vérifiez la profondeur des sculptures, la pression et la compatibilité des pneus avant la baisse des températures.",
+    "benefits": [
+      "Confiance sur la route",
+      "Compatibilité adaptée",
+      "Conseils experts"
+    ],
+    "copy": [
+      [
+        "Confirmation de commande",
+        "Merci pour\nvotre commande !",
+        "Votre commande est enregistrée. Vérifiez votre sélection et finalisez le paiement depuis votre commande."
+      ],
+      [
+        "En route",
+        "Votre commande\nest en route !",
+        "Le transporteur a pris en charge votre colis. Suivez chaque étape jusqu’à la livraison."
+      ],
+      [
+        "Campagne saisonnière",
+        "Nouvelle saison.\nRoulez en confiance.",
+        "À chaque saison, ses conditions de route. Préparez votre véhicule aux journées plus fraîches."
+      ],
+      [
+        "Avantages membres",
+        "Merci de votre\nfidélité !",
+        "Merci de faire partie de TiresShop. Votre avantage membre vous attend pour votre prochain jeu de pneus."
+      ],
+      [
+        "Bienvenue",
+        "Bienvenue",
+        "Votre compte est prêt. Profitez de votre remise membre en effectuant vos achats connecté."
+      ],
+      [
+        "Paiement reçu",
+        "Paiement reçu",
+        "Votre paiement est confirmé. Nous vous informerons de la prochaine étape de votre commande."
+      ],
+      [
+        "En préparation",
+        "En préparation",
+        "Votre commande est en cours de traitement. Vous recevrez une mise à jour à la prochaine étape."
+      ],
+      [
+        "Suivi créé",
+        "Suivi créé",
+        "Votre étiquette d’expédition est créée. Le premier scan apparaîtra après traitement par le transporteur."
+      ],
+      [
+        "Avec le livreur",
+        "Avec le livreur",
+        "Votre colis est avec le livreur. Gardez votre téléphone à portée de main et consultez le suivi."
+      ],
+      [
+        "Prêt au retrait",
+        "Prêt au retrait",
+        "Votre commande est prête à être retirée. Vérifiez l’adresse, les horaires et les conditions de retrait."
+      ],
+      [
+        "Livré",
+        "Livré",
+        "Le transporteur a confirmé la livraison. Merci de nous avoir choisis pour vos prochaines aventures."
+      ],
+      [
+        "Mise à jour livraison",
+        "Mise à jour livraison",
+        "Le transporteur signale un incident de livraison. Consultez le suivi ou contactez notre équipe."
+      ],
+      [
+        "Retour à l’expéditeur",
+        "Retour à l’expéditeur",
+        "Votre colis retourne à l’expéditeur. Contactez notre équipe pour connaître les prochaines étapes."
+      ],
+      [
+        "Commande annulée",
+        "Commande annulée",
+        "Votre commande est annulée. Si vous avez déjà payé, consultez le remboursement ou contactez-nous."
+      ],
+      [
+        "Remboursement confirmé",
+        "Remboursement confirmé",
+        "Le remboursement de votre commande est confirmé. Il sera effectué via le moyen de paiement initial."
+      ],
+      [
+        "Message reçu",
+        "Message reçu",
+        "Votre demande est entre les mains de notre équipe. Nous répondrons à cette adresse. Vous pouvez ajouter des précisions ici."
+      ],
+      [
+        "Réponse personnalisée",
+        "Réponse personnalisée",
+        "Nous vous aidons à choisir. Indiquez le modèle, l’année de votre véhicule et la dimension actuelle de vos pneus."
+      ],
+      [
+        "Réponse du chat",
+        "Réponse du chat",
+        "Un spécialiste TiresShop vous a répondu dans le chat. Revenez à la boutique ou poursuivez par e-mail."
+      ]
+    ]
+  },
+  "it": {
+    "order": "Ordine",
+    "date": "Data",
+    "total": "Totale",
+    "items": "Articoli",
+    "shipping": "Spedizione",
+    "discount": "Sconto soci",
+    "tracking": "Numero di tracciamento",
+    "status": "Stato",
+    "payment": "Pagamento confermato",
+    "view": "Visualizza ordine",
+    "track": "Traccia la spedizione",
+    "shop": "Scopri gli pneumatici",
+    "account": "Il mio account",
+    "reply": "Contatta il nostro team",
+    "continue": "Continua la conversazione",
+    "pickup": "Dettagli del ritiro",
+    "details": "Visualizza dettagli",
+    "footer": "Grazie per aver scelto TiresShop.",
+    "help": "Siamo qui per aiutarti.",
+    "service": "Questa e-mail di servizio riguarda il tuo account, il tuo ordine o la tua richiesta.",
+    "unsubscribe": "Gestisci le preferenze e-mail",
+    "member": "IL TUO VANTAGGIO SOCIO",
+    "auto": "Applicato automaticamente quando accedi al tuo account.",
+    "next": "Il prossimo passo",
+    "team": "Servizio clienti TiresShop",
+    "address": "Indirizzo di consegna",
+    "collection": "Punto di ritiro",
+    "bank": "I tempi di accredito dipendono dalla banca o dal gestore del pagamento.",
+    "notReceipt": "Notifica di pagamento. Non è un documento fiscale.",
+    "labelNote": "Il numero di tracciamento non significa che il pacco sia già stato affidato al corriere.",
+    "safe": "Affida montaggio ed equilibratura a un professionista. Segui le indicazioni del costruttore sulla pressione degli pneumatici.",
+    "message": "Il tuo messaggio",
+    "respond": "Rispondi direttamente a questa e-mail per contattare il nostro team.",
+    "chatNote": "La risposta via e-mail arriva alla nostra casella di assistenza, non nella chat.",
+    "refundNote": "Il reso del pacco e il rimborso sono operazioni distinte. Confermeremo ogni rimborso con una nuova e-mail.",
+    "winter": "Controlla battistrada, pressione e compatibilità degli pneumatici prima che le temperature scendano.",
+    "benefits": [
+      "Fiducia sulla strada",
+      "La misura giusta",
+      "Consigli esperti"
+    ],
+    "copy": [
+      [
+        "Conferma ordine",
+        "Grazie per\nil tuo ordine!",
+        "Il tuo ordine è stato ricevuto. Controlla il tuo set e completa il pagamento dalla pagina dell’ordine."
+      ],
+      [
+        "In viaggio",
+        "Il tuo ordine\nè in viaggio!",
+        "Il corriere ha preso in carico il pacco. Segui ogni aggiornamento fino alla consegna."
+      ],
+      [
+        "Campagna stagionale",
+        "Nuova stagione.\nPiù sicurezza.",
+        "Strade diverse richiedono pneumatici adatti. Prepara il tuo veicolo alle giornate più fresche."
+      ],
+      [
+        "Vantaggi soci",
+        "Grazie per essere\ncon noi!",
+        "Grazie di far parte di TiresShop. Il tuo vantaggio socio ti aspetta per il prossimo set."
+      ],
+      [
+        "Benvenuto",
+        "Benvenuto",
+        "Il tuo account è pronto. Approfitta dello sconto soci quando acquisti dopo aver effettuato l’accesso."
+      ],
+      [
+        "Pagamento ricevuto",
+        "Pagamento ricevuto",
+        "Il pagamento è confermato. Ti informeremo quando l’ordine passerà alla fase successiva."
+      ],
+      [
+        "In preparazione",
+        "In preparazione",
+        "Il tuo ordine è in lavorazione. Riceverai un aggiornamento al prossimo passaggio."
+      ],
+      [
+        "Tracciamento creato",
+        "Tracciamento creato",
+        "L’etichetta di spedizione è stata creata. Il primo aggiornamento apparirà dopo la scansione del corriere."
+      ],
+      [
+        "Con il corriere",
+        "Con il corriere",
+        "Il pacco è con l’addetto alla consegna. Tieni il telefono a portata di mano e controlla gli aggiornamenti."
+      ],
+      [
+        "Pronto al ritiro",
+        "Pronto al ritiro",
+        "Il tuo ordine è pronto per il ritiro. Controlla indirizzo, orari e requisiti prima di partire."
+      ],
+      [
+        "Consegnato",
+        "Consegnato",
+        "Il corriere ha confermato la consegna. Grazie per averci scelto per i tuoi prossimi viaggi."
+      ],
+      [
+        "Aggiornamento consegna",
+        "Aggiornamento consegna",
+        "Il corriere segnala un problema di consegna. Consulta il tracciamento o contattaci per assistenza."
+      ],
+      [
+        "Reso al mittente",
+        "Reso al mittente",
+        "Il pacco sta tornando al mittente. Contatta il nostro team per concordare i prossimi passi."
+      ],
+      [
+        "Ordine annullato",
+        "Ordine annullato",
+        "Il tuo ordine è stato annullato. Se hai già pagato, controlla lo stato del rimborso o contattaci."
+      ],
+      [
+        "Rimborso confermato",
+        "Rimborso confermato",
+        "Il rimborso dell’ordine è confermato. L’importo sarà restituito con il metodo di pagamento originale."
+      ],
+      [
+        "Messaggio ricevuto",
+        "Messaggio ricevuto",
+        "Il nostro team ha ricevuto la richiesta e risponderà a questo indirizzo. Puoi aggiungere dettagli rispondendo qui."
+      ],
+      [
+        "Risposta personale",
+        "Risposta personale",
+        "Ti aiutiamo a scegliere il set adatto. Inviaci modello e anno del veicolo e la misura attuale degli pneumatici."
+      ],
+      [
+        "Risposta in chat",
+        "Risposta in chat",
+        "Uno specialista TiresShop ha risposto in chat. Torna al negozio o continua via e-mail."
+      ]
+    ]
+  },
+  "es": {
+    "order": "Pedido",
+    "date": "Fecha",
+    "total": "Total",
+    "items": "Artículos",
+    "shipping": "Envío",
+    "discount": "Descuento de socio",
+    "tracking": "Número de seguimiento",
+    "status": "Estado",
+    "payment": "Pago confirmado",
+    "view": "Ver pedido",
+    "track": "Seguir envío",
+    "shop": "Descubrir neumáticos",
+    "account": "Mi cuenta",
+    "reply": "Contactar con el equipo",
+    "continue": "Continuar la conversación",
+    "pickup": "Ver detalles de recogida",
+    "details": "Ver detalles",
+    "footer": "Gracias por elegir TiresShop.",
+    "help": "Estamos aquí para ayudarte.",
+    "service": "Este correo de servicio se refiere a tu cuenta, pedido o consulta.",
+    "unsubscribe": "Gestionar preferencias de correo",
+    "member": "TU VENTAJA COMO SOCIO",
+    "auto": "Se aplica automáticamente cuando has iniciado sesión.",
+    "next": "El siguiente paso",
+    "team": "Atención al cliente de TiresShop",
+    "address": "Dirección de entrega",
+    "collection": "Punto de recogida",
+    "bank": "El plazo de abono depende de tu banco o proveedor de pago.",
+    "notReceipt": "Aviso de pago. No es un comprobante fiscal.",
+    "labelNote": "Tener un número de seguimiento no significa que el transportista ya tenga el paquete.",
+    "safe": "Confía el montaje y equilibrado a un profesional. Sigue las recomendaciones de presión del fabricante de tu vehículo.",
+    "message": "Tu mensaje",
+    "respond": "Responde a este correo para contactar con nuestro equipo.",
+    "chatNote": "La respuesta por correo llega a nuestro buzón de asistencia, no al chat en directo.",
+    "refundNote": "La devolución del paquete y el reembolso son procesos distintos. Confirmaremos cualquier reembolso por separado.",
+    "winter": "Comprueba el dibujo, la presión y la compatibilidad de los neumáticos antes de que bajen las temperaturas.",
+    "benefits": [
+      "Confianza al volante",
+      "La medida adecuada",
+      "Consejos expertos"
+    ],
+    "copy": [
+      [
+        "Confirmación de pedido",
+        "¡Gracias por\ntu pedido!",
+        "Hemos recibido tu pedido. Revisa tu selección y completa el pago desde la página del pedido."
+      ],
+      [
+        "En camino",
+        "¡Tu pedido\nestá en camino!",
+        "El transportista ha recogido el paquete. Sigue cada actualización hasta que llegue a su destino."
+      ],
+      [
+        "Campaña estacional",
+        "Nueva estación.\nMás seguridad.",
+        "Cada estación trae nuevas condiciones. Prepara tu vehículo para los días más fríos."
+      ],
+      [
+        "Ventajas de socio",
+        "¡Gracias por\nconfiar en nosotros!",
+        "Gracias por formar parte de TiresShop. Tu ventaja de socio está lista para tu próximo juego de neumáticos."
+      ],
+      [
+        "Bienvenida",
+        "Bienvenida",
+        "Tu cuenta está lista. Disfruta de tu descuento de socio al comprar con la sesión iniciada."
+      ],
+      [
+        "Pago recibido",
+        "Pago recibido",
+        "Tu pago está confirmado. Te avisaremos cuando el pedido pase a la siguiente fase."
+      ],
+      [
+        "En preparación",
+        "En preparación",
+        "Estamos procesando tu pedido. Recibirás una actualización en la próxima fase."
+      ],
+      [
+        "Seguimiento creado",
+        "Seguimiento creado",
+        "La etiqueta de envío está creada. El primer registro aparecerá cuando el transportista procese el paquete."
+      ],
+      [
+        "En reparto",
+        "En reparto",
+        "El repartidor ya tiene tu paquete. Ten el teléfono a mano y consulta las últimas novedades."
+      ],
+      [
+        "Listo para recoger",
+        "Listo para recoger",
+        "El pedido está listo para recoger. Consulta la dirección, los horarios y los requisitos antes de ir."
+      ],
+      [
+        "Entregado",
+        "Entregado",
+        "El transportista ha confirmado la entrega. Gracias por elegirnos para tus próximos viajes."
+      ],
+      [
+        "Actualización de entrega",
+        "Actualización de entrega",
+        "El transportista informa de una incidencia. Consulta el seguimiento o contacta con nosotros."
+      ],
+      [
+        "Devolución al remitente",
+        "Devolución al remitente",
+        "Tu paquete está volviendo al remitente. Contacta con nuestro equipo para acordar los siguientes pasos."
+      ],
+      [
+        "Pedido cancelado",
+        "Pedido cancelado",
+        "Tu pedido se ha cancelado. Si ya has pagado, consulta el estado del reembolso o contacta con nosotros."
+      ],
+      [
+        "Reembolso confirmado",
+        "Reembolso confirmado",
+        "El reembolso de tu pedido está confirmado. Se realizará mediante el método de pago original."
+      ],
+      [
+        "Mensaje recibido",
+        "Mensaje recibido",
+        "Nuestro equipo ha recibido tu consulta y responderá a esta dirección. Puedes añadir detalles respondiendo aquí."
+      ],
+      [
+        "Respuesta personal",
+        "Respuesta personal",
+        "Te ayudamos a elegir. Envíanos modelo, año del vehículo y medida actual de los neumáticos."
+      ],
+      [
+        "Respuesta del chat",
+        "Respuesta del chat",
+        "Un especialista de TiresShop ha respondido en el chat. Vuelve a la tienda o continúa por correo."
+      ]
+    ]
+  },
+  "nl": {
+    "order": "Bestelling",
+    "date": "Datum",
+    "total": "Totaal",
+    "items": "Artikelen",
+    "shipping": "Verzending",
+    "discount": "Ledenkorting",
+    "tracking": "Trackingnummer",
+    "status": "Status",
+    "payment": "Betaling bevestigd",
+    "view": "Bestelling bekijken",
+    "track": "Zending volgen",
+    "shop": "Banden ontdekken",
+    "account": "Mijn account",
+    "reply": "Neem contact op",
+    "continue": "Gesprek voortzetten",
+    "pickup": "Afhaalgegevens bekijken",
+    "details": "Details bekijken",
+    "footer": "Bedankt dat je voor TiresShop kiest.",
+    "help": "We helpen je graag.",
+    "service": "Deze servicemail gaat over je account, bestelling of vraag.",
+    "unsubscribe": "E-mailvoorkeuren beheren",
+    "member": "JOUW LEDENVOORDEEL",
+    "auto": "Automatisch toegepast wanneer je bent ingelogd.",
+    "next": "De volgende stap",
+    "team": "TiresShop Klantenservice",
+    "address": "Bezorgadres",
+    "collection": "Afhaalpunt",
+    "bank": "Wanneer het bedrag op je rekening verschijnt, hangt af van je bank of betaalprovider.",
+    "notReceipt": "Betalingsbericht. Geen fiscaal betalingsbewijs.",
+    "labelNote": "Een trackingnummer betekent nog niet dat de vervoerder je pakket heeft ontvangen.",
+    "safe": "Laat de banden door een vakman monteren en balanceren. Volg het bandenspanningsadvies van de autofabrikant.",
+    "message": "Jouw bericht",
+    "respond": "Antwoord rechtstreeks op deze e-mail om ons team te bereiken.",
+    "chatNote": "Een antwoord per e-mail komt in onze supportmailbox, niet in de livechat.",
+    "refundNote": "Een retourpakket en een terugbetaling zijn aparte processen. We bevestigen een terugbetaling afzonderlijk.",
+    "winter": "Controleer profieldiepte, bandenspanning en de juiste maat voordat de temperatuur daalt.",
+    "benefits": [
+      "Vertrouwen onderweg",
+      "De juiste pasvorm",
+      "Deskundig advies"
+    ],
+    "copy": [
+      [
+        "Bestelbevestiging",
+        "Bedankt voor\nje bestelling!",
+        "Je bestelling is binnen. Controleer je set en rond de betaling af op de bestelpagina."
+      ],
+      [
+        "Onderweg",
+        "Je bestelling\nis onderweg!",
+        "De vervoerder heeft je pakket ontvangen. Volg elke update terwijl je bestelling dichterbij komt."
+      ],
+      [
+        "Seizoenscampagne",
+        "Nieuw seizoen.\nVeilig op weg.",
+        "Andere wegen vragen om passende banden. Maak je auto klaar voor koelere dagen."
+      ],
+      [
+        "Ledenvoordeel",
+        "Bedankt voor\nje vertrouwen!",
+        "Bedankt dat je bij TiresShop hoort. Je ledenvoordeel staat klaar voor je volgende set."
+      ],
+      [
+        "Welkom",
+        "Welkom",
+        "Je account is klaar. Profiteer van je ledenkorting wanneer je ingelogd winkelt."
+      ],
+      [
+        "Betaling ontvangen",
+        "Betaling ontvangen",
+        "Je betaling is bevestigd. We laten je weten wanneer je bestelling naar de volgende stap gaat."
+      ],
+      [
+        "In voorbereiding",
+        "In voorbereiding",
+        "Je bestelling wordt verwerkt. Je ontvangt een update bij de volgende stap."
+      ],
+      [
+        "Tracking aangemaakt",
+        "Tracking aangemaakt",
+        "Je verzendlabel is aangemaakt. De eerste scan verschijnt zodra de vervoerder het pakket verwerkt."
+      ],
+      [
+        "Bij de bezorger",
+        "Bij de bezorger",
+        "Je pakket is bij de bezorger. Houd je telefoon bij de hand en bekijk de actuele updates."
+      ],
+      [
+        "Klaar om af te halen",
+        "Klaar om af te halen",
+        "Je bestelling kan worden afgehaald. Controleer vooraf het adres, de openingstijden en de voorwaarden."
+      ],
+      [
+        "Bezorgd",
+        "Bezorgd",
+        "De vervoerder heeft de bezorging bevestigd. Bedankt dat je ons kiest voor de ritten die nog komen."
+      ],
+      [
+        "Bezorgupdate",
+        "Bezorgupdate",
+        "De vervoerder meldt een bezorgprobleem. Bekijk de tracking of neem contact met ons op."
+      ],
+      [
+        "Retour afzender",
+        "Retour afzender",
+        "Je pakket gaat terug naar de afzender. Neem contact op om de volgende stappen te bespreken."
+      ],
+      [
+        "Geannuleerd",
+        "Geannuleerd",
+        "Je bestelling is geannuleerd. Heb je al betaald, controleer dan de terugbetaling of neem contact op."
+      ],
+      [
+        "Terugbetaling bevestigd",
+        "Terugbetaling bevestigd",
+        "De terugbetaling van je bestelling is bevestigd en gaat via de oorspronkelijke betaalmethode."
+      ],
+      [
+        "Bericht ontvangen",
+        "Bericht ontvangen",
+        "Ons team heeft je vraag ontvangen en antwoordt op dit e-mailadres. Je kunt hier extra informatie sturen."
+      ],
+      [
+        "Persoonlijk antwoord",
+        "Persoonlijk antwoord",
+        "We helpen je de juiste set te vinden. Stuur het model, bouwjaar en de huidige bandenmaat."
+      ],
+      [
+        "Chatantwoord",
+        "Chatantwoord",
+        "Een TiresShop-specialist heeft in de chat geantwoord. Ga terug naar de winkel of antwoord per e-mail."
+      ]
+    ]
+  },
+  "es-419": {
+    "order": "Pedido",
+    "date": "Fecha",
+    "total": "Total",
+    "items": "Artículos",
+    "shipping": "Envío",
+    "discount": "Descuento de miembro",
+    "tracking": "Número de seguimiento",
+    "status": "Estado",
+    "payment": "Pago confirmado",
+    "view": "Ver pedido",
+    "track": "Seguir envío",
+    "shop": "Descubrir llantas",
+    "account": "Mi cuenta",
+    "reply": "Contactar al equipo",
+    "continue": "Continuar la conversación",
+    "pickup": "Ver detalles de recolección",
+    "details": "Ver detalles",
+    "footer": "Gracias por elegir TiresShop.",
+    "help": "Estamos aquí para ayudarte.",
+    "service": "Este correo de servicio se refiere a tu cuenta, pedido o consulta.",
+    "unsubscribe": "Gestionar preferencias de correo",
+    "member": "TU BENEFICIO COMO MIEMBRO",
+    "auto": "Se aplica automáticamente cuando has iniciado sesión.",
+    "next": "El siguiente paso",
+    "team": "Atención al cliente de TiresShop",
+    "address": "Dirección de entrega",
+    "collection": "Punto de recolección",
+    "bank": "El plazo de abono depende de tu banco o proveedor de pago.",
+    "notReceipt": "Aviso de pago. No es un comprobante fiscal.",
+    "labelNote": "Tener un número de seguimiento no significa que el transportista ya tenga el paquete.",
+    "safe": "Confía el montaje y balanceo a un profesional. Sigue las recomendaciones de presión del fabricante de tu vehículo.",
+    "message": "Tu mensaje",
+    "respond": "Responde a este correo para contactar con nuestro equipo.",
+    "chatNote": "La respuesta por correo llega a nuestro buzón de asistencia, no al chat en directo.",
+    "refundNote": "La devolución del paquete y el reembolso son procesos distintos. Confirmaremos cualquier reembolso por separado.",
+    "winter": "Revisa el dibujo, la presión y la compatibilidad de las llantas antes de que bajen las temperaturas.",
+    "benefits": [
+      "Confianza al volante",
+      "La medida adecuada",
+      "Consejos expertos"
+    ],
+    "copy": [
+      [
+        "Confirmación de pedido",
+        "¡Gracias por\ntu pedido!",
+        "Hemos recibido tu pedido. Revisa tu selección y completa el pago desde la página del pedido."
+      ],
+      [
+        "En camino",
+        "¡Tu pedido\nestá en camino!",
+        "El transportista ha recogido el paquete. Sigue cada actualización hasta que llegue a su destino."
+      ],
+      [
+        "Campaña estacional",
+        "Nueva estación.\nMás seguridad.",
+        "Cada estación trae nuevas condiciones. Prepara tu vehículo para los días más fríos."
+      ],
+      [
+        "Ventajas de miembro",
+        "¡Gracias por\nconfiar en nosotros!",
+        "Gracias por formar parte de TiresShop. Tu ventaja de miembro está lista para tu próximo juego de llantas."
+      ],
+      [
+        "Bienvenida",
+        "Bienvenida",
+        "Tu cuenta está lista. Disfruta de tu descuento de miembro al comprar con la sesión iniciada."
+      ],
+      [
+        "Pago recibido",
+        "Pago recibido",
+        "Tu pago está confirmado. Te avisaremos cuando el pedido pase a la siguiente fase."
+      ],
+      [
+        "En preparación",
+        "En preparación",
+        "Estamos procesando tu pedido. Recibirás una actualización en la próxima fase."
+      ],
+      [
+        "Seguimiento creado",
+        "Seguimiento creado",
+        "La etiqueta de envío está creada. El primer registro aparecerá cuando el transportista procese el paquete."
+      ],
+      [
+        "En reparto",
+        "En reparto",
+        "El repartidor ya tiene tu paquete. Ten el teléfono a mano y consulta las últimas novedades."
+      ],
+      [
+        "Listo para recoger",
+        "Listo para recoger",
+        "El pedido está listo para recoger. Consulta la dirección, los horarios y los requisitos antes de ir."
+      ],
+      [
+        "Entregado",
+        "Entregado",
+        "El transportista ha confirmado la entrega. Gracias por elegirnos para tus próximos viajes."
+      ],
+      [
+        "Actualización de entrega",
+        "Actualización de entrega",
+        "El transportista informa de una incidencia. Consulta el seguimiento o contacta con nosotros."
+      ],
+      [
+        "Devolución al remitente",
+        "Devolución al remitente",
+        "Tu paquete está volviendo al remitente. Contacta con nuestro equipo para acordar los siguientes pasos."
+      ],
+      [
+        "Pedido cancelado",
+        "Pedido cancelado",
+        "Tu pedido se ha cancelado. Si ya has pagado, consulta el estado del reembolso o contacta con nosotros."
+      ],
+      [
+        "Reembolso confirmado",
+        "Reembolso confirmado",
+        "El reembolso de tu pedido está confirmado. Se realizará mediante el método de pago original."
+      ],
+      [
+        "Mensaje recibido",
+        "Mensaje recibido",
+        "Nuestro equipo ha recibido tu consulta y responderá a esta dirección. Puedes añadir detalles respondiendo aquí."
+      ],
+      [
+        "Respuesta personal",
+        "Respuesta personal",
+        "Te ayudamos a elegir. Envíanos modelo, año del vehículo y medida actual de los llantas."
+      ],
+      [
+        "Respuesta del chat",
+        "Respuesta del chat",
+        "Un especialista de TiresShop ha respondido en el chat. Vuelve a la tienda o continúa por correo."
+      ]
+    ]
+  }
+}
