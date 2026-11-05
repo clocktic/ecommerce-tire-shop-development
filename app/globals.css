@@ -275,6 +275,23 @@
     radial-gradient(34rem 24rem at 4% 58%, var(--parallax-ink), transparent 70%);
 }
 
+.cta-roll-clip {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.cta-roll-wheel {
+  position: absolute;
+  left: 0;
+  max-width: none;
+  opacity: 0;
+  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.35));
+  mix-blend-mode: multiply;
+}
+
 /* Near plane: one large wheel, centered so both sides are symmetric. Rotation is driven from JS. */
 .parallax-wheel {
   --wheel-size: max(150vw, 92vh);
