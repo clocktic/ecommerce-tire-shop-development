@@ -82,6 +82,7 @@ export async function confirmOrderPayment(
     notifyEmailOrderPaid({
       orderNumber: existing.orderNumber,
       market,
+      lang: existing.lang,
       customerName: existing.shippingName,
       email: existing.email,
       phone: existing.phone,

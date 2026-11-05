@@ -2,8 +2,11 @@ import "server-only"
 
 import tls from "tls"
 import nodemailer from "nodemailer"
+import { headers } from "next/headers"
 import { COMPANY } from "@/lib/company"
 import { formatPrice, type Market } from "@/lib/markets"
+import { emailAssetAttachments, emailCopy, emailStore, renderEmail, type EmailDetails, type ServiceEmailTemplateId } from "@/lib/email-templates"
+import { localeMeta, type Store } from "@/lib/i18n/config"
 
 const DEFAULT_SMTP_HOST = "smtppro.zoho.com"
 const DEFAULT_SMTP_PORT = 465
@@ -42,10 +45,6 @@ function transport() {
   })
 }
 
-function escapeHtml(value: string): string {
-  return value.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!)
-}
-
 export async function sendMail(input: {
   to: string
   subject: string
@@ -54,6 +53,9 @@ export async function sendMail(input: {
   signoff: string
   replyTo?: string
   copyStoreInbox?: boolean
+  template?: ServiceEmailTemplateId
+  store?: Store
+  details?: EmailDetails
 }): Promise<boolean> {
   const mailer = transport()
   const cfg = getSmtpConfig()
@@ -61,19 +63,15 @@ export async function sendMail(input: {
     console.log("[email] SMTP_PASS not configured for info@tiresshop.net, skipped:", input.subject)
     return false
   }
-  const html = `<div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.5;color:#22252b">
-${input.paragraphs.map((p) => `<p>${escapeHtml(p)}</p>`).join("\n")}
-${input.cta ? `<p><a href="${escapeHtml(input.cta.href)}" style="display:inline-block;background:#c8312b;color:#fff;padding:10px 18px;text-decoration:none;font-weight:bold">${escapeHtml(input.cta.label)}</a></p>` : ""}
-<p>${escapeHtml(input.signoff)}<br>${escapeHtml(COMPANY.legalName)} · ${escapeHtml(COMPANY.email)}</p>
-</div>`
-  const text = [...input.paragraphs, input.cta ? `${input.cta.label}: ${input.cta.href}` : "", `${input.signoff}\n${COMPANY.legalName} · ${COMPANY.email}`]
-    .filter(Boolean)
-    .join("\n\n")
 
   const recipientLower = input.to.trim().toLowerCase()
   const shouldBccStore = Boolean(input.copyStoreInbox && recipientLower !== COMPANY.email.toLowerCase())
 
   try {
+    if (input.template && ["season", "loyalty"].includes(input.template)) {
+      throw new Error("Marketing delivery requires a separate consent and unsubscribe workflow")
+    }
+    const { html, text, assetIds } = renderEmail(input)
     await mailer.sendMail({
       from: cfg.from,
       to: input.to,
@@ -82,6 +80,9 @@ ${input.cta ? `<p><a href="${escapeHtml(input.cta.href)}" style="display:inline-
       subject: input.subject,
       text,
       html,
+      attachments: emailAssetAttachments(assetIds),
+      disableFileAccess: true,
+      disableUrlAccess: true,
     })
     return true
   } catch (error) {
@@ -125,7 +126,9 @@ export async function sendContactFormEmails(input: {
   market: string
   lang: string
 }): Promise<void> {
-  const topic = input.subject?.trim() || "Обращение через форму контактов"
+  const store = emailStore(input.market, input.lang)
+  const c = emailCopy(store)
+  const topic = input.subject?.trim() || c.copy[15][0]
   const orderTag = input.orderNumber ? ` (Заказ ${input.orderNumber})` : ""
 
   await Promise.all([
@@ -146,13 +149,12 @@ export async function sendContactFormEmails(input: {
     sendMail({
       to: input.email,
       replyTo: COMPANY.email,
-      subject: `Re: ${topic} · ${COMPANY.tradingName}`,
-      paragraphs: [
-        `Hello ${input.name},`,
-        `We have received your message at ${COMPANY.email}${input.orderNumber ? ` regarding order ${input.orderNumber}` : ""} and our team will get back to you shortly.`,
-        `Your message:\n"${input.message}"`,
-      ],
-      signoff: `Best regards, ${COMPANY.tradingName} Customer Care`,
+      template: "contact",
+      store,
+      details: { orderNumber: input.orderNumber || undefined },
+      subject: `${c.copy[15][0]} · ${topic} · ${COMPANY.tradingName}`,
+      paragraphs: [c.copy[15][2], `${c.message}:\n${input.message}`],
+      signoff: c.footer,
     }),
   ])
 }
@@ -160,19 +162,30 @@ export async function sendContactFormEmails(input: {
 export async function notifyEmailNewUser(input: {
   name: string
   email: string
+  market?: string
+  lang?: string
 }): Promise<void> {
+  let store = emailStore(input.market, input.lang)
+  if (!input.market && !input.lang) {
+    try {
+      const requestHeaders = await headers()
+      const pathname = new URL(requestHeaders.get("referer") || COMPANY.url).pathname
+      const match = pathname.match(/^\/(us|eu)\/([a-z]{2})(?:\/|$)/)
+      if (match) store = emailStore(match[1], match[2])
+    } catch {
+      // Programmatic account creation may have no Next.js request context or storefront locale.
+    }
+  }
+  const c = emailCopy(store)
   await Promise.all([
     sendMail({
       to: input.email,
       replyTo: COMPANY.email,
-      subject: `Welcome to ${COMPANY.tradingName} — Your 7% Member Discount is Active`,
-      paragraphs: [
-        `Hello ${input.name || "there"},`,
-        `Your ${COMPANY.tradingName} account (${input.email}) is now active. Your 7% Member Club discount is automatically applied whenever you are signed in.`,
-        `If you have any questions about tire fitment, wheels, or shipping, simply reply to this email (${COMPANY.email}).`,
-      ],
-      cta: { label: "Open Your Account", href: `${COMPANY.url}/us/en/account` },
-      signoff: `Best regards, ${COMPANY.tradingName}`,
+      template: "welcome",
+      store,
+      subject: `${c.copy[4][0]} · ${COMPANY.tradingName}`,
+      paragraphs: [],
+      signoff: c.footer,
     }),
     sendStoreInboxMail({
       customerName: input.name,
@@ -191,6 +204,7 @@ export async function notifyEmailNewUser(input: {
 export async function notifyEmailOrderPaid(input: {
   orderNumber: string
   market: Market
+  lang?: string
   customerName?: string | null
   email: string
   phone?: string | null
@@ -201,7 +215,9 @@ export async function notifyEmailOrderPaid(input: {
   paymentMethod?: string | null
   transactionId?: string | null
 }): Promise<void> {
-  const fmtMoney = (cents: number) => formatPrice(cents, input.market, input.market === "us" ? "en-US" : "de-DE")
+  const store = emailStore(input.market, input.lang)
+  const c = emailCopy(store)
+  const fmtMoney = (cents: number) => formatPrice(cents, input.market, localeMeta(store).intlLocale)
   const itemLines = (input.items ?? []).map((item) => {
     const label = item.brandName ? `${item.brandName} ${item.productName}` : item.productName
     return `${item.quantity} × ${label} — ${fmtMoney(item.lineTotalCents)}`
@@ -211,17 +227,12 @@ export async function notifyEmailOrderPaid(input: {
     sendMail({
       to: input.email,
       replyTo: COMPANY.email,
-      subject: `${COMPANY.tradingName} — Payment received for order ${input.orderNumber}`,
-      paragraphs: [
-        `Thank you${input.customerName ? `, ${input.customerName}` : ""}! We have received your payment of ${fmtMoney(input.totalCents)} for order ${input.orderNumber}.`,
-        ...(itemLines.length > 0 ? [`Order summary:\n${itemLines.join("\n")}`] : []),
-        `We are now preparing your shipment and will email your tracking number from ${COMPANY.email} as soon as your parcel is dispatched.`,
-      ],
-      cta: {
-        label: "Track Your Order",
-        href: `${COMPANY.url}/${input.market}/en/track/${encodeURIComponent(input.orderNumber)}`,
-      },
-      signoff: `Best regards, ${COMPANY.tradingName}`,
+      template: "paid",
+      store,
+      details: { orderNumber: input.orderNumber, totalCents: input.totalCents, items: input.items },
+      subject: `${c.copy[5][0]} · ${input.orderNumber} · ${COMPANY.tradingName}`,
+      paragraphs: [],
+      signoff: c.footer,
     }),
     sendStoreInboxMail({
       customerName: input.customerName ?? undefined,
@@ -276,17 +287,25 @@ export async function sendTestStoreEmail(): Promise<{ ok: boolean; error?: strin
     }
   }
   try {
+    const { html, text, subject, assetIds } = renderEmail({
+      subject: `Тестовое письмо · ${COMPANY.tradingName} (${COMPANY.email})`,
+      paragraphs: [
+        `Это проверка оформления и отправки писем магазина ${COMPANY.domain}.`,
+        `Сервер исходящей почты (SMTP): ${cfg.host}:${cfg.port}`,
+        `Сервер входящей почты (IMAP): ${DEFAULT_IMAP_HOST}:${DEFAULT_IMAP_PORT}`,
+        `Тест не создаёт заказов и не отправляет уведомлений покупателям.`,
+      ],
+    })
     await mailer.sendMail({
       from: cfg.from,
       to: COMPANY.email,
       replyTo: COMPANY.email,
-      subject: `Тестовое письмо · ${COMPANY.tradingName} (${COMPANY.email})`,
-      text: [
-        `Почта ${COMPANY.email} успешно подключен�� к магазину ${COMPANY.domain}.`,
-        `Сервер исходящей почты (SMTP): ${cfg.host}:${cfg.port}`,
-        `Сервер входящей почты (IMAP): ${DEFAULT_IMAP_HOST}:${DEFAULT_IMAP_PORT}`,
-        `Все входящие обращения, заказы, оплаты и исходящие уведомления покупателям работают.`,
-      ].join("\n\n"),
+      subject,
+      text,
+      html,
+      attachments: emailAssetAttachments(assetIds),
+      disableFileAccess: true,
+      disableUrlAccess: true,
     })
     return { ok: true }
   } catch (e) {

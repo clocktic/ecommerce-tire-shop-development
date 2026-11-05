@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
-import { count, eq } from "drizzle-orm"
+import { and, count, eq, ne } from "drizzle-orm"
 import { createAdminSession, destroyAdminSession, requireAdmin, verifyPassword } from "@/lib/admin-auth"
 import { addMessage } from "@/lib/chat"
 import { db } from "@/lib/db"
@@ -17,6 +17,7 @@ import { fmt } from "@/lib/i18n/fmt"
 import { localeMeta } from "@/lib/i18n/config"
 import { COMPANY } from "@/lib/company"
 import { sendMail, sendTestStoreEmail } from "@/lib/email"
+import { emailCopy, emailStore, EMAIL_TEMPLATE_IDS, type ServiceEmailTemplateId } from "@/lib/email-templates"
 import { orderStore } from "@/lib/shipping/events"
 import { sendTelegramChatBotMessage, sendTelegramNotification } from "@/lib/telegram"
 
@@ -54,10 +55,31 @@ export async function setOrderStatus(orderId: string, status: string): Promise<A
       paymentMethod: "Подтверждено в админке (Bank Transfer / вручную)",
     })
   } else {
-    await db
+    const [changed] = await db
       .update(orders)
       .set({ status: status as OrderStatus, updatedAt: new Date() })
-      .where(eq(orders.id, orderId))
+      .where(and(eq(orders.id, orderId), ne(orders.status, status)))
+      .returning()
+    if (changed && ["processing", "cancelled", "refunded", "delivered"].includes(status)) {
+      const store = orderStore(changed)
+      const c = emailCopy(store)
+      const template = status as ServiceEmailTemplateId
+      const title = c.copy[EMAIL_TEMPLATE_IDS.indexOf(template)][0]
+      const sent = await sendMail({
+        to: changed.email,
+        template,
+        store,
+        subject: `${title} · ${changed.orderNumber} · ${COMPANY.tradingName}`,
+        paragraphs: [],
+        details: { orderNumber: changed.orderNumber },
+        signoff: c.footer,
+        copyStoreInbox: true,
+      })
+      if (!sent) {
+        revalidatePath("/admin", "layout")
+        return { ok: true, message: "Статус сохранён, но письмо не отправлено. Проверьте настройки почты." }
+      }
+    }
   }
 
   if (status === "shipped") {
@@ -149,6 +171,9 @@ export async function resendOrderConfirmation(orderId: string): Promise<ActionRe
   const x = extrasFor(localeMeta(orderStore(order)).content)
   const sent = await sendMail({
     to: order.email,
+    template: "order",
+    store: orderStore(order),
+    details: { orderNumber: order.orderNumber, totalCents: order.totalCents },
     subject: fmt(x.email.orderSubject, { number: order.orderNumber }),
     paragraphs: [fmt(x.email.orderBody, { number: order.orderNumber, total: (order.totalCents / 100).toFixed(2) + " " + order.currency })],
     signoff: x.email.signoff,
@@ -172,14 +197,22 @@ export async function replyToContactMessage(form: FormData): Promise<ActionResul
   const subject = String(form.get("subject") ?? "").trim() || `Re: ${COMPANY.tradingName}`
   const body = String(form.get("body") ?? "").trim().slice(0, 5000)
   if (!to || !body) return { ok: false, error: "Укажите получателя и текст ответа" }
+  const [original] = id ? await db.select().from(contactMessages)
+    .where(and(eq(contactMessages.id, id), eq(contactMessages.email, to))).limit(1) : []
+  const store = emailStore(original?.market, original?.lang)
+  const c = emailCopy(store)
 
   const sent = await sendMail({
     to,
+    template: "reply",
+    store,
+    details: { orderNumber: original?.orderNumber || undefined },
+    cta: { label: c.reply, href: `mailto:${COMPANY.email}` },
     replyTo: COMPANY.email,
     copyStoreInbox: true,
     subject,
     paragraphs: body.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean),
-    signoff: `Best regards, ${COMPANY.tradingName} Support`,
+    signoff: c.team,
   })
   if (!sent) {
     return { ok: false, error: "Не удалось отправить письмо — добавьте пароль почты SMTP_PASS в настройки Vars" }
@@ -198,16 +231,17 @@ export async function replyToChat(conversationId: string, body: string): Promise
   await addMessage(conversationId, "admin", text)
   const [conv] = await db.select().from(chatConversations).where(eq(chatConversations.id, conversationId)).limit(1)
   if (conv?.email) {
+    const store = emailStore(conv.market, conv.lang)
+    const c = emailCopy(store)
     await sendMail({
       to: conv.email,
+      template: "chat",
+      store,
       replyTo: COMPANY.email,
-      subject: `${COMPANY.tradingName} — Reply to your chat inquiry`,
-      paragraphs: [
-        `Hello ${conv.name || "there"},`,
-        text,
-        `You can reply directly to this email (${COMPANY.email}) or continue in the live chat on ${COMPANY.domain}.`,
-      ],
-      signoff: `Best regards, ${COMPANY.tradingName}`,
+      subject: `${c.copy[17][0]} · ${COMPANY.tradingName}`,
+      paragraphs: [text, c.respond],
+      cta: { label: c.continue, href: `${COMPANY.url}/${store.market}/${store.lang}` },
+      signoff: c.team,
     })
   }
   return { ok: true }

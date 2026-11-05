@@ -9,6 +9,7 @@ import { localeMeta, parseStore, storePath, type Store } from "@/lib/i18n/config
 import { extrasFor } from "@/lib/i18n/extras"
 import { fmt } from "@/lib/i18n/fmt"
 import { sendMail } from "@/lib/email"
+import { SHIPMENT_EMAIL_TEMPLATES } from "@/lib/email-templates"
 import { absoluteUrl } from "@/lib/seo"
 import { OWN_CARRIER, statusLabel, type ShipmentStatus } from "@/lib/shipping/tracking"
 import type { Market } from "@/lib/markets"
@@ -136,6 +137,9 @@ export async function sendShipmentEventEmail(
   if (order.trackingNumber) paragraphs.push(`${x.track.number}: ${order.trackingNumber}`)
   return sendMail({
     to: order.email,
+    template: SHIPMENT_EMAIL_TEMPLATES[event.status as ShipmentStatus],
+    store,
+    details: { orderNumber: order.orderNumber, trackingNumber: order.trackingNumber, status },
     subject: fmt(x.email.shipSubject, { number: order.orderNumber, status }),
     paragraphs,
     cta: order.trackingUrl ? { label: x.email.trackCta, href: order.trackingUrl } : undefined,
