@@ -3,6 +3,7 @@ import "server-only"
 import { betterAuth } from "better-auth"
 import { nextCookies } from "better-auth/next-js"
 import { pool } from "@/lib/db"
+import { notifyEmailNewUser } from "@/lib/email"
 import { notifyTelegramNewUser } from "@/lib/telegram"
 
 export type SocialProvider = "google" | "apple" | "facebook"
@@ -75,11 +76,17 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (createdUser) => {
-          await notifyTelegramNewUser({
-            id: createdUser.id,
-            name: createdUser.name,
-            email: createdUser.email,
-          })
+          await Promise.all([
+            notifyTelegramNewUser({
+              id: createdUser.id,
+              name: createdUser.name,
+              email: createdUser.email,
+            }),
+            notifyEmailNewUser({
+              name: createdUser.name,
+              email: createdUser.email,
+            }),
+          ])
         },
       },
     },

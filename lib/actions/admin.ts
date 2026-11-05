@@ -15,7 +15,8 @@ import { ORDER_STATUSES, isShipmentStatus, type OrderStatus } from "@/lib/shippi
 import { extrasFor } from "@/lib/i18n/extras"
 import { fmt } from "@/lib/i18n/fmt"
 import { localeMeta } from "@/lib/i18n/config"
-import { sendMail } from "@/lib/email"
+import { COMPANY } from "@/lib/company"
+import { sendMail, sendTestStoreEmail } from "@/lib/email"
 import { orderStore } from "@/lib/shipping/events"
 import { sendTelegramChatBotMessage, sendTelegramNotification } from "@/lib/telegram"
 
@@ -108,6 +109,15 @@ export async function testTelegramChatBot(): Promise<ActionResult> {
   return { ok: true, message: "Тест отправлен в бот онлайн-чата" }
 }
 
+export async function testStoreEmail(): Promise<ActionResult> {
+  await requireAdmin()
+  const res = await sendTestStoreEmail()
+  if (!res.ok) {
+    return { ok: false, error: res.error ?? "Ошибка отправки письма" }
+  }
+  return { ok: true, message: `Тестовое письмо отправлено на ${COMPANY.email}` }
+}
+
 export async function addShipmentEvent(form: FormData): Promise<ActionResult> {
   await requireAdmin()
   const orderId = String(form.get("orderId") ?? "")
@@ -155,11 +165,51 @@ export async function setMessageStatus(id: string, status: "new" | "answered" | 
   return { ok: true }
 }
 
+export async function replyToContactMessage(form: FormData): Promise<ActionResult> {
+  await requireAdmin()
+  const id = String(form.get("id") ?? "").trim()
+  const to = String(form.get("to") ?? "").trim()
+  const subject = String(form.get("subject") ?? "").trim() || `Re: ${COMPANY.tradingName}`
+  const body = String(form.get("body") ?? "").trim().slice(0, 5000)
+  if (!to || !body) return { ok: false, error: "Укажите получателя и текст ответа" }
+
+  const sent = await sendMail({
+    to,
+    replyTo: COMPANY.email,
+    copyStoreInbox: true,
+    subject,
+    paragraphs: body.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean),
+    signoff: `Best regards, ${COMPANY.tradingName} Support`,
+  })
+  if (!sent) {
+    return { ok: false, error: "Не удалось отправить письмо — добавьте пароль почты SMTP_PASS в настройки Vars" }
+  }
+  if (id) {
+    await db.update(contactMessages).set({ status: "answered" }).where(eq(contactMessages.id, id))
+  }
+  revalidatePath("/admin/messages")
+  return { ok: true, message: `Ответ отправлен с ${COMPANY.email} на ${to}` }
+}
+
 export async function replyToChat(conversationId: string, body: string): Promise<ActionResult> {
   await requireAdmin()
   const text = body.trim().slice(0, 2000)
   if (!text) return { ok: false, error: "Пустое сообщение" }
   await addMessage(conversationId, "admin", text)
+  const [conv] = await db.select().from(chatConversations).where(eq(chatConversations.id, conversationId)).limit(1)
+  if (conv?.email) {
+    await sendMail({
+      to: conv.email,
+      replyTo: COMPANY.email,
+      subject: `${COMPANY.tradingName} — Reply to your chat inquiry`,
+      paragraphs: [
+        `Hello ${conv.name || "there"},`,
+        text,
+        `You can reply directly to this email (${COMPANY.email}) or continue in the live chat on ${COMPANY.domain}.`,
+      ],
+      signoff: `Best regards, ${COMPANY.tradingName}`,
+    })
+  }
   return { ok: true }
 }
 

@@ -2,9 +2,11 @@
 
 import { db } from "@/lib/db"
 import { contactMessages } from "@/lib/db/schema"
+import { sendContactFormEmails } from "@/lib/email"
 import { newId } from "@/lib/ids"
 import { parseStore } from "@/lib/i18n/config"
 import { verifyCaptcha } from "@/lib/captcha"
+import { notifyTelegramContactMessage } from "@/lib/telegram"
 
 export type ContactState = { status: "idle" | "sent" | "error" | "captcha-error"; attempt: number }
 
@@ -28,15 +30,40 @@ export async function sendContactMessage(prev: ContactState, form: FormData): Pr
   const message = field(form, "message", 5000)
   if (!store || !name || !EMAIL_RE.test(email) || message.length < 2) return { status: "error", attempt }
 
+  const orderNumber = field(form, "orderNumber", 40) || null
+  const subject = field(form, "subject", 200) || null
+
   await db.insert(contactMessages).values({
     id: newId("cm"),
     market: store.market,
     lang: store.lang,
     name,
     email,
-    orderNumber: field(form, "orderNumber", 40) || null,
-    subject: field(form, "subject", 200) || null,
+    orderNumber,
+    subject,
     message,
   })
+
+  await Promise.all([
+    sendContactFormEmails({
+      name,
+      email,
+      orderNumber,
+      subject,
+      message,
+      market: store.market,
+      lang: store.lang,
+    }),
+    notifyTelegramContactMessage({
+      name,
+      email,
+      orderNumber,
+      subject,
+      message,
+      market: store.market,
+      lang: store.lang,
+    }),
+  ])
+
   return { status: "sent", attempt }
 }

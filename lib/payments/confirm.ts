@@ -3,6 +3,7 @@ import "server-only"
 import { eq } from "drizzle-orm"
 import { db } from "@/lib/db"
 import { orderItems, orders } from "@/lib/db/schema"
+import { notifyEmailOrderPaid } from "@/lib/email"
 import type { Market } from "@/lib/markets"
 import { notifyTelegramOrderPaid } from "@/lib/telegram"
 
@@ -56,24 +57,42 @@ export async function confirmOrderPayment(
     .from(orderItems)
     .where(eq(orderItems.orderId, existing.id))
 
-  await notifyTelegramOrderPaid({
-    orderNumber: existing.orderNumber,
-    market: (existing.market === "eu" ? "eu" : "us") as Market,
-    customerName: existing.shippingName,
-    email: existing.email,
-    phone: existing.phone,
-    city: existing.shippingCity,
-    country: existing.shippingCountry,
-    totalCents: existing.totalCents,
-    items: items.map((i) => ({
-      productName: i.productName,
-      brandName: i.brandName,
-      quantity: i.quantity,
-      lineTotalCents: i.lineTotalCents,
-    })),
-    paymentMethod: options.paymentMethod ?? null,
-    transactionId: options.transactionId ?? null,
-  })
+  const mappedItems = items.map((i) => ({
+    productName: i.productName,
+    brandName: i.brandName,
+    quantity: i.quantity,
+    lineTotalCents: i.lineTotalCents,
+  }))
+  const market = (existing.market === "eu" ? "eu" : "us") as Market
+
+  await Promise.all([
+    notifyTelegramOrderPaid({
+      orderNumber: existing.orderNumber,
+      market,
+      customerName: existing.shippingName,
+      email: existing.email,
+      phone: existing.phone,
+      city: existing.shippingCity,
+      country: existing.shippingCountry,
+      totalCents: existing.totalCents,
+      items: mappedItems,
+      paymentMethod: options.paymentMethod ?? null,
+      transactionId: options.transactionId ?? null,
+    }),
+    notifyEmailOrderPaid({
+      orderNumber: existing.orderNumber,
+      market,
+      customerName: existing.shippingName,
+      email: existing.email,
+      phone: existing.phone,
+      city: existing.shippingCity,
+      country: existing.shippingCountry,
+      totalCents: existing.totalCents,
+      items: mappedItems,
+      paymentMethod: options.paymentMethod ?? null,
+      transactionId: options.transactionId ?? null,
+    }),
+  ])
 
   return { ok: true, alreadyPaid: false }
 }

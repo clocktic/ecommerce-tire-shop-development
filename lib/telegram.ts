@@ -271,6 +271,29 @@ export async function sendTelegramChatBotMessage(
   return anySuccess ? { ok: true } : { ok: false, error: lastError ?? "Не удалось отправить сообщение" }
 }
 
+export async function notifyTelegramContactMessage(input: {
+  name: string
+  email: string
+  orderNumber?: string | null
+  subject?: string | null
+  message: string
+  market: string
+  lang: string
+}): Promise<TelegramResult> {
+  const lines = [
+    `<b>Новое письмо с сайта · ${escapeHtml(COMPANY.tradingName)}</b>`,
+    `<b>От:</b> ${escapeHtml(input.name)} (${escapeHtml(input.email)})`,
+    `<b>Витрина:</b> ${escapeHtml(input.market.toUpperCase())} / ${escapeHtml(input.lang.toUpperCase())}`,
+    ...(input.orderNumber ? [`<b>Номер заказа:</b> <code>${escapeHtml(input.orderNumber)}</code>`] : []),
+    ...(input.subject ? [`<b>Тема:</b> ${escapeHtml(input.subject)}`] : []),
+    ``,
+    `<blockquote>${escapeHtml(input.message)}</blockquote>`,
+    ``,
+    `<a href="${escapeHtml(COMPANY.url)}/admin/messages">Ответить с info@tiresshop.net в админке →</a>`,
+  ]
+  return sendTelegramNotification(lines.join("\n"))
+}
+
 export async function notifyTelegramChatMessage(input: {
   conversationId: string
   name: string

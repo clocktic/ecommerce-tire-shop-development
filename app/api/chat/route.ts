@@ -11,6 +11,7 @@ import {
   updateConversationContact,
 } from "@/lib/chat"
 import { parseStore } from "@/lib/i18n/config"
+import { notifyEmailChatMessage } from "@/lib/email"
 import { notifyTelegramChatMessage } from "@/lib/telegram"
 import { syncTelegramChatUpdates } from "@/lib/telegram-chat"
 
@@ -68,14 +69,24 @@ export async function POST(request: Request) {
 
   if (body) {
     await addMessage(conversation.id, "visitor", body)
-    await notifyTelegramChatMessage({
-      conversationId: conversation.id,
-      name,
-      email,
-      market: store.market,
-      lang: store.lang,
-      body,
-    })
+    await Promise.all([
+      notifyTelegramChatMessage({
+        conversationId: conversation.id,
+        name,
+        email,
+        market: store.market,
+        lang: store.lang,
+        body,
+      }),
+      notifyEmailChatMessage({
+        conversationId: conversation.id,
+        name,
+        email,
+        market: store.market,
+        lang: store.lang,
+        body,
+      }),
+    ])
   }
 
   const isHttps = request.url.startsWith("https:")

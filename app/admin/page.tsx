@@ -1,9 +1,12 @@
 import Link from "next/link"
 import { count, eq, inArray } from "drizzle-orm"
+import { EmailTestCard } from "@/components/admin/email-test-card"
 import { TelegramTestCard } from "@/components/admin/telegram-test-card"
 import { isAdmin } from "@/lib/admin-auth"
+import { COMPANY } from "@/lib/company"
 import { db } from "@/lib/db"
 import { chatConversations, contactMessages, orders, products } from "@/lib/db/schema"
+import { getSmtpConfig } from "@/lib/email"
 import { isTelegramChatBotConfigured, isTelegramConfigured } from "@/lib/telegram"
 
 export default async function AdminDashboard() {
@@ -39,6 +42,11 @@ export default async function AdminDashboard() {
           </li>
         ))}
       </ul>
+      <EmailTestCard
+        email={COMPANY.email}
+        host={getSmtpConfig().host}
+        configured={getSmtpConfig().configured}
+      />
       <TelegramTestCard
         configured={isTelegramConfigured()}
         chatBotConfigured={isTelegramChatBotConfigured()}
