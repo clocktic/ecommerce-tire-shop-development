@@ -40,7 +40,8 @@ export function ProductCarousel({ children, labelledBy, prevLabel, nextLabel }: 
   }
 
   const buttonClass =
-    "flex size-10 items-center justify-center border border-border bg-card text-foreground transition-colors hover:border-foreground hover:bg-foreground hover:text-background disabled:pointer-events-none disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+    // Track has pb-6 for card shadows, so center on the cards rather than the whole track.
+    "absolute top-[calc(50%-0.75rem)] z-10 flex size-11 -translate-y-1/2 items-center justify-center border border-border bg-card/95 text-foreground shadow-lg backdrop-blur transition-[color,background-color,border-color,opacity] hover:border-foreground hover:bg-foreground hover:text-background disabled:pointer-events-none disabled:opacity-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
 
   return (
     <div role="region" aria-roledescription="carousel" aria-labelledby={labelledBy} className="relative">
@@ -56,14 +57,24 @@ export function ProductCarousel({ children, labelledBy, prevLabel, nextLabel }: 
         ))}
       </ul>
 
-      <div className="mt-1 flex justify-end gap-2">
-        <button type="button" onClick={() => scrollByPage(-1)} disabled={edges.start} aria-label={prevLabel} className={buttonClass}>
-          <ChevronLeft aria-hidden="true" className="size-5" />
-        </button>
-        <button type="button" onClick={() => scrollByPage(1)} disabled={edges.end} aria-label={nextLabel} className={buttonClass}>
-          <ChevronRight aria-hidden="true" className="size-5" />
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={() => scrollByPage(-1)}
+        disabled={edges.start}
+        aria-label={prevLabel}
+        className={`${buttonClass} left-0 md:-left-5`}
+      >
+        <ChevronLeft aria-hidden="true" className="size-5" />
+      </button>
+      <button
+        type="button"
+        onClick={() => scrollByPage(1)}
+        disabled={edges.end}
+        aria-label={nextLabel}
+        className={`${buttonClass} right-0 md:-right-5`}
+      >
+        <ChevronRight aria-hidden="true" className="size-5" />
+      </button>
     </div>
   )
 }
