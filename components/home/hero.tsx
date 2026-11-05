@@ -25,7 +25,7 @@ export function Hero({ store }: { store: Store }) {
               <p className="label-caps text-primary">{t.home.eyebrow}</p>
               <Link
                 href={storePath(store, "/account?mode=sign-up")}
-                className="group inline-flex items-center gap-1.5 bg-primary px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-primary-foreground transition-opacity hover:opacity-90"
+                className="rounded-md group inline-flex items-center gap-1.5 bg-primary px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-primary-foreground transition-opacity hover:opacity-90"
               >
                 <Tag className="size-3" aria-hidden="true" />
                 <span>{x.memberDiscount.badge}</span>

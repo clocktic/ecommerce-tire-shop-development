@@ -27,7 +27,7 @@ export function ProductMemberCallout({ priceCents }: { priceCents: number }) {
             {fmt(x.memberDiscount.productActive, { price: formattedMemberPrice, save: formattedSave })}
           </span>
         </div>
-        <span className="shrink-0 bg-primary px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-primary-foreground">
+        <span className="rounded-md shrink-0 bg-primary px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-primary-foreground">
           −7%
         </span>
       </div>
@@ -45,7 +45,7 @@ export function ProductMemberCallout({ priceCents }: { priceCents: number }) {
           {fmt(x.memberDiscount.productCallout, { price: formattedMemberPrice, save: formattedSave })}
         </span>
       </div>
-      <span className="inline-flex shrink-0 items-center gap-1 bg-primary px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-primary-foreground">
+      <span className="rounded-md inline-flex shrink-0 items-center gap-1 bg-primary px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-primary-foreground">
         −7%
         <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
       </span>

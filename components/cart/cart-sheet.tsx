@@ -193,7 +193,7 @@ export function CartSheet() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setOpen(false)}
-                    className="h-auto min-h-9 w-full min-w-0 whitespace-normal border border-border/60 px-2.5 py-1.5 text-center text-xs leading-tight"
+                    className="rounded-md h-auto min-h-9 w-full min-w-0 whitespace-normal border border-border/60 px-2.5 py-1.5 text-center text-xs leading-tight"
                   >
                     {t.product.notSold.back}
                   </Button>

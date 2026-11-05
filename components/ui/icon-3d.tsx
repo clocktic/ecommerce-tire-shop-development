@@ -11,8 +11,11 @@ export type Icon3DName =
   | "payment"
   | "order"
   | "track"
+  | "vehicle"
+  | "tiresize"
 
 const SIZES = {
+  xs: "size-6 rounded-md",
   sm: "size-9",
   md: "size-11",
   lg: "size-14",

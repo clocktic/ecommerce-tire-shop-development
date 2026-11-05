@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useI18n } from "@/components/i18n/i18n-provider"
 import { useGarage } from "@/components/garage/garage-provider"
 import { BrakeDiscIcon, TireSizeIcon, VehicleIcon, WheelRimIcon } from "@/components/garage/fitment-icons"
+import { Icon3D } from "@/components/ui/icon-3d"
 import { getVehicleMakeIconUrl } from "@/lib/brand-icons"
 import {
   findVehicleById,
@@ -416,9 +417,7 @@ export function FitmentModal({
               {/* Vehicle Hero Banner */}
               <div className="flex flex-wrap items-center justify-between gap-3 border border-border bg-muted/20 p-3.5">
                 <div className="flex items-center gap-3.5">
-                  <div className="relative flex h-12 w-16 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 text-foreground">
-                    <VehicleIcon className="size-10 w-14" />
-                  </div>
+                  <Icon3D name="vehicle" size="lg" />
                   <div className="flex flex-col gap-0.5">
                     <h2 className="font-expanded text-base font-extrabold uppercase leading-tight sm:text-lg">
                       {g.vehicleTitle}
@@ -672,7 +671,7 @@ export function FitmentModal({
                         <span className="ml-1 text-muted-foreground">R</span>
                         <span>{vehicleSize.rim}</span>
                       </p>
-                      <span className="border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+                      <span className="rounded-md border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
                         {model.boltPattern.replace("x", "×")}
                       </span>
                     </div>
@@ -724,9 +723,7 @@ export function FitmentModal({
               {/* Top Hero Readout + Direct Type Input */}
               <div className="grid gap-3 border border-border bg-muted/20 p-3.5 sm:grid-cols-[1fr_auto] sm:items-center">
                 <div className="flex items-center gap-3.5">
-                  <div className="flex size-13 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 text-foreground">
-                    <TireSizeIcon className="size-10" />
-                  </div>
+                  <Icon3D name="tiresize" size="lg" />
                   <div className="flex min-w-0 flex-col gap-0.5">
                     <span className="label-caps text-[10px] text-muted-foreground">{g.sizeTitle}</span>
                     <p

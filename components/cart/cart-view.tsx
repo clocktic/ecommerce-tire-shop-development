@@ -139,7 +139,7 @@ export function SummaryRows({
           <Link
             href={storePath(store, "/account?mode=sign-up")}
             onClick={onNavigate}
-            className="inline-flex shrink-0 items-center gap-1 bg-primary px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-primary-foreground transition-opacity hover:opacity-90"
+            className="rounded-md inline-flex shrink-0 items-center gap-1 bg-primary px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-primary-foreground transition-opacity hover:opacity-90"
           >
             <span>{x.memberDiscount.cartGuestCta}</span>
             <ArrowRight className="size-3" aria-hidden="true" />

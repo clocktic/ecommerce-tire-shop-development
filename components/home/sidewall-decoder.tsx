@@ -15,7 +15,7 @@ export function SidewallDecoder({ t }: { t: Dictionary }) {
           <p className="text-pretty text-xs leading-relaxed text-muted-foreground sm:text-base">{d.lead}</p>
           <div
             aria-hidden="true"
-            className="mt-1 inline-flex items-baseline gap-1.5 self-start border border-border bg-card px-3 py-1.5 font-mono text-sm font-bold tracking-wider sm:hidden"
+            className="rounded-md mt-1 inline-flex items-baseline gap-1.5 self-start border border-border bg-card px-3 py-1.5 font-mono text-sm font-bold tracking-wider sm:hidden"
           >
             <span className="text-primary">225</span>
             <span className="text-muted-foreground">/</span>

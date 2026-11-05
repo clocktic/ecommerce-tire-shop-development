@@ -67,7 +67,7 @@ export function BrandFilterStrip({
             )}
           >
             {iconUrl && (
-              <span className="flex h-8 min-w-[72px] shrink-0 items-center justify-center border border-border/70 bg-white px-2.5 py-1">
+              <span className="rounded-md flex h-8 min-w-[72px] shrink-0 items-center justify-center border border-border/70 bg-white px-2.5 py-1">
                 <img
                   src={iconUrl}
                   alt={name}

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { useI18n } from "@/components/i18n/i18n-provider"
 import { useGarage } from "@/components/garage/garage-provider"
 import { FitmentModal } from "@/components/garage/fitment-modal"
-import { TireSizeIcon, VehicleIcon } from "@/components/garage/fitment-icons"
+import { Icon3D } from "@/components/ui/icon-3d"
 import { TIRE_OPTIONS } from "@/lib/catalog"
 import { POPULAR_TIRE_SIZES } from "@/lib/catalog/vehicles"
 import { storePath } from "@/lib/i18n/config"
@@ -68,7 +68,7 @@ export function SizeFinder() {
       <CornerMarks />
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
         <div className="flex items-center gap-2">
-          <TireSizeIcon className="size-5 text-primary" />
+          <Icon3D name="tiresize" size="sm" />
           <h2 id="size-finder-title" className="label-caps">
             {f.title}
           </h2>
@@ -78,9 +78,9 @@ export function SizeFinder() {
           trigger={
             <button
               type="button"
-              className="inline-flex items-center gap-1.5 border border-border bg-muted/40 px-2.5 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5 hover:border-primary hover:text-primary"
+              className="group inline-flex items-center gap-2 rounded-md border border-border bg-muted/40 py-1 pl-1 pr-2.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5 hover:border-primary hover:text-primary"
             >
-              <VehicleIcon className="size-4 w-5 text-primary" />
+              <Icon3D name="vehicle" size="xs" />
               {g.vehicleTab}
             </button>
           }

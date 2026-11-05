@@ -111,7 +111,7 @@ export function LanguageMenu() {
         aria-expanded={open}
         aria-controls={listId}
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 px-2 py-1 font-mono text-xs uppercase tracking-[0.18em] text-secondary-foreground transition-colors hover:bg-secondary-foreground/10"
+        className="rounded-md flex items-center gap-1.5 px-2 py-1 font-mono text-xs uppercase tracking-[0.18em] text-secondary-foreground transition-colors hover:bg-secondary-foreground/10"
       >
         <Globe className="size-3.5" aria-hidden="true" />
         <span className="sr-only">{t.common.languageNav}: </span>

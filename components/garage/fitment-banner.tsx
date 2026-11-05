@@ -8,6 +8,7 @@ import { useI18n } from "@/components/i18n/i18n-provider"
 import { useGarage } from "@/components/garage/garage-provider"
 import { FitmentModal } from "@/components/garage/fitment-modal"
 import { BrakeDiscIcon, TireSizeIcon, VehicleIcon, WheelRimIcon } from "@/components/garage/fitment-icons"
+import { Icon3D } from "@/components/ui/icon-3d"
 import { findVehicleById, type FactorySize } from "@/lib/catalog/vehicles"
 import type { Category } from "@/lib/catalog/types"
 import { storePath } from "@/lib/i18n/config"
@@ -161,18 +162,12 @@ export function FitmentBanner({
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
-          <span className="flex size-10 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 text-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5">
-            {vehicle || active?.kind === "vehicle" ? (
-              <VehicleIcon className="size-7 w-9" />
-            ) : (
-              <TireSizeIcon className="size-7" />
-            )}
-          </span>
+          <Icon3D name={vehicle || active?.kind === "vehicle" ? "vehicle" : "tiresize"} className="size-10" />
           <div className="flex min-w-0 flex-col gap-0.5">
             <div className="flex flex-wrap items-center gap-2">
               <span className="truncate font-semibold">{label}</span>
               {isFilteredByFitment && (
-                <span className="inline-flex items-center gap-1 bg-primary px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase text-primary-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5">
+                <span className="rounded-md inline-flex items-center gap-1 bg-primary px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase text-primary-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5">
                   <Check aria-hidden="true" className="size-3" />
                   {g.active} ({matchingCount})
                 </span>

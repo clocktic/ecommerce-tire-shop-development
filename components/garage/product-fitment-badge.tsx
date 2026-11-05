@@ -261,7 +261,7 @@ export function ProductFitmentBadge({
         {!exactMatch && (
           <Link
             href={matchingHref}
-            className="border border-primary bg-primary px-2.5 py-1.5 font-mono text-[11px] font-semibold uppercase text-primary-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5 hover:opacity-90"
+            className="rounded-md border border-primary bg-primary px-2.5 py-1.5 font-mono text-[11px] font-semibold uppercase text-primary-foreground shadow-chip transition-transform duration-200 hover:-translate-y-0.5 hover:opacity-90"
           >
             {copy.shopMatching}
           </Link>

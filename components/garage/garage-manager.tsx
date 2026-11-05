@@ -6,6 +6,7 @@ import { useI18n } from "@/components/i18n/i18n-provider"
 import { useGarage } from "@/components/garage/garage-provider"
 import { FitmentModal } from "@/components/garage/fitment-modal"
 import { TireSizeIcon, VehicleIcon } from "@/components/garage/fitment-icons"
+import { Icon3D } from "@/components/ui/icon-3d"
 import { findVehicleById } from "@/lib/catalog/vehicles"
 
 export function GarageManager() {
@@ -38,13 +39,7 @@ export function GarageManager() {
             return (
               <li key={row.id} className="flex items-center justify-between gap-3 border border-border bg-card p-4">
                 <div className="flex min-w-0 items-center gap-3">
-                  <span className="flex size-10 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 text-foreground">
-                    {row.kind === "vehicle" ? (
-                      <VehicleIcon className="size-7 w-9" />
-                    ) : (
-                      <TireSizeIcon className="size-7" />
-                    )}
-                  </span>
+                  <Icon3D name={row.kind === "vehicle" ? "vehicle" : "tiresize"} className="size-10" />
                   <div className="flex min-w-0 flex-col">
                     <span className="truncate font-semibold">{row.label}</span>
                     <span className="font-mono text-xs text-muted-foreground">
@@ -55,7 +50,7 @@ export function GarageManager() {
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
                   {row.isActive ? (
-                    <span className="flex items-center gap-1 px-2 py-1 text-xs font-semibold text-primary">
+                    <span className="rounded-md flex items-center gap-1 px-2 py-1 text-xs font-semibold text-primary">
                       <Check aria-hidden="true" className="size-3.5" />
                       {g.active}
                     </span>

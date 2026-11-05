@@ -63,7 +63,7 @@ export function BrandBadge({
   const inner = (
     <>
       {iconUrl && (
-        <span className="flex h-7 shrink-0 items-center justify-center border border-border/80 bg-white px-2.5 py-1 transition-colors group-hover:border-primary/60">
+        <span className="rounded-md flex h-7 shrink-0 items-center justify-center border border-border/80 bg-white px-2.5 py-1 transition-colors group-hover:border-primary/60">
           <img
             src={iconUrl}
             alt={brand}

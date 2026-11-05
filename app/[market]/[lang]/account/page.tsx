@@ -52,7 +52,7 @@ export default async function AccountPage({ params, searchParams }: { params: Pa
             <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1 bg-primary" />
             <div className="flex items-start justify-between gap-3 pt-1">
               <div className="flex flex-col gap-1">
-                <span className="inline-flex w-fit items-center gap-1.5 bg-primary px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-primary-foreground">
+                <span className="rounded-md inline-flex w-fit items-center gap-1.5 bg-primary px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-primary-foreground">
                   <Tag className="size-3" aria-hidden="true" />
                   {x.memberDiscount.badge}
                 </span>
@@ -102,7 +102,7 @@ export default async function AccountPage({ params, searchParams }: { params: Pa
         <div className="flex flex-col gap-2">
           <div className="flex flex-wrap items-center gap-2.5">
             <h1 className="font-expanded text-4xl font-extrabold uppercase">{x.account.account}</h1>
-            <span className="inline-flex items-center gap-1.5 bg-primary px-2.5 py-1 font-mono text-xs font-bold uppercase tracking-[0.14em] text-primary-foreground">
+            <span className="rounded-md inline-flex items-center gap-1.5 bg-primary px-2.5 py-1 font-mono text-xs font-bold uppercase tracking-[0.14em] text-primary-foreground">
               <CheckCircle2 className="size-3.5" aria-hidden="true" />
               {x.memberDiscount.activeBadge}
             </span>

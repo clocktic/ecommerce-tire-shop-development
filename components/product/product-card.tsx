@@ -41,7 +41,7 @@ export function ProductCard({ product, store }: { product: Product; store: Store
           className="object-contain p-4 transition-transform duration-700 ease-out group-hover:-rotate-6 group-hover:scale-[1.05] motion-reduce:transition-none sm:p-6"
         />
         {product.sample && (
-          <span className="absolute left-2 top-2 bg-background px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] shadow-chip sm:left-3 sm:top-3 sm:px-2 sm:py-1 sm:text-xs">
+          <span className="rounded-md absolute left-2 top-2 bg-background px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] shadow-chip sm:left-3 sm:top-3 sm:px-2 sm:py-1 sm:text-xs">
             {t.product.demo}
           </span>
         )}

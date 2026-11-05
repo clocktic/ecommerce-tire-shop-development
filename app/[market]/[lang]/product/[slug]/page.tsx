@@ -113,7 +113,7 @@ export default async function ProductPage({ params }: { params: Params }) {
             <div className="min-w-0 flex-1">
               <Price offer={offer} store={store} size="lg" showNote />
             </div>
-            <span className="shrink-0 border border-border bg-muted/40 px-2.5 py-1 text-right font-mono text-xs font-semibold uppercase tracking-[0.12em]">
+            <span className="rounded-md shrink-0 border border-border bg-muted/40 px-2.5 py-1 text-right font-mono text-xs font-semibold uppercase tracking-[0.12em]">
               {t.labels.availability[offer.availability]}
             </span>
           </div>
