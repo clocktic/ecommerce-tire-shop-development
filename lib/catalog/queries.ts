@@ -4,6 +4,7 @@ import { cache } from "react"
 import { and, asc, eq } from "drizzle-orm"
 import { db } from "@/lib/db"
 import { products } from "@/lib/db/schema"
+import { POPULAR_MODELS, type PopularModel } from "@/lib/catalog/popular-models"
 import type { Category, Product } from "@/lib/catalog/types"
 import { orderBrakeProducts } from "@/lib/catalog"
 import type { Market } from "@/lib/markets"
@@ -30,6 +31,41 @@ export async function readProductsByCategory(market: Market, category: Category)
   if (!result.ok) return result
   const filtered = result.data.filter((p) => p.category === category)
   return { ok: true, data: category === "brakes" ? orderBrakeProducts(filtered) : filtered }
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+}
+
+// One representative listing per curated model: the model name must be followed
+// by a size (digit), so "Pilot Sport 4" never swallows "Pilot Sport 4S" or "4 SUV".
+// Among sizes, take the median-priced in-stock one to avoid odd extremes.
+function pickModels(items: Product[], models: PopularModel[], market: Market): Product[] {
+  const picked: Product[] = []
+  for (const { brand, model } of models) {
+    const pattern = new RegExp(`^${escapeRegExp(model)}\\s+\\d`, "i")
+    const variants = items
+      .filter((p) => p.brand === brand && pattern.test(p.name) && p.images[0] && !p.sample)
+      .filter((p) => p.offers[market]?.availability !== "out_of_stock")
+      .sort((a, b) => (a.offers[market]?.priceCents ?? 0) - (b.offers[market]?.priceCents ?? 0))
+    const choice = variants[Math.floor((variants.length - 1) / 2)]
+    if (choice) picked.push(choice)
+  }
+  return picked
+}
+
+export async function readPopularProducts(market: Market, limit = 20): Promise<DatabaseReadResult<Product[]>> {
+  const result = await readProducts(market)
+  if (!result.ok) return result
+  const curated = POPULAR_MODELS[market]
+  const tires = pickModels(result.data.filter((p) => p.category === "tires"), curated.tires, market)
+  const wheels = pickModels(result.data.filter((p) => p.category === "wheels"), curated.wheels, market)
+  const mixed: Product[] = []
+  for (let i = 0; mixed.length < limit && (i < tires.length || i < wheels.length); i++) {
+    if (tires[i]) mixed.push(tires[i])
+    if (wheels[i] && mixed.length < limit) mixed.push(wheels[i])
+  }
+  return { ok: true, data: mixed }
 }
 
 export const readProductBySlug = cache((slug: string) => readDatabase(async (): Promise<Product | undefined> => {

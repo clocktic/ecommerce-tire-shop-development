@@ -123,6 +123,8 @@ export const usEs: Dictionary = {
     },
     featured: "En existencia",
     allTires: "Todas las llantas",
+    carouselPrev: "Productos anteriores",
+    carouselNext: "Más productos",
     promise: {
       title: "Condiciones de la tienda EE. UU.",
       lead: "Inventario, precios y políticas propios para cada región.",

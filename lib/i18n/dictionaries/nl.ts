@@ -121,6 +121,8 @@ export const euNl: Dictionary = {
     },
     featured: "In het rek",
     allTires: "Alle banden",
+    carouselPrev: "Vorige producten",
+    carouselNext: "Meer producten",
     promise: {
       title: "De voorwaarden van de EU-winkel",
       lead: "Eigen voorraad, prijzen en voorwaarden per regio.",

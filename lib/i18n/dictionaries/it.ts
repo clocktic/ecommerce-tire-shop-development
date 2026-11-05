@@ -121,6 +121,8 @@ export const euIt: Dictionary = {
     },
     featured: "Sugli scaffali",
     allTires: "Tutti i pneumatici",
+    carouselPrev: "Prodotti precedenti",
+    carouselNext: "Altri prodotti",
     promise: {
       title: "Le condizioni del negozio UE",
       lead: "Magazzino, prezzi e condizioni separati per ogni regione.",
