@@ -3,3 +3,6 @@ pmOnFail: ignore
 minimumReleaseAgeExclude:
   - '@next/*'
   - next
+
+patchedDependencies:
+  next@16.4.0: patches/next@16.4.0.patch
