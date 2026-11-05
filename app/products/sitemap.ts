@@ -9,6 +9,10 @@ import { absoluteUrl, hreflangMap } from "@/lib/seo"
 // well under both that limit and the 50k-URL sitemap protocol cap.
 const CHUNK_SIZE = 4000
 
+// Products archived straight in the database skip the admin's revalidatePath,
+// so re-read hourly to drop them without waiting for a redeploy.
+export const revalidate = 3600
+
 async function indexableProducts(storeIndex: number) {
   const store = ALL_STORES[storeIndex]
   const products = await getProducts(store.market)

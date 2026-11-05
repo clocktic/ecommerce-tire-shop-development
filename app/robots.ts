@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next"
 import { absoluteUrl } from "@/lib/seo"
 import { generateSitemaps } from "@/app/products/sitemap"
 
+export const revalidate = 3600
+
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const productSitemaps = (await generateSitemaps()).map(({ id }) => absoluteUrl(`/products/sitemap/${id}.xml`))
   return {
