@@ -426,3 +426,12 @@ details > summary::-webkit-details-marker {
     bottom: calc(7.75rem + env(safe-area-inset-bottom));
   }
 }
+
+/* The pinned "shop by system" frame owns the whole viewport, so the closed launcher steps aside. */
+html[data-immersive] .chat-launcher:not([data-open]) {
+  opacity: 0;
+  translate: calc(100% + 1.5rem) 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: bottom 200ms, translate 300ms, opacity 300ms, visibility 0s 300ms;
+}

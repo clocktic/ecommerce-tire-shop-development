@@ -210,6 +210,7 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
             inertia: false,
           },
           onRefresh: measure,
+          onToggle: (self) => document.documentElement.toggleAttribute("data-immersive", self.isActive),
           onUpdate: (self) => {
             const time = self.progress * tl.duration()
             let next = 0
@@ -225,6 +226,7 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
 
         return () => {
           trigger.current = null
+          document.documentElement.removeAttribute("data-immersive")
         }
       })
       return () => mm.revert()
