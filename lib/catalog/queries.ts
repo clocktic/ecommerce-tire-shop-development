@@ -1,7 +1,7 @@
 import "server-only"
 
 import { cache } from "react"
-import { and, asc, eq } from "drizzle-orm"
+import { and, asc, eq, sql } from "drizzle-orm"
 import { db } from "@/lib/db"
 import { products } from "@/lib/db/schema"
 import { POPULAR_MODELS, type PopularModel } from "@/lib/catalog/popular-models"
@@ -90,4 +90,40 @@ export async function getProductsByCategory(market: Market, category: Category):
 
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
   return requireAvailable(await readProductBySlug(slug))
+}
+
+export interface SitemapProductEntry {
+  slug: string
+  markets: Market[]
+}
+
+const activeSitemapProducts = cache(() =>
+  readDatabase(async (): Promise<SitemapProductEntry[]> => {
+    const rows = await db
+      .select({
+        slug: products.slug,
+        hasUs: sql<boolean>`(${products.data}->'offers'->'us') IS NOT NULL`,
+        hasEu: sql<boolean>`(${products.data}->'offers'->'eu') IS NOT NULL`,
+      })
+      .from(products)
+      .where(
+        and(
+          eq(products.archived, false),
+          sql`COALESCE((${products.data}->>'sample')::boolean, false) = false`,
+        ),
+      )
+      .orderBy(asc(products.createdAt))
+
+    return rows.map((r) => {
+      const m: Market[] = []
+      if (r.hasUs) m.push("us")
+      if (r.hasEu) m.push("eu")
+      return { slug: r.slug, markets: m }
+    })
+  }),
+)
+
+export async function getSitemapProducts(market: Market): Promise<SitemapProductEntry[]> {
+  const all = requireAvailable(await activeSitemapProducts())
+  return all.filter((p) => p.markets.includes(market))
 }
