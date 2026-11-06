@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useRef, useState, type CSSProperties } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
@@ -42,14 +42,14 @@ const HOLD = 0.7
 const HANDOFF = 1.15
 const TEXT_SWAP_AT = 0.5
 const HOLD_SPIN = 14
-const MOUNT_TWIST = -24
-const PRESS_FROM_SCALE = 1.45
-const PRESS_TWIST = -36
 
 const LINES_BG =
   "repeating-linear-gradient(135deg, rgba(255,255,255,0.028) 0 1px, transparent 1px 34px), repeating-linear-gradient(135deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 170px)"
 
 const FRAME = "absolute inset-x-0 bottom-[6%] mx-auto aspect-square w-[min(84cqw,90cqh)]"
+
+const ROLL_TRAVEL: CSSProperties = { transform: "translate3d(calc(var(--roll, 0) * var(--roll-x, 0px)), 0, 0)" }
+const ROLL_TURN: CSSProperties = { transform: "rotate(calc(var(--roll, 0) * var(--roll-turn, 0) * 1deg))" }
 
 export function ShopBySystem({ title, systems, scrollHint, offsetSelector, bottomOffsetSelector }: ShopBySystemProps) {
   const root = useRef<HTMLElement>(null)
@@ -66,18 +66,27 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
         const q = gsap.utils.selector(section)
         const carriers = q<HTMLElement>("[data-carrier]")
         const fits = q<HTMLElement>("[data-fit]")
-        const lifts = q<HTMLElement>("[data-lift]")
         const rotors = q<HTMLElement>("[data-rotor]")
         const panels = q<HTMLElement>("[data-panel]")
         const ambience = q<HTMLElement>("[data-glow], [data-floor-shadow]")
         const offsetEl = offsetSelector ? document.querySelector<HTMLElement>(offsetSelector) : null
         const bottomEl = bottomOffsetSelector ? document.querySelector<HTMLElement>(bottomOffsetSelector) : null
 
+        // Pixel travel and the matching rotation are rewritten on every refresh, so the roll stays
+        // slip-free after resizes without re-recording the timeline.
         const measure = () => {
           section.style.setProperty("--sbs-offset", `${offsetEl?.offsetHeight ?? 0}px`)
           section.style.setProperty("--sbs-bottom", `${bottomEl?.offsetHeight ?? 0}px`)
+          carriers.forEach((el) => {
+            const stage = el.parentElement!.getBoundingClientRect()
+            const d = el.offsetWidth
+            const travel = -(stage.left + (stage.width + d) / 2 + 32)
+            el.style.setProperty("--roll-x", `${travel}px`)
+            el.style.setProperty("--roll-turn", `${(travel / (Math.PI * d)) * 360}`)
+          })
         }
         measure()
+        gsap.set(carriers, { autoAlpha: 1, "--roll": 1 })
 
         const tl = gsap.timeline({ defaults: { ease: "none" } })
         const scales = systems.map(() => 1)
@@ -97,22 +106,12 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
           }
         }
 
+        // Each part rolls in from beyond the left edge; travel and rotation share --roll, so it never slips.
         const enter = (k: number, at: number) => {
+          tl.fromTo(carriers[k], { "--roll": 1 }, { "--roll": 0, duration: ENTER, ease: "power3.out" }, at)
           if (k === 0) {
-            tl.fromTo(carriers[0], { autoAlpha: 0, xPercent: 45 }, { autoAlpha: 1, xPercent: 0, duration: ENTER, ease: "expo.out" }, at)
-            tl.fromTo(lifts[0], { y: 36, scale: 0.86 }, { y: 0, scale: 1, duration: ENTER, ease: "expo.out" }, at)
-            tl.fromTo(
-              rotors[0],
-              { rotation: MOUNT_TWIST },
-              { rotation: 0, duration: ENTER * 0.9, ease: "back.out(1.6)" },
-              at + ENTER * 0.1,
-            )
             tl.fromTo(ambience, { autoAlpha: 0 }, { autoAlpha: 1, duration: ENTER, ease: "power2.out" }, at)
-            return
           }
-          tl.fromTo(carriers[k], { autoAlpha: 0 }, { autoAlpha: 1, duration: ENTER * 0.3, ease: "power1.out" }, at)
-          tl.fromTo(lifts[k], { scale: PRESS_FROM_SCALE }, { scale: 1, duration: ENTER, ease: "expo.out" }, at)
-          tl.fromTo(rotors[k], { rotation: PRESS_TWIST }, { rotation: 0, duration: ENTER, ease: "back.out(1.4)" }, at)
           nestInside(k, at)
         }
 
@@ -262,9 +261,9 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
                 <div className="absolute -bottom-3 left-1/2 h-6 w-[78%] -translate-x-1/2 rounded-[50%] bg-black/80 blur-md" />
               </div>
               {systems.map((s, i) => (
-                <div key={s.id} data-carrier className={`invisible ${FRAME} will-change-transform`}>
+                <div key={s.id} data-carrier style={ROLL_TRAVEL} className={`invisible ${FRAME} will-change-transform`}>
                   <div data-fit className="size-full will-change-transform">
-                    <div data-lift className="size-full">
+                    <div style={ROLL_TURN} className="size-full will-change-transform">
                       <div data-rotor className="relative size-full will-change-transform">
                         <Image
                           src={s.image || "/placeholder.svg"}
