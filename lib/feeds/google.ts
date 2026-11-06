@@ -1,5 +1,5 @@
 import { localizeProduct, offerFor, tireServiceDescription, tireSize, type Product } from "@/lib/catalog"
-import { getProducts } from "@/lib/catalog/queries"
+import { getProducts, getProductsBySlugs } from "@/lib/catalog/queries"
 import { COMPANY } from "@/lib/company"
 import { US_GMC_STARTER_SLUGS } from "@/lib/feeds/us-starter-selection"
 import { getDictionary, storePath, type Dictionary, type Store } from "@/lib/i18n"
@@ -139,9 +139,12 @@ function item(product: Product, store: Store, d: Dictionary): string {
   tag("id", feedId(product))
   const groupId = itemGroupId(product)
   if (groupId) tag("item_group_id", groupId)
-  lines.push(`      <title>${xml(product.name)}</title>`)
-  lines.push(`      <description>${xml(description(product))}</description>`)
-  lines.push(`      <link>${xml(link)}</link>`)
+  const fullTitle = product.name.toLowerCase().startsWith(product.brand.toLowerCase())
+    ? product.name
+    : `${product.brand} ${product.name}`
+  tag("title", fullTitle.slice(0, 150))
+  tag("description", description(product))
+  tag("link", link)
   tag("image_link", hero)
   rest.slice(0, 10).forEach((src) => tag("additional_image_link", src))
   tag("availability", offer.availability === "in_stock" ? "in_stock" : offer.availability === "preorder" ? "preorder" : "out_of_stock")
@@ -200,12 +203,13 @@ export async function buildGoogleFeed(
   const items: string[] = []
   const seenGtins = new Set<string>()
   const seenIds = new Set<string>()
-  const allProducts = await getProducts(market)
-
-  let sourceProducts = allProducts
+  let sourceProducts: Product[]
   if (market === "us" && !options?.fullCatalog) {
-    const bySlug = new Map(allProducts.map((p) => [p.slug, p]))
+    const starterRows = await getProductsBySlugs(market, US_GMC_STARTER_SLUGS)
+    const bySlug = new Map(starterRows.map((p) => [p.slug, p]))
     sourceProducts = US_GMC_STARTER_SLUGS.map((slug) => bySlug.get(slug)).filter((p): p is Product => Boolean(p))
+  } else {
+    sourceProducts = await getProducts(market)
   }
 
   for (const base of sourceProducts) {

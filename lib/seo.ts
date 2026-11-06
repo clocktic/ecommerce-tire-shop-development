@@ -6,7 +6,11 @@ import { localeMeta, storePath, storesOf, type Store } from "@/lib/i18n/config"
 export const SITE_URL = COMPANY.url.replace(/\/$/, "")
 
 export function absoluteUrl(path: string): string {
-  return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`
+  const url = new URL(path, `${SITE_URL}/`)
+  if (url.protocol !== "https:" && url.protocol !== "http:") {
+    throw new Error("Expected an HTTP or HTTPS URL")
+  }
+  return url.href
 }
 
 // hreflang cluster for one page across every store language it exists in:

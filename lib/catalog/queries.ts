@@ -1,7 +1,7 @@
 import "server-only"
 
 import { cache } from "react"
-import { and, asc, eq, sql } from "drizzle-orm"
+import { and, asc, eq, inArray, sql } from "drizzle-orm"
 import { db } from "@/lib/db"
 import { products } from "@/lib/db/schema"
 import { POPULAR_MODELS, type PopularModel } from "@/lib/catalog/popular-models"
@@ -90,6 +90,18 @@ export async function getProductsByCategory(market: Market, category: Category):
 
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
   return requireAvailable(await readProductBySlug(slug))
+}
+
+export async function getProductsBySlugs(market: Market, slugs: readonly string[]): Promise<Product[]> {
+  if (slugs.length === 0) return []
+  const result = await readDatabase(async (): Promise<Product[]> => {
+    const rows = await db
+      .select({ data: products.data })
+      .from(products)
+      .where(and(eq(products.archived, false), inArray(products.slug, [...slugs])))
+    return rows.map((r) => r.data).filter((p) => Boolean(p.offers[market]))
+  })
+  return requireAvailable(result)
 }
 
 export interface SitemapProductEntry {
