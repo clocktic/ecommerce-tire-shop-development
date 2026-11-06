@@ -45,6 +45,8 @@ const TEXT_SWAP_AT = 0.5
 const HOLD_SPIN = 14
 /** Seconds for one swipe to carry the page to the next step on touch devices. */
 const STEP_SCROLL = 0.9
+/** Milliseconds after leaving the scene during which drifting back into it does not re-lock it. */
+const REENTRY_PAUSE = 900
 
 const LINES_BG =
   "repeating-linear-gradient(135deg, rgba(255,255,255,0.028) 0 1px, transparent 1px 34px), repeating-linear-gradient(135deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 170px)"
@@ -181,14 +183,37 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
         const last = systems.length - 1
         let step = 0
         let consumed = false
+        let releasing = false
+        let releasedAt = -Infinity
         let scrollTween: gsap.core.Tween | null = null
+        let resumeCheck: gsap.core.Tween | null = null
+
+        // Mobile browsers resize the viewport as the address bar slides; only an orientation change
+        // (width change) may move the pin's end, otherwise the exit point drifts under the user's finger.
+        let baseWidth = window.innerWidth
+        let baseHeight = window.innerHeight
+        const stableVh = () => {
+          if (window.innerWidth !== baseWidth) {
+            baseWidth = window.innerWidth
+            baseHeight = window.innerHeight
+          }
+          return baseHeight
+        }
 
         const stepTop = (i: number) => {
           const st = trigger.current!
           return st.start + (holdTimes.current[i] / tl.duration()) * (st.end - st.start)
         }
 
-        const scrollToY = (y: number) => {
+        const nearestStep = () => {
+          let best = 0
+          for (let i = 1; i <= last; i++) {
+            if (Math.abs(stepTop(i) - window.scrollY) < Math.abs(stepTop(best) - window.scrollY)) best = i
+          }
+          return best
+        }
+
+        const scrollToY = (y: number, onDone?: () => void) => {
           scrollTween?.kill()
           const proxy = { y: window.scrollY }
           scrollTween = gsap.to(proxy, {
@@ -198,6 +223,7 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
             onUpdate: () => window.scrollTo(0, proxy.y),
             onComplete: () => {
               scrollTween = null
+              onDone?.()
             },
           })
         }
@@ -207,14 +233,30 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
           html.removeAttribute("data-scroll-lock")
         }
 
+        // Carry the page well clear of the pin before handing scrolling back; a couple of pixels of
+        // momentum or address-bar jitter would otherwise re-enter it and snap the user back a step.
+        const release = (dir: 1 | -1) => {
+          const st = trigger.current!
+          const gap = stableVh() * 0.35
+          releasing = true
+          gestures?.disable()
+          scrollToY(dir > 0 ? st.end + gap : st.start - gap, () => {
+            releasing = false
+            releasedAt = performance.now()
+            html.removeAttribute("data-scroll-lock")
+            resumeCheck?.kill()
+            resumeCheck = gsap.delayedCall(REENTRY_PAUSE / 1000, () => {
+              if (trigger.current?.isActive) lock(nearestStep())
+            })
+          })
+        }
+
         const go = (dir: 1 | -1) => {
           if (scrollTween || consumed) return
           consumed = true
           const next = step + dir
           if (next < 0 || next > last) {
-            const st = trigger.current!
-            unlock()
-            scrollToY(next < 0 ? st.start - 2 : st.end + 2)
+            release(dir)
             return
           }
           step = next
@@ -243,8 +285,10 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
           : null
         gestures?.disable()
 
-        const lock = (i: number) => {
-          if (!gestures || gestures.isEnabled) return
+        function lock(i: number) {
+          if (!gestures || gestures.isEnabled || releasing) return
+          if (performance.now() - releasedAt < REENTRY_PAUSE) return
+          resumeCheck?.kill()
           step = i
           // The swipe that carried the page here must not also advance it; wait for a fresh touch.
           consumed = true
@@ -267,7 +311,7 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
           trigger: section,
           animation: tl,
           start: "top top",
-          end: () => `+=${window.innerHeight * systems.length * 1.15}`,
+          end: () => `+=${stableVh() * systems.length * 1.15}`,
           pin: true,
           scrub: 0.9,
           anticipatePin: 1,
@@ -283,10 +327,22 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
           onRefresh: measure,
           onEnter: () => lock(0),
           onEnterBack: () => lock(last),
-          onLeave: unlock,
-          onLeaveBack: unlock,
+          onLeave: () => {
+            if (!releasing) unlock()
+          },
+          onLeaveBack: () => {
+            if (!releasing) unlock()
+          },
           onToggle: (self) => document.documentElement.toggleAttribute("data-immersive", self.isActive),
           onUpdate: (self) => {
+            // Safety net: if the page ever comes to rest inside the pin unlocked (restored scroll
+            // position, a late layout refresh), settle it on the nearest step instead of free-scrolling.
+            // Deferred so a same-frame onEnter/onEnterBack picks the directional step first.
+            if (touch && self.isActive && !scrollTween && !releasing && !gestures?.isEnabled) {
+              queueMicrotask(() => {
+                if (trigger.current?.isActive) lock(nearestStep())
+              })
+            }
             const time = self.progress * tl.duration()
             let next = 0
             swaps.forEach((t, i) => {
@@ -301,6 +357,7 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
 
         return () => {
           scrollTween?.kill()
+          resumeCheck?.kill()
           gestures?.kill()
           stepTo.current = null
           trigger.current = null
