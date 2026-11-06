@@ -450,6 +450,14 @@ export const US_POLICIES: Record<string, PolicyDoc> = {
         ],
       },
       {
+        heading: "Social Sign-In (Google & Facebook OAuth) & User Data Deletion",
+        blocks: [
+          "If you choose to register or sign in using Google Sign-In or Facebook Login, we receive only your basic profile information permitted by the standard OAuth scopes (openid, profile, and email): your name, verified email address, unique provider account identifier, and profile picture URL. We use this information solely to create and authenticate your TiresShop customer account, link your orders and saved vehicles, and display your account profile.",
+          "We do not request access to your contacts, files, or private messages, and we never sell or share Google or Facebook OAuth user data for cross-context behavioral advertising. Our use and transfer of information received from Google APIs adheres to the Google API Services User Data Policy, including the Limited Use requirements.",
+          `How to revoke access or delete your account data: You may disconnect TiresShop at any time in your Google Account permissions (myaccount.google.com/permissions) or Facebook Apps and Websites settings. To request complete deletion of your TiresShop customer account and all associated OAuth data, email ${COMPANY.privacyEmail} with the subject "Account Deletion Request" and we will permanently delete your account profile and OAuth credentials within 7 business days.`,
+        ],
+      },
+      {
         heading: "Data retention",
         blocks: [
           "We retain order, invoice, and tax records for 7 years as required by US federal and California tax and accounting laws, DOT tire registration records as required by NHTSA regulations, customer support correspondence for up to 3 years after resolution, and browser consent preferences for 13 months.",
