@@ -228,9 +228,44 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
           })
         }
 
+        // Native touch scrolling runs on the compositor thread, so the pin lags a frame behind fast
+        // flings (visible shake) and the address bar resizes the viewport mid-scene. Driving touch
+        // scrolling from JS keeps pinning in sync and the toolbar still.
+        const normalizer = touch
+          ? (ScrollTrigger.normalizeScroll({ type: "touch", allowNestedScroll: true }) as Observer | undefined)
+          : undefined
+
+        const stopMomentum = () => {
+          if (normalizer) gsap.getTweensOf(normalizer).forEach((t) => t.pause())
+        }
+
+        // Dialogs and sheets lock the page with inline overflow/position styles; the normalizer must
+        // stand down then, or it would scroll the page behind the open overlay.
+        const overlayLocksPage = () =>
+          [html, document.body].some(
+            (el) => el.style.overflowY === "hidden" || el.style.overflow === "hidden" || el.style.position === "fixed",
+          )
+
+        const syncNormalizer = () => {
+          if (!normalizer) return
+          const run = !gestures?.isEnabled && !releasing && !overlayLocksPage()
+          if (run === normalizer.isEnabled) return
+          if (run) {
+            normalizer.enable()
+          } else {
+            stopMomentum()
+            normalizer.disable()
+          }
+        }
+
+        const overlayWatcher = normalizer ? new MutationObserver(syncNormalizer) : null
+        overlayWatcher?.observe(html, { attributes: true, attributeFilter: ["style"] })
+        overlayWatcher?.observe(document.body, { attributes: true, attributeFilter: ["style"] })
+
         const unlock = () => {
           gestures?.disable()
           html.removeAttribute("data-scroll-lock")
+          syncNormalizer()
         }
 
         // Carry the page well clear of the pin before handing scrolling back; a couple of pixels of
@@ -244,6 +279,7 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
             releasing = false
             releasedAt = performance.now()
             html.removeAttribute("data-scroll-lock")
+            syncNormalizer()
             resumeCheck?.kill()
             resumeCheck = gsap.delayedCall(REENTRY_PAUSE / 1000, () => {
               if (trigger.current?.isActive) lock(nearestStep())
@@ -292,9 +328,11 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
           step = i
           // The swipe that carried the page here must not also advance it; wait for a fresh touch.
           consumed = true
+          stopMomentum()
           html.setAttribute("data-scroll-lock", "")
           window.scrollTo(0, window.scrollY)
           gestures.enable()
+          syncNormalizer()
           scrollToY(stepTop(i))
         }
 
@@ -313,7 +351,8 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
           start: "top top",
           end: () => `+=${stableVh() * systems.length * 1.15}`,
           pin: true,
-          scrub: 0.9,
+          // Touch steps already ease the scroll itself; a long scrub on top only adds lag.
+          scrub: touch ? 0.35 : 0.9,
           anticipatePin: 1,
           snap: touch
             ? undefined
@@ -359,6 +398,11 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
           scrollTween?.kill()
           resumeCheck?.kill()
           gestures?.kill()
+          overlayWatcher?.disconnect()
+          if (normalizer) {
+            stopMomentum()
+            ScrollTrigger.normalizeScroll(false)
+          }
           stepTo.current = null
           trigger.current = null
           html.removeAttribute("data-scroll-lock")
