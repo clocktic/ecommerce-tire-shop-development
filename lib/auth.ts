@@ -8,9 +8,14 @@ import { notifyTelegramNewUser } from "@/lib/telegram"
 
 export type SocialProvider = "google" | "apple" | "facebook"
 
+const GOOGLE_CLIENT_ID =
+  process.env.GOOGLE_CLIENT_ID ||
+  "661924817123-t64bkpbr8rfsq5imoa39ojggup63llvc.apps.googleusercontent.com"
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || process.env.Secret
+
 // A provider is offered only once its OAuth credentials exist in the project env.
 export const ENABLED_PROVIDERS: Record<SocialProvider, boolean> = {
-  google: !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET),
+  google: !!(GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET),
   apple: !!(process.env.APPLE_CLIENT_ID && process.env.APPLE_CLIENT_SECRET),
   facebook: !!(process.env.FACEBOOK_CLIENT_ID && process.env.FACEBOOK_CLIENT_SECRET),
 }
@@ -32,7 +37,7 @@ export const auth = betterAuth({
   },
   socialProviders: {
     ...(ENABLED_PROVIDERS.google
-      ? { google: { clientId: process.env.GOOGLE_CLIENT_ID!, clientSecret: process.env.GOOGLE_CLIENT_SECRET! } }
+      ? { google: { clientId: GOOGLE_CLIENT_ID!, clientSecret: GOOGLE_CLIENT_SECRET! } }
       : {}),
     ...(ENABLED_PROVIDERS.apple
       ? {

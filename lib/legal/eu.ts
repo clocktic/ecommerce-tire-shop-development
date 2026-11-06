@@ -442,6 +442,14 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
         ],
       },
       {
+        heading: "Social Sign-In (Google & Facebook OAuth) & Account Data Deletion",
+        blocks: [
+          "If you choose to register or sign in using Google Sign-In or Facebook Login, we receive only your basic profile information permitted by the OAuth scopes openid, profile and email: your name, verified email address, unique provider account identifier, and profile picture URL. We use this information solely to create and authenticate your TiresShop customer account, link your orders and saved vehicles, and display your account profile.",
+          "We never access your contacts, files, calendar, or private messages, and we never sell, rent, or transfer Google or Facebook user data to third parties for advertising or creditworthiness purposes. Our use and transfer of information received from Google APIs adheres to the Google API Services User Data Policy, including the Limited Use requirements.",
+          `How to revoke access or delete your account data: You may revoke TiresShop's OAuth access at any time in your Google Account security settings (myaccount.google.com/permissions) or Facebook Settings (Apps and Websites). To permanently delete your TiresShop customer account and all associated OAuth profile data, send an email from your registered address to ${COMPANY.privacyEmail} with the subject "Account Deletion Request" — we erase your account profile and OAuth tokens within 7 working days.`,
+        ],
+      },
+      {
         heading: "Automated decision-making",
         blocks: ["We do not engage in automated decision-making or profiling within the meaning of Art. 22 GDPR that produces legal or similarly significant effects on you."],
       },
