@@ -16,7 +16,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ file
   return new Response(xml, {
     headers: {
       "Content-Type": "application/xml; charset=utf-8",
-      "Content-Language": store.hreflang,
+      "Content-Language": localeMeta(store).hreflang,
       "Cache-Control": "public, max-age=300, s-maxage=900, stale-while-revalidate=3600",
       "X-Feed-Items": String(included),
       "X-Feed-Skipped": String(skipped.length),
