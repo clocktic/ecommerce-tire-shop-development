@@ -10,12 +10,10 @@ import { useGSAP } from "@gsap/react"
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
 
-/** Geometry for stacking the parts into one wheel, in the order they are fitted to the car. */
+/** Geometry for stacking the parts into one wheel, in the order they are fitted to the car. Renders are hub-centred. */
 export type AssemblyFit = {
   /** Diameter relative to the next part, which is mounted over it (e.g. brake disc inside the rim). */
   fit: number
-  /** Horizontal distance from the image centre to the hub centre, as a fraction of the image width. */
-  hubX?: number
   /** Rotates with the hub once mounted. */
   spins?: boolean
 }
@@ -68,7 +66,6 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
         const q = gsap.utils.selector(section)
         const carriers = q<HTMLElement>("[data-carrier]")
         const fits = q<HTMLElement>("[data-fit]")
-        const hubs = q<HTMLElement>("[data-hub]")
         const lifts = q<HTMLElement>("[data-lift]")
         const rotors = q<HTMLElement>("[data-rotor]")
         const panels = q<HTMLElement>("[data-panel]")
@@ -86,8 +83,7 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
         const scales = systems.map(() => 1)
         const angles = systems.map(() => 0)
 
-        // Every part fitted so far shrinks to sit concentrically inside part k, hub on hub. The hub
-        // offset lives on an inner element as a percentage, so it scales together with its part.
+        // Every part fitted so far shrinks to sit concentrically inside part k, hub on hub.
         const nestInside = (k: number, at: number) => {
           for (let j = 0; j < k; j++) {
             const to = systems.slice(j, k).reduce((size, s) => size * s.fit, 1)
@@ -98,15 +94,6 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
               at,
             )
             scales[j] = to
-            const hubX = systems[j].hubX
-            if (hubX && j === k - 1) {
-              tl.fromTo(
-                hubs[j],
-                { left: "0%" },
-                { left: `${-hubX * 100}%`, duration: ENTER, ease: "power3.inOut", immediateRender: false },
-                at,
-              )
-            }
           }
         }
 
@@ -277,18 +264,16 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
               {systems.map((s, i) => (
                 <div key={s.id} data-carrier className={`invisible ${FRAME} will-change-transform`}>
                   <div data-fit className="size-full will-change-transform">
-                    <div data-hub className="relative left-0 size-full">
-                      <div data-lift className="size-full">
-                        <div data-rotor className="relative size-full will-change-transform">
-                          <Image
-                            src={s.image || "/placeholder.svg"}
-                            alt=""
-                            fill
-                            sizes="(min-width: 768px) 40vw, 72vw"
-                            className="object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.6)]"
-                            priority={i === 0}
-                          />
-                        </div>
+                    <div data-lift className="size-full">
+                      <div data-rotor className="relative size-full will-change-transform">
+                        <Image
+                          src={s.image || "/placeholder.svg"}
+                          alt=""
+                          fill
+                          sizes="(min-width: 768px) 40vw, 72vw"
+                          className="object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.6)]"
+                          priority={i === 0}
+                        />
                       </div>
                     </div>
                   </div>
