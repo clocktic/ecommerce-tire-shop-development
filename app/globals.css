@@ -86,8 +86,7 @@
   --icon-well: oklch(0.85 0.012 262);
   --parallax-ink: oklch(0.21 0.012 255 / 0.04);
   --parallax-glow: oklch(0.54 0.205 27 / 0.07);
-  --tread-opacity: 0.14;
-  --tread-shadow: oklch(0.21 0.012 255 / 0.3);
+  --backdrop-line: oklch(0.21 0.012 255 / 0.14);
 }
 
 /* Night garage: same five roles, graphite ground. Photo wells stay light so product shots keep their studio grey. */
@@ -124,8 +123,7 @@
   --icon-well: oklch(0.84 0.012 262);
   --parallax-ink: oklch(0.94 0.004 250 / 0.03);
   --parallax-glow: oklch(0.62 0.2 27 / 0.1);
-  --tread-opacity: 0.4;
-  --tread-shadow: oklch(0 0 0 / 0.6);
+  --backdrop-line: oklch(0.94 0.004 250 / 0.12);
 }
 
 /* System dark with no stored choice. .light opts out; no script is required to pick this up. */
@@ -163,8 +161,7 @@
     --icon-well: oklch(0.84 0.012 262);
     --parallax-ink: oklch(0.94 0.004 250 / 0.03);
     --parallax-glow: oklch(0.62 0.2 27 / 0.1);
-  --tread-opacity: 0.4;
-  --tread-shadow: oklch(0 0 0 / 0.6);
+    --backdrop-line: oklch(0.94 0.004 250 / 0.12);
   }
 }
 
@@ -265,40 +262,49 @@
   inset: -5% 0 -45% 0;
   will-change: transform;
 }
-/* Two tyre treads converging like tracks into the distance. JS shifts the mover by scroll. */
-.parallax-tread-track {
-  --tread-w: clamp(9rem, 22vw, 19rem);
-  position: absolute;
-  top: -30vh;
-  width: var(--tread-w);
-  height: 160vh;
-  mask-image: linear-gradient(to bottom, transparent 8%, #000 30%, #000 64%, transparent 92%);
-}
-.parallax-tread-track--left {
-  left: calc(5vw - 3.5rem);
-  rotate: 6deg;
-}
-.parallax-tread-track--right {
-  right: calc(5vw - 3.5rem);
-  rotate: -6deg;
-}
-/* Filters live on the moving layer so they are rasterised once and only the transform animates. */
-.parallax-tread-mover {
-  height: 100%;
-  opacity: var(--tread-opacity);
-  will-change: transform;
-  filter: blur(0.8px) drop-shadow(0 3px 4px var(--tread-shadow));
-}
-/* Seamless tyre photo; the sides dissolve the way a tyre curves out of view, so no hard band edge. */
-.parallax-tread-rubber {
-  height: 100%;
-  background: url("/images/tread.webp") top center / 100% auto repeat-y;
-  mask-image: linear-gradient(90deg, transparent, #000 24%, #000 76%, transparent);
-}
 .parallax-glow {
   background:
     radial-gradient(40rem 26rem at 88% 4%, var(--parallax-glow), transparent 70%),
     radial-gradient(34rem 24rem at 4% 58%, var(--parallax-ink), transparent 70%);
+}
+/* Line-drawn tyres peeking in from the edges; the near one is larger and moves more, giving depth. */
+.backdrop-tyre {
+  position: absolute;
+  width: var(--d);
+  height: var(--d);
+  color: var(--backdrop-line);
+  will-change: transform;
+}
+.backdrop-tyre--near {
+  --d: clamp(34rem, 62vw, 60rem);
+  left: calc(var(--d) * -0.68);
+  top: calc(58vh - var(--d) / 2);
+}
+.backdrop-tyre--far {
+  --d: clamp(22rem, 38vw, 36rem);
+  right: calc(var(--d) * -0.58);
+  top: calc(var(--d) * -0.22);
+  opacity: 0.6;
+}
+.backdrop-tyre-spin {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  will-change: transform;
+}
+.sidewall-marking {
+  font-size: 46px;
+  font-weight: 800;
+  font-stretch: 125%;
+}
+.sidewall-fineprint {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 21px;
+}
+.sidewall-dot {
+  fill: var(--primary);
+  opacity: 0.55;
 }
 
 .cta-roll-clip {
@@ -324,14 +330,34 @@
   }
 }
 
+@keyframes tyre-roll {
+  to {
+    rotate: var(--roll, 540deg);
+  }
+}
+
 @supports (animation-timeline: scroll()) {
   @media (prefers-reduced-motion: no-preference) {
-    .parallax-layer {
+    .parallax-layer,
+    .backdrop-tyre {
       animation: parallax-drift linear both;
       animation-timeline: scroll(root block);
     }
     .parallax-glow {
       --parallax-shift: -12vh;
+    }
+    .backdrop-tyre--near {
+      --parallax-shift: -42vh;
+    }
+    .backdrop-tyre--far {
+      --parallax-shift: -14vh;
+    }
+    .backdrop-tyre-spin {
+      animation: tyre-roll linear both;
+      animation-timeline: scroll(root block);
+    }
+    .backdrop-tyre--far .backdrop-tyre-spin {
+      --roll: -300deg;
     }
   }
 }
