@@ -47,6 +47,10 @@ const HOLD_SPIN = 14
 const STEP_SCROLL = 0.9
 /** Milliseconds after leaving the scene during which drifting back into it does not re-lock it. */
 const REENTRY_PAUSE = 900
+/** Milliseconds after a programmatic step during which a tap is treated as "stop", not a click. */
+const CLICK_GUARD = 350
+/** Scroll distance per system, in small-viewport-height units (stable while the address bar slides). */
+const TRACK_PER_STEP = 115
 
 const LINES_BG =
   "repeating-linear-gradient(135deg, rgba(255,255,255,0.028) 0 1px, transparent 1px 34px), repeating-linear-gradient(135deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 170px)"
@@ -58,6 +62,7 @@ const ROLL_TURN: CSSProperties = { transform: "rotate(calc(var(--roll, 0) * var(
 
 export function ShopBySystem({ title, systems, scrollHint, offsetSelector, bottomOffsetSelector }: ShopBySystemProps) {
   const root = useRef<HTMLElement>(null)
+  const track = useRef<HTMLDivElement>(null)
   const trigger = useRef<ScrollTrigger | null>(null)
   const holdTimes = useRef<number[]>([])
   const stepTo = useRef<((i: number) => boolean) | null>(null)
@@ -185,6 +190,7 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
         let consumed = false
         let releasing = false
         let releasedAt = -Infinity
+        let motionUntil = -Infinity
         let scrollTween: gsap.core.Tween | null = null
         let resumeCheck: gsap.core.Tween | null = null
 
@@ -223,52 +229,28 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
             onUpdate: () => window.scrollTo(0, proxy.y),
             onComplete: () => {
               scrollTween = null
+              motionUntil = performance.now() + CLICK_GUARD
               onDone?.()
             },
           })
         }
 
-        // Native touch scrolling runs on the compositor thread, so the pin lags a frame behind fast
-        // flings (visible shake) and the address bar resizes the viewport mid-scene. Driving touch
-        // scrolling from JS keeps pinning in sync and the toolbar still.
-        const normalizer = touch
-          ? (ScrollTrigger.normalizeScroll({ type: "touch", allowNestedScroll: true }) as Observer | undefined)
-          : undefined
-
-        const stopMomentum = () => {
-          if (normalizer) gsap.getTweensOf(normalizer).forEach((t) => t.pause())
-        }
-
-        // Dialogs and sheets lock the page with inline overflow/position styles; the normalizer must
-        // stand down then, or it would scroll the page behind the open overlay.
-        const overlayLocksPage = () =>
-          [html, document.body].some(
-            (el) => el.style.overflowY === "hidden" || el.style.overflow === "hidden" || el.style.position === "fixed",
-          )
-
-        const syncNormalizer = () => {
-          if (!normalizer) return
-          const run = !gestures?.isEnabled && !releasing && !overlayLocksPage()
-          if (run === normalizer.isEnabled) return
-          if (run) {
-            normalizer.enable()
-          } else {
-            stopMomentum()
-            normalizer.disable()
+        // While the page is being carried between steps a tap only means "stop", as it does during a
+        // native fling; it must not open the product or link that happens to be under the finger.
+        const swallowClick = (e: MouseEvent) => {
+          if (scrollTween || performance.now() < motionUntil) {
+            e.preventDefault()
+            e.stopPropagation()
           }
         }
-
-        const overlayWatcher = normalizer ? new MutationObserver(syncNormalizer) : null
-        overlayWatcher?.observe(html, { attributes: true, attributeFilter: ["style"] })
-        overlayWatcher?.observe(document.body, { attributes: true, attributeFilter: ["style"] })
+        if (touch) window.addEventListener("click", swallowClick, true)
 
         const unlock = () => {
           gestures?.disable()
           html.removeAttribute("data-scroll-lock")
-          syncNormalizer()
         }
 
-        // Carry the page well clear of the pin before handing scrolling back; a couple of pixels of
+        // Carry the page well clear of the scene before handing scrolling back; a couple of pixels of
         // momentum or address-bar jitter would otherwise re-enter it and snap the user back a step.
         const release = (dir: 1 | -1) => {
           const st = trigger.current!
@@ -279,7 +261,6 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
             releasing = false
             releasedAt = performance.now()
             html.removeAttribute("data-scroll-lock")
-            syncNormalizer()
             resumeCheck?.kill()
             resumeCheck = gsap.delayedCall(REENTRY_PAUSE / 1000, () => {
               if (trigger.current?.isActive) lock(nearestStep())
@@ -306,7 +287,8 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
               // A touch-first device may also have a trackpad; invert the wheel so both read like a swipe.
               wheelSpeed: -1,
               preventDefault: true,
-              allowClicks: true,
+              // A swipe must never end as a click on whatever is under the finger.
+              allowClicks: false,
               tolerance: 10,
               onStopDelay: 0.2,
               onPress: () => {
@@ -328,11 +310,9 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
           step = i
           // The swipe that carried the page here must not also advance it; wait for a fresh touch.
           consumed = true
-          stopMomentum()
           html.setAttribute("data-scroll-lock", "")
           window.scrollTo(0, window.scrollY)
           gestures.enable()
-          syncNormalizer()
           scrollToY(stepTop(i))
         }
 
@@ -345,15 +325,15 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
             }
           : null
 
+        // The frame is held by CSS `position: sticky` inside a tall track rather than a JS pin: the
+        // browser keeps it in place on the compositor thread, so fast flings cannot make it lag and shake.
         trigger.current = ScrollTrigger.create({
-          trigger: section,
+          trigger: track.current!,
           animation: tl,
           start: "top top",
-          end: () => `+=${stableVh() * systems.length * 1.15}`,
-          pin: true,
+          end: "bottom bottom",
           // Touch steps already ease the scroll itself; a long scrub on top only adds lag.
           scrub: touch ? 0.35 : 0.9,
-          anticipatePin: 1,
           snap: touch
             ? undefined
             : {
@@ -398,11 +378,7 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
           scrollTween?.kill()
           resumeCheck?.kill()
           gestures?.kill()
-          overlayWatcher?.disconnect()
-          if (normalizer) {
-            stopMomentum()
-            ScrollTrigger.normalizeScroll(false)
-          }
+          window.removeEventListener("click", swallowClick, true)
           stepTo.current = null
           trigger.current = null
           html.removeAttribute("data-scroll-lock")
@@ -427,10 +403,15 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
 
   return (
     <>
+      <div
+        ref={track}
+        className="relative bg-[#050505] motion-reduce:hidden"
+        style={{ height: `calc(100svh + ${systems.length * TRACK_PER_STEP}svh)` }}
+      >
       <section
         ref={root}
         aria-labelledby="shop-by-system-title"
-        className="relative isolate h-svh overflow-hidden bg-[#050505] text-white motion-reduce:hidden"
+        className="sticky top-0 isolate h-svh overflow-hidden bg-[#050505] text-white"
       >
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10" style={{ backgroundImage: LINES_BG }} />
         <div
@@ -565,6 +546,7 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
           </nav>
         </div>
       </section>
+      </div>
 
       <StaticSystems title={title} systems={systems} />
     </>
