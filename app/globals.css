@@ -86,7 +86,8 @@
   --icon-well: oklch(0.85 0.012 262);
   --parallax-ink: oklch(0.21 0.012 255 / 0.04);
   --parallax-glow: oklch(0.54 0.205 27 / 0.07);
-  --backdrop-line: oklch(0.21 0.012 255 / 0.14);
+  --tyre-opacity: 0.2;
+  --tyre-shadow: 0.35;
 }
 
 /* Night garage: same five roles, graphite ground. Photo wells stay light so product shots keep their studio grey. */
@@ -123,7 +124,8 @@
   --icon-well: oklch(0.84 0.012 262);
   --parallax-ink: oklch(0.94 0.004 250 / 0.03);
   --parallax-glow: oklch(0.62 0.2 27 / 0.1);
-  --backdrop-line: oklch(0.94 0.004 250 / 0.12);
+  --tyre-opacity: 0.85;
+  --tyre-shadow: 0.7;
 }
 
 /* System dark with no stored choice. .light opts out; no script is required to pick this up. */
@@ -161,7 +163,8 @@
     --icon-well: oklch(0.84 0.012 262);
     --parallax-ink: oklch(0.94 0.004 250 / 0.03);
     --parallax-glow: oklch(0.62 0.2 27 / 0.1);
-    --backdrop-line: oklch(0.94 0.004 250 / 0.12);
+    --tyre-opacity: 0.85;
+    --tyre-shadow: 0.7;
   }
 }
 
@@ -267,13 +270,80 @@
     radial-gradient(40rem 26rem at 88% 4%, var(--parallax-glow), transparent 70%),
     radial-gradient(34rem 24rem at 4% 58%, var(--parallax-ink), transparent 70%);
 }
-/* Line-drawn tyres peeking in from the edges; the near one is larger and moves more, giving depth. */
+/* Wet tyres peeking in from the edges; the near one is larger and moves more, giving depth. */
+.parallax-backdrop {
+  --rubber-0: oklch(0.13 0.005 260);
+  --rubber-1: oklch(0.175 0.006 260);
+  --rubber-2: oklch(0.235 0.007 260);
+  --rubber-3: oklch(0.33 0.007 260);
+  --rubber-edge: oklch(0.27 0.007 260);
+  --metal-0: oklch(0.19 0.008 255);
+  --metal-1: oklch(0.36 0.01 255);
+  --metal-2: oklch(0.56 0.01 255);
+  --metal-3: oklch(0.8 0.008 255);
+  --wheel-well: oklch(0.08 0.004 260);
+}
 .backdrop-tyre {
   position: absolute;
   width: var(--d);
   height: var(--d);
-  color: var(--backdrop-line);
+  opacity: var(--tyre-opacity);
   will-change: transform;
+}
+.tyre-shadow,
+.tyre-light,
+.tyre-light::before,
+.tyre-light::after,
+.tyre-backlight {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+/* Soft cast shadow, offset away from the top-left key light. */
+.tyre-shadow {
+  inset: -7%;
+  translate: 5% 7%;
+  background: radial-gradient(closest-side, oklch(0 0 0 / var(--tyre-shadow)) 62%, oklch(0 0 0 / 0) 100%);
+}
+/* Volume: key light from the top-left, falling into shade at the bottom-right. */
+.tyre-light {
+  background:
+    radial-gradient(115% 115% at 20% 16%, oklch(1 0 0 / 0.13), oklch(1 0 0 / 0) 46%),
+    radial-gradient(120% 120% at 88% 92%, oklch(0 0 0 / 0.6), oklch(0 0 0 / 0) 58%);
+}
+/* Wet specular arcs on the tread edge, rim lip and hub, only where the key light hits. */
+.tyre-light::before {
+  content: "";
+  background:
+    radial-gradient(closest-side, transparent 95.4%, oklch(1 0 0 / 0.55) 97.2%, transparent 98.6%),
+    radial-gradient(closest-side, transparent 87.6%, oklch(1 0 0 / 0.16) 88.6%, transparent 90%),
+    radial-gradient(closest-side, transparent 59.2%, oklch(1 0 0 / 0.7) 60.6%, transparent 61.8%),
+    radial-gradient(closest-side, transparent 18.2%, oklch(1 0 0 / 0.5) 19.1%, transparent 20.2%);
+  mask-image: linear-gradient(135deg, #000 14%, transparent 50%);
+}
+/* A long window-like reflection sliding across the wet sidewall. */
+.tyre-light::after {
+  content: "";
+  rotate: -42deg;
+  background:
+    radial-gradient(32% 7% at 50% 13.5%, oklch(1 0 0 / 0.3), oklch(1 0 0 / 0) 100%),
+    radial-gradient(20% 4% at 50% 20.5%, oklch(1 0 0 / 0.16), oklch(1 0 0 / 0) 100%);
+  mask-image: radial-gradient(closest-side, transparent 62%, #000 64.5%, #000 83%, transparent 85.5%);
+}
+/* Faint cool back-light on the opposite edge, as wet surfaces pick up the environment. */
+.tyre-backlight {
+  background:
+    radial-gradient(closest-side, transparent 95.6%, oklch(0.85 0.03 240 / 0.24) 97.4%, transparent 98.8%),
+    radial-gradient(closest-side, transparent 59.4%, oklch(0.85 0.03 240 / 0.26) 60.6%, transparent 61.6%);
+  mask-image: linear-gradient(315deg, #000 12%, transparent 40%);
+}
+.tyre-drop {
+  stroke: oklch(1 0 0 / 0.1);
+  stroke-width: 0.6;
+}
+.tyre-drop-glint {
+  fill: oklch(1 0 0 / 0.85);
 }
 .backdrop-tyre--near {
   --d: clamp(34rem, 62vw, 60rem);
@@ -284,9 +354,10 @@
   --d: clamp(22rem, 38vw, 36rem);
   right: calc(var(--d) * -0.58);
   top: calc(var(--d) * -0.22);
-  opacity: 0.6;
+  opacity: calc(var(--tyre-opacity) * 0.6);
 }
 .backdrop-tyre-spin {
+  position: relative;
   display: block;
   width: 100%;
   height: 100%;
@@ -297,10 +368,15 @@
   font-size: 46px;
   font-weight: 800;
   font-stretch: 125%;
+  fill: var(--rubber-3);
+  stroke: var(--rubber-0);
+  stroke-width: 1.5;
+  paint-order: stroke;
 }
 .sidewall-fineprint {
   font-family: var(--font-jetbrains), ui-monospace, monospace;
   font-size: 21px;
+  fill: var(--rubber-edge);
 }
 .sidewall-dot {
   fill: var(--primary);
