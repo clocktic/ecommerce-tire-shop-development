@@ -6,9 +6,10 @@ import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { Observer } from "gsap/Observer"
 import { useGSAP } from "@gsap/react"
 
-gsap.registerPlugin(ScrollTrigger, useGSAP)
+gsap.registerPlugin(ScrollTrigger, Observer, useGSAP)
 
 /** Geometry for stacking the parts into one wheel, in the order they are fitted to the car. Renders are hub-centred. */
 export type AssemblyFit = {
@@ -42,6 +43,8 @@ const HOLD = 0.7
 const HANDOFF = 1.15
 const TEXT_SWAP_AT = 0.5
 const HOLD_SPIN = 14
+/** Seconds for one swipe to carry the page to the next step on touch devices. */
+const STEP_SCROLL = 0.9
 
 const LINES_BG =
   "repeating-linear-gradient(135deg, rgba(255,255,255,0.028) 0 1px, transparent 1px 34px), repeating-linear-gradient(135deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 170px)"
@@ -55,6 +58,7 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
   const root = useRef<HTMLElement>(null)
   const trigger = useRef<ScrollTrigger | null>(null)
   const holdTimes = useRef<number[]>([])
+  const stepTo = useRef<((i: number) => boolean) | null>(null)
   const activeRef = useRef(0)
   const [active, setActive] = useState(0)
 
@@ -170,6 +174,95 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
         })
         tl.fromTo(q("[data-progress]"), { scaleX: 0 }, { scaleX: 1, duration: tl.duration() }, 0)
 
+        // Touch momentum would fling through every step in one swipe, so on touch screens the pinned
+        // range is gesture-driven: native scrolling is blocked and each swipe advances exactly one step.
+        const html = document.documentElement
+        const touch = window.matchMedia("(pointer: coarse)").matches
+        const last = systems.length - 1
+        let step = 0
+        let consumed = false
+        let scrollTween: gsap.core.Tween | null = null
+
+        const stepTop = (i: number) => {
+          const st = trigger.current!
+          return st.start + (holdTimes.current[i] / tl.duration()) * (st.end - st.start)
+        }
+
+        const scrollToY = (y: number) => {
+          scrollTween?.kill()
+          const proxy = { y: window.scrollY }
+          scrollTween = gsap.to(proxy, {
+            y,
+            duration: STEP_SCROLL,
+            ease: "power2.inOut",
+            onUpdate: () => window.scrollTo(0, proxy.y),
+            onComplete: () => {
+              scrollTween = null
+            },
+          })
+        }
+
+        const unlock = () => {
+          gestures?.disable()
+          html.removeAttribute("data-scroll-lock")
+        }
+
+        const go = (dir: 1 | -1) => {
+          if (scrollTween || consumed) return
+          consumed = true
+          const next = step + dir
+          if (next < 0 || next > last) {
+            const st = trigger.current!
+            unlock()
+            scrollToY(next < 0 ? st.start - 2 : st.end + 2)
+            return
+          }
+          step = next
+          scrollToY(stepTop(step))
+        }
+
+        const gestures = touch
+          ? Observer.create({
+              target: window,
+              type: "touch,wheel",
+              // A touch-first device may also have a trackpad; invert the wheel so both read like a swipe.
+              wheelSpeed: -1,
+              preventDefault: true,
+              allowClicks: true,
+              tolerance: 10,
+              onStopDelay: 0.2,
+              onPress: () => {
+                consumed = false
+              },
+              onStop: () => {
+                consumed = false
+              },
+              onUp: () => go(1),
+              onDown: () => go(-1),
+            })
+          : null
+        gestures?.disable()
+
+        const lock = (i: number) => {
+          if (!gestures || gestures.isEnabled) return
+          step = i
+          // The swipe that carried the page here must not also advance it; wait for a fresh touch.
+          consumed = true
+          html.setAttribute("data-scroll-lock", "")
+          window.scrollTo(0, window.scrollY)
+          gestures.enable()
+          scrollToY(stepTop(i))
+        }
+
+        stepTo.current = touch
+          ? (i: number) => {
+              if (!gestures?.isEnabled) return false
+              step = i
+              scrollToY(stepTop(i))
+              return true
+            }
+          : null
+
         trigger.current = ScrollTrigger.create({
           trigger: section,
           animation: tl,
@@ -178,14 +271,20 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
           pin: true,
           scrub: 0.9,
           anticipatePin: 1,
-          snap: {
-            snapTo: "labelsDirectional",
-            duration: { min: 0.25, max: 0.7 },
-            delay: 0.12,
-            ease: "power2.inOut",
-            inertia: false,
-          },
+          snap: touch
+            ? undefined
+            : {
+                snapTo: "labelsDirectional",
+                duration: { min: 0.25, max: 0.7 },
+                delay: 0.12,
+                ease: "power2.inOut",
+                inertia: false,
+              },
           onRefresh: measure,
+          onEnter: () => lock(0),
+          onEnterBack: () => lock(last),
+          onLeave: unlock,
+          onLeaveBack: unlock,
           onToggle: (self) => document.documentElement.toggleAttribute("data-immersive", self.isActive),
           onUpdate: (self) => {
             const time = self.progress * tl.duration()
@@ -201,8 +300,12 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
         })
 
         return () => {
+          scrollTween?.kill()
+          gestures?.kill()
+          stepTo.current = null
           trigger.current = null
-          document.documentElement.removeAttribute("data-immersive")
+          html.removeAttribute("data-scroll-lock")
+          html.removeAttribute("data-immersive")
         }
       })
       return () => mm.revert()
@@ -211,6 +314,7 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
   )
 
   const jumpTo = useCallback((i: number) => {
+    if (stepTo.current?.(i)) return
     const st = trigger.current
     const anim = st?.animation
     if (!st || !anim) return

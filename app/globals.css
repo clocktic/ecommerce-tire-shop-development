@@ -421,6 +421,12 @@ details > summary::-webkit-details-marker {
 }
 
 /* The pinned "shop by system" frame owns the whole viewport, so the closed launcher steps aside. */
+/* Stops touch momentum while a pinned scene steps through its stages on gestures. */
+html[data-scroll-lock] {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 html[data-immersive] .chat-launcher:not([data-open]) {
   opacity: 0;
   translate: calc(100% + 1.5rem) 0;
