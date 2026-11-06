@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useRef, useState, type CSSProperties } from "react"
+import { useCallback, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
@@ -10,17 +10,23 @@ import { useGSAP } from "@gsap/react"
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
 
-export type SystemMotion = "roll" | "mount"
+/** Geometry for stacking the parts into one wheel, in the order they are fitted to the car. */
+export type AssemblyFit = {
+  /** Diameter relative to the next part, which is mounted over it (e.g. brake disc inside the rim). */
+  fit: number
+  /** Horizontal distance from the image centre to the hub centre, as a fraction of the image width. */
+  hubX?: number
+  /** Rotates with the hub once mounted. */
+  spins?: boolean
+}
 
-export type ShopSystem = {
+export type ShopSystem = AssemblyFit & {
   id: string
   name: string
   blurb: string
   href: string
   image: string
   badge?: string
-  /** "roll" travels across the floor with matching rotation; "mount" slides and locks into place. */
-  motion: SystemMotion
 }
 
 type ShopBySystemProps = {
@@ -39,27 +45,16 @@ const HANDOFF = 1.15
 const TEXT_SWAP_AT = 0.5
 const HOLD_SPIN = 14
 const MOUNT_TWIST = -24
+const PRESS_FROM_SCALE = 1.45
+const PRESS_TWIST = -36
 
 const LINES_BG =
   "repeating-linear-gradient(135deg, rgba(255,255,255,0.028) 0 1px, transparent 1px 34px), repeating-linear-gradient(135deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 170px)"
 
-// GSAP only tweens unitless progress variables (--in, --out, --spin). Pixel travel and the matching
-// rotation are written to --left/--right/--turn-* on every refresh, so rolling stays slip-free after
-// resizes without invalidating (and re-recording) the whole timeline.
-const CARRIER_STYLE = {
-  "--in": 1,
-  "--out": 0,
-  "--spin": 0,
-  transform: "translate3d(calc(var(--in) * var(--left, 0px) + var(--out) * var(--right, 0px)), 0, 0)",
-} as CSSProperties
-
-const ROTOR_STYLE: CSSProperties = {
-  transform: "rotate(calc((var(--in) * var(--turn-l, 0) + var(--out) * var(--turn-r, 0) + var(--spin)) * 1deg))",
-}
+const FRAME = "absolute inset-x-0 bottom-[6%] mx-auto aspect-square w-[min(84cqw,90cqh)]"
 
 export function ShopBySystem({ title, systems, scrollHint, offsetSelector, bottomOffsetSelector }: ShopBySystemProps) {
   const root = useRef<HTMLElement>(null)
-  const stage = useRef<HTMLDivElement>(null)
   const trigger = useRef<ScrollTrigger | null>(null)
   const holdTimes = useRef<number[]>([])
   const activeRef = useRef(0)
@@ -70,86 +65,82 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
       const mm = gsap.matchMedia()
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         const section = root.current!
-        const stageEl = stage.current!
         const q = gsap.utils.selector(section)
         const carriers = q<HTMLElement>("[data-carrier]")
+        const fits = q<HTMLElement>("[data-fit]")
+        const hubs = q<HTMLElement>("[data-hub]")
         const lifts = q<HTMLElement>("[data-lift]")
+        const rotors = q<HTMLElement>("[data-rotor]")
         const panels = q<HTMLElement>("[data-panel]")
-        const glow = q<HTMLElement>("[data-glow]")
+        const ambience = q<HTMLElement>("[data-glow], [data-floor-shadow]")
         const offsetEl = offsetSelector ? document.querySelector<HTMLElement>(offsetSelector) : null
         const bottomEl = bottomOffsetSelector ? document.querySelector<HTMLElement>(bottomOffsetSelector) : null
 
         const measure = () => {
           section.style.setProperty("--sbs-offset", `${offsetEl?.offsetHeight ?? 0}px`)
           section.style.setProperty("--sbs-bottom", `${bottomEl?.offsetHeight ?? 0}px`)
-          const r = stageEl.getBoundingClientRect()
-          carriers.forEach((el, i) => {
-            const d = el.offsetWidth
-            const restLeft = r.left + (r.width - d) / 2
-            const right = window.innerWidth - restLeft + 32
-            const rolls = systems[i].motion === "roll"
-            const left = rolls ? -(restLeft + d + 32) : r.width * 0.42
-            const turns = (distance: number) => (rolls ? (distance / (Math.PI * d)) * 360 : 0)
-            el.style.setProperty("--left", `${left}px`)
-            el.style.setProperty("--right", `${right}px`)
-            el.style.setProperty("--turn-l", `${turns(left)}`)
-            el.style.setProperty("--turn-r", `${turns(right)}`)
-          })
         }
         measure()
 
-        gsap.set(carriers, { autoAlpha: 1 })
         const tl = gsap.timeline({ defaults: { ease: "none" } })
+        const scales = systems.map(() => 1)
+        const angles = systems.map(() => 0)
 
-        const enter = (i: number, at: number) => {
-          if (systems[i].motion === "roll") {
-            tl.fromTo(carriers[i], { "--in": 1 }, { "--in": 0, duration: ENTER, ease: "power3.out" }, at)
-            return
+        // Every part fitted so far shrinks to sit concentrically inside part k, hub on hub. The hub
+        // offset lives on an inner element as a percentage, so it scales together with its part.
+        const nestInside = (k: number, at: number) => {
+          for (let j = 0; j < k; j++) {
+            const to = systems.slice(j, k).reduce((size, s) => size * s.fit, 1)
+            tl.fromTo(
+              fits[j],
+              { scale: scales[j] },
+              { scale: to, duration: ENTER, ease: "power3.inOut", immediateRender: false },
+              at,
+            )
+            scales[j] = to
+            const hubX = systems[j].hubX
+            if (hubX && j === k - 1) {
+              tl.fromTo(
+                hubs[j],
+                { left: "0%" },
+                { left: `${-hubX * 100}%`, duration: ENTER, ease: "power3.inOut", immediateRender: false },
+                at,
+              )
+            }
           }
-          tl.fromTo(
-            carriers[i],
-            { "--in": 1, autoAlpha: 0 },
-            { "--in": 0, autoAlpha: 1, duration: ENTER, ease: "expo.out" },
-            at,
-          )
-          tl.fromTo(lifts[i], { y: 36, scale: 0.86 }, { y: 0, scale: 1, duration: ENTER, ease: "expo.out" }, at)
-          tl.fromTo(
-            carriers[i],
-            { "--spin": MOUNT_TWIST },
-            { "--spin": 0, duration: ENTER * 0.9, ease: "back.out(1.6)" },
-            at + ENTER * 0.1,
-          )
-          tl.fromTo(
-            glow,
-            { autoAlpha: 0, scale: 0.6 },
-            { autoAlpha: 1, scale: 1, duration: ENTER, ease: "power2.out" },
-            at,
-          )
         }
 
-        const exit = (i: number, at: number) => {
-          const fade = systems[i].motion === "mount"
-          tl.fromTo(
-            carriers[i],
-            { "--out": 0, autoAlpha: 1 },
-            { "--out": 1, autoAlpha: fade ? 0 : 1, duration: ENTER, ease: "power2.in", immediateRender: false },
-            at,
-          )
-          if (fade) {
-            tl.fromTo(glow, { autoAlpha: 1 }, { autoAlpha: 0, duration: ENTER * 0.6, immediateRender: false }, at)
+        const enter = (k: number, at: number) => {
+          if (k === 0) {
+            tl.fromTo(carriers[0], { autoAlpha: 0, xPercent: 45 }, { autoAlpha: 1, xPercent: 0, duration: ENTER, ease: "expo.out" }, at)
+            tl.fromTo(lifts[0], { y: 36, scale: 0.86 }, { y: 0, scale: 1, duration: ENTER, ease: "expo.out" }, at)
+            tl.fromTo(
+              rotors[0],
+              { rotation: MOUNT_TWIST },
+              { rotation: 0, duration: ENTER * 0.9, ease: "back.out(1.6)" },
+              at + ENTER * 0.1,
+            )
+            tl.fromTo(ambience, { autoAlpha: 0 }, { autoAlpha: 1, duration: ENTER, ease: "power2.out" }, at)
+            return
           }
+          tl.fromTo(carriers[k], { autoAlpha: 0 }, { autoAlpha: 1, duration: ENTER * 0.3, ease: "power1.out" }, at)
+          tl.fromTo(lifts[k], { scale: PRESS_FROM_SCALE }, { scale: 1, duration: ENTER, ease: "expo.out" }, at)
+          tl.fromTo(rotors[k], { rotation: PRESS_TWIST }, { rotation: 0, duration: ENTER, ease: "back.out(1.4)" }, at)
+          nestInside(k, at)
         }
 
         const hold = (i: number, at: number) => {
           tl.to({}, { duration: HOLD }, at)
-          if (systems[i].motion === "roll") {
+          systems.forEach((s, j) => {
+            if (j > i || !s.spins) return
             tl.fromTo(
-              carriers[i],
-              { "--spin": 0 },
-              { "--spin": HOLD_SPIN, duration: HOLD, immediateRender: false },
+              rotors[j],
+              { rotation: angles[j] },
+              { rotation: angles[j] + HOLD_SPIN, duration: HOLD, immediateRender: false },
               at,
             )
-          }
+            angles[j] += HOLD_SPIN
+          })
           tl.addLabel(`system-${i}`, at + HOLD / 2)
           holdTimes.current[i] = at + HOLD / 2
         }
@@ -185,8 +176,7 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
           hold(i, cursor)
           cursor += HOLD
           if (i === systems.length - 1) return
-          exit(i, cursor)
-          enter(i + 1, cursor + 0.15)
+          enter(i + 1, cursor)
           hideText(i, cursor)
           showText(i + 1, cursor + HANDOFF * TEXT_SWAP_AT)
           swaps.push(cursor + HANDOFF * TEXT_SWAP_AT)
@@ -271,7 +261,7 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
           </header>
 
           <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)_auto] gap-4 py-4 landscape:grid-cols-[1.15fr_0.85fr] landscape:grid-rows-1 landscape:items-center landscape:gap-6 md:py-6 landscape:md:gap-10">
-            <div ref={stage} className="relative h-full min-h-0 [container-type:size]">
+            <div className="relative h-full min-h-0 [container-type:size]">
               <div
                 aria-hidden="true"
                 className="absolute inset-x-0 bottom-[6%] h-px bg-gradient-to-r from-transparent via-white/25 to-transparent"
@@ -281,27 +271,25 @@ export function ShopBySystem({ title, systems, scrollHint, offsetSelector, botto
                 aria-hidden="true"
                 className="invisible absolute inset-0 m-auto size-[min(80cqw,80cqh)] rounded-full bg-primary/30 blur-3xl"
               />
+              <div data-floor-shadow aria-hidden="true" className={`invisible ${FRAME}`}>
+                <div className="absolute -bottom-3 left-1/2 h-6 w-[78%] -translate-x-1/2 rounded-[50%] bg-black/80 blur-md" />
+              </div>
               {systems.map((s, i) => (
-                <div
-                  key={s.id}
-                  data-carrier
-                  style={CARRIER_STYLE}
-                  className="invisible absolute inset-x-0 bottom-[6%] mx-auto aspect-square w-[min(84cqw,90cqh)] will-change-transform"
-                >
-                  <div data-lift className="relative size-full">
-                    <div
-                      aria-hidden="true"
-                      className="absolute -bottom-3 left-1/2 h-6 w-[78%] -translate-x-1/2 rounded-[50%] bg-black/80 blur-md"
-                    />
-                    <div data-rotor style={ROTOR_STYLE} className="relative size-full will-change-transform">
-                      <Image
-                        src={s.image || "/placeholder.svg"}
-                        alt=""
-                        fill
-                        sizes="(min-width: 768px) 40vw, 72vw"
-                        className="object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.6)]"
-                        priority={i === 0}
-                      />
+                <div key={s.id} data-carrier className={`invisible ${FRAME} will-change-transform`}>
+                  <div data-fit className="size-full will-change-transform">
+                    <div data-hub className="relative left-0 size-full">
+                      <div data-lift className="size-full">
+                        <div data-rotor className="relative size-full will-change-transform">
+                          <Image
+                            src={s.image || "/placeholder.svg"}
+                            alt=""
+                            fill
+                            sizes="(min-width: 768px) 40vw, 72vw"
+                            className="object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.6)]"
+                            priority={i === 0}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

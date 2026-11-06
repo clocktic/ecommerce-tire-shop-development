@@ -2,18 +2,24 @@ import { CATEGORIES, type Category } from "@/lib/catalog"
 import { readProducts } from "@/lib/catalog/queries"
 import { tireModelKey } from "@/lib/catalog/tire-variants"
 import { fmt, getDictionary, storePath, type Store } from "@/lib/i18n"
-import { ShopBySystem, type ShopSystem, type SystemMotion } from "@/components/home/shop-by-system"
+import { ShopBySystem, type AssemblyFit, type ShopSystem } from "@/components/home/shop-by-system"
 
-const RENDERS: Record<Category, { image: string; motion: SystemMotion }> = {
-  tires: { image: "/images/systems/tyre.webp", motion: "roll" },
-  wheels: { image: "/images/systems/wheel.webp", motion: "roll" },
-  brakes: { image: "/images/systems/brakes.webp", motion: "mount" },
-}
+// Fitting order on the car: brake disc + caliper, then the wheel over them, then the tyre onto the wheel.
+// Fits come from the renders: the disc spans ~70% of the rim, the rim fills the tyre's 79% bead opening.
+const ASSEMBLY: (AssemblyFit & { slug: Category; image: string })[] = [
+  { slug: "brakes", image: "/images/systems/brakes.webp", fit: 0.7, hubX: 0.186 },
+  { slug: "wheels", image: "/images/systems/wheel.webp", fit: 0.81, spins: true },
+  { slug: "tires", image: "/images/systems/tyre.webp", fit: 1, spins: true },
+]
 
 export async function CategoryTiles({ store }: { store: Store }) {
   const t = getDictionary(store)
   const catalog = await readProducts(store.market)
-  const systems: ShopSystem[] = CATEGORIES.map((c) => {
+  const parts = ASSEMBLY.flatMap(({ slug, ...render }) => {
+    const c = CATEGORIES.find((category) => category.slug === slug)
+    return c ? [{ c, render }] : []
+  })
+  const systems: ShopSystem[] = parts.map(({ c, render }) => {
     const count = catalog.ok
       ? new Set(
           catalog.data
@@ -22,7 +28,6 @@ export async function CategoryTiles({ store }: { store: Store }) {
         ).size
       : null
     const copy = t.categories[c.slug]
-    const render = RENDERS[c.slug] ?? { image: c.image, motion: "mount" }
     return {
       id: c.slug,
       name: copy.name,
