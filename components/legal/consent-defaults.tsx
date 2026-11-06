@@ -54,13 +54,22 @@ export function ConsentDefaults({ market }: { market: Market }) {
     const firstRun = !w.__cpConsentMarket
     w.__cpConsentMarket = market
 
-    if (GA_ID && firstRun) {
-      const tag = document.createElement("script")
-      tag.async = true
-      tag.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`
-      document.head.appendChild(tag)
+    if (firstRun) {
       gtag("js", new Date())
-      gtag("config", GA_ID)
+      w.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" })
+      const container = document.createElement("script")
+      container.id = "google-tag-manager"
+      container.async = true
+      container.src = "https://www.googletagmanager.com/gtm.js?id=GTM-WCP5PLG9"
+      document.head.appendChild(container)
+
+      if (GA_ID) {
+        const tag = document.createElement("script")
+        tag.async = true
+        tag.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`
+        document.head.appendChild(tag)
+        gtag("config", GA_ID)
+      }
     }
   }, [market])
 
