@@ -2,6 +2,7 @@ import { localizeProduct, offerFor, tireServiceDescription, tireSize, type Produ
 import { getProducts, getProductsBySlugs } from "@/lib/catalog/queries"
 import { COMPANY } from "@/lib/company"
 import { US_GMC_STARTER_SLUGS } from "@/lib/feeds/us-starter-selection"
+import { buildUsFeedItems, feedText } from "@/lib/feeds/us-feed-format"
 import { getDictionary, storePath, type Dictionary, type Store } from "@/lib/i18n"
 import { MARKETS, type Market } from "@/lib/markets"
 import { POLICIES } from "@/lib/policies"
@@ -22,7 +23,22 @@ const GOOGLE_CATEGORY: Record<Product["category"], string> = {
 }
 
 const DESCRIPTION_LIMIT = 5000
-const GTIN = /^\d{8}$|^\d{12,14}$/
+const GTIN = /^(?:\d{8}|\d{12}|\d{13}|\d{14})$/
+
+function validGtin(value: string): boolean {
+  if (!GTIN.test(value)) return false
+  const sum = [...value.slice(0, -1)].reverse().reduce((total, digit, index) => total + Number(digit) * (index % 2 === 0 ? 3 : 1), 0)
+  return (10 - sum % 10) % 10 === Number(value.at(-1))
+}
+
+function validUrl(value: string): boolean {
+  try {
+    const url = new URL(absoluteUrl(value))
+    return url.href.length <= 2000 && !url.username && !url.password && !/^\/https?:/i.test(url.pathname)
+  } catch {
+    return false
+  }
+}
 const UNSUPPORTED_IMAGE_EXT = /\.(avif|gif)(?:[?#]|$)/i
 
 function supportedFeedImages(images: string[]): string[] {
@@ -113,13 +129,20 @@ export function feedExclusion(product: Product, market: Market): string | null {
   const offer = offerFor(product, market)
   if (product.sample) return "sample record"
   if (!offer) return "not sold in this market"
-  if (offer.priceCents <= 0) return "no price"
-  if (supportedFeedImages(product.images).length === 0) return "no supported image (JPEG/PNG/WebP required)"
-  if (!product.brand) return "no brand"
+  if (!Number.isSafeInteger(offer.priceCents) || offer.priceCents <= 0) return "invalid price"
+  if (!feedText(product.id) || feedText(product.id) !== product.id) return "invalid product ID"
+  if (!feedText(product.name)) return "missing title"
+  if (!feedText(product.description)) return "missing description"
+  const images = supportedFeedImages(product.images)
+  if (images.length === 0) return "no supported image (JPEG/PNG/WebP required)"
+  if (images.some((src) => !validUrl(src))) return "invalid image URL"
+  if (!feedText(product.brand) || product.brand.length > 70) return "invalid brand"
   if (!product.gtin && !product.mpn) return "missing both GTIN and MPN"
-  if (offer.availability === "preorder" && !offer.availableFrom) return "preorder without availability date"
+  if (product.mpn && product.mpn.length > 70) return "MPN over 70 characters"
+  if (!["in_stock", "out_of_stock", "preorder"].includes(offer.availability)) return "invalid availability"
+  if (offer.availability === "preorder" && (!offer.availableFrom || !Number.isFinite(Date.parse(offer.availableFrom)))) return "preorder without valid availability date"
   if (product.name.length > 150) return "title over 150 characters"
-  if (product.gtin && !GTIN.test(product.gtin)) return "invalid GTIN"
+  if (product.gtin && !validGtin(product.gtin)) return "invalid GTIN checksum or length"
   if (market === "eu" && product.category === "tires" && !product.tire.euLabel?.eprelId) {
     return product.tire.eprelExempt ? "EU tyre exempt from EPREL (Reg. 2020/740 Art. 2(2))" : "EU tyre label / EPREL ID missing"
   }
@@ -193,20 +216,31 @@ function item(product: Product, store: Store, d: Dictionary): string {
   return `    <item>\n${lines.join("\n")}\n    </item>`
 }
 
+export class FeedValidationError extends Error {
+  constructor(public readonly issues: FeedSkip[]) {
+    super("Product feed failed validation")
+    this.name = "FeedValidationError"
+  }
+}
+
 export async function buildGoogleFeed(
   store: Store,
   options?: { fullCatalog?: boolean },
-): Promise<{ xml: string; included: number; skipped: FeedSkip[] }> {
+): Promise<{ xml: string; text: string | null; included: number; skipped: FeedSkip[] }> {
   const { market } = store
   const d = getDictionary(store)
   const skipped: FeedSkip[] = []
-  const items: string[] = []
+  const includedProducts: Product[] = []
+  const starter = market === "us" && !options?.fullCatalog
   const seenGtins = new Set<string>()
   const seenIds = new Set<string>()
   let sourceProducts: Product[]
   if (market === "us" && !options?.fullCatalog) {
     const starterRows = await getProductsBySlugs(market, US_GMC_STARTER_SLUGS)
     const bySlug = new Map(starterRows.map((p) => [p.slug, p]))
+    for (const slug of US_GMC_STARTER_SLUGS) {
+      if (!bySlug.has(slug)) skipped.push({ slug, reason: "selected product missing or unavailable in market" })
+    }
     sourceProducts = US_GMC_STARTER_SLUGS.map((slug) => bySlug.get(slug)).filter((p): p is Product => Boolean(p))
   } else {
     sourceProducts = await getProducts(market)
@@ -230,9 +264,20 @@ export async function buildGoogleFeed(
     }
     seenIds.add(id)
     if (product.gtin) seenGtins.add(product.gtin)
-    items.push(item(product, store, d))
+    includedProducts.push(product)
   }
 
+  if (starter) {
+    for (const [category, expected] of [["tires", 35], ["wheels", 35], ["brakes", 30]] as const) {
+      const count = includedProducts.filter((product) => product.category === category).length
+      if (count !== expected) skipped.push({ slug: category, reason: `expected ${expected} products, found ${count}` })
+    }
+    if (skipped.length) throw new FeedValidationError(skipped)
+  }
+  if (!includedProducts.length) throw new FeedValidationError(skipped.length ? skipped : [{ slug: "feed", reason: "no products" }])
+
+  const usFeed = market === "us" ? buildUsFeedItems(includedProducts, store) : null
+  const items = usFeed?.items ?? includedProducts.map((product) => item(product, store, d))
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
   <channel>
@@ -243,5 +288,5 @@ ${items.join("\n")}
   </channel>
 </rss>
 `
-  return { xml: body, included: items.length, skipped }
+  return { xml: body, text: usFeed?.text ?? null, included: items.length, skipped }
 }
