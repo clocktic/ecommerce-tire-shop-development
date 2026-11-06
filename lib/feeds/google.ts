@@ -1,6 +1,7 @@
 import { localizeProduct, offerFor, tireServiceDescription, tireSize, type Product } from "@/lib/catalog"
 import { getProducts } from "@/lib/catalog/queries"
 import { COMPANY } from "@/lib/company"
+import { US_GMC_STARTER_SLUGS } from "@/lib/feeds/us-starter-selection"
 import { getDictionary, storePath, type Dictionary, type Store } from "@/lib/i18n"
 import { MARKETS, type Market } from "@/lib/markets"
 import { POLICIES } from "@/lib/policies"
@@ -99,6 +100,8 @@ function categoryDetails(product: Product, market: Market, d: Dictionary): [stri
   return [
     [d.catalog.axle, d.labels.axleShort[b.axle]],
     ...(b.discDiameterMm ? ([[d.catalog.diameter, `${b.discDiameterMm} mm`]] as [string, string][]) : []),
+    ...(b.pistons ? ([["Pistons", `${b.pistons}-Piston`]] as [string, string][]) : []),
+    ...(b.fitment?.length ? ([["Compatible Vehicles", b.fitment.slice(0, 8).join(", ")]] as [string, string][]) : []),
     ...(b.approvals[market] ? ([[approval, b.approvals[market]!]] as [string, string][]) : []),
   ]
 }
@@ -187,14 +190,25 @@ function item(product: Product, store: Store, d: Dictionary): string {
   return `    <item>\n${lines.join("\n")}\n    </item>`
 }
 
-export async function buildGoogleFeed(store: Store): Promise<{ xml: string; included: number; skipped: FeedSkip[] }> {
+export async function buildGoogleFeed(
+  store: Store,
+  options?: { fullCatalog?: boolean },
+): Promise<{ xml: string; included: number; skipped: FeedSkip[] }> {
   const { market } = store
   const d = getDictionary(store)
   const skipped: FeedSkip[] = []
   const items: string[] = []
   const seenGtins = new Set<string>()
   const seenIds = new Set<string>()
-  for (const base of await getProducts(market)) {
+  const allProducts = await getProducts(market)
+
+  let sourceProducts = allProducts
+  if (market === "us" && !options?.fullCatalog) {
+    const bySlug = new Map(allProducts.map((p) => [p.slug, p]))
+    sourceProducts = US_GMC_STARTER_SLUGS.map((slug) => bySlug.get(slug)).filter((p): p is Product => Boolean(p))
+  }
+
+  for (const base of sourceProducts) {
     const product = localizeProduct(base, store)
     const reason = feedExclusion(product, market)
     if (reason) {
