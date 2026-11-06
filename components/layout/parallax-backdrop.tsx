@@ -1,11 +1,10 @@
-import { ParallaxWheel } from "@/components/layout/parallax-wheel"
+import { ParallaxTreads } from "@/components/layout/parallax-treads"
 
 export function ParallaxBackdrop() {
   return (
     <div aria-hidden="true" className="parallax-backdrop">
       <div className="parallax-layer parallax-glow" />
-      <ParallaxWheel />
-      <div className="parallax-layer parallax-tread" />
+      <ParallaxTreads />
     </div>
   )
 }
