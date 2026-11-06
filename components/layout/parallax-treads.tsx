@@ -7,8 +7,8 @@ const TREADS = [
   { side: "right", speed: 0.48 },
 ] as const
 
-/** Height / width of one tile of /images/tread-mask.svg; the pattern repeats with this period. */
-const TILE_ASPECT = 72 / 180
+/** Height / width of one tile of /images/tread-{light,dark}.svg; the pattern repeats with this period. */
+const TILE_ASPECT = 96 / 240
 const EASE = 0.09
 
 export function ParallaxTreads() {

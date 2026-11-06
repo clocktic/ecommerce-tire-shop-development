@@ -86,9 +86,11 @@
   --icon-well: oklch(0.85 0.012 262);
   --parallax-ink: oklch(0.21 0.012 255 / 0.04);
   --parallax-glow: oklch(0.54 0.205 27 / 0.07);
-  --tread-rubber: oklch(0.21 0.012 255 / 0.06);
-  --tread-rubber-edge: oklch(0.21 0.012 255 / 0.11);
-  --tread-shadow: oklch(0.21 0.012 255 / 0.2);
+  --tread-image: url("/images/tread-light.svg");
+  --tread-opacity: 0.15;
+  --tread-curve: oklch(0 0 0 / 0.45);
+  --tread-sheen: oklch(1 0 0 / 0.12);
+  --tread-shadow: oklch(0.21 0.012 255 / 0.55);
 }
 
 /* Night garage: same five roles, graphite ground. Photo wells stay light so product shots keep their studio grey. */
@@ -125,9 +127,11 @@
   --icon-well: oklch(0.84 0.012 262);
   --parallax-ink: oklch(0.94 0.004 250 / 0.03);
   --parallax-glow: oklch(0.62 0.2 27 / 0.1);
-  --tread-rubber: oklch(0.94 0.004 250 / 0.11);
-  --tread-rubber-edge: oklch(0.94 0.004 250 / 0.045);
-  --tread-shadow: oklch(0 0 0 / 0.75);
+  --tread-image: url("/images/tread-dark.svg");
+  --tread-opacity: 0.17;
+  --tread-curve: oklch(0 0 0 / 0.6);
+  --tread-sheen: oklch(1 0 0 / 0.14);
+  --tread-shadow: oklch(0 0 0 / 0.9);
 }
 
 /* System dark with no stored choice. .light opts out; no script is required to pick this up. */
@@ -165,9 +169,11 @@
     --icon-well: oklch(0.84 0.012 262);
     --parallax-ink: oklch(0.94 0.004 250 / 0.03);
     --parallax-glow: oklch(0.62 0.2 27 / 0.1);
-  --tread-rubber: oklch(0.94 0.004 250 / 0.11);
-  --tread-rubber-edge: oklch(0.94 0.004 250 / 0.045);
-  --tread-shadow: oklch(0 0 0 / 0.75);
+  --tread-image: url("/images/tread-dark.svg");
+  --tread-opacity: 0.17;
+  --tread-curve: oklch(0 0 0 / 0.6);
+  --tread-sheen: oklch(1 0 0 / 0.14);
+  --tread-shadow: oklch(0 0 0 / 0.9);
   }
 }
 
@@ -270,7 +276,7 @@
 }
 /* Two tyre treads converging like tracks into the distance. JS shifts the mover by scroll. */
 .parallax-tread-track {
-  --tread-w: clamp(5.5rem, 12vw, 11rem);
+  --tread-w: clamp(8rem, 20vw, 17rem);
   position: absolute;
   top: -30vh;
   width: var(--tread-w);
@@ -278,29 +284,28 @@
   mask-image: linear-gradient(to bottom, transparent 8%, #000 30%, #000 64%, transparent 92%);
 }
 .parallax-tread-track--left {
-  left: calc(5vw - 2rem);
+  left: calc(5vw - 3.5rem);
   rotate: 6deg;
 }
 .parallax-tread-track--right {
-  right: calc(5vw - 2rem);
+  right: calc(5vw - 3.5rem);
   rotate: -6deg;
 }
-/* The shadow lives on the moving layer (outside the groove mask) so it is rasterised once, not per frame. */
+/* Filters live on the moving layer so they are rasterised once and only the transform animates. */
 .parallax-tread-mover {
   height: 100%;
+  opacity: var(--tread-opacity);
   will-change: transform;
-  filter: drop-shadow(0 5px 6px var(--tread-shadow));
+  filter: blur(1.4px) drop-shadow(0 10px 14px var(--tread-shadow));
 }
+/* Edge darkening and a soft centre sheen make the flat texture read as a curved tyre. */
 .parallax-tread-rubber {
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    var(--tread-rubber-edge),
-    var(--tread-rubber) 30%,
-    var(--tread-rubber) 70%,
-    var(--tread-rubber-edge)
-  );
-  mask: url("/images/tread-mask.svg") top center / 100% auto repeat-y;
+  border-radius: 0.75rem;
+  background:
+    linear-gradient(90deg, var(--tread-curve) 0%, transparent 24%, transparent 76%, var(--tread-curve) 100%),
+    linear-gradient(90deg, transparent 38%, var(--tread-sheen) 50%, transparent 62%),
+    var(--tread-image) top center / 100% auto repeat-y;
 }
 .parallax-glow {
   background:
