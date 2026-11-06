@@ -57,8 +57,8 @@ export default async function ContactPage({ params }: { params: Params }) {
         <p className="max-w-xl leading-relaxed text-muted-foreground">{c.lead}</p>
       </header>
 
-      <div className="grid gap-10 py-10 lg:grid-cols-12">
-        <div className="flex flex-col gap-10 lg:col-span-8">
+      <div className="grid grid-cols-1 gap-10 py-10 lg:grid-cols-12">
+        <div className="flex min-w-0 flex-col gap-10 lg:col-span-8">
         <ul className="grid gap-px border border-border bg-border sm:grid-cols-2">
           {cards.map(({ icon: Icon, label, value, href, external }) => (
             <li key={label} className="flex flex-col gap-3 bg-card p-6">
@@ -82,7 +82,7 @@ export default async function ContactPage({ params }: { params: Params }) {
         <ContactForm />
         </div>
 
-        <aside className="flex flex-col gap-6 lg:col-span-4">
+        <aside className="flex min-w-0 flex-col gap-6 lg:col-span-4">
           <div className="flex flex-col gap-2">
             <h2 className="label-caps">{c.returnsAddress}</h2>
             <p className="text-sm font-medium leading-relaxed text-foreground">
