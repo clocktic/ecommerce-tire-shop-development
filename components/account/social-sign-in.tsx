@@ -14,6 +14,7 @@ export function SocialSignIn({ enabled }: { enabled: Record<Provider, boolean> }
   const [busy, setBusy] = useState<Provider | null>(null)
   const [error, setError] = useState(false)
   const anyEnabled = ORDER.some((p) => enabled[p])
+  const visibleProviders = anyEnabled ? ORDER.filter((p) => enabled[p]) : ORDER
 
   async function start(provider: Provider) {
     setBusy(provider)
@@ -30,7 +31,7 @@ export function SocialSignIn({ enabled }: { enabled: Record<Provider, boolean> }
 
   return (
     <div className="flex flex-col gap-3">
-      {ORDER.map((provider) => (
+      {visibleProviders.map((provider) => (
         <button
           key={provider}
           type="button"

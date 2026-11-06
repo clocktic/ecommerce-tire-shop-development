@@ -12,12 +12,14 @@ const GOOGLE_CLIENT_ID =
   process.env.GOOGLE_CLIENT_ID ||
   "661924817123-t64bkpbr8rfsq5imoa39ojggup63llvc.apps.googleusercontent.com"
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || process.env.Secret
+const FACEBOOK_CLIENT_ID = process.env.FACEBOOK_CLIENT_ID || "2652921205170227"
+const FACEBOOK_CLIENT_SECRET = process.env.FACEBOOK_CLIENT_SECRET
 
 // A provider is offered only once its OAuth credentials exist in the project env.
 export const ENABLED_PROVIDERS: Record<SocialProvider, boolean> = {
   google: !!(GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET),
   apple: !!(process.env.APPLE_CLIENT_ID && process.env.APPLE_CLIENT_SECRET),
-  facebook: !!(process.env.FACEBOOK_CLIENT_ID && process.env.FACEBOOK_CLIENT_SECRET),
+  facebook: !!(FACEBOOK_CLIENT_ID && FACEBOOK_CLIENT_SECRET),
 }
 
 export const auth = betterAuth({
@@ -51,7 +53,7 @@ export const auth = betterAuth({
         }
       : {}),
     ...(ENABLED_PROVIDERS.facebook
-      ? { facebook: { clientId: process.env.FACEBOOK_CLIENT_ID!, clientSecret: process.env.FACEBOOK_CLIENT_SECRET! } }
+      ? { facebook: { clientId: FACEBOOK_CLIENT_ID!, clientSecret: FACEBOOK_CLIENT_SECRET! } }
       : {}),
   },
   trustedOrigins: [
