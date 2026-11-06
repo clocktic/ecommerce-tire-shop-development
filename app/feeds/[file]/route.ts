@@ -16,10 +16,15 @@ export async function GET(request: Request, { params }: { params: Promise<{ file
   return new Response(xml, {
     headers: {
       "Content-Type": "application/xml; charset=utf-8",
-      "Cache-Control": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400",
-      "Content-Language": localeMeta(store).htmlLang,
+      "Content-Language": store.hreflang,
+      "Cache-Control": "public, max-age=300, s-maxage=900, stale-while-revalidate=3600",
       "X-Feed-Items": String(included),
       "X-Feed-Skipped": String(skipped.length),
     },
   })
+}
+
+export async function HEAD(request: Request, ctx: { params: Promise<{ file: string }> }) {
+  const res = await GET(request, ctx)
+  return new Response(null, { status: res.status, headers: res.headers })
 }
