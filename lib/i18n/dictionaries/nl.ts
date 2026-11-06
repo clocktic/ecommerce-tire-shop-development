@@ -106,6 +106,7 @@ export const euNl: Dictionary = {
     },
     systems: "Winkelen per systeem",
     listed: "{n} in assortiment",
+    systemsScroll: "Scroll om te schakelen",
     decoder: {
       eyebrow: "Voor u bestelt",
       title: "Lees de zijkant van uw band",

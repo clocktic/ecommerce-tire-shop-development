@@ -106,6 +106,7 @@ export const euDe: Dictionary = {
     },
     systems: "Nach System einkaufen",
     listed: "{n} gelistet",
+    systemsScroll: "Scrollen zum Schalten",
     decoder: {
       eyebrow: "Vor der Bestellung",
       title: "Reifenflanke lesen",
