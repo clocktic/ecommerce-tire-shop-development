@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next"
-import { getProducts } from "@/lib/catalog/queries"
+import { getSitemapProducts } from "@/lib/catalog/queries"
 import { ALL_STORES, storePath } from "@/lib/i18n/config"
-import { markets } from "@/lib/markets"
 import { absoluteUrl, hreflangMap } from "@/lib/seo"
 
 // Each entry carries a full hreflang cluster (~1.5 KB), so a single sitemap of the
@@ -15,8 +14,8 @@ export const revalidate = 3600
 
 async function indexableProducts(storeIndex: number) {
   const store = ALL_STORES[storeIndex]
-  const products = await getProducts(store.market)
-  return { store, products: products.filter((p) => !p.sample) }
+  const products = await getSitemapProducts(store.market)
+  return { store, products }
 }
 
 export async function generateSitemaps() {
@@ -37,7 +36,7 @@ export default async function sitemap({ id }: { id: Promise<string> }): Promise<
     const path = `/product/${p.slug}`
     return {
       url: absoluteUrl(storePath(store, path)),
-      alternates: { languages: hreflangMap(path, markets.filter((m) => p.offers[m])) },
+      alternates: { languages: hreflangMap(path, p.markets) },
     }
   })
 }
