@@ -96,17 +96,6 @@ export default async function StoreLayout({ children, params }: { children: Reac
       className={`${archivo.variable} ${jetbrains.variable} overflow-x-clip bg-background ${theme}`}
       suppressHydrationWarning
     >
-      <head>
-        <script
-          async
-          src="https://www.googletagmanager.com/gtm.js?id=GTM-WCP5PLG9"
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());`,
-          }}
-        />
-      </head>
       <body className="min-h-dvh flex flex-col">
         <ThemeSync />
         <ParallaxBackdrop />
