@@ -16,6 +16,6 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
       // Merchant Center and Shopping crawlers must reach product pages and images in every store language.
       { userAgent: ["Googlebot", "Googlebot-Image", "Storebot-Google", "AdsBot-Google"], allow: "/" },
     ],
-    sitemap: [absoluteUrl("/sitemap.xml"), ...productSitemaps],
+    sitemap: [absoluteUrl("/sitemap-index.xml"), absoluteUrl("/sitemap.xml"), ...productSitemaps],
   }
 }

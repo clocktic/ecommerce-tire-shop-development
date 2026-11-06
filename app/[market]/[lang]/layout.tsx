@@ -50,6 +50,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     title: { default: t.meta.title, template: t.meta.template },
     description: t.meta.description,
     alternates: storeAlternates(store, "/"),
+    verification: {
+      google: "vkkZcC0HkzyQE3_esQyCe1UTZAwL3jTNIKHpCIGojQo",
+    },
     openGraph: { siteName: COMPANY.tradingName, locale: localeMeta(store).ogLocale, type: "website" },
     icons: {
       icon: [
