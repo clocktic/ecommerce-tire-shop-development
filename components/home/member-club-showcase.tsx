@@ -109,6 +109,7 @@ export function MemberClubShowcase() {
               {!isMember && (
                 <Link
                   href={storePath(store, "/tires")}
+                  data-cta-roll
                   className="rounded-md py-1 text-center font-mono text-xs font-semibold uppercase tracking-[0.16em] text-secondary-foreground/80 underline underline-offset-4 transition-colors hover:text-primary sm:px-3 sm:py-2"
                 >
                   {m.ctaShop}

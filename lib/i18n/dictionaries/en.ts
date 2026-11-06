@@ -240,6 +240,7 @@ export const usEn = {
     },
     systems: "Shop by system",
     listed: "{n} listed",
+    systemsScroll: "Scroll to shift gear",
     decoder: {
       eyebrow: "Before you order",
       title: "Read your sidewall",
@@ -537,6 +538,7 @@ export const euEn: Dictionary = {
     },
     systems: "Shop by system",
     listed: "{n} listed",
+    systemsScroll: "Scroll to shift gear",
     decoder: {
       eyebrow: "Before you order",
       title: "Read your sidewall",

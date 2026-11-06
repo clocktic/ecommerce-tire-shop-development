@@ -106,6 +106,7 @@ export const euIt: Dictionary = {
     },
     systems: "Acquista per sistema",
     listed: "{n} a catalogo",
+    systemsScroll: "Scorri per cambiare",
     decoder: {
       eyebrow: "Prima di ordinare",
       title: "Leggi il fianco del pneumatico",

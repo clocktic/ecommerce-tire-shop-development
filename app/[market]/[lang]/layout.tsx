@@ -20,6 +20,7 @@ import { CookieConsent } from "@/components/legal/cookie-consent"
 import { OrganizationJsonLd } from "@/components/legal/organization-jsonld"
 import { ThemeSync } from "@/components/layout/theme-provider"
 import { ParallaxBackdrop } from "@/components/layout/parallax-backdrop"
+import { CtaWheelRoll } from "@/components/layout/cta-wheel-roll"
 import { THEME_COOKIE, themeClassName } from "@/lib/theme"
 import { ChatWidget } from "@/components/chat/chat-widget"
 import { COMPANY } from "@/lib/company"
@@ -95,6 +96,7 @@ export default async function StoreLayout({ children, params }: { children: Reac
       <body className="min-h-dvh flex flex-col">
         <ThemeSync />
         <ParallaxBackdrop />
+      <CtaWheelRoll />
         <ConsentDefaults market={store.market} />
         <I18nProvider store={store} t={t} x={getExtras(store)} intl={meta.intlLocale}>
           <CartProvider market={store.market}>

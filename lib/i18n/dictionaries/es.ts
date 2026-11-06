@@ -107,6 +107,7 @@ export const euEs: Dictionary = {
     },
     systems: "Comprar por sistema",
     listed: "{n} disponibles",
+    systemsScroll: "Desplázate para cambiar",
     decoder: {
       eyebrow: "Antes de pedir",
       title: "Lee el flanco del neumático",

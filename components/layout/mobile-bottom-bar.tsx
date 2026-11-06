@@ -27,6 +27,7 @@ export function MobileBottomBar() {
   return (
     <nav
       aria-label={t.common.mobileNav}
+      data-mobile-bottom-bar
       className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md supports-[backdrop-filter]:bg-background/85 md:hidden"
     >
       <div className="mx-auto grid h-14 max-w-md grid-cols-5 items-stretch">

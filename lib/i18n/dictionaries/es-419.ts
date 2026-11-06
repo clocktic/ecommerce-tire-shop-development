@@ -108,6 +108,7 @@ export const usEs: Dictionary = {
     },
     systems: "Compra por sistema",
     listed: "{n} disponibles",
+    systemsScroll: "Desliza para cambiar",
     decoder: {
       eyebrow: "Antes de comprar",
       title: "Lee el costado de tu llanta",

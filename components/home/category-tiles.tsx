@@ -1,73 +1,48 @@
-import Image from "next/image"
-import Link from "next/link"
-import { ArrowUpRight } from "lucide-react"
-import { CATEGORIES } from "@/lib/catalog"
+import { CATEGORIES, type Category } from "@/lib/catalog"
 import { readProducts } from "@/lib/catalog/queries"
 import { tireModelKey } from "@/lib/catalog/tire-variants"
 import { fmt, getDictionary, storePath, type Store } from "@/lib/i18n"
+import { ShopBySystem, type AssemblyFit, type ShopSystem } from "@/components/home/shop-by-system"
+
+// Fitting order on the car: brake disc + caliper, then the wheel over them, then the tyre onto the wheel.
+// Fits come from the renders: the disc spans ~65% of the rim, the rim fills the tyre's 79% bead opening.
+const ASSEMBLY: (AssemblyFit & { slug: Category; image: string })[] = [
+  { slug: "brakes", image: "/images/systems/brakes.webp", fit: 0.66 },
+  { slug: "wheels", image: "/images/systems/wheel.webp", fit: 0.81, spins: true },
+  { slug: "tires", image: "/images/systems/tyre.webp", fit: 1, spins: true },
+]
 
 export async function CategoryTiles({ store }: { store: Store }) {
   const t = getDictionary(store)
   const catalog = await readProducts(store.market)
+  const parts = ASSEMBLY.flatMap(({ slug, ...render }) => {
+    const c = CATEGORIES.find((category) => category.slug === slug)
+    return c ? [{ c, render }] : []
+  })
+  const systems: ShopSystem[] = parts.map(({ c, render }) => {
+    const count = catalog.ok
+      ? new Set(
+          catalog.data
+            .filter((p) => p.category === c.slug)
+            .map((p) => (p.category === "tires" ? tireModelKey(p) : p.id)),
+        ).size
+      : null
+    const copy = t.categories[c.slug]
+    return {
+      id: c.slug,
+      name: copy.name,
+      blurb: copy.blurb,
+      href: storePath(store, `/${c.slug}`),
+      badge: count !== null ? fmt(t.home.listed, { n: count }) : undefined,
+      ...render,
+    }
+  })
+
   return (
-    <section aria-labelledby="categories-title" className="mx-auto max-w-7xl px-4 pt-12 sm:pt-20 md:px-6">
-      <div className="mb-5 flex items-end justify-between gap-4 sm:mb-8">
-        <h2 id="categories-title" className="font-expanded text-xl font-extrabold uppercase sm:text-2xl md:text-3xl">
-          {t.home.systems}
-        </h2>
-      </div>
-      <ul className="grid gap-3 sm:grid-cols-3">
-        {CATEGORIES.map((c) => {
-          const count = catalog.ok
-            ? new Set(
-                catalog.data
-                  .filter((p) => p.category === c.slug)
-                  .map((p) => (p.category === "tires" ? tireModelKey(p) : p.id)),
-              ).size
-            : null
-          const copy = t.categories[c.slug]
-          return (
-            <li key={c.slug}>
-              <Link
-                href={storePath(store, `/${c.slug}`)}
-                className="group grid h-full grid-cols-[7.25rem_1fr] overflow-hidden border border-border bg-card shadow-lifted lift-hover hover:border-foreground/60 sm:flex sm:flex-col"
-              >
-                <div className="relative min-h-28 overflow-hidden border-r border-border bg-photo sm:aspect-[6/5] sm:w-full sm:border-b sm:border-r-0">
-                  <Image
-                    src={c.image || "/placeholder.svg"}
-                    alt=""
-                    fill
-                    sizes="(min-width: 640px) 33vw, 120px"
-                    className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.04]"
-                  />
-                </div>
-                <div className="flex flex-1 items-start justify-between gap-3 p-3.5 sm:gap-4 sm:p-5">
-                  <div className="flex flex-col gap-1.5 sm:gap-2">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="font-expanded text-lg font-extrabold uppercase sm:text-xl">{copy.name}</h3>
-                      {count !== null && (
-                        <span className="rounded-sm border border-border bg-muted/40 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground sm:hidden">
-                          {fmt(t.home.listed, { n: count })}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-pretty text-xs leading-relaxed text-muted-foreground sm:text-sm">{copy.blurb}</p>
-                    {count !== null && (
-                      <p className="hidden font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground sm:block">
-                        {fmt(t.home.listed, { n: count })}
-                      </p>
-                    )}
-                  </div>
-                  <ArrowUpRight
-                    className="size-4 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary sm:size-5"
-                    aria-hidden="true"
-                  />
-                </div>
-              </Link>
-            </li>
-          )
-        })}
-      </ul>
-    </section>
+    <div className="pt-12 sm:pt-20">
+      <ShopBySystem title={t.home.systems} systems={systems} scrollHint={t.home.systemsScroll} offsetSelector="header.sticky"
+        bottomOffsetSelector="[data-mobile-bottom-bar]"
+      />
+    </div>
   )
 }
