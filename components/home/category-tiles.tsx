@@ -5,9 +5,9 @@ import { fmt, getDictionary, storePath, type Store } from "@/lib/i18n"
 import { ShopBySystem, type AssemblyFit, type ShopSystem } from "@/components/home/shop-by-system"
 
 // Fitting order on the car: brake disc + caliper, then the wheel over them, then the tyre onto the wheel.
-// Fits come from the renders: the disc spans ~70% of the rim, the rim fills the tyre's 79% bead opening.
+// Fits come from the renders: the disc spans ~65% of the rim, the rim fills the tyre's 79% bead opening.
 const ASSEMBLY: (AssemblyFit & { slug: Category; image: string })[] = [
-  { slug: "brakes", image: "/images/systems/brakes.webp", fit: 0.71 },
+  { slug: "brakes", image: "/images/systems/brakes.webp", fit: 0.66 },
   { slug: "wheels", image: "/images/systems/wheel.webp", fit: 0.81, spins: true },
   { slug: "tires", image: "/images/systems/tyre.webp", fit: 1, spins: true },
 ]
