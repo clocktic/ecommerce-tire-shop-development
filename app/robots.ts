@@ -10,11 +10,23 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
     rules: [
       {
         userAgent: "*",
-        allow: ["/", "/images/", "/feeds/"],
+        allow: ["/", "/images/", "/feeds/", "/api/blob"],
         disallow: ["/api/", "/admin/", "/*/*/cart", "/*/*/checkout", "/*/*/order/"],
       },
-      // Merchant Center and Shopping crawlers must reach product pages and images in every store language.
-      { userAgent: ["Googlebot", "Googlebot-Image", "Storebot-Google", "AdsBot-Google"], allow: "/" },
+      // Merchant Center, Shopping, and Ads crawlers must reach all product, image, feed, cart, and checkout pages.
+      {
+        userAgent: [
+          "Googlebot",
+          "Googlebot-Image",
+          "Storebot-Google",
+          "AdsBot-Google",
+          "AdsBot-Google-Mobile",
+          "GoogleOther",
+          "Google-InspectionTool",
+        ],
+        allow: "/",
+        disallow: ["/admin/"],
+      },
     ],
     sitemap: [absoluteUrl("/sitemap-index.xml"), absoluteUrl("/sitemap.xml"), ...productSitemaps],
   }
