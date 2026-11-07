@@ -5,6 +5,9 @@ import type { Market } from "@/lib/markets"
 import { hasGlobalPrivacyControl, readConsent } from "@/components/legal/consent"
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID
+const GOOGLE_ADS_ID = "AW-18560668147"
+const GOOGLE_ADS_PURCHASE_SEND_TO = "AW-18560668147/5lKkCK_VybMdEPOjtZJF"
+const trackedTransactions = new Set<string>()
 
 type Gtag = (...args: unknown[]) => void
 type GtagWindow = Window & { dataLayer?: unknown[]; gtag?: Gtag; __cpConsentMarket?: Market }
@@ -63,15 +66,52 @@ export function ConsentDefaults({ market }: { market: Market }) {
       container.src = "https://www.googletagmanager.com/gtm.js?id=GTM-WCP5PLG9"
       document.head.appendChild(container)
 
-      if (GA_ID) {
-        const tag = document.createElement("script")
-        tag.async = true
-        tag.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`
-        document.head.appendChild(tag)
+      const tagId = GA_ID || GOOGLE_ADS_ID
+      const tag = document.createElement("script")
+      tag.id = "google-gtag-js"
+      tag.async = true
+      tag.src = `https://www.googletagmanager.com/gtag/js?id=${tagId}`
+      document.head.appendChild(tag)
+
+      gtag("config", GOOGLE_ADS_ID)
+      if (GA_ID && GA_ID !== GOOGLE_ADS_ID) {
         gtag("config", GA_ID)
       }
     }
   }, [market])
+
+  return null
+}
+
+export function OrderConversionTracker({
+  orderNumber,
+  valueCents,
+  currency,
+}: {
+  orderNumber: string
+  valueCents: number
+  currency: string
+}) {
+  useEffect(() => {
+    if (!orderNumber || trackedTransactions.has(orderNumber)) return
+    const w = window as GtagWindow
+    w.dataLayer = w.dataLayer || []
+    const gtag: Gtag =
+      w.gtag ||
+      function gtag() {
+        // eslint-disable-next-line prefer-rest-params
+        w.dataLayer!.push(arguments)
+      }
+    w.gtag = gtag
+
+    trackedTransactions.add(orderNumber)
+    gtag("event", "conversion", {
+      send_to: GOOGLE_ADS_PURCHASE_SEND_TO,
+      transaction_id: orderNumber,
+      value: Number((valueCents / 100).toFixed(2)),
+      currency,
+    })
+  }, [orderNumber, valueCents, currency])
 
   return null
 }

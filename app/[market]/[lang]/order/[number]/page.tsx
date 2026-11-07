@@ -4,9 +4,10 @@ import { notFound } from "next/navigation"
 import { CheckCircle2, Clock } from "lucide-react"
 import { buttonVariants } from "@/components/ui/button"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
+import { OrderConversionTracker } from "@/components/legal/consent-defaults"
 import { fmt, getDictionary, localeMeta, parseStore, storePath } from "@/lib/i18n"
 import { getExtras } from "@/lib/i18n/extras"
-import { formatPrice, type Market } from "@/lib/markets"
+import { formatPrice, MARKETS, type Market } from "@/lib/markets"
 import { getOrderByNumber, maskEmail } from "@/lib/orders"
 
 type Params = Promise<{ market: string; lang: string; number: string }>
@@ -32,6 +33,13 @@ export default async function OrderPage({ params, searchParams }: { params: Para
 
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-6">
+      {!isPending && (
+        <OrderConversionTracker
+          orderNumber={order.orderNumber}
+          valueCents={order.totalCents}
+          currency={MARKETS[order.market as Market].currency}
+        />
+      )}
       <Breadcrumbs label={t.common.breadcrumb} items={[{ href: storePath(store), label: t.common.home }, { label: pageTitle }]} />
       <div className="grid gap-10 pb-20 pt-4 lg:grid-cols-12">
         <section className="flex flex-col gap-6 lg:col-span-7">
