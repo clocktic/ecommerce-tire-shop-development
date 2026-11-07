@@ -35,6 +35,7 @@ export default async function OrderPage({ params, searchParams }: { params: Para
     <div className="mx-auto max-w-7xl px-4 md:px-6">
       {!isPending && (
         <OrderConversionTracker
+          market={order.market as Market}
           orderNumber={order.orderNumber}
           valueCents={order.totalCents}
           currency={MARKETS[order.market as Market].currency}
