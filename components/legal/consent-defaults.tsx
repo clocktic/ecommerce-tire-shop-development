@@ -105,11 +105,17 @@ export function OrderConversionTracker({
     const gtag = w.gtag
     if (!gtag) return
 
+    const value = Number((valueCents / 100).toFixed(2))
     trackedTransactions.add(orderNumber)
     gtag("event", "conversion", {
       send_to: GOOGLE_ADS_PURCHASE_SEND_TO,
       transaction_id: orderNumber,
-      value: Number((valueCents / 100).toFixed(2)),
+      value,
+      currency,
+    })
+    gtag("event", "conversion_event_purchase", {
+      transaction_id: orderNumber,
+      value,
       currency,
     })
   }, [market, orderNumber, valueCents, currency])
