@@ -203,8 +203,48 @@ export async function createShopifyCheckoutSession(
   )
 
   const buildInputForCurrency = (currencyCode: string) => {
+    const lineItems = items.map((item) => ({
+      title: (item.brandName
+        ? `${item.brandName} ${item.productName}`
+        : item.productName
+      ).slice(0, 250),
+      quantity: item.quantity,
+      originalUnitPriceWithCurrency: {
+        amount: centsToDecimal(item.unitPriceCents),
+        currencyCode,
+      },
+      taxable: false,
+      requiresShipping: false,
+    }))
+
+    if (shippingCents > 0) {
+      lineItems.push({
+        title: "Standard Shipping",
+        quantity: 1,
+        originalUnitPriceWithCurrency: {
+          amount: centsToDecimal(shippingCents),
+          currencyCode,
+        },
+        taxable: false,
+        requiresShipping: false,
+      })
+    }
+
+    const addressPayload = {
+      firstName: firstName.slice(0, 100),
+      lastName: lastName.slice(0, 100),
+      address1: (order.shippingAddress1 || "").slice(0, 200),
+      city: (order.shippingCity || "").slice(0, 100),
+      ...(order.shippingRegion
+        ? { provinceCode: order.shippingRegion.slice(0, 50) }
+        : {}),
+      zip: (order.shippingPostalCode || "").slice(0, 40),
+      countryCode: (order.shippingCountry || "US").slice(0, 2).toUpperCase(),
+      ...(order.phone ? { phone: order.phone.slice(0, 40) } : {}),
+    }
+
     const input: Record<string, unknown> = {
-      note: `${COMPANY.tradingName} Order ${order.orderNumber}`,
+      note: `${COMPANY.tradingName} Order ${order.orderNumber} — Ship to: ${[order.shippingName, order.shippingAddress1, `${order.shippingPostalCode} ${order.shippingCity}`, order.shippingRegion || null, order.shippingCountry].filter(Boolean).join(", ")}`,
       email: order.email,
       presentmentCurrencyCode: currencyCode,
       customAttributes: [
@@ -212,38 +252,9 @@ export async function createShopifyCheckoutSession(
         { key: "orderId", value: order.id },
         { key: "market", value: order.market },
       ],
-      shippingLine: {
-        title: "Standard Shipping",
-        priceWithCurrency: {
-          amount: centsToDecimal(shippingCents),
-          currencyCode,
-        },
-      },
-      shippingAddress: {
-        firstName: firstName.slice(0, 100),
-        lastName: lastName.slice(0, 100),
-        address1: (order.shippingAddress1 || "").slice(0, 200),
-        city: (order.shippingCity || "").slice(0, 100),
-        ...(order.shippingRegion
-          ? { provinceCode: order.shippingRegion.slice(0, 50) }
-          : {}),
-        zip: (order.shippingPostalCode || "").slice(0, 40),
-        countryCode: (order.shippingCountry || "US").slice(0, 2).toUpperCase(),
-        ...(order.phone ? { phone: order.phone.slice(0, 40) } : {}),
-      },
-      lineItems: items.map((item) => ({
-        title: (item.brandName
-          ? `${item.brandName} ${item.productName}`
-          : item.productName
-        ).slice(0, 250),
-        quantity: item.quantity,
-        originalUnitPriceWithCurrency: {
-          amount: centsToDecimal(item.unitPriceCents),
-          currencyCode,
-        },
-        taxable: false,
-        requiresShipping: true,
-      })),
+      billingAddress: addressPayload,
+      shippingAddress: addressPayload,
+      lineItems,
     }
 
     if (discountCents > 0) {
