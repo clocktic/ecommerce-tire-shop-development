@@ -5,7 +5,10 @@ import { db } from "@/lib/db"
 import { orderItems, orders } from "@/lib/db/schema"
 import { COMPANY } from "@/lib/company"
 import { confirmOrderPayment } from "@/lib/payments/confirm"
-import { PAYPAL_CLIENT_ID } from "@/lib/payments/paypal-config"
+import {
+  PAYPAL_CLIENT_ID,
+  PAYPAL_WEBHOOK_ID,
+} from "@/lib/payments/paypal-config"
 
 const PAYPAL_API_BASE =
   process.env.PAYPAL_ENV === "sandbox"
@@ -287,6 +290,56 @@ export async function capturePayPalOrder(
     orderNumber: order.orderNumber,
     captureId,
   }
+}
+
+export async function verifyPayPalWebhookSignature(
+  headers: Headers,
+  event: Record<string, unknown>,
+): Promise<boolean> {
+  const authAlgo = headers.get("paypal-auth-algo")
+  const certUrl = headers.get("paypal-cert-url")
+  const transmissionId = headers.get("paypal-transmission-id")
+  const transmissionSig = headers.get("paypal-transmission-sig")
+  const transmissionTime = headers.get("paypal-transmission-time")
+
+  if (
+    !authAlgo ||
+    !certUrl ||
+    !transmissionId ||
+    !transmissionSig ||
+    !transmissionTime ||
+    !PAYPAL_WEBHOOK_ID
+  ) {
+    return false
+  }
+
+  const accessToken = await getPayPalAccessToken()
+  if (!accessToken) return false
+
+  const res = await fetch(
+    `${PAYPAL_API_BASE}/v1/notifications/verify-webhook-signature`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        auth_algo: authAlgo,
+        cert_url: certUrl,
+        transmission_id: transmissionId,
+        transmission_sig: transmissionSig,
+        transmission_time: transmissionTime,
+        webhook_id: PAYPAL_WEBHOOK_ID,
+        webhook_event: event,
+      }),
+      cache: "no-store",
+    },
+  )
+
+  if (!res.ok) return false
+  const data = (await res.json()) as { verification_status?: string }
+  return data.verification_status === "SUCCESS"
 }
 
 export async function handlePayPalWebhookEvent(event: {

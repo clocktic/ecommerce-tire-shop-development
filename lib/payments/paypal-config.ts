@@ -1,3 +1,7 @@
 export const PAYPAL_CLIENT_ID =
   process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ||
   "BAAwlp7HpxfFw5LIh5R2mtbtio4EXoJl1VgMx6gZ2T_S_E949jEnYRCLbLDNeRC4zl2-tIk-jEeXlpd6J0"
+
+export const PAYPAL_WEBHOOK_ID =
+  process.env.PAYPAL_WEBHOOK_ID || "5P472367W4105984A"
+
