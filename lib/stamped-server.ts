@@ -4,7 +4,7 @@ import { eq, inArray } from "drizzle-orm"
 import { db } from "@/lib/db"
 import { orderItems, orders, products } from "@/lib/db/schema"
 import { storePath, type Store } from "@/lib/i18n/config"
-import { absoluteUrl } from "@/lib/seo"
+import { absoluteUrl, publicImageUrl } from "@/lib/seo"
 import {
   STAMPED_PUBLIC_API_KEY,
   STAMPED_STORE_HASH,
@@ -106,7 +106,7 @@ export async function pushOrderToStamped(options: {
           productTags: tags || undefined,
           productPrice: Number((item.unitPriceCents / 100).toFixed(2)),
           productUrl: absoluteUrl(storePath(store, `/product/${item.productSlug}`)),
-          productImageUrl: imageSource ? absoluteUrl(imageSource) : undefined,
+          productImageUrl: imageSource ? publicImageUrl(imageSource) : undefined,
         }
       }),
     }

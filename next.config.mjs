@@ -2,29 +2,12 @@
 const nextConfig = {
   images: {
     unoptimized: true,
-    qualities: [75, 95],
   },
-  async redirects() {
+  async rewrites() {
     return [
       {
-        source: "/:market/:lang/policies/privacy-policy",
-        destination: "/:market/:lang/policies/privacy",
-        permanent: true,
-      },
-      {
-        source: "/:market/:lang/policies/terms-of-service",
-        destination: "/:market/:lang/policies/terms",
-        permanent: true,
-      },
-      {
-        source: "/policies/privacy-policy",
-        destination: "/eu/en/policies/privacy",
-        permanent: true,
-      },
-      {
-        source: "/policies/terms-of-service",
-        destination: "/eu/en/policies/terms",
-        permanent: true,
+        source: "/images/blob/:path*",
+        destination: "https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/:path*",
       },
     ]
   },

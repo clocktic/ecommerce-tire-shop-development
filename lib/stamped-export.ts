@@ -5,7 +5,7 @@ import { offerFor, type Category, type Product } from "@/lib/catalog"
 import { db } from "@/lib/db"
 import { products } from "@/lib/db/schema"
 import type { Market } from "@/lib/markets"
-import { absoluteUrl } from "@/lib/seo"
+import { absoluteUrl, publicImageUrl } from "@/lib/seo"
 import { stampedProductId } from "@/lib/stamped"
 
 const TIRE_BRAND_PRIORITY: Record<string, number> = {
@@ -281,7 +281,7 @@ export function buildStampedProductsCsv(
     const market =
       offer === offerFor(p, "eu") && !offerFor(p, preferredMarket) ? "eu" : preferredMarket
     const price = offer ? (offer.priceCents / 100).toFixed(2) : "0.00"
-    const imageUrl = p.images?.[0] ? absoluteUrl(p.images[0]) : ""
+    const imageUrl = p.images?.[0] ? publicImageUrl(p.images[0]) : ""
     const productUrl = absoluteUrl(`/${market}/en/product/${p.slug}`)
     const barcode = p.gtin || p.mpn || p.supplierSku || ""
     const title = p.name.toLowerCase().startsWith(p.brand.toLowerCase())

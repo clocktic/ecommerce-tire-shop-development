@@ -7,7 +7,7 @@ import { readProductBySlug, readProductsByCategory } from "@/lib/catalog/queries
 import { CatalogUnavailable } from "@/components/catalog/catalog-unavailable"
 import { counterpart, fmt, getDictionary, parseStore, storePath, type Dictionary, type Store } from "@/lib/i18n"
 import { markets } from "@/lib/markets"
-import { absoluteUrl, storeAlternates } from "@/lib/seo"
+import { absoluteUrl, publicImageUrl, storeAlternates } from "@/lib/seo"
 import { productJsonLd } from "@/lib/structured-data"
 import { policyHref } from "@/lib/legal/pages"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
@@ -214,7 +214,7 @@ export default async function ProductPage({ params }: { params: Params }) {
         productSlug={product.slug}
         name={product.name}
         url={absoluteUrl(storePath(store, `/product/${product.slug}`))}
-        imageUrl={product.images[0] ? absoluteUrl(product.images[0]) : ""}
+        imageUrl={product.images[0] ? publicImageUrl(product.images[0]) : ""}
         description={product.shortDescription || product.description}
         productType={product.category}
         productBrand={product.brand}
