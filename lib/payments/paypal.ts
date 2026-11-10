@@ -288,3 +288,95 @@ export async function capturePayPalOrder(
     captureId,
   }
 }
+
+export async function handlePayPalWebhookEvent(event: {
+  event_type?: string
+  resource?: {
+    id?: string
+    custom_id?: string
+    invoice_id?: string
+    supplementary_data?: {
+      related_ids?: {
+        order_id?: string
+      }
+    }
+  }
+}): Promise<{ ok: boolean }> {
+  const eventType = event.event_type || ""
+  const resource = event.resource || {}
+
+  if (
+    (eventType === "CHECKOUT.ORDER.APPROVED" ||
+      eventType === "CHECKOUT.ORDER.COMPLETED") &&
+    resource.id
+  ) {
+    const res = await capturePayPalOrder(resource.id)
+    return { ok: res.ok }
+  }
+
+  if (eventType === "PAYMENT.CAPTURE.COMPLETED") {
+    const relatedOrderId = resource.supplementary_data?.related_ids?.order_id
+    if (relatedOrderId) {
+      const res = await capturePayPalOrder(
+        relatedOrderId,
+        resource.invoice_id || undefined,
+      )
+      return { ok: res.ok }
+    }
+
+    if (resource.id && (resource.custom_id || resource.invoice_id)) {
+      const accessToken = await getPayPalAccessToken()
+      if (!accessToken) return { ok: false }
+
+      const verifyRes = await fetch(
+        `${PAYPAL_API_BASE}/v2/payments/captures/${encodeURIComponent(resource.id)}`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+          cache: "no-store",
+        },
+      )
+      if (!verifyRes.ok) return { ok: false }
+
+      const capture = (await verifyRes.json()) as {
+        id?: string
+        status?: string
+        custom_id?: string
+        invoice_id?: string
+        amount?: { currency_code?: string; value?: string }
+      }
+      if (capture.status !== "COMPLETED") return { ok: false }
+
+      const conds = []
+      const cid = capture.custom_id || resource.custom_id
+      const inv = capture.invoice_id || resource.invoice_id
+      if (cid) conds.push(eq(orders.id, cid))
+      if (inv) conds.push(eq(orders.orderNumber, inv))
+      if (!conds.length) return { ok: false }
+
+      const [order] = await db
+        .select()
+        .from(orders)
+        .where(conds.length === 1 ? conds[0] : or(...conds))
+        .limit(1)
+      if (!order) return { ok: false }
+
+      if (capture.amount?.value) {
+        const cents = Math.round(Number.parseFloat(capture.amount.value) * 100)
+        const cur = (capture.amount.currency_code || "").toUpperCase()
+        if (cents !== order.totalCents || cur !== order.currency.toUpperCase()) {
+          return { ok: false }
+        }
+      }
+
+      await confirmOrderPayment({
+        orderId: order.id,
+        paymentMethod: "PayPal",
+        transactionId: capture.id || resource.id,
+      })
+      return { ok: true }
+    }
+  }
+
+  return { ok: true }
+}
+
