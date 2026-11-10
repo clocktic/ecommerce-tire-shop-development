@@ -19,17 +19,22 @@ function WheelGlyph() {
 export function PayButton({
   pending,
   disabled,
+  type = "submit",
+  onClick,
   children,
   className,
 }: {
   pending: boolean
   disabled?: boolean
+  type?: "submit" | "button"
+  onClick?: () => void
   children: React.ReactNode
   className?: string
 }) {
   return (
     <button
-      type="submit"
+      type={type}
+      onClick={onClick}
       disabled={disabled || pending}
       data-pending={pending ? "" : undefined}
       aria-busy={pending}

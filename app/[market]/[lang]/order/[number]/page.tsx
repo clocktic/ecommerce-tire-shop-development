@@ -65,6 +65,7 @@ export default async function OrderPage({ params, searchParams }: { params: Para
             <OrderPayPalSection
               orderNumber={order.orderNumber}
               currency={MARKETS[order.market as Market].currency}
+              payNowLabel={x.order.payNow}
             />
           )}
           <div className="flex flex-wrap gap-3">

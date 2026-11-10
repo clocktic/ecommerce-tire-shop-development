@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useRef, useState, useTransition } from "react"
 import { buttonVariants } from "@/components/ui/button"
 import { Icon3D, type Icon3DName } from "@/components/ui/icon-3d"
+import { PayButton } from "@/components/checkout/pay-button"
 import { PayPalOrderButtons } from "@/components/checkout/paypal-buttons"
 import { useCart } from "@/components/cart/cart-provider"
 import { SummaryRows } from "@/components/cart/cart-view"
@@ -211,6 +212,11 @@ export function CheckoutForm() {
             {t.end}
           </span>
         </label>
+
+        {/* EU Directive 2011/83, Art. 8(2): the order button must state the obligation to pay. */}
+        <PayButton pending={pending} disabled={!accepted}>
+          {pending ? x.checkout.placing : t.submit}
+        </PayButton>
 
         <PayPalOrderButtons
           currency={MARKETS[market].currency}
