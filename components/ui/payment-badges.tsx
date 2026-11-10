@@ -217,6 +217,27 @@ export function PaymentBadges({
       ),
     },
     {
+      id: "sepa",
+      name: "SEPA",
+      svg: (
+        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="SEPA">
+          <rect width="42" height="26" rx="2" fill="#003399" stroke="rgba(255,255,255,0.2)" />
+          <text
+            x="21"
+            y="15.8"
+            textAnchor="middle"
+            fill="#FFFFFF"
+            fontFamily="ui-sans-serif, system-ui, sans-serif"
+            fontWeight="900"
+            fontSize="8.5"
+            letterSpacing="0.8"
+          >
+            SEPA
+          </text>
+        </svg>
+      ),
+    },
+    {
       id: "3ds2",
       name: "3D Secure 2.0",
       svg: (
