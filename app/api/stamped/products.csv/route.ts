@@ -1,90 +1,66 @@
 import { NextResponse } from "next/server"
-import { eq } from "drizzle-orm"
-import { db } from "@/lib/db"
-import { products } from "@/lib/db/schema"
-import { offerFor } from "@/lib/catalog"
-import { absoluteUrl } from "@/lib/seo"
-import { stampedProductId } from "@/lib/stamped"
+import type { Category } from "@/lib/catalog"
+import {
+  buildStampedProductsCsv,
+  loadActiveCatalogProducts,
+  selectTopPopularByCategory,
+} from "@/lib/stamped-export"
 
 export const dynamic = "force-dynamic"
 
-function csvCell(value: string | number | undefined | null): string {
-  const str = value == null ? "" : String(value).replace(/\r?\n/g, " ").trim()
-  if (/[",]/.test(str)) {
-    return `"${str.replace(/"/g, '""')}"`
-  }
-  return str
-}
-
 /**
  * Stamped.io Product Catalog CSV feed (`/api/stamped/products.csv`).
- * Provides every active product with its deterministic numeric `productId`,
- * `productSKU` (slug), `productTitle`, `productBrand`, `productType`,
- * `productBarcode` (GTIN / MPN), `productPrice`, `productUrl`, `productImageUrl`,
- * and `productDescription`.
+ * Supports:
+ * - `/api/stamped/products.csv` -> all active products (6,485)
+ * - `/api/stamped/products.csv?preset=top450` -> 150 tires + 150 wheels + 150 brakes by popularity
+ * - `/api/stamped/products.csv?category=tires&limit=150` -> top N popular products for a category
+ * - `&market=us` or `&market=eu` -> market-specific URLs & prices
  */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const rawMarket = searchParams.get("market")
   const explicitMarket = rawMarket === "eu" || rawMarket === "us" ? rawMarket : null
+  const preset = searchParams.get("preset")
+  const rawCat = searchParams.get("category")
+  const category: Category | null =
+    rawCat === "tires" || rawCat === "wheels" || rawCat === "brakes" ? rawCat : null
+  const limitParam = Number.parseInt(searchParams.get("limit") || "", 10)
+  const limit = Number.isFinite(limitParam) && limitParam > 0 ? limitParam : null
 
-  const rows = await db
-    .select()
-    .from(products)
-    .where(eq(products.archived, false))
+  const allProducts = await loadActiveCatalogProducts()
+  const marketFiltered = explicitMarket
+    ? allProducts.filter((p) => Boolean(p.offers?.[explicitMarket]))
+    : allProducts
 
-  const header = [
-    "productId",
-    "productSKU",
-    "productHandle",
-    "productTitle",
-    "productBrand",
-    "productType",
-    "productBarcode",
-    "productPrice",
-    "productUrl",
-    "productImageUrl",
-    "productDescription",
-  ].join(",")
-
-  const lines: string[] = [header]
-
-  for (const row of rows) {
-    const p = row.data
-    if (!p || p.sample) continue
-    if (explicitMarket && !offerFor(p, explicitMarket)) continue
-
-    const preferredMarket = explicitMarket ?? "us"
-    const offer = offerFor(p, preferredMarket) ?? offerFor(p, "us") ?? offerFor(p, "eu")
-    const market =
-      offer === offerFor(p, "eu") && !offerFor(p, preferredMarket) ? "eu" : preferredMarket
-    const price = offer ? (offer.priceCents / 100).toFixed(2) : "0.00"
-    const imageUrl = p.images?.[0] ? absoluteUrl(p.images[0]) : ""
-    const productUrl = absoluteUrl(`/${market}/en/product/${p.slug}`)
-    const barcode = p.gtin || p.mpn || p.supplierSku || ""
-
-    lines.push(
-      [
-        csvCell(stampedProductId(p.slug)),
-        csvCell(p.slug),
-        csvCell(p.slug),
-        csvCell(`${p.brand} ${p.name}`),
-        csvCell(p.brand),
-        csvCell(p.category),
-        csvCell(barcode),
-        csvCell(price),
-        csvCell(productUrl),
-        csvCell(imageUrl),
-        csvCell(p.shortDescription || p.description),
-      ].join(","),
-    )
-  }
-
-  const filename = explicitMarket
+  let selected = marketFiltered
+  let filename = explicitMarket
     ? `stamped-products-${explicitMarket}.csv`
     : "stamped-products.csv"
 
-  return new NextResponse(lines.join("\n"), {
+  if (preset === "top450") {
+    const perCat = limit ?? 150
+    selected = [
+      ...selectTopPopularByCategory(marketFiltered, "tires", perCat),
+      ...selectTopPopularByCategory(marketFiltered, "wheels", perCat),
+      ...selectTopPopularByCategory(marketFiltered, "brakes", perCat),
+    ]
+    filename = explicitMarket
+      ? `stamped-products-top-450-${explicitMarket}.csv`
+      : "stamped-products-top-450.csv"
+  } else if (category) {
+    selected = selectTopPopularByCategory(
+      marketFiltered,
+      category,
+      limit ?? marketFiltered.length,
+    )
+    const suffix = limit ? `-${limit}` : ""
+    const mkt = explicitMarket ? `-${explicitMarket}` : ""
+    filename = `stamped-products-${category}${suffix}${mkt}.csv`
+  }
+
+  const csv = buildStampedProductsCsv(selected, explicitMarket)
+
+  return new NextResponse(csv, {
     status: 200,
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
