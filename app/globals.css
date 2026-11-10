@@ -456,8 +456,10 @@
 }
 
 #qrModal {
-  max-width: calc(100vw - 32px) !important;
-  max-height: calc(100vh - 32px) !important;
+  width: min(720px, calc(100vw - 24px)) !important;
+  height: min(612px, calc(100dvh - 24px)) !important;
+  max-width: calc(100vw - 24px) !important;
+  max-height: calc(100dvh - 24px) !important;
 }
 
 
