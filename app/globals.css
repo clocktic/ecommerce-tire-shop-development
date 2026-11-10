@@ -438,6 +438,29 @@
   }
 }
 
+/*
+  PayPal / Venmo QR modal & button iframes are rendered with a light color-scheme inside
+  cross-origin iframes. In Chromium, when the parent page has `color-scheme: dark`,
+  a cross-origin `color-scheme: light` iframe is forced to an opaque white canvas, hiding
+  PayPal's dark `#qrModal` card (`#2F3033`) and its white `#close` (X) button.
+*/
+#qrModal,
+#qrModal iframe,
+.paypal-buttons,
+.paypal-buttons iframe,
+.paypal-checkout-sandbox,
+.paypal-checkout-sandbox iframe,
+.venmo-checkout-sandbox,
+.venmo-checkout-sandbox iframe {
+  color-scheme: light !important;
+}
+
+#qrModal {
+  max-width: calc(100vw - 32px) !important;
+  max-height: calc(100vh - 32px) !important;
+}
+
+
 /* ---------- Pay button: a wheel rolls the fill from start to finish ---------- */
 .pay-button:disabled:not([data-pending]) {
   opacity: 0.55;

@@ -98,6 +98,7 @@ export function PayPalOrderButtons({
 }) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [sdkReady, setSdkReady] = useState(false)
+  const [renderKey, setRenderKey] = useState(0)
   const [error, setError] = useState<string | null>(null)
 
   const getOrderNumberRef = useRef(getOrderNumber)
@@ -212,7 +213,86 @@ export function PayPalOrderButtons({
         void instance.close().catch(() => {})
       }
     }
-  }, [sdkReady, currency])
+  }, [sdkReady, currency, renderKey])
+
+  useEffect(() => {
+    if (typeof document === "undefined") return
+
+    const closeQrModal = (qrModal: HTMLElement) => {
+      const overlay = qrModal.parentElement
+      if (overlay && overlay !== document.body) {
+        overlay.remove()
+      } else {
+        qrModal.remove()
+      }
+      setRenderKey((k) => k + 1)
+    }
+
+    const enhanceQrModal = () => {
+      const qrModal = document.getElementById("qrModal")
+      if (!qrModal) return
+      qrModal.style.colorScheme = "light"
+      const overlay = qrModal.parentElement
+      if (overlay && overlay !== document.body && !overlay.dataset.venmoBackdropBound) {
+        overlay.dataset.venmoBackdropBound = "true"
+        overlay.style.colorScheme = "light"
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay) {
+            closeQrModal(qrModal)
+          }
+        })
+      }
+
+      if (!qrModal.querySelector('[data-venmo-qr-close="true"]')) {
+        const closeBtn = document.createElement("button")
+        closeBtn.type = "button"
+        closeBtn.setAttribute("data-venmo-qr-close", "true")
+        closeBtn.setAttribute("aria-label", "Close Venmo QR code window")
+        closeBtn.innerHTML =
+          '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>'
+        Object.assign(closeBtn.style, {
+          position: "absolute",
+          top: "12px",
+          right: "12px",
+          zIndex: "2147483647",
+          width: "36px",
+          height: "36px",
+          borderRadius: "9999px",
+          backgroundColor: "rgba(24, 26, 32, 0.9)",
+          color: "#ffffff",
+          border: "1px solid rgba(255, 255, 255, 0.28)",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.35)",
+        })
+        closeBtn.addEventListener("click", (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          closeQrModal(qrModal)
+        })
+        qrModal.appendChild(closeBtn)
+      }
+    }
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        const qrModal = document.getElementById("qrModal")
+        if (qrModal) closeQrModal(qrModal)
+      }
+    }
+
+    enhanceQrModal()
+    const observer = new MutationObserver(() => enhanceQrModal())
+    observer.observe(document.body, { childList: true, subtree: true })
+    window.addEventListener("keydown", onKeyDown)
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener("keydown", onKeyDown)
+    }
+  }, [])
 
   return (
     <div className="relative isolate z-10 flex flex-col gap-2">
