@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server"
-import { handlePayPalWebhookEvent } from "@/lib/payments/paypal"
+import {
+  handlePayPalWebhookEvent,
+  verifyPayPalWebhookSignature,
+} from "@/lib/payments/paypal"
 
 export async function POST(request: Request) {
   try {
@@ -7,6 +10,17 @@ export async function POST(request: Request) {
       event_type?: string
       resource?: Record<string, unknown>
     }
+    const verified = await verifyPayPalWebhookSignature(
+      request.headers,
+      body as Record<string, unknown>,
+    )
+    if (!verified) {
+      return NextResponse.json(
+        { received: false, error: "Invalid webhook signature" },
+        { status: 400 },
+      )
+    }
+
     await handlePayPalWebhookEvent(body)
     return NextResponse.json({ received: true })
   } catch {
