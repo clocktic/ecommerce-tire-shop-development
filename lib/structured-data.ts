@@ -36,6 +36,7 @@ export function productJsonLd(product: Product, store: Store) {
   return {
     "@context": "https://schema.org",
     "@type": "Product",
+    "@id": `${productUrl}#product`,
     name: product.name,
     description: product.description,
     url: productUrl,

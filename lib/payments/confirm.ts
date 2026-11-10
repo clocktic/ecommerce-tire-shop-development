@@ -5,6 +5,7 @@ import { db } from "@/lib/db"
 import { orderItems, orders } from "@/lib/db/schema"
 import { notifyEmailOrderPaid } from "@/lib/email"
 import type { Market } from "@/lib/markets"
+import { pushOrderToStamped } from "@/lib/stamped-server"
 import { notifyTelegramOrderPaid } from "@/lib/telegram"
 
 export type PaymentConfirmationOptions = {
@@ -93,6 +94,7 @@ export async function confirmOrderPayment(
       paymentMethod: options.paymentMethod ?? null,
       transactionId: options.transactionId ?? null,
     }),
+    pushOrderToStamped({ orderId: existing.id }),
   ])
 
   return { ok: true, alreadyPaid: false }

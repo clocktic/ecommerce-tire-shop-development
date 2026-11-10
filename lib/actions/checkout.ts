@@ -35,6 +35,7 @@ export type PlaceOrderInput = {
   state?: string
   country: string
   accepted: boolean
+  paymentProvider?: "stripe" | "paypal"
 }
 
 export type PlaceOrderResult =
@@ -132,21 +133,24 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
   const proto = reqHeaders.get("x-forwarded-proto") || (host.startsWith("localhost") ? "http" : "https")
   const origin = `${proto}://${host}`
 
-  const paymentSession = await createStripeCheckoutSession({
-    order: {
-      id: orderId,
-      orderNumber,
-      market: store.market,
-      lang: store.lang,
-      email,
-      currency: MARKETS[store.market].currency,
-      subtotalCents,
-      shippingCents,
-      totalCents,
-    },
-    items,
-    origin,
-  })
+  const isPayPal = input.paymentProvider === "paypal"
+  const paymentSession = isPayPal
+    ? ({ ok: false as const })
+    : await createStripeCheckoutSession({
+        order: {
+          id: orderId,
+          orderNumber,
+          market: store.market,
+          lang: store.lang,
+          email,
+          currency: MARKETS[store.market].currency,
+          subtotalCents,
+          shippingCents,
+          totalCents,
+        },
+        items,
+        origin,
+      })
 
   const meta = localeMeta(store)
   const x = extrasFor(meta.content)
@@ -195,8 +199,16 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
         quantity: i.quantity,
         lineTotalCents: i.lineTotalCents,
       })),
-      paymentMethod: paymentSession.ok ? "Stripe Checkout" : "По реквизитам / при подтверждении",
-      paymentStatusLabel: paymentSession.ok ? "Перенаправлен на оплату (Stripe)" : "Ожидает оплаты",
+      paymentMethod: isPayPal
+        ? "PayPal Checkout"
+        : paymentSession.ok
+          ? "Stripe Checkout"
+          : "По реквизитам / при подтверждении",
+      paymentStatusLabel: isPayPal
+        ? "Открыто окно оплаты (PayPal)"
+        : paymentSession.ok
+          ? "Перенаправлен на оплату (Stripe)"
+          : "Ожидает оплаты",
     }),
   ])
 

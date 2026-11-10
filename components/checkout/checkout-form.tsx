@@ -2,10 +2,11 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState, useTransition } from "react"
+import { useRef, useState, useTransition } from "react"
 import { buttonVariants } from "@/components/ui/button"
 import { Icon3D, type Icon3DName } from "@/components/ui/icon-3d"
 import { PayButton } from "@/components/checkout/pay-button"
+import { PayPalOrderButtons } from "@/components/checkout/paypal-buttons"
 import { useCart } from "@/components/cart/cart-provider"
 import { SummaryRows } from "@/components/cart/cart-view"
 import { useI18n } from "@/components/i18n/i18n-provider"
@@ -29,6 +30,8 @@ export function CheckoutForm() {
   const [failed, setFailed] = useState(false)
   const [placed, setPlaced] = useState(false)
   const [pending, startTransition] = useTransition()
+  const formRef = useRef<HTMLFormElement | null>(null)
+  const createdPayPalOrderRef = useRef<string | null>(null)
   const isEu = market === "eu"
   const regionNames = new Intl.DisplayNames([intl], { type: "region" })
   const countries = MARKETS[market].shipsTo
@@ -56,6 +59,7 @@ export function CheckoutForm() {
 
   return (
     <form
+      ref={formRef}
       className="grid gap-10 py-8 lg:grid-cols-12"
       onSubmit={(e) => {
         e.preventDefault()
@@ -213,6 +217,49 @@ export function CheckoutForm() {
         <PayButton pending={pending} disabled={!accepted}>
           {pending ? x.checkout.placing : t.submit}
         </PayButton>
+
+        <PayPalOrderButtons
+          currency={MARKETS[market].currency}
+          disabled={!accepted || pending}
+          getOrderNumber={async () => {
+            if (createdPayPalOrderRef.current) {
+              return createdPayPalOrderRef.current
+            }
+            const formEl = formRef.current
+            if (!formEl || !accepted) return null
+            if (!formEl.reportValidity()) return null
+            const form = new FormData(formEl)
+            const get = (name: string) => String(form.get(name) ?? "")
+            setFailed(false)
+            const result = await placeOrder({
+              market: store.market,
+              lang: store.lang,
+              lines: lines.map((l) => ({ slug: l.slug, quantity: l.quantity })),
+              email: get("email"),
+              phone: get("phone"),
+              firstName: get("given-name"),
+              lastName: get("family-name"),
+              address: get("address"),
+              postal: get("postal"),
+              city: get("city"),
+              state: get("state"),
+              country: get("country"),
+              accepted: true,
+              paymentProvider: "paypal",
+            })
+            if (!result.ok) {
+              setFailed(true)
+              return null
+            }
+            createdPayPalOrderRef.current = result.orderNumber
+            return result.orderNumber
+          }}
+          onSuccess={(orderNumber) => {
+            setPlaced(true)
+            clear()
+            router.push(storePath(store, `/order/${orderNumber}`))
+          }}
+        />
         {failed && (
           <p role="alert" className="text-sm text-primary">
             {x.checkout.error}
