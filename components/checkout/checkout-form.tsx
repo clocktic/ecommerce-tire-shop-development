@@ -6,6 +6,10 @@ import { useRef, useState, useTransition } from "react"
 import { buttonVariants } from "@/components/ui/button"
 import { Icon3D, type Icon3DName } from "@/components/ui/icon-3d"
 import { PayButton } from "@/components/checkout/pay-button"
+import {
+  getPaymentMethodCopy,
+  PaymentMethodSelector,
+} from "@/components/checkout/payment-method-selector"
 import { PayPalOrderButtons } from "@/components/checkout/paypal-buttons"
 import { useCart } from "@/components/cart/cart-provider"
 import { SummaryRows } from "@/components/cart/cart-view"
@@ -213,52 +217,60 @@ export function CheckoutForm() {
           </span>
         </label>
 
-        {/* EU Directive 2011/83, Art. 8(2): the order button must state the obligation to pay. */}
-        <PayButton pending={pending} disabled={!accepted}>
-          {pending ? x.checkout.placing : t.submit}
-        </PayButton>
-
-        <PayPalOrderButtons
-          currency={MARKETS[market].currency}
-          disabled={!accepted || pending}
-          getOrderNumber={async () => {
-            if (createdPayPalOrderRef.current) {
-              return createdPayPalOrderRef.current
-            }
-            const formEl = formRef.current
-            if (!formEl || !accepted) return null
-            if (!formEl.reportValidity()) return null
-            const form = new FormData(formEl)
-            const get = (name: string) => String(form.get(name) ?? "")
-            setFailed(false)
-            const result = await placeOrder({
-              market: store.market,
-              lang: store.lang,
-              lines: lines.map((l) => ({ slug: l.slug, quantity: l.quantity })),
-              email: get("email"),
-              phone: get("phone"),
-              firstName: get("given-name"),
-              lastName: get("family-name"),
-              address: get("address"),
-              postal: get("postal"),
-              city: get("city"),
-              state: get("state"),
-              country: get("country"),
-              accepted: true,
-              paymentProvider: "paypal",
-            })
-            if (!result.ok) {
-              setFailed(true)
-              return null
-            }
-            createdPayPalOrderRef.current = result.orderNumber
-            return result.orderNumber
-          }}
-          onSuccess={(orderNumber) => {
-            setPlaced(true)
-            clear()
-            router.push(storePath(store, `/order/${orderNumber}`))
-          }}
+        <PaymentMethodSelector
+          lang={store.lang}
+          market={market}
+          cardAction={
+            <PayButton pending={pending} disabled={!accepted}>
+              {pending
+                ? x.checkout.placing
+                : getPaymentMethodCopy(store.lang).cardCta}
+            </PayButton>
+          }
+          paypalAction={
+            <PayPalOrderButtons
+              currency={MARKETS[market].currency}
+              disabled={!accepted || pending}
+              getOrderNumber={async () => {
+                if (createdPayPalOrderRef.current) {
+                  return createdPayPalOrderRef.current
+                }
+                const formEl = formRef.current
+                if (!formEl || !accepted) return null
+                if (!formEl.reportValidity()) return null
+                const form = new FormData(formEl)
+                const get = (name: string) => String(form.get(name) ?? "")
+                setFailed(false)
+                const result = await placeOrder({
+                  market: store.market,
+                  lang: store.lang,
+                  lines: lines.map((l) => ({ slug: l.slug, quantity: l.quantity })),
+                  email: get("email"),
+                  phone: get("phone"),
+                  firstName: get("given-name"),
+                  lastName: get("family-name"),
+                  address: get("address"),
+                  postal: get("postal"),
+                  city: get("city"),
+                  state: get("state"),
+                  country: get("country"),
+                  accepted: true,
+                  paymentProvider: "paypal",
+                })
+                if (!result.ok) {
+                  setFailed(true)
+                  return null
+                }
+                createdPayPalOrderRef.current = result.orderNumber
+                return result.orderNumber
+              }}
+              onSuccess={(orderNumber) => {
+                setPlaced(true)
+                clear()
+                router.push(storePath(store, `/order/${orderNumber}`))
+              }}
+            />
+          }
         />
         {failed && (
           <p role="alert" className="text-sm text-primary">

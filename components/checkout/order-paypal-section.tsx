@@ -2,17 +2,26 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import type { Market } from "@/lib/markets"
 import { PayButton } from "@/components/checkout/pay-button"
+import {
+  getPaymentMethodCopy,
+  PaymentMethodSelector,
+} from "@/components/checkout/payment-method-selector"
 import { PayPalOrderButtons } from "@/components/checkout/paypal-buttons"
 
 export function OrderPayPalSection({
   orderNumber,
   currency,
   payNowLabel,
+  lang = "en",
+  market = "us",
 }: {
   orderNumber: string
   currency: string
   payNowLabel?: string
+  lang?: string
+  market?: Market
 }) {
   const router = useRouter()
   const [loadingShopify, setLoadingShopify] = useState(false)
@@ -44,25 +53,32 @@ export function OrderPayPalSection({
   }
 
   return (
-    <div className="flex w-full max-w-sm flex-col gap-3">
-      {payNowLabel && (
-        <PayButton
-          type="button"
-          pending={loadingShopify}
-          onClick={handleShopifyPay}
-        >
-          {payNowLabel}
-        </PayButton>
-      )}
-      <PayPalOrderButtons
-        currency={currency}
-        disabled={loadingShopify}
-        getOrderNumber={async () => orderNumber}
-        onSuccess={() => {
-          router.refresh()
-        }}
+    <div className="w-full max-w-md">
+      <PaymentMethodSelector
+        lang={lang}
+        market={market}
+        cardAction={
+          <PayButton
+            type="button"
+            pending={loadingShopify}
+            onClick={handleShopifyPay}
+          >
+            {payNowLabel || getPaymentMethodCopy(lang).cardCta}
+          </PayButton>
+        }
+        paypalAction={
+          <PayPalOrderButtons
+            currency={currency}
+            disabled={loadingShopify}
+            getOrderNumber={async () => orderNumber}
+            onSuccess={() => {
+              router.refresh()
+            }}
+          />
+        }
       />
     </div>
   )
 }
+
 
