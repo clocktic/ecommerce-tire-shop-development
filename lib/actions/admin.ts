@@ -10,6 +10,7 @@ import { chatConversations, contactMessages, orders, products } from "@/lib/db/s
 import { isCategory, type Availability, type Offer, type Product } from "@/lib/catalog"
 import { markets } from "@/lib/markets"
 import { confirmOrderPayment } from "@/lib/payments/confirm"
+import { pushOrderToStamped } from "@/lib/stamped-server"
 import { ensureShipmentOnShip, insertShipmentEvent, sendShipmentEventEmail } from "@/lib/shipping/events"
 import { ORDER_STATUSES, isShipmentStatus, type OrderStatus } from "@/lib/shipping/tracking"
 import { extrasFor } from "@/lib/i18n/extras"
@@ -84,6 +85,7 @@ export async function setOrderStatus(orderId: string, status: string): Promise<A
 
   if (status === "shipped") {
     const result = await ensureShipmentOnShip(orderId)
+    void pushOrderToStamped({ orderId })
     // One email with the tracking link when the parcel first ships.
     if (result?.created) {
       await sendShipmentEventEmail(result.order, {
@@ -93,6 +95,8 @@ export async function setOrderStatus(orderId: string, status: string): Promise<A
         carrier: result.order.carrier,
       })
     }
+  } else if (status === "delivered") {
+    void pushOrderToStamped({ orderId })
   }
   revalidatePath("/admin", "layout")
   return { ok: true }

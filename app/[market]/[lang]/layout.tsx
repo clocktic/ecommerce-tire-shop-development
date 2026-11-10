@@ -18,6 +18,7 @@ import { GARAGE_COOKIE, parseGarageCookie } from "@/lib/garage-cookie"
 import { ConsentDefaults } from "@/components/legal/consent-defaults"
 import { CookieConsent } from "@/components/legal/cookie-consent"
 import { OrganizationJsonLd } from "@/components/legal/organization-jsonld"
+import { StampedScript } from "@/components/product/stamped-widgets"
 import { ThemeSync } from "@/components/layout/theme-provider"
 import { ParallaxBackdrop } from "@/components/layout/parallax-backdrop"
 import { CtaWheelRoll } from "@/components/layout/cta-wheel-roll"
@@ -124,6 +125,7 @@ export default async function StoreLayout({ children, params }: { children: Reac
           </CartProvider>
         </I18nProvider>
         <OrganizationJsonLd />
+        <StampedScript />
         {process.env.NODE_ENV === "production" && <Analytics />}
       </body>
     </html>

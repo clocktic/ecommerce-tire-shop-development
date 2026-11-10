@@ -5,6 +5,7 @@ import { getDictionary, storePath, type Dictionary, type Store } from "@/lib/i18
 import { Price } from "@/components/product/price"
 import { EuTyreLabel } from "@/components/product/eu-tyre-label"
 import { BrandMark } from "@/components/product/brand-mark"
+import { StampedStarBadge } from "@/components/product/stamped-widgets"
 
 export function productCode(product: Product, t: Dictionary): { code: string; meta: string } {
   const { season, brakeKind, axle } = t.labels
@@ -54,6 +55,7 @@ export function ProductCard({ product, store }: { product: Product; store: Store
               {product.name}
             </Link>
           </h3>
+          <StampedStarBadge productSlug={product.slug} productTitle={product.name} />
         </div>
         <div className="flex flex-col gap-0.5">
           <p className="truncate font-mono text-xs font-semibold sm:text-sm">{code}</p>

@@ -7,7 +7,7 @@ import { readProductBySlug, readProductsByCategory } from "@/lib/catalog/queries
 import { CatalogUnavailable } from "@/components/catalog/catalog-unavailable"
 import { counterpart, fmt, getDictionary, parseStore, storePath, type Dictionary, type Store } from "@/lib/i18n"
 import { markets } from "@/lib/markets"
-import { storeAlternates } from "@/lib/seo"
+import { absoluteUrl, storeAlternates } from "@/lib/seo"
 import { productJsonLd } from "@/lib/structured-data"
 import { policyHref } from "@/lib/legal/pages"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
@@ -20,6 +20,7 @@ import { ProductCard, productCode } from "@/components/product/product-card"
 import { ProductDetails } from "@/components/product/product-details"
 import { ProductGallery } from "@/components/product/product-gallery"
 import { ProductMemberCallout } from "@/components/product/product-member-callout"
+import { StampedMainWidget, StampedStarBadge } from "@/components/product/stamped-widgets"
 import { Utqg } from "@/components/product/utqg"
 import { TireVariants } from "@/components/product/tire-variants"
 import { ProductFitmentBadge } from "@/components/garage/product-fitment-badge"
@@ -102,6 +103,7 @@ export default async function ProductPage({ params }: { params: Params }) {
             <h1 className="text-balance font-expanded text-2xl font-extrabold uppercase leading-tight md:text-3xl">
               {product.name}
             </h1>
+            <StampedStarBadge productSlug={product.slug} productTitle={product.name} />
             <p className="font-mono text-sm">
               <span className="font-semibold">{code}</span>
               <span className="text-muted-foreground"> · {meta}</span>
@@ -202,6 +204,15 @@ export default async function ProductPage({ params }: { params: Params }) {
           <ProductDetails product={product} store={store} />
         </div>
       </div>
+
+      <StampedMainWidget
+        productSlug={product.slug}
+        name={product.name}
+        url={absoluteUrl(storePath(store, `/product/${product.slug}`))}
+        imageUrl={product.images[0] ? absoluteUrl(product.images[0]) : ""}
+        description={product.shortDescription || product.description}
+        lang={store.lang}
+      />
 
       {related.length > 0 && (
         <section aria-labelledby="related-title" className="border-t border-border pt-10 sm:pt-12">
