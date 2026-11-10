@@ -13,7 +13,6 @@ import { extrasFor } from "@/lib/i18n/extras"
 import { fmt } from "@/lib/i18n/fmt"
 import { MARKETS, formatPrice } from "@/lib/markets"
 import { computeMemberDiscountCents } from "@/lib/member-discount"
-import { createStripeCheckoutSession } from "@/lib/payments/stripe"
 import { POLICIES } from "@/lib/policies"
 import { notifyTelegramNewOrder } from "@/lib/telegram"
 
@@ -129,29 +128,6 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
   })
   await db.insert(orderItems).values(items)
 
-  const host = reqHeaders.get("x-forwarded-host") || reqHeaders.get("host") || "localhost:3000"
-  const proto = reqHeaders.get("x-forwarded-proto") || (host.startsWith("localhost") ? "http" : "https")
-  const origin = `${proto}://${host}`
-
-  const isPayPal = input.paymentProvider === "paypal"
-  const paymentSession = isPayPal
-    ? ({ ok: false as const })
-    : await createStripeCheckoutSession({
-        order: {
-          id: orderId,
-          orderNumber,
-          market: store.market,
-          lang: store.lang,
-          email,
-          currency: MARKETS[store.market].currency,
-          subtotalCents,
-          shippingCents,
-          totalCents,
-        },
-        items,
-        origin,
-      })
-
   const meta = localeMeta(store)
   const x = extrasFor(meta.content)
   const formattedTotal = formatPrice(totalCents, store.market, meta.intlLocale)
@@ -199,22 +175,10 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
         quantity: i.quantity,
         lineTotalCents: i.lineTotalCents,
       })),
-      paymentMethod: isPayPal
-        ? "PayPal Checkout"
-        : paymentSession.ok
-          ? "Stripe Checkout"
-          : "По реквизитам / при подтверждении",
-      paymentStatusLabel: isPayPal
-        ? "Открыто окно оплаты (PayPal)"
-        : paymentSession.ok
-          ? "Перенаправлен на оплату (Stripe)"
-          : "Ожидает оплаты",
+      paymentMethod: "PayPal Checkout",
+      paymentStatusLabel: "Открыто окно оплаты (PayPal)",
     }),
   ])
-
-  if (paymentSession.ok) {
-    return { ok: true, orderNumber, forwardUrl: paymentSession.forwardUrl }
-  }
 
   return { ok: true, orderNumber }
 }

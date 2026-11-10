@@ -68,14 +68,6 @@ export default async function OrderPage({ params, searchParams }: { params: Para
             />
           )}
           <div className="flex flex-wrap gap-3">
-            {isPending && (
-              <form action="/api/payments/stripe/checkout" method="POST">
-                <input type="hidden" name="orderNumber" value={order.orderNumber} />
-                <button type="submit" className={buttonVariants({ size: "lg" })}>
-                  {x.order.payNow}
-                </button>
-              </form>
-            )}
             <Link
               href={storePath(store, `/track/${order.orderNumber}`)}
               className={buttonVariants({ size: "lg", variant: order.status === "pending" ? "outline" : "default" })}

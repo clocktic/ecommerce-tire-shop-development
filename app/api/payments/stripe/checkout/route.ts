@@ -1,9 +1,8 @@
 import { eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 import { db } from "@/lib/db"
-import { orderItems, orders } from "@/lib/db/schema"
+import { orders } from "@/lib/db/schema"
 import { parseStore, storePath } from "@/lib/i18n/config"
-import { createStripeCheckoutSession } from "@/lib/payments/stripe"
 
 // Return URLs follow the host the shopper is on (e.g. firewheels.vercel.app today,
 // the custom domain later), so no config change is needed when the domain moves.
@@ -28,18 +27,6 @@ export async function POST(request: Request) {
   const store = parseStore(order.market, order.lang)
   if (!store) return NextResponse.json({ error: "Invalid store" }, { status: 400 })
 
-  const items = await db.select().from(orderItems).where(eq(orderItems.orderId, order.id))
   const origin = siteOrigin(request)
-
-  const session = await createStripeCheckoutSession({
-    order,
-    items,
-    origin,
-    idempotencySuffix: String(Math.floor(Date.now() / 60000)),
-  })
-
-  if (!session.ok) {
-    return NextResponse.redirect(`${origin}${storePath(store, `/order/${encodeURIComponent(order.orderNumber)}`)}`, 303)
-  }
-  return NextResponse.redirect(session.forwardUrl, 303)
+  return NextResponse.redirect(`${origin}${storePath(store, `/order/${encodeURIComponent(order.orderNumber)}`)}`, 303)
 }
