@@ -215,7 +215,7 @@ export function PayPalOrderButtons({
   }, [sdkReady, currency])
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="relative isolate z-10 flex flex-col gap-2">
       <div
         className={
           disabled

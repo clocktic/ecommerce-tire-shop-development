@@ -18,8 +18,7 @@ const PAYPAL_API_BASE =
 function getPayPalSecret(): string {
   return (
     process.env.PAYPAL_CLIENT_SECRET?.trim() ||
-    process.env.API_KEY?.trim() ||
-    ""
+    "EDbt7Vx0ThUZSLAd-0vteOJ_wRCCjgm3aZg75gm8FzgeA8-jqHVFfr_7RhnCDX0XAYW0VC0R_lHIsRaM"
   )
 }
 
