@@ -25,7 +25,8 @@ function csvCell(value: string | number | undefined | null): string {
  */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
-  const marketParam = searchParams.get("market") === "eu" ? "eu" : "us"
+  const rawMarket = searchParams.get("market")
+  const explicitMarket = rawMarket === "eu" || rawMarket === "us" ? rawMarket : null
 
   const rows = await db
     .select()
@@ -51,8 +52,12 @@ export async function GET(request: Request) {
   for (const row of rows) {
     const p = row.data
     if (!p || p.sample) continue
-    const offer = offerFor(p, marketParam) ?? offerFor(p, "us") ?? offerFor(p, "eu")
-    const market = offer === offerFor(p, "eu") && !offerFor(p, marketParam) ? "eu" : marketParam
+    if (explicitMarket && !offerFor(p, explicitMarket)) continue
+
+    const preferredMarket = explicitMarket ?? "us"
+    const offer = offerFor(p, preferredMarket) ?? offerFor(p, "us") ?? offerFor(p, "eu")
+    const market =
+      offer === offerFor(p, "eu") && !offerFor(p, preferredMarket) ? "eu" : preferredMarket
     const price = offer ? (offer.priceCents / 100).toFixed(2) : "0.00"
     const imageUrl = p.images?.[0] ? absoluteUrl(p.images[0]) : ""
     const productUrl = absoluteUrl(`/${market}/en/product/${p.slug}`)
@@ -75,11 +80,15 @@ export async function GET(request: Request) {
     )
   }
 
+  const filename = explicitMarket
+    ? `stamped-products-${explicitMarket}.csv`
+    : "stamped-products.csv"
+
   return new NextResponse(lines.join("\n"), {
     status: 200,
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition": `attachment; filename="stamped-products-${marketParam}.csv"`,
+      "Content-Disposition": `attachment; filename="${filename}"`,
       "Cache-Control": "public, max-age=3600, s-maxage=3600",
     },
   })
