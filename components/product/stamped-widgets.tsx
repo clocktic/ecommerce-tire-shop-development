@@ -96,9 +96,13 @@ export function StampedScript() {
 export function StampedStarBadge({
   productSlug,
   productTitle,
+  productType,
+  productBrand,
 }: {
   productSlug: string
   productTitle: string
+  productType?: string
+  productBrand?: string
 }) {
   const numericId = stampedProductId(productSlug)
   return (
@@ -107,6 +111,8 @@ export function StampedStarBadge({
       data-id={numericId}
       data-product-sku={productSlug}
       data-product-title={productTitle}
+      data-product-type={productType}
+      data-product-brand={productBrand}
     />
   )
 }
@@ -117,6 +123,8 @@ export function StampedMainWidget({
   url,
   imageUrl,
   description,
+  productType,
+  productBrand,
   lang,
 }: {
   productSlug: string
@@ -124,6 +132,8 @@ export function StampedMainWidget({
   url: string
   imageUrl: string
   description: string
+  productType?: string
+  productBrand?: string
   lang?: string
 }) {
   const numericId = stampedProductId(productSlug)
@@ -148,6 +158,8 @@ export function StampedMainWidget({
         data-image-url={imageUrl}
         data-description={description}
         data-product-sku={productSlug}
+        data-product-type={productType}
+        data-product-brand={productBrand}
         data-widget-language={lang}
       />
     </section>

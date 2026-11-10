@@ -55,7 +55,12 @@ export function ProductCard({ product, store }: { product: Product; store: Store
               {product.name}
             </Link>
           </h3>
-          <StampedStarBadge productSlug={product.slug} productTitle={product.name} />
+          <StampedStarBadge
+            productSlug={product.slug}
+            productTitle={product.name}
+            productType={product.category}
+            productBrand={product.brand}
+          />
         </div>
         <div className="flex flex-col gap-0.5">
           <p className="truncate font-mono text-xs font-semibold sm:text-sm">{code}</p>

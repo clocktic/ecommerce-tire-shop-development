@@ -103,7 +103,12 @@ export default async function ProductPage({ params }: { params: Params }) {
             <h1 className="text-balance font-expanded text-2xl font-extrabold uppercase leading-tight md:text-3xl">
               {product.name}
             </h1>
-            <StampedStarBadge productSlug={product.slug} productTitle={product.name} />
+            <StampedStarBadge
+              productSlug={product.slug}
+              productTitle={product.name}
+              productType={product.category}
+              productBrand={product.brand}
+            />
             <p className="font-mono text-sm">
               <span className="font-semibold">{code}</span>
               <span className="text-muted-foreground"> · {meta}</span>
@@ -211,6 +216,8 @@ export default async function ProductPage({ params }: { params: Params }) {
         url={absoluteUrl(storePath(store, `/product/${product.slug}`))}
         imageUrl={product.images[0] ? absoluteUrl(product.images[0]) : ""}
         description={product.shortDescription || product.description}
+        productType={product.category}
+        productBrand={product.brand}
         lang={store.lang}
       />
 
