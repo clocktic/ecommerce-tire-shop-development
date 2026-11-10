@@ -39,7 +39,7 @@ export function PayButton({
       data-pending={pending ? "" : undefined}
       aria-busy={pending}
       className={cn(
-        "pay-button btn-sheen flex h-12 w-full items-center justify-center rounded-lg bg-primary pl-12 pr-4 text-sm font-semibold text-primary-foreground shadow-chip outline-none transition-[translate,background-color] duration-200 hover:not-disabled:-translate-y-0.5 focus-visible:ring-3 focus-visible:ring-ring/50 active:not-disabled:translate-y-px",
+        "group relative inline-flex h-12 w-full items-center justify-center overflow-hidden rounded-md bg-primary pl-10 pr-4 text-xs font-semibold tracking-tight text-primary-foreground shadow-sm transition-all duration-300 ease-out hover:bg-primary/92 disabled:pointer-events-none disabled:opacity-40 sm:px-6 sm:text-sm",
         className,
       )}
     >

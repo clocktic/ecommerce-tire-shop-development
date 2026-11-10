@@ -69,7 +69,7 @@ function loadPayPalSdk(currency: string): Promise<void> {
       PAYPAL_CLIENT_ID,
     )}&currency=${encodeURIComponent(
       cur,
-    )}&components=buttons&enable-funding=venmo,paylater,card`
+    )}&components=buttons&enable-funding=venmo,paylater&disable-funding=card`
     script.async = true
     script.onload = () => resolve()
     script.onerror = () => {
@@ -306,7 +306,7 @@ export function PayPalOrderButtons({
       >
         <div
           ref={containerRef}
-          className="min-h-[48px] w-full rounded-lg bg-white p-2.5 shadow-sm"
+          className="min-h-[48px] w-full rounded-md bg-white p-2 shadow-sm sm:rounded-lg sm:p-2.5"
         />
       </div>
       {error && (

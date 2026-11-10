@@ -221,7 +221,7 @@ export function CheckoutForm() {
           lang={store.lang}
           market={market}
           cardAction={
-            <PayButton pending={pending} disabled={!accepted}>
+            <PayButton pending={pending}>
               {pending
                 ? x.checkout.placing
                 : getPaymentMethodCopy(store.lang).cardCta}
@@ -230,13 +230,13 @@ export function CheckoutForm() {
           paypalAction={
             <PayPalOrderButtons
               currency={MARKETS[market].currency}
-              disabled={!accepted || pending}
+              disabled={pending}
               getOrderNumber={async () => {
                 if (createdPayPalOrderRef.current) {
                   return createdPayPalOrderRef.current
                 }
                 const formEl = formRef.current
-                if (!formEl || !accepted) return null
+                if (!formEl) return null
                 if (!formEl.reportValidity()) return null
                 const form = new FormData(formEl)
                 const get = (name: string) => String(form.get(name) ?? "")
