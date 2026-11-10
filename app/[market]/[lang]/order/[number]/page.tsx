@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { CheckCircle2, Clock } from "lucide-react"
 import { buttonVariants } from "@/components/ui/button"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
+import { OrderPayPalSection } from "@/components/checkout/order-paypal-section"
 import { OrderConversionTracker } from "@/components/legal/consent-defaults"
 import { fmt, getDictionary, localeMeta, parseStore, storePath } from "@/lib/i18n"
 import { getExtras } from "@/lib/i18n/extras"
@@ -60,6 +61,12 @@ export default async function OrderPage({ params, searchParams }: { params: Para
           >
             {paymentNote}
           </p>
+          {isPending && (
+            <OrderPayPalSection
+              orderNumber={order.orderNumber}
+              currency={MARKETS[order.market as Market].currency}
+            />
+          )}
           <div className="flex flex-wrap gap-3">
             {isPending && (
               <form action="/api/payments/stripe/checkout" method="POST">

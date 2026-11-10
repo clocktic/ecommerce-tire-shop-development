@@ -90,6 +90,28 @@ export function PaymentBadges({
       ),
     },
     {
+      id: "paypal",
+      name: "PayPal",
+      svg: (
+        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="PayPal">
+          <rect width="42" height="26" rx="2" fill="#FFC439" stroke="rgba(0,0,0,0.12)" />
+          <text
+            x="21"
+            y="16.2"
+            textAnchor="middle"
+            fill="#003087"
+            fontFamily="ui-sans-serif, system-ui, sans-serif"
+            fontStyle="italic"
+            fontWeight="900"
+            fontSize="9"
+            letterSpacing="-0.2"
+          >
+            Pay<tspan fill="#0079C1">Pal</tspan>
+          </text>
+        </svg>
+      ),
+    },
+    {
       id: "apple-pay",
       name: "Apple Pay",
       svg: (
