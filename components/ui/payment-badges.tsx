@@ -17,9 +17,9 @@ export function PaymentBadges({
 }) {
   const dim = size === "sm" ? "h-[22px] w-[36px]" : "h-[26px] w-[42px]"
 
-  // Badges match all payment methods enabled in our live Stripe Checkout
-  // (Cards, Apple Pay, Google Pay, Link, Klarna, Afterpay, Amazon Pay, Cash App Pay,
-  // ACH Direct Debit, SEPA, Bancontact, MB WAY, 3D Secure 2.0).
+  // Active payment methods (Shopify Payments + PayPal Checkout):
+  // Visa, Mastercard, American Express, Discover, Apple Pay, Google Pay,
+  // Shop Pay, PayPal, Venmo, and 3D Secure 2.0.
   const items = [
     {
       id: "visa",
@@ -90,28 +90,6 @@ export function PaymentBadges({
       ),
     },
     {
-      id: "paypal",
-      name: "PayPal",
-      svg: (
-        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="PayPal">
-          <rect width="42" height="26" rx="2" fill="#FFC439" stroke="rgba(0,0,0,0.12)" />
-          <text
-            x="21"
-            y="16.2"
-            textAnchor="middle"
-            fill="#003087"
-            fontFamily="ui-sans-serif, system-ui, sans-serif"
-            fontStyle="italic"
-            fontWeight="900"
-            fontSize="9"
-            letterSpacing="-0.2"
-          >
-            Pay<tspan fill="#0079C1">Pal</tspan>
-          </text>
-        </svg>
-      ),
-    },
-    {
       id: "apple-pay",
       name: "Apple Pay",
       svg: (
@@ -174,200 +152,66 @@ export function PaymentBadges({
       ),
     },
     {
-      id: "klarna",
-      name: "Klarna",
+      id: "shop-pay",
+      name: "Shop Pay",
       svg: (
-        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="Klarna">
-          <rect width="42" height="26" rx="2" fill="#FFB3C7" stroke="rgba(0,0,0,0.12)" />
-          <text
-            x="20"
-            y="16.2"
-            textAnchor="middle"
-            fill="#0B051D"
-            fontFamily="ui-sans-serif, system-ui, sans-serif"
-            fontWeight="900"
-            fontSize="9.2"
-            letterSpacing="-0.2"
-          >
-            Klarna
-          </text>
-          <circle cx="36.2" cy="15.2" r="1.3" fill="#0B051D" />
-        </svg>
-      ),
-    },
-    {
-      id: "afterpay",
-      name: "Afterpay",
-      svg: (
-        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="Afterpay">
-          <rect width="42" height="26" rx="2" fill="#B2FCE4" stroke="rgba(0,0,0,0.12)" />
+        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="Shop Pay">
+          <rect width="42" height="26" rx="2" fill="#5A31F4" stroke="rgba(255,255,255,0.2)" />
           <text
             x="21"
-            y="15.6"
+            y="15.8"
             textAnchor="middle"
-            fill="#000000"
+            fill="#FFFFFF"
             fontFamily="ui-sans-serif, system-ui, sans-serif"
-            fontWeight="900"
+            fontWeight="800"
             fontSize="7.4"
             letterSpacing="-0.2"
           >
-            afterpay
+            Shop Pay
           </text>
         </svg>
       ),
     },
     {
-      id: "amazon-pay",
-      name: "Amazon Pay",
+      id: "paypal",
+      name: "PayPal",
       svg: (
-        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="Amazon Pay">
-          <rect width="42" height="26" rx="2" fill="#141923" stroke="rgba(255,255,255,0.16)" />
+        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="PayPal">
+          <rect width="42" height="26" rx="2" fill="#FFC439" stroke="rgba(0,0,0,0.12)" />
           <text
             x="21"
-            y="13.2"
-            textAnchor="middle"
-            fill="#FFFFFF"
-            fontFamily="ui-sans-serif, system-ui, sans-serif"
-            fontWeight="800"
-            fontSize="5.9"
-            letterSpacing="-0.1"
-          >
-            amazon pay
-          </text>
-          <path
-            d="M10.5 17.2c4.5 2.6 15.2 2.8 20.2.2"
-            fill="none"
-            stroke="#FF9900"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-          <path
-            d="M29.4 16.3l2.1.7-.9 2"
-            fill="none"
-            stroke="#FF9900"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      ),
-    },
-    {
-      id: "cashapp",
-      name: "Cash App Pay",
-      svg: (
-        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="Cash App Pay">
-          <rect width="42" height="26" rx="2" fill="#00D632" stroke="rgba(0,0,0,0.15)" />
-          <text
-            x="21"
-            y="15.8"
-            textAnchor="middle"
-            fill="#06180B"
-            fontFamily="ui-sans-serif, system-ui, sans-serif"
-            fontWeight="900"
-            fontSize="6.8"
-            letterSpacing="-0.2"
-          >
-            $ Cash App
-          </text>
-        </svg>
-      ),
-    },
-    {
-      id: "ach",
-      name: "ACH Direct Debit",
-      svg: (
-        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="ACH Direct Debit">
-          <rect width="42" height="26" rx="2" fill="#141923" stroke="rgba(255,255,255,0.16)" />
-          <path
-            d="M11 10.5L6.5 13h9L11 10.5zm-3.5 3.5v3.5h1.4V14H7.5zm2.8 0v3.5h1.4V14h-1.4zm2.8 0v3.5h1.4V14h-1.4zM6.5 18.5h9v1.2h-9v-1.2z"
-            fill="#38BDF8"
-          />
-          <text
-            x="27.5"
             y="16.2"
             textAnchor="middle"
-            fill="#FFFFFF"
+            fill="#003087"
             fontFamily="ui-sans-serif, system-ui, sans-serif"
+            fontStyle="italic"
             fontWeight="900"
-            fontSize="8.8"
-            letterSpacing="0.5"
-          >
-            ACH
-          </text>
-        </svg>
-      ),
-    },
-    {
-      id: "link",
-      name: "Stripe Link",
-      svg: (
-        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="Stripe Link">
-          <rect width="42" height="26" rx="2" fill="#011E0F" stroke="rgba(0,214,111,0.4)" />
-          <circle cx="11.5" cy="13" r="4.2" fill="#00D66F" />
-          <path
-            d="M10.3 11.2l2.4 1.8-2.4 1.8"
-            fill="none"
-            stroke="#011E0F"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <text
-            x="26.5"
-            y="16.2"
-            textAnchor="middle"
-            fill="#FFFFFF"
-            fontFamily="ui-sans-serif, system-ui, sans-serif"
-            fontWeight="800"
             fontSize="9"
             letterSpacing="-0.2"
           >
-            link
+            Pay<tspan fill="#0079C1">Pal</tspan>
           </text>
         </svg>
       ),
     },
     {
-      id: "sepa",
-      name: "SEPA",
+      id: "venmo",
+      name: "Venmo",
       svg: (
-        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="SEPA">
-          <rect width="42" height="26" rx="2" fill="#003399" stroke="rgba(255,255,255,0.2)" />
+        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="Venmo">
+          <rect width="42" height="26" rx="2" fill="#008CFF" stroke="rgba(255,255,255,0.2)" />
           <text
             x="21"
             y="15.8"
             textAnchor="middle"
             fill="#FFFFFF"
             fontFamily="ui-sans-serif, system-ui, sans-serif"
+            fontStyle="italic"
             fontWeight="900"
-            fontSize="8.5"
-            letterSpacing="0.8"
+            fontSize="8.2"
+            letterSpacing="-0.2"
           >
-            SEPA
-          </text>
-        </svg>
-      ),
-    },
-    {
-      id: "bancontact",
-      name: "Bancontact",
-      svg: (
-        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="Bancontact">
-          <rect width="42" height="26" rx="2" fill="#141923" stroke="rgba(255,255,255,0.16)" />
-          <path d="M8 10h12c-2.5 0-4.5 3-7 3H8v-3z" fill="#005498" />
-          <path d="M22 13h12v3h-5c-2.5 0-4.5-3-7-3z" fill="#FFD800" />
-          <text
-            x="21"
-            y="21"
-            textAnchor="middle"
-            fill="#FFFFFF"
-            fontFamily="ui-sans-serif, system-ui, sans-serif"
-            fontWeight="700"
-            fontSize="5.4"
-            letterSpacing="0.2"
-          >
-            Bancontact
+            venmo
           </text>
         </svg>
       ),
