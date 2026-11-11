@@ -69,7 +69,7 @@ function loadPayPalSdk(currency: string): Promise<void> {
       PAYPAL_CLIENT_ID,
     )}&currency=${encodeURIComponent(
       cur,
-    )}&components=buttons&enable-funding=venmo,paylater&disable-funding=card`
+    )}&components=buttons&enable-funding=venmo,paylater,card`
     script.async = true
     script.onload = () => resolve()
     script.onerror = () => {
