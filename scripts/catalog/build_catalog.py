@@ -423,9 +423,10 @@ for w in wb:
         load = int(float(w["load"])) if w.get("load") and float(w["load"]) > 0 else None
     except (TypeError, ValueError):
         continue
-    pcd = w["pcd1"].split(",")[0].strip()
-    if not re.match(r"^\d+x[\d.]+$", pcd):
+    pcds = [p.strip() for p in w["pcd1"].split(",") if re.match(r"^\d+x[\d.]+$", p.strip())]
+    if not pcds:
         continue
+    pcd = next((p for p in ("5x112", "5x114.3", "5x120", "5x108", "5x100") if p in pcds), pcds[0])
     model, finish = w["model"], w["colour"]
     wid_s = f"{wid:g}"
     d = (w.get("description") or "").lower()
