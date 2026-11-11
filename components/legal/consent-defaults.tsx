@@ -81,7 +81,17 @@ function ensureGoogleTagInitialized(market: Market) {
 // scripts rendered on the client.
 export function ConsentDefaults({ market }: { market: Market }) {
   useEffect(() => {
+    const onWindowError = (event: ErrorEvent) => {
+      if (event.message === "Script error." && !event.filename) {
+        event.stopImmediatePropagation()
+        event.preventDefault()
+      }
+    }
+    window.addEventListener("error", onWindowError, true)
     ensureGoogleTagInitialized(market)
+    return () => {
+      window.removeEventListener("error", onWindowError, true)
+    }
   }, [market])
 
   return null

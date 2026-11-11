@@ -69,7 +69,7 @@ function loadPayPalSdk(currency: string): Promise<void> {
       PAYPAL_CLIENT_ID,
     )}&currency=${encodeURIComponent(
       cur,
-    )}&components=buttons&enable-funding=venmo,paylater,card`
+    )}&components=buttons&enable-funding=venmo,paylater`
     script.async = true
     script.onload = () => resolve()
     script.onerror = () => {
@@ -203,7 +203,7 @@ export function PayPalOrderButtons({
       })
 
       if (instance.isEligible && !instance.isEligible()) return
-      void instance.render(container)
+      void instance.render(container).catch(() => {})
     } catch {
       // Ignore transient unmount render errors
     }
