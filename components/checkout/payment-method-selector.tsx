@@ -214,6 +214,9 @@ export function PaymentMethodSelector({
                 <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-semibold tracking-tight text-foreground">
                   Pay Later
                 </span>
+                <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-semibold tracking-tight text-foreground">
+                  Debit / Credit
+                </span>
               </div>
               <p className="text-xs leading-snug text-muted-foreground">{c.paypalSub}</p>
             </div>
