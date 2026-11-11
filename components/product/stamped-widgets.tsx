@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import Script from "next/script"
 import { usePathname } from "next/navigation"
 import {
@@ -24,12 +24,16 @@ declare global {
 
 function initStampedWidget() {
   if (typeof window === "undefined") return
-  if (window.StampedFn?.init) {
-    window.StampedFn.init({
-      apiKey: STAMPED_PUBLIC_API_KEY,
-      sId: STAMPED_STORE_HASH,
-      storeUrl: STAMPED_STORE_URL,
-    })
+  try {
+    if (window.StampedFn?.init) {
+      window.StampedFn.init({
+        apiKey: STAMPED_PUBLIC_API_KEY,
+        sId: STAMPED_STORE_HASH,
+        storeUrl: STAMPED_STORE_URL,
+      })
+    }
+  } catch {
+    // Ignore cross-origin Stamped widget init errors
   }
 
   if (!window.__stampedRichSnippetListenerBound) {
@@ -68,14 +72,23 @@ function initStampedWidget() {
 
 export function StampedScript() {
   const pathname = usePathname()
+  const initialPathRef = useRef(pathname)
 
   useEffect(() => {
     if (typeof window === "undefined") return
+    if (initialPathRef.current === pathname) {
+      initialPathRef.current = ""
+      return
+    }
     const timer = window.setTimeout(() => {
-      if (window.StampedFn?.reloadUGC) {
-        window.StampedFn.reloadUGC()
-      } else if (window.StampedFn?.init) {
-        initStampedWidget()
+      try {
+        if (window.StampedFn?.reloadUGC) {
+          window.StampedFn.reloadUGC()
+        } else if (window.StampedFn?.init) {
+          initStampedWidget()
+        }
+      } catch {
+        // Ignore cross-origin Stamped reload errors
       }
     }, 150)
     return () => window.clearTimeout(timer)
