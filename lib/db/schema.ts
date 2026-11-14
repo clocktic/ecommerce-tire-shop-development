@@ -169,6 +169,8 @@ export const chatMessages = pgTable("chat_messages", {
 
 export const googleAdsConfig = pgTable("google_ads_config", {
   id: text("id").primaryKey(),
+  oauthClientId: text("oauth_client_id"),
+  oauthClientSecret: text("oauth_client_secret"),
   customerId: text("customer_id"),
   loginCustomerId: text("login_customer_id"),
   developerToken: text("developer_token"),
