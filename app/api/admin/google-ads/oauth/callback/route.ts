@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
 import { isAdmin } from "@/lib/admin-auth"
-import { exchangeCodeForRefreshToken, saveGoogleAdsSettings } from "@/lib/google-ads"
+import {
+  autoDiscoverCustomerId,
+  exchangeCodeForRefreshToken,
+  saveGoogleAdsSettings,
+} from "@/lib/google-ads"
 
 export async function GET(req: NextRequest) {
   if (!(await isAdmin())) {
@@ -27,6 +31,7 @@ export async function GET(req: NextRequest) {
       ...(refreshToken ? { refreshToken } : {}),
       connectedEmail: email,
     })
+    await autoDiscoverCustomerId()
     return NextResponse.redirect(new URL("/admin/google-ads?connected=1", origin))
   } catch (err) {
     const message = err instanceof Error ? err.message : "oauth_exchange_failed"

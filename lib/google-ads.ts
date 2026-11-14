@@ -128,7 +128,11 @@ export async function getGoogleAdsSettings(): Promise<GoogleAdsSettings> {
     connectedEmail: row?.connectedEmail ?? null,
     hasOAuthClient: oauth.configured,
     clientIdPreview: oauth.clientId ? `${oauth.clientId.slice(0, 14)}...` : "не задан",
-    isReady: Boolean(oauth.configured && customerId.length === 10 && developerToken && refreshToken),
+    isReady: Boolean(
+      oauth.configured &&
+        (customerId.length === 10 || loginCustomerId.length === 10) &&
+        refreshToken,
+    ),
   }
 }
 
@@ -276,34 +280,59 @@ async function googleAdsRequest<T>(
   path: string,
   body: Record<string, unknown>,
   settings?: GoogleAdsSettings,
+  targetCustomerId?: string,
 ): Promise<T> {
   const cfg = settings ?? (await getGoogleAdsSettings())
-  if (!cfg.customerId || cfg.customerId.length !== 10) {
+  const cid = cleanCustomerId(targetCustomerId || cfg.customerId || cfg.loginCustomerId)
+  if (!cid || cid.length !== 10) {
     throw new Error("Укажите 10-значный Customer ID аккаунта Google Ads")
-  }
-  if (!cfg.developerToken) {
-    throw new Error("Укажите Developer Token из MCC → API Center")
   }
   if (!cfg.refreshToken) {
     throw new Error("Сначала авторизуйте Google Ads через OAuth или укажите Refresh Token")
   }
 
   const accessToken = await getAccessToken(cfg.refreshToken)
-  const headers: Record<string, string> = {
-    Authorization: `Bearer ${accessToken}`,
-    "developer-token": cfg.developerToken,
-    "Content-Type": "application/json",
-  }
-  if (cfg.loginCustomerId && cfg.loginCustomerId.length === 10) {
-    headers["login-customer-id"] = cfg.loginCustomerId
+  const makeHeaders = (includeDevToken: boolean): Record<string, string> => {
+    const h: Record<string, string> = {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    }
+    if (includeDevToken && cfg.developerToken) {
+      h["developer-token"] = cfg.developerToken
+    }
+    if (cfg.loginCustomerId && cfg.loginCustomerId.length === 10) {
+      h["login-customer-id"] = cfg.loginCustomerId
+    }
+    return h
   }
 
-  const res = await fetch(`${GOOGLE_ADS_BASE_URL}/customers/${cfg.customerId}/${path}`, {
+  let res = await fetch(`${GOOGLE_ADS_BASE_URL}/customers/${cid}/${path}`, {
     method: "POST",
-    headers,
+    headers: makeHeaders(Boolean(cfg.developerToken)),
     body: JSON.stringify(body),
     cache: "no-store",
   })
+
+  // Since Google Ads API is transitioning away from requiring developer tokens
+  // when managed in Cloud Console, retry without developer-token if test-token restriction triggers.
+  if (!res.ok && cfg.developerToken) {
+    const firstJson = await res.clone().json().catch(() => ({}))
+    const firstErr = JSON.stringify(firstJson)
+    if (
+      firstErr.includes("DEVELOPER_TOKEN_NOT_APPROVED") ||
+      firstErr.includes("DEVELOPER_TOKEN")
+    ) {
+      const retryRes = await fetch(`${GOOGLE_ADS_BASE_URL}/customers/${cid}/${path}`, {
+        method: "POST",
+        headers: makeHeaders(false),
+        body: JSON.stringify(body),
+        cache: "no-store",
+      })
+      if (retryRes.ok) {
+        res = retryRes
+      }
+    }
+  }
 
   const json = await res.json().catch(() => ({}))
   if (!res.ok) {
@@ -316,8 +345,51 @@ async function googleAdsRequest<T>(
   return json as T
 }
 
+export async function autoDiscoverCustomerId(settings?: GoogleAdsSettings): Promise<string> {
+  const cfg = settings ?? (await getGoogleAdsSettings())
+  if (cfg.customerId && cfg.customerId.length === 10) return cfg.customerId
+  if (!cfg.loginCustomerId || cfg.loginCustomerId.length !== 10 || !cfg.refreshToken) {
+    return cfg.customerId
+  }
+
+  try {
+    const clientQuery = `
+      SELECT
+        customer_client.id,
+        customer_client.descriptive_name,
+        customer_client.manager,
+        customer_client.status
+      FROM customer_client
+      WHERE customer_client.manager = FALSE AND customer_client.status = 'ENABLED'
+      LIMIT 10
+    `
+    const data = await googleAdsRequest<{
+      results?: Array<{
+        customerClient?: {
+          id?: string | number
+          descriptiveName?: string
+          manager?: boolean
+        }
+      }>
+    }>("googleAds:search", { query: clientQuery }, cfg, cfg.loginCustomerId)
+
+    const foundId = cleanCustomerId(String(data.results?.[0]?.customerClient?.id ?? ""))
+    if (foundId.length === 10) {
+      await saveGoogleAdsSettings({ customerId: foundId })
+      return foundId
+    }
+  } catch {
+    // Fallback to loginCustomerId if child lookup fails
+  }
+  return cfg.customerId || cfg.loginCustomerId
+}
+
 export async function fetchGoogleAdsOverview(): Promise<GoogleAdsOverview> {
-  const cfg = await getGoogleAdsSettings()
+  let cfg = await getGoogleAdsSettings()
+  if (!cfg.customerId && cfg.loginCustomerId) {
+    const discovered = await autoDiscoverCustomerId(cfg)
+    cfg = { ...cfg, customerId: discovered }
+  }
   const customerQuery = `
     SELECT
       customer.id,
