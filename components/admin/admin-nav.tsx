@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import useSWR from "swr"
-import { Boxes, LayoutDashboard, Mail, MessageCircle, Package, Truck } from "lucide-react"
+import { Boxes, LayoutDashboard, Mail, Megaphone, MessageCircle, Package, Truck } from "lucide-react"
 import { getUnreadChatCount } from "@/lib/actions/admin"
 import { cn } from "@/lib/utils"
 
@@ -12,6 +12,7 @@ const LINKS = [
   { href: "/admin/orders", label: "Заказы", icon: Package },
   { href: "/admin/shipments", label: "Доставка", icon: Truck },
   { href: "/admin/catalog", label: "Каталог", icon: Boxes },
+  { href: "/admin/google-ads", label: "Реклама", icon: Megaphone },
   { href: "/admin/messages", label: "Письма", icon: Mail },
   { href: "/admin/chat", label: "Чат", icon: MessageCircle },
 ]
@@ -29,7 +30,7 @@ export function AdminNav({ placement }: { placement: "desktop" | "mobile" }) {
   if (placement === "mobile") {
     return (
       <nav aria-label="Разделы" className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background pb-[env(safe-area-inset-bottom)] lg:hidden">
-        <ul className="grid grid-cols-6">
+        <ul className="grid grid-cols-7">
           {items.map(({ href, label, Icon, active, badge }) => (
             <li key={href}>
               <Link

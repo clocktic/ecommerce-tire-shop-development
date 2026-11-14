@@ -167,6 +167,17 @@ export const chatMessages = pgTable("chat_messages", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 })
 
+export const googleAdsConfig = pgTable("google_ads_config", {
+  id: text("id").primaryKey(),
+  customerId: text("customer_id"),
+  loginCustomerId: text("login_customer_id"),
+  developerToken: text("developer_token"),
+  merchantId: text("merchant_id").notNull().default("5900416726"),
+  refreshToken: text("refresh_token"),
+  connectedEmail: text("connected_email"),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
 export type OrderRow = typeof orders.$inferSelect
 export type OrderItemRow = typeof orderItems.$inferSelect
 export type SavedVehicleRow = typeof savedVehicles.$inferSelect

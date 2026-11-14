@@ -7,17 +7,19 @@ import { COMPANY } from "@/lib/company"
 import { db } from "@/lib/db"
 import { chatConversations, contactMessages, orders, products } from "@/lib/db/schema"
 import { getSmtpConfig } from "@/lib/email"
+import { formatCustomerId, getGoogleAdsSettings } from "@/lib/google-ads"
 import { isTelegramChatBotConfigured, isTelegramConfigured } from "@/lib/telegram"
 
 export default async function AdminDashboard() {
   if (!(await isAdmin())) return null
-  const [[pending], [toShip], [inTransit], [messages], [chats], [catalog]] = await Promise.all([
+  const [[pending], [toShip], [inTransit], [messages], [chats], [catalog], gads] = await Promise.all([
     db.select({ n: count() }).from(orders).where(eq(orders.status, "pending")),
     db.select({ n: count() }).from(orders).where(inArray(orders.status, ["paid", "processing"])),
     db.select({ n: count() }).from(orders).where(eq(orders.status, "shipped")),
     db.select({ n: count() }).from(contactMessages).where(eq(contactMessages.status, "new")),
     db.select({ n: count() }).from(chatConversations).where(eq(chatConversations.unreadByAdmin, true)),
     db.select({ n: count() }).from(products).where(eq(products.archived, false)),
+    getGoogleAdsSettings(),
   ])
 
   const tiles = [
@@ -42,6 +44,22 @@ export default async function AdminDashboard() {
           </li>
         ))}
       </ul>
+      <div className="flex flex-wrap items-center justify-between gap-3 border border-border bg-card p-5">
+        <div className="flex flex-col gap-1">
+          <span className="label-caps text-muted-foreground">Google Ads API · GMC {gads.merchantId}</span>
+          <span className="text-sm font-semibold">
+            {gads.isReady
+              ? `Подключён аккаунт ${formatCustomerId(gads.customerId)}${gads.connectedEmail ? ` (${gads.connectedEmail})` : ""}`
+              : "Ожидает подключения Developer Token и OAuth-авторизации"}
+          </span>
+        </div>
+        <Link
+          href="/admin/google-ads"
+          className="inline-flex h-9 items-center rounded-md bg-primary px-4 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+        >
+          Открыть управление рекламой →
+        </Link>
+      </div>
       <EmailTestCard
         email={COMPANY.email}
         host={getSmtpConfig().host}
