@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
   const redirectUri = `${origin}/api/admin/google-ads/oauth/callback`
   const state = crypto.randomUUID()
 
-  const authUrl = buildGoogleAdsOAuthUrl(redirectUri, state)
+  const authUrl = await buildGoogleAdsOAuthUrl(redirectUri, state)
   const res = NextResponse.redirect(authUrl)
   res.cookies.set("gads_oauth_state", state, {
     httpOnly: true,

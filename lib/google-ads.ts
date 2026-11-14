@@ -50,9 +50,27 @@ export function formatCustomerId(raw?: string | null): string {
   return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`
 }
 
-export function getGoogleOAuthClient() {
-  const clientId = (process.env.GOOGLE_CLIENT_ID ?? "").trim()
-  const clientSecret = (process.env.GOOGLE_CLIENT_SECRET ?? process.env.Secret ?? "").trim()
+export async function getGoogleOAuthClient() {
+  let dbClientId = ""
+  let dbClientSecret = ""
+  try {
+    const rows = await db
+      .select({
+        oauthClientId: googleAdsConfig.oauthClientId,
+        oauthClientSecret: googleAdsConfig.oauthClientSecret,
+      })
+      .from(googleAdsConfig)
+      .where(eq(googleAdsConfig.id, "default"))
+      .limit(1)
+    dbClientId = (rows[0]?.oauthClientId ?? "").trim()
+    dbClientSecret = (rows[0]?.oauthClientSecret ?? "").trim()
+  } catch {
+    // Fallback to env vars if columns are not available
+  }
+
+  const clientId = dbClientId || (process.env.GOOGLE_CLIENT_ID ?? "").trim()
+  const clientSecret =
+    dbClientSecret || (process.env.GOOGLE_CLIENT_SECRET ?? process.env.Secret ?? "").trim()
   return {
     clientId,
     clientSecret,
@@ -61,7 +79,6 @@ export function getGoogleOAuthClient() {
 }
 
 export async function getGoogleAdsSettings(): Promise<GoogleAdsSettings> {
-  const oauth = getGoogleOAuthClient()
   let row: typeof googleAdsConfig.$inferSelect | undefined
   try {
     const rows = await db
@@ -72,6 +89,18 @@ export async function getGoogleAdsSettings(): Promise<GoogleAdsSettings> {
     row = rows[0]
   } catch {
     row = undefined
+  }
+  const oauthClientId = (row?.oauthClientId || process.env.GOOGLE_CLIENT_ID || "").trim()
+  const oauthClientSecret = (
+    row?.oauthClientSecret ||
+    process.env.GOOGLE_CLIENT_SECRET ||
+    process.env.Secret ||
+    ""
+  ).trim()
+  const oauth = {
+    clientId: oauthClientId,
+    clientSecret: oauthClientSecret,
+    configured: Boolean(oauthClientId && oauthClientSecret),
   }
 
   const customerId = cleanCustomerId(row?.customerId || process.env.GOOGLE_ADS_CUSTOMER_ID)
@@ -155,8 +184,8 @@ export async function saveGoogleAdsSettings(input: {
     })
 }
 
-export function buildGoogleAdsOAuthUrl(redirectUri: string, state: string): string {
-  const { clientId } = getGoogleOAuthClient()
+export async function buildGoogleAdsOAuthUrl(redirectUri: string, state: string): Promise<string> {
+  const { clientId } = await getGoogleOAuthClient()
   const params = new URLSearchParams({
     client_id: clientId,
     redirect_uri: redirectUri,
@@ -171,7 +200,7 @@ export function buildGoogleAdsOAuthUrl(redirectUri: string, state: string): stri
 }
 
 export async function exchangeCodeForRefreshToken(code: string, redirectUri: string) {
-  const { clientId, clientSecret } = getGoogleOAuthClient()
+  const { clientId, clientSecret } = await getGoogleOAuthClient()
   const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -216,7 +245,7 @@ export async function exchangeCodeForRefreshToken(code: string, redirectUri: str
 }
 
 async function getAccessToken(refreshToken: string): Promise<string> {
-  const { clientId, clientSecret } = getGoogleOAuthClient()
+  const { clientId, clientSecret } = await getGoogleOAuthClient()
   const res = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
