@@ -1,5 +1,204 @@
 [
   {
+    "id": "michelin-x-line-version-t-385-65r22-5",
+    "slug": "michelin-x-line-version-t-385-65r22-5",
+    "category": "tires",
+    "brand": "Michelin",
+    "name": "X Line Version T 385/65R22.5 160K (158L)",
+    "mpn": "812967",
+    "gtin": "3528708129672",
+    "supplierSku": "CAI-469790",
+    "stock": 20,
+    "images": [
+      "https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/products/michelin-x-line-version-t-385-65r22-5-1.png",
+      "https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/products/michelin-x-line-version-t-385-65r22-5-2.png",
+      "https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/products/michelin-x-line-version-t-385-65r22-5-3.png",
+      "https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/products/michelin-x-line-version-t-385-65r22-5-4.png"
+    ],
+    "shortDescription": "Long-haul commercial trailer tire 385/65 R22.5 160K (158L) TL with 5-rib Carbion compound, 3PMSF & M+S all-season rating, EU Class A fuel efficiency, and regroovable/retreadable Michelin Remix casing.",
+    "description": "Michelin X Line Version T (X Line Energy T) 385/65R22.5 160K (158L) is a premium wide-base long-haul commercial trailer tire engineered for maximum fuel savings, high mileage, and all-weather reliability. Built with Michelin Carbion tread compound and a 5-rib highway trailer pattern with stone ejectors, it achieves an EU Class A rolling-resistance rating, Class B wet grip, and low 70 dB (Class A) external rolling noise while carrying both M+S and 3PMSF winter certifications. Its reinforced commercial steel-belt casing is fully regroovable and retreadable under the Michelin Remix program. Manufacturer CAI/MPN 812967 (Article 469790), EAN 3528708129672.",
+    "highlights": [
+      "385/65 R22.5 · Load/Speed 160K (158L)",
+      "Commercial Trailer Axle (Version T)",
+      "All-Season · M+S & 3PMSF Certified",
+      "EU Label: Fuel A · Wet B · 70 dB (Class A)",
+      "Carbion™ Low-Rolling-Resistance Compound",
+      "Regroovable & Michelin Remix® Retreadable Casing"
+    ],
+    "specs": [
+      {
+        "label": "Size",
+        "value": "385/65 R22.5"
+      },
+      {
+        "label": "Model / Version",
+        "value": "X Line Version T (Energy T)"
+      },
+      {
+        "label": "Axle Position",
+        "value": "Trailer (T)"
+      },
+      {
+        "label": "Load / Speed Index",
+        "value": "160K / 158L (4,500 kg @ 110 km/h)"
+      },
+      {
+        "label": "Ply Rating",
+        "value": "20 PR (Tubeless TL)"
+      },
+      {
+        "label": "Season",
+        "value": "All-season (M+S, 3PMSF)"
+      },
+      {
+        "label": "Fuel Efficiency (EU)",
+        "value": "Class A"
+      },
+      {
+        "label": "Wet Grip (EU)",
+        "value": "Class B"
+      },
+      {
+        "label": "External Rolling Noise",
+        "value": "70 dB (Class A)"
+      },
+      {
+        "label": "Regroovable / Retreadable",
+        "value": "Yes (Regroovable & Michelin Remix)"
+      },
+      {
+        "label": "Section Width",
+        "value": "385 mm"
+      },
+      {
+        "label": "Overall Diameter",
+        "value": "1,072 mm (42.2 in)"
+      },
+      {
+        "label": "Recommended Rim",
+        "value": "11.75 x 22.5 (12.25 x 22.5 allowed)"
+      },
+      {
+        "label": "MPN (Michelin CAI)",
+        "value": "812967 (469790)"
+      },
+      {
+        "label": "EAN / GTIN",
+        "value": "3528708129672"
+      }
+    ],
+    "tire": {
+      "model": "X Line Version T",
+      "width": 385,
+      "aspect": 65,
+      "rim": 22.5,
+      "loadIndex": 160,
+      "speedRating": "K",
+      "season": "all-season",
+      "extraLoad": true,
+      "runFlat": false,
+      "euLabel": {
+        "fuelEfficiency": "A",
+        "wetGrip": "B",
+        "noiseDb": 70,
+        "noiseClass": "A",
+        "snowGrip": true,
+        "iceGrip": false,
+        "eprelId": "518967"
+      }
+    },
+    "warranty": {
+      "us": "Michelin Commercial Truck Tire Limited Casing & Workmanship Warranty",
+      "eu": "2-Year EU Statutory Guarantee (Directive 2019/741) + Michelin Commercial Casing Guarantee"
+    },
+    "offers": {
+      "us": {
+        "priceCents": 57500,
+        "availability": "in_stock",
+        "stock": 20
+      },
+      "eu": {
+        "priceCents": 52900,
+        "availability": "in_stock",
+        "stock": 20
+      }
+    },
+    "translations": {
+      "de": {
+        "name": "X Line Version T 385/65R22.5 160K (158L)",
+        "shortDescription": "Fernverkehrs-Aufliegerreifen 385/65 R22.5 160K (158L) TL mit 5-Rippen-Profil, 3PMSF & M+S, EU-Label Kraftstoffeffizienz A und nachschneidbarer Michelin-Karkasse.",
+        "description": "Michelin X Line Version T 385/65R22.5 160K (158L) ist ein Premium-Trailerreifen für den Fernverkehr mit maximaler Kraftstoffersparnis (EU-Klasse A), hoher Laufleistung sowie M+S- und 3PMSF-Kennzeichnung. Nachschneidbar und runderneuerungsfähig (Michelin Remix). Herstellernummer 812967, EAN 3528708129672.",
+        "highlights": [
+          "385/65 R22.5 · 160K (158L)",
+          "Aufliegerachse (Version T)",
+          "Ganzjahresreifen · M+S & 3PMSF",
+          "EU-Label: Kraftstoff A · Nässe B · 70 dB",
+          "Nachschneidbar & runderneuerungsfähig"
+        ]
+      },
+      "fr": {
+        "name": "X Line Version T 385/65R22.5 160K (158L)",
+        "shortDescription": "Pneu remorque longue distance 385/65 R22.5 160K (158L) TL avec mélange Carbion, marquages M+S et 3PMSF, label UE classe A en carburant et carcasse recreusable.",
+        "description": "Michelin X Line Version T 385/65R22.5 160K (158L) est un pneu poids lourd pour essieu remorque conçu pour le transport longue distance, offrant une efficacité énergétique de classe A, une adhérence sur sol mouillé de classe B (70 dB) et une carcasse recreusable et rechapable Michelin Remix. Réf. 812967, EAN 3528708129672.",
+        "highlights": [
+          "385/65 R22.5 · 160K (158L)",
+          "Essieu remorque (Version T)",
+          "Toutes saisons · M+S & 3PMSF",
+          "Label UE : Carburant A · Pluie B · 70 dB",
+          "Recreusable & rechapable Michelin Remix"
+        ]
+      },
+      "es": {
+        "name": "X Line Version T 385/65R22.5 160K (158L)",
+        "shortDescription": "Neumático de remolque de larga distancia 385/65 R22.5 160K (158L) TL con compuesto Carbion, certificación M+S y 3PMSF y etiqueta UE clase A en ahorro de combustible.",
+        "description": "Michelin X Line Version T 385/65R22.5 160K (158L) es un neumático comercial para eje de remolque en transporte de larga distancia con eficiencia de combustible clase A, agarre en mojado clase B (70 dB) y carcasa reesculturada y recauchutable Michelin Remix. MPN 812967, EAN 3528708129672.",
+        "highlights": [
+          "385/65 R22.5 · 160K (158L)",
+          "Eje de remolque (Version T)",
+          "Todo tiempo · M+S y 3PMSF",
+          "Etiqueta UE: Combustible A · Mojado B · 70 dB",
+          "Reesculturable y recauchutable"
+        ]
+      },
+      "es-419": {
+        "name": "X Line Version T 385/65R22.5 160K (158L)",
+        "shortDescription": "Llanta comercial para remolque de larga distancia 385/65 R22.5 160K (158L) TL con compuesto Carbion, certificación M+S y 3PMSF y máxima eficiencia de combustible.",
+        "description": "Michelin X Line Version T 385/65R22.5 160K (158L) es una llanta de base ancha para eje de remolque diseñada para transporte de larga distancia con compuesto Carbion, 5 costillas con expulsores de piedras y casco regrabable y renovable. MPN 812967, EAN 3528708129672.",
+        "highlights": [
+          "385/65 R22.5 · 160K (158L)",
+          "Eje de remolque (Version T)",
+          "Todo clima · M+S y 3PMSF",
+          "Baja resistencia al rodamiento (Clase A)",
+          "Casco regrabable y renovable"
+        ]
+      },
+      "it": {
+        "name": "X Line Version T 385/65R22.5 160K (158L)",
+        "shortDescription": "Pneumatico autocarro per rimorchio 385/65 R22.5 160K (158L) TL con mescola Carbion, certificazione M+S e 3PMSF ed etichetta UE classe A nei consumi.",
+        "description": "Michelin X Line Version T 385/65R22.5 160K (158L) è uno pneumatico per asse rimorchio a lunga percorrenza con efficienza energetica in classe A, aderenza sul bagnato classe B (70 dB) e carcassa riscolpibile e ricostruibile Michelin Remix. MPN 812967, EAN 3528708129672.",
+        "highlights": [
+          "385/65 R22.5 · 160K (158L)",
+          "Asse rimorchio (Version T)",
+          "Quattro stagioni · M+S & 3PMSF",
+          "Etichetta UE: Consumi A · Bagnato B · 70 dB",
+          "Riscolpibile e ricostruibile"
+        ]
+      },
+      "nl": {
+        "name": "X Line Version T 385/65R22.5 160K (158L)",
+        "shortDescription": "Trailerband voor langeafstandstransport 385/65 R22.5 160K (158L) TL met Carbion-compound, M+S en 3PMSF en EU-label klasse A voor brandstofverbruik.",
+        "description": "Michelin X Line Version T 385/65R22.5 160K (158L) is een premium trailerband voor internationaal transport met rolweerstandsklasse A, natte grip klasse B (70 dB) en een herprofileerbaar en vernieuwbaar Michelin Remix-karkas. MPN 812967, EAN 3528708129672.",
+        "highlights": [
+          "385/65 R22.5 · 160K (158L)",
+          "Traileras (Version T)",
+          "All-season · M+S & 3PMSF",
+          "EU-label: Brandstof A · Nat B · 70 dB",
+          "Herprofileerbaar & vernieuwbaar"
+        ]
+      }
+    }
+  },
+  {
     "slug": "enkei-gtc02-19x9-5x112-et40-matte-black",
     "category": "wheels",
     "name": "GTC02 19x9 ET40 Matte Black",
