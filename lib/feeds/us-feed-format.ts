@@ -23,6 +23,48 @@ export function escapeFeedXml(value: string): string {
     .replaceAll('"', "&quot;").replaceAll("'", "&apos;")
 }
 
+function enrichedDescription(product: Product): string {
+  const base = feedText(product.description)
+  if (!base) return ""
+  if (product.category === "tires" && product.tire) {
+    const t = product.tire
+    const service = tireServiceDescription(t)
+    const spacedSize = `${tireSize(t)} ${service}`
+    const compactCode = `${t.width}/${t.aspect}R${t.rim}`
+    const fullTyreCode = `${compactCode} ${service}`
+    const seasonLabel = t.season === "all-season" ? "All-Season" : t.season === "winter" ? "Winter" : "Summer"
+    const extraSpecs = [
+      `Tyre Code: ${fullTyreCode} (${compactCode})`,
+      `Size: ${spacedSize}`,
+      `Section Width: ${t.width} mm`,
+      `Aspect Ratio: ${t.aspect}`,
+      `Rim Diameter: ${t.rim} in`,
+      `Load Index: ${t.loadIndex}`,
+      `Speed Rating: ${t.speedRating}`,
+      ...(t.extraLoad != null ? [`Load Range: ${t.extraLoad ? "XL" : "SL"}`] : []),
+      ...(t.season ? [`Season: ${seasonLabel}`] : []),
+      ...(product.mpn ? [`MPN: ${product.mpn}`] : []),
+      ...(product.gtin ? [`GTIN: ${product.gtin}`] : []),
+    ].join(". ")
+    return feedText(`${base} ${extraSpecs}.`).slice(0, 5000)
+  }
+  if (product.category === "wheels" && product.wheel) {
+    const w = product.wheel
+    const wheelSize = `${w.diameter}x${w.width} ${w.boltPattern} ET${w.offset}`
+    const extraSpecs = [
+      `Size: ${wheelSize} (${w.diameter}x${w.width} in)`,
+      `Bolt Pattern: ${w.boltPattern}`,
+      `Offset: ET${w.offset}`,
+      ...(w.centerBore ? [`Center Bore: ${w.centerBore} mm`] : []),
+      ...(w.finish ? [`Color: ${w.finish}`] : []),
+      ...(product.mpn ? [`MPN: ${product.mpn}`] : []),
+      ...(product.gtin ? [`GTIN: ${product.gtin}`] : []),
+    ].join(". ")
+    return feedText(`${base} ${extraSpecs}.`).slice(0, 5000)
+  }
+  return base.slice(0, 5000)
+}
+
 function rowFor(product: Product, store: Store): Row {
   const offer = offerFor(product, "us")!
   const shipping = POLICIES.us.shipping
@@ -32,7 +74,7 @@ function rowFor(product: Product, store: Store): Row {
   return {
     id: product.id.slice(0, 50),
     title: feedText(title).slice(0, 150),
-    description: feedText(product.description).slice(0, 5000),
+    description: enrichedDescription(product),
     link: absoluteUrl(storePath(store, `/product/${product.slug}`)),
     image_link: absoluteUrl(image),
     availability: offer.availability,

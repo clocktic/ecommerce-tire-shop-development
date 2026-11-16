@@ -82,7 +82,11 @@ function feedId(product: Product): string {
 function description(product: Product): string {
   const sentence = (value: string) => (/[.!?]$/.test(value.trim()) ? value.trim() : `${value.trim()}.`)
   const specs = product.specs.map((s) => sentence(`${s.label}: ${s.value}`)).join(" ")
-  const text = [product.description, ...product.highlights, specs].filter(Boolean).map(sentence).join(" ")
+  const tireCodeExtra =
+    product.category === "tires" && product.tire
+      ? `Tyre Code: ${product.tire.width}/${product.tire.aspect}R${product.tire.rim} ${tireServiceDescription(product.tire)} (${product.tire.width}/${product.tire.aspect}R${product.tire.rim}). Size: ${tireSize(product.tire)} ${tireServiceDescription(product.tire)}.`
+      : ""
+  const text = [product.description, tireCodeExtra, ...product.highlights, specs].filter(Boolean).map(sentence).join(" ")
   const compact = text.replace(/\s+/g, " ").trim()
   return compact.length <= DESCRIPTION_LIMIT ? compact : compact.slice(0, DESCRIPTION_LIMIT).replace(/\s+\S*$/, "")
 }
