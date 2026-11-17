@@ -2,6 +2,7 @@ import Link from "next/link"
 import { Logo } from "@/components/layout/logo"
 import { LanguageSwitcher, RegionSwitcher } from "@/components/layout/region-switcher"
 import { CookieSettingsButton } from "@/components/legal/cookie-settings-button"
+import { TrustBadges } from "@/components/layout/trust-badges"
 import { PaymentBadges } from "@/components/ui/payment-badges"
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon"
 import { CATEGORIES } from "@/lib/catalog"
@@ -94,6 +95,8 @@ export function Footer({ store }: { store: Store }) {
 
           <PaymentBadges includeCarriers ariaLabel={t.footer.payments} />
         </div>
+
+        <TrustBadges ariaLabel="Independent trust ratings" />
 
         <p className="max-w-3xl font-mono text-xs uppercase leading-relaxed tracking-[0.18em] text-secondary-foreground/60">
           {"© "}
