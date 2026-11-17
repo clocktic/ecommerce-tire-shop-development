@@ -219,7 +219,7 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
       {
         heading: "Wanneer wordt er afgeschreven",
         blocks: [
-          "Kaartbetalingen (Visa, Mastercard, American Express) worden bij het bestellen geautoriseerd en verwerkt via onze beveiligde 3D Secure 2.0-betaalpagina. Wordt een bestelling vóór verzending geannuleerd, dan wordt het bedrag direct vrijgegeven of volledig terugbetaald. Bij een SEPA-overschrijving wordt de bestelling verzonden zodra de betaling is ontvangen; de bankgegevens staan in de orderbevestiging.",
+          "Betalingen met kaart (Visa, Mastercard, American Express, Discover), PayPal, PayPal Betaal later en express-wallets (Apple Pay, Google Pay, Shop Pay) worden bij het bestellen geautoriseerd en verwerkt via onze beveiligde 3D Secure 2.0-betaalpagina. Wordt een bestelling vóór verzending geannuleerd, dan wordt het bedrag direct vrijgegeven of volledig terugbetaald. Bij een SEPA-overschrijving wordt de bestelling verzonden zodra de betaling is ontvangen; de bankgegevens staan in de orderbevestiging.",
         ],
       },
       {

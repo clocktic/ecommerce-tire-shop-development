@@ -252,17 +252,23 @@ export const US_POLICIES: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "1. Credit & Debit Cards, Digital Wallets & Buy Now Pay Later (Stripe Checkout)",
+        heading: "1. Debit & Credit Cards, PayPal, Venmo & Pay Later",
         blocks: [
-          "Encrypted 3D Secure 2.0 Checkout via Stripe — We accept major credit and debit cards (Visa, Mastercard, American Express, Discover), digital wallets (Apple Pay, Google Pay, Amazon Pay, Cash App Pay, Stripe Link), Buy Now Pay Later options (Klarna, Afterpay), and ACH Direct Debit processed securely in USD. Here is how it works:",
+          "Encrypted Checkout via PayPal & Card Gateway — We accept major credit and debit cards (Visa, Mastercard, American Express, Discover), PayPal, Venmo, and PayPal Pay Later (Pay in 4) processed securely in USD. Here is how it works:",
           {
             list: [
-              "Proceed to checkout and click \"Place order\" to open our encrypted Stripe Checkout page.",
-              "Select your preferred payment method (card, Apple Pay, Google Pay, Klarna, Afterpay, Amazon Pay, Cash App Pay, ACH Direct Debit, or Link) and complete verification.",
-              "Once the transaction is confirmed, you are redirected back to our site and receive an order confirmation email.",
+              "Proceed to checkout, enter your delivery details, and choose Debit / Credit Card, PayPal, Venmo, or Pay Later.",
+              "Complete verification in the secure payment window or inline card form.",
+              "Once the transaction is confirmed, you are redirected to your order confirmation page and receive an order confirmation email.",
               "If an order is canceled prior to shipment or cannot be fulfilled from stock, the payment authorization is released or refunded in full promptly.",
             ],
           },
+        ],
+      },
+      {
+        heading: "2. Express Wallets & Card Checkout (Apple Pay, Google Pay, Shop Pay)",
+        blocks: [
+          "Encrypted 3D Secure 2.0 Checkout — You can also select Express Wallets & Alternative Checkout at checkout to pay with Apple Pay, Google Pay, Shop Pay, or major credit and debit cards (Visa, Mastercard, American Express, Discover) in USD.",
         ],
       },
       {
@@ -421,7 +427,7 @@ export const US_POLICIES: Record<string, PolicyDoc> = {
       {
         heading: "How we disclose personal information & Google Consent Mode v2",
         blocks: [
-              "Service providers (processors): We share necessary data with contractual service providers who act solely on our behalf—specifically our payment gateway (Stripe), shipping carriers (UPS, FedEx, USPS) and US warehouse partners, cloud hosting (Vercel / Neon), and transactional email delivery.",
+              "Service providers (processors): We share necessary data with contractual service providers who act solely on our behalf—specifically our payment gateways (PayPal and Shopify Payments), shipping carriers (UPS, FedEx, USPS) and US warehouse partners, cloud hosting (Vercel / Neon), and transactional email delivery.",
           "Advertising & analytics partners (Google): When advertising/analytics cookies are active, we use Google Analytics and Google Ads / Google Merchant Center conversion tags to measure ad performance and show relevant product listings. Under the CCPA/CPRA and certain other US state privacy laws, allowing third-party advertising tags to collect device identifiers may constitute \"sharing\" or \"selling\" personal information for cross-context behavioral advertising. We do not sell personal information for monetary consideration.",
           "We implement Google Consent Mode v2. If you opt out on our Your Privacy Choices page or if your browser sends a Global Privacy Control (GPC) signal, ad_storage, ad_user_data, and ad_personalization are automatically set to \"denied\".",
           "Legal obligations: We may disclose information when required by law, subpoena, court order, or NHTSA safety recall regulations.",

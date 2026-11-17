@@ -220,7 +220,7 @@ export const EU_POLICIES_IT: Record<string, PolicyDoc> = {
       {
         heading: "Quando avviene l’addebito",
         blocks: [
-          "I pagamenti con carta (Visa, Mastercard, American Express) vengono autorizzati ed elaborati sulla nostra pagina sicura 3D Secure 2.0 al momento dell’ordine. Se un ordine viene annullato prima della spedizione, l’autorizzazione viene immediatamente svincolata o rimborsata per intero. Con il bonifico SEPA l’ordine viene spedito una volta ricevuto il pagamento; le coordinate bancarie sono nella conferma d’ordine.",
+          "I pagamenti con carta (Visa, Mastercard, American Express, Discover), PayPal, PayPal Paga in 3 rate e wallet rapidi (Apple Pay, Google Pay, Shop Pay) vengono autorizzati ed elaborati sulla nostra pagina sicura 3D Secure 2.0 al momento dell’ordine. Se un ordine viene annullato prima della spedizione, l’autorizzazione viene immediatamente svincolata o rimborsata per intero. Con il bonifico SEPA l’ordine viene spedito una volta ricevuto il pagamento; le coordinate bancarie sono nella conferma d’ordine.",
         ],
       },
       {

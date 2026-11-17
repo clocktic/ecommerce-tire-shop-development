@@ -258,14 +258,14 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "1. Cards, Wallets & Local Payment Methods (Stripe Checkout)",
+        heading: "1. Cards, PayPal, Express Wallets & Pay Later",
         blocks: [
-          "3D Secure 2.0 Online Checkout via Stripe — We accept Visa, Mastercard, American Express, Discover, Apple Pay, Google Pay, Klarna, Afterpay, Amazon Pay, Cash App Pay, ACH Direct Debit, Bancontact, and Stripe Link in EUR across all 27 EU Member States. Here is how it works:",
+          "3D Secure 2.0 Online Checkout — We accept Visa, Mastercard, American Express, Discover, PayPal, PayPal Pay Later, Apple Pay, Google Pay, and Shop Pay in EUR across all 27 EU Member States. Here is how it works:",
           {
             list: [
-              "Click the order button at checkout to open our encrypted Stripe Checkout payment page.",
-              "Select your preferred card, wallet, or local payment method and authorize the transaction using Strong Customer Authentication (PSD2 SCA).",
-              "Once confirmed, you are redirected back to our site and receive an order confirmation email.",
+              "Select your preferred payment option at checkout: Debit / Credit Card, PayPal & Pay Later, or Express Wallets (Apple Pay, Google Pay, Shop Pay & Card).",
+              "Authorize the transaction using Strong Customer Authentication (PSD2 SCA / 3D Secure 2.0).",
+              "Once confirmed, you are redirected to your order confirmation page and receive an order confirmation email.",
               "If an order is cancelled before dispatch or cannot be fulfilled, any payment or authorisation is released or refunded in full promptly.",
             ],
           },
@@ -409,7 +409,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
       {
         heading: "Recipients and processors",
         blocks: [
-          "We share personal data only to the extent necessary with: (1) our PCI-DSS Level 1 payment service provider (Stripe) to process payments; (2) international shipping carriers (DHL Express, UPS, FedEx) and our US warehouse to fulfil and clear your order through customs; (3) cloud hosting, database and transactional email providers (Vercel, Neon); and (4) — strictly only if you grant prior consent in the cookie banner — Google Ireland Limited / Google LLC for Google Analytics and Google Ads / Google Merchant Center conversion measurement. All processors are bound by data processing agreements under Art. 28 GDPR.",
+          "We share personal data only to the extent necessary with: (1) our PCI-DSS Level 1 payment service providers (PayPal and Shopify Payments) to process payments; (2) international shipping carriers (DHL Express, UPS, FedEx) and our US warehouse to fulfil and clear your order through customs; (3) cloud hosting, database and transactional email providers (Vercel, Neon); and (4) — strictly only if you grant prior consent in the cookie banner — Google Ireland Limited / Google LLC for Google Analytics and Google Ads / Google Merchant Center conversion measurement. All processors are bound by data processing agreements under Art. 28 GDPR.",
         ],
       },
       {
