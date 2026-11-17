@@ -4,6 +4,38 @@ import { DEFAULT_LANG, LANG_COOKIE, isLang, isStoreLang, langFromHeader, type La
 
 const YEAR = 60 * 60 * 24 * 365
 
+const POLICY_SHORTHAND_MAP: Record<string, string> = {
+  shipping: "policies/shipping",
+  "shipping-policy": "policies/shipping",
+  returns: "policies/returns",
+  "return-policy": "policies/returns",
+  "refund-policy": "policies/returns",
+  warranty: "policies/warranty",
+  payments: "policies/payments",
+  "payment-policy": "policies/payments",
+  terms: "policies/terms",
+  "terms-of-service": "policies/terms",
+  privacy: "policies/privacy",
+  "privacy-policy": "policies/privacy",
+  "privacy-choices": "policies/privacy-choices",
+  customs: "policies/customs",
+  cookies: "policies/cookies",
+  "legal-notice": "policies/legal-notice",
+}
+
+function resolveShorthandSegment(market: Market, rest: string[]): string[] | null {
+  if (rest.length !== 1) return null
+  const slug = rest[0].toLowerCase()
+  if (slug === "imprint") {
+    return market === "eu" ? ["policies", "legal-notice"] : ["about"]
+  }
+  if (slug === "legal-notice" && market === "us") {
+    return ["about"]
+  }
+  const mapped = POLICY_SHORTHAND_MAP[slug]
+  return mapped ? mapped.split("/") : null
+}
+
 function preferredLang(request: NextRequest, market: Market): Lang {
   const chosen = request.cookies.get(LANG_COOKIE)?.value
   if (isStoreLang(market, chosen)) return chosen
@@ -27,9 +59,19 @@ export function proxy(request: NextRequest) {
   const [, first, second, ...rest] = pathname.split("/")
 
   if (isMarket(first)) {
-    if (isStoreLang(first, second)) return withGeo(NextResponse.next(), request, geoMarket)
+    if (isStoreLang(first, second)) {
+      const shorthand = resolveShorthandSegment(first, rest.filter(Boolean))
+      if (shorthand) {
+        const url = request.nextUrl.clone()
+        url.pathname = `/${first}/${second}/${shorthand.join("/")}`
+        return withGeo(NextResponse.redirect(url, 308), request, geoMarket)
+      }
+      return withGeo(NextResponse.next(), request, geoMarket)
+    }
     // /eu/tires or /us → add the language segment; /us/de (not offered there) → swap it.
-    const tail = (isLang(second) ? rest : [second, ...rest]).filter(Boolean).join("/")
+    const rawTail = (isLang(second) ? rest : [second, ...rest]).filter(Boolean)
+    const shorthand = resolveShorthandSegment(first, rawTail)
+    const tail = (shorthand ?? rawTail).join("/")
     const url = request.nextUrl.clone()
     url.pathname = `/${first}/${preferredLang(request, first)}${tail ? `/${tail}` : ""}`
     const response = NextResponse.redirect(url, 307)
@@ -39,8 +81,11 @@ export function proxy(request: NextRequest) {
 
   const chosen = request.cookies.get(MARKET_COOKIE)?.value
   const market = isMarket(chosen) ? chosen : geoMarket
+  const rawSegments = [first, second, ...rest].filter(Boolean)
+  const shorthand = resolveShorthandSegment(market, rawSegments)
+  const resolvedTail = shorthand ? `/${shorthand.join("/")}` : pathname === "/" ? "" : pathname
   const url = request.nextUrl.clone()
-  url.pathname = `/${market}/${preferredLang(request, market)}${pathname === "/" ? "" : pathname}`
+  url.pathname = `/${market}/${preferredLang(request, market)}${resolvedTail}`
   const response = NextResponse.redirect(url, 307)
   response.headers.set("Vary", "Cookie, X-Vercel-IP-Country, Accept-Language")
   return withGeo(response, request, geoMarket)

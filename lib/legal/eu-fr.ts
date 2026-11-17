@@ -220,7 +220,7 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
       {
         heading: "Quand vous êtes débité",
         blocks: [
-          "Les paiements par carte (Visa, Mastercard, American Express) sont autorisés et traités sur notre page sécurisée 3D Secure 2.0 lors de la commande. Si une commande est annulée avant l’expédition, l’autorisation est immédiatement libérée ou intégralement remboursée. Pour un virement SEPA, la commande est expédiée dès réception du paiement ; les coordonnées bancaires figurent dans votre confirmation de commande.",
+          "Les paiements par carte (Visa, Mastercard, American Express, Discover), PayPal, PayPal Paiement en 4x et portefeuilles express (Apple Pay, Google Pay, Shop Pay) sont autorisés et traités sur notre page sécurisée 3D Secure 2.0 lors de la commande. Si une commande est annulée avant l’expédition, l’autorisation est immédiatement libérée ou intégralement remboursée. Pour un virement SEPA, la commande est expédiée dès réception du paiement ; les coordonnées bancaires figurent dans votre confirmation de commande.",
         ],
       },
       {

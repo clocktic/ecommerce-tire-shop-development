@@ -234,14 +234,14 @@ export const US_POLICIES_ES: Record<string, PolicyDoc> = {
       {
         heading: "Métodos de pago aceptados",
         blocks: [
-          "Aceptamos los siguientes métodos de pago a través de Stripe Checkout al finalizar la compra:",
+          "Aceptamos los siguientes métodos de pago cifrados en USD al finalizar la compra:",
           { list: p.paymentMethods },
         ],
       },
       {
         heading: "Cómo se procesa el pago",
         blocks: [
-          "Al hacer clic en «Hacer pedido» en la página de pago, eres redirigido a nuestra pasarela segura con autenticación 3D Secure 2.0 para completar el pago con tarjeta. El pago se autoriza al confirmar la operación y se procesa para el despacho del pedido. Si un pedido se cancela antes del envío o no puede surtirse, la autorización se libera o se reembolsa el importe total de inmediato.",
+          "En la página de pago puedes elegir entre pago directo con tarjeta de débito o crédito (Visa, Mastercard, American Express, Discover), PayPal, Venmo y PayPal Pay Later, o bien billeteras rápidas (Apple Pay, Google Pay, Shop Pay) y pasarela segura con autenticación 3D Secure 2.0. El pago se autoriza al confirmar la operación y se procesa para el despacho del pedido. Si un pedido se cancela antes del envío o no puede surtirse, la autorización se libera o se reembolsa el importe total de inmediato.",
         ],
       },
       {
@@ -368,7 +368,7 @@ export const US_POLICIES_ES: Record<string, PolicyDoc> = {
       {
         heading: "Con quién compartimos datos y Google Consent Mode v2",
         blocks: [
-              "Proveedores de servicios (encargados): Compartimos únicamente los datos necesarios con proveedores que actúan en nuestro nombre bajo contrato: pasarela de pagos (Stripe), paqueterías (UPS, FedEx, USPS) y almacenes en EE. UU., alojamiento en la nube (Vercel / Neon) y servicio de correo transaccional.",
+              "Proveedores de servicios (encargados): Compartimos únicamente los datos necesarios con proveedores que actúan en nuestro nombre bajo contrato: pasarelas de pago (PayPal y Shopify Payments), paqueterías (UPS, FedEx, USPS) y almacenes en EE. UU., alojamiento en la nube (Vercel / Neon) y servicio de correo transaccional.",
           "Socios de publicidad y análisis (Google): Cuando las cookies publicitarias están activas, utilizamos Google Analytics y etiquetas de conversión de Google Ads / Google Merchant Center. Según la CCPA/CPRA y ciertas leyes estatales, el uso de cookies publicitarias puede considerarse «compartir» o «vender» información personal para publicidad conductual entre contextos. No vendemos datos personales a cambio de dinero.",
           "Implementamos Google Consent Mode v2. Si ejerces tu exclusión en Tus opciones de privacidad o si tu navegador envía la señal Global Privacy Control (GPC), ad_storage, ad_user_data y ad_personalization pasan automáticamente a estado «denied».",
           "Autoridades: Cuando sea requerido por ley, orden judicial o normativa de seguridad vehicular de la NHTSA.",

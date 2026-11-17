@@ -220,7 +220,7 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
       {
         heading: "Wann belastet wird",
         blocks: [
-          "Kartenzahlungen (Visa, Mastercard, American Express) werden bei der Bestellung über unsere verschlüsselte 3D-Secure-2.0-Zahlungsseite autorisiert und abgerechnet. Wird eine Bestellung vor dem Versand storniert, wird der Betrag sofort vollständig freigegeben bzw. erstattet. Bei SEPA-Überweisung versenden wir, sobald die Zahlung eingegangen ist; die Bankverbindung erhalten Sie in Ihrer Bestellbestätigung.",
+          "Zahlungen per Karte (Visa, Mastercard, American Express, Discover), PayPal, PayPal Später Bezahlen sowie Express-Wallets (Apple Pay, Google Pay, Shop Pay) werden bei der Bestellung über unsere verschlüsselte 3D-Secure-2.0-Zahlungsseite autorisiert und abgerechnet. Wird eine Bestellung vor dem Versand storniert, wird der Betrag sofort vollständig freigegeben bzw. erstattet. Bei SEPA-Überweisung versenden wir, sobald die Zahlung eingegangen ist; die Bankverbindung erhalten Sie in Ihrer Bestellbestätigung.",
         ],
       },
       {

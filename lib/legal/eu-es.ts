@@ -220,7 +220,7 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
       {
         heading: "Cuándo se realiza el cargo",
         blocks: [
-          "Los pagos con tarjeta (Visa, Mastercard, American Express) se autorizan y procesan en nuestra pasarela segura 3D Secure 2.0 al realizar el pedido. Si un pedido se cancela antes del envío, la autorización se libera o reembolsa íntegramente de inmediato. Con transferencia SEPA, el pedido se envía una vez recibido el pago; los datos bancarios figuran en la confirmación del pedido.",
+          "Los pagos con tarjeta (Visa, Mastercard, American Express, Discover), PayPal, PayPal Paga después y billeteras rápidas (Apple Pay, Google Pay, Shop Pay) se autorizan y procesan en nuestra pasarela segura 3D Secure 2.0 al realizar el pedido. Si un pedido se cancela antes del envío, la autorización se libera o reembolsa íntegramente de inmediato. Con transferencia SEPA, el pedido se envía una vez recibido el pago; los datos bancarios figuran en la confirmación del pedido.",
         ],
       },
       {
