@@ -23,7 +23,7 @@ export function escapeFeedXml(value: string): string {
     .replaceAll('"', "&quot;").replaceAll("'", "&apos;")
 }
 
-function enrichedDescription(product: Product): string {
+export function enrichedDescription(product: Product): string {
   const base = feedText(product.description)
   if (!base) return ""
   if (product.category === "tires" && product.tire) {
