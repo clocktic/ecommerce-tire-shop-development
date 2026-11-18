@@ -25,14 +25,21 @@ function gtinProperty(gtin?: string) {
 // source as the policy pages and the Google feed, so the three never disagree.
 type JsonLdReview = { author: string; rating: number; title: string; body: string; date: string }
 
-function reviewMarkup(reviews: readonly JsonLdReview[]) {
-  if (!reviews.length) return {}
-  const average = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+type JsonLdRating = { rating: number; count: number }
+
+// Google rejects an AggregateRating with zero reviews, so it is only emitted when both values are positive.
+function reviewMarkup(reviews: readonly JsonLdReview[], rating?: JsonLdRating | null) {
+  const summary =
+    rating ??
+    (reviews.length
+      ? { rating: reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length, count: reviews.length }
+      : null)
+  if (!summary || !(summary.rating > 0) || !(summary.count > 0)) return {}
   return {
     aggregateRating: {
       "@type": "AggregateRating",
-      ratingValue: average.toFixed(1),
-      reviewCount: reviews.length,
+      ratingValue: Number(summary.rating.toFixed(2)),
+      reviewCount: summary.count,
       bestRating: 5,
       worstRating: 1,
     },
@@ -47,7 +54,12 @@ function reviewMarkup(reviews: readonly JsonLdReview[]) {
   }
 }
 
-export function productJsonLd(product: Product, store: Store, reviews: readonly JsonLdReview[] = []) {
+export function productJsonLd(
+  product: Product,
+  store: Store,
+  reviews: readonly JsonLdReview[] = [],
+  rating?: JsonLdRating | null,
+) {
   const { market } = store
   const offer = offerFor(product, market)
   if (!offer) return null
@@ -78,7 +90,7 @@ export function productJsonLd(product: Product, store: Store, reviews: readonly 
           }
         : {}),
     brand: { "@type": "Brand", name: product.brand },
-    ...reviewMarkup(reviews),
+    ...reviewMarkup(reviews, rating),
     offers: {
       "@type": "Offer",
       url: productUrl,

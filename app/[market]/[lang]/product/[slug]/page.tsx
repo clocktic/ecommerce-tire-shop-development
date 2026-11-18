@@ -23,6 +23,7 @@ import { ProductMemberCallout } from "@/components/product/product-member-callou
 import { ProductReviews } from "@/components/reviews/product-reviews"
 import { RatingInline } from "@/components/reviews/rating-inline"
 import { getProductReviews, getRatingsBySlug, reviewStats } from "@/lib/stamped-reviews"
+import { getStampedProductRating } from "@/lib/stamped-rating"
 import { Utqg } from "@/components/product/utqg"
 import { TireVariants } from "@/components/product/tire-variants"
 import { ProductFitmentBadge } from "@/components/garage/product-fitment-badge"
@@ -69,13 +70,17 @@ export default async function ProductPage({ params }: { params: Params }) {
 
   const { code, meta } = productCode(product, t)
   const categoryName = t.categories[product.category].name
-  const [relatedResult, reviews, ratings] = await Promise.all([
+  const [relatedResult, reviews, ratings, stampedRating] = await Promise.all([
     readProductsByCategory(store.market, product.category),
     getProductReviews(product.slug),
     getRatingsBySlug(),
+    getStampedProductRating(product.slug),
   ])
   const stats = reviewStats(reviews)
-  const jsonLd = productJsonLd(product, store, reviews)
+  const visibleRating = stampedRating
+    ? { count: stampedRating.count, average: stampedRating.rating }
+    : { count: stats.count, average: stats.average }
+  const jsonLd = productJsonLd(product, store, reviews, stampedRating)
   if (!relatedResult.ok) return <div className="mx-auto max-w-7xl px-4 md:px-6"><CatalogUnavailable store={store} /></div>
   const categoryProducts = relatedResult.data
   const variants = base.category === "tires" ? tireVariants(base, categoryProducts) : []
@@ -110,7 +115,9 @@ export default async function ProductPage({ params }: { params: Params }) {
             <h1 className="text-balance font-expanded text-2xl font-extrabold uppercase leading-tight md:text-3xl">
               {product.name}
             </h1>
-            {stats.count > 0 && <RatingInline rating={stats} store={store} href="#reviews" size="md" />}
+            {visibleRating.count > 0 && visibleRating.average > 0 && (
+              <RatingInline rating={visibleRating} store={store} href="#reviews" size="md" />
+            )}
             <p className="font-mono text-sm">
               <span className="font-semibold">{code}</span>
               <span className="text-muted-foreground"> · {meta}</span>
