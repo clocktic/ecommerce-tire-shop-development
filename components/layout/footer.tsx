@@ -9,6 +9,7 @@ import { CATEGORIES } from "@/lib/catalog"
 import { COMPANY, companyAddressLine } from "@/lib/company"
 import { getDictionary, storePath, type Store } from "@/lib/i18n"
 import { getExtras } from "@/lib/i18n/extras"
+import { getReviewsCopy } from "@/lib/i18n/reviews"
 import { policyLinks } from "@/lib/legal"
 import { policyHref } from "@/lib/legal/pages"
 
@@ -19,6 +20,7 @@ export function Footer({ store }: { store: Store }) {
   const shop = [
     ...CATEGORIES.map((c) => ({ href: storePath(store, `/${c.slug}`), label: t.categories[c.slug].name })),
     { href: storePath(store, "/track"), label: x.track.nav },
+    { href: storePath(store, "/reviews"), label: getReviewsCopy(store).nav },
     { href: storePath(store, "/faq"), label: t.common.faq },
     { href: storePath(store, "/contact"), label: t.common.contact },
     { href: storePath(store, "/about"), label: t.common.about },
@@ -96,7 +98,7 @@ export function Footer({ store }: { store: Store }) {
           <PaymentBadges includeCarriers ariaLabel={t.footer.payments} />
         </div>
 
-        <TrustBadges ariaLabel="Independent trust ratings" />
+        <TrustBadges ariaLabel="Independent trust ratings" store={store} />
 
         <p className="max-w-3xl font-mono text-xs uppercase leading-relaxed tracking-[0.18em] text-secondary-foreground/60">
           {"© "}

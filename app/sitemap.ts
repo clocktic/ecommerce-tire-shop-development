@@ -9,7 +9,7 @@ import { absoluteUrl, hreflangMap } from "@/lib/seo"
 // One entry per store language, each listing the full hreflang cluster.
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = []
-  const shared = ["", ...CATEGORIES.map((c) => `/${c.slug}`), "/tire-catalog", ...referenceModels.map(m => `/tire-catalog/${m.slug}`), "/faq", "/contact", "/about"]
+  const shared = ["", ...CATEGORIES.map((c) => `/${c.slug}`), "/tire-catalog", ...referenceModels.map(m => `/tire-catalog/${m.slug}`), "/reviews", "/faq", "/contact", "/about"]
 
   // Product URLs live in the chunked /products/sitemap/*.xml files listed in robots.ts.
   for (const market of markets) {

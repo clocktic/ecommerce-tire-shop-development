@@ -8,9 +8,16 @@ type Props = {
   labelledBy: string
   prevLabel: string
   nextLabel: string
+  size?: keyof typeof ITEM_BASIS
 }
 
-export function ProductCarousel({ children, labelledBy, prevLabel, nextLabel }: Props) {
+const ITEM_BASIS = {
+  product:
+    "basis-[calc((100%-0.75rem)/2.15)] sm:basis-[calc((100%-2rem)/2.6)] md:basis-[calc((100%-2rem)/3)] lg:basis-[calc((100%-3rem)/4)]",
+  wide: "basis-[85%] sm:basis-[calc((100%-1rem)/2)] lg:basis-[calc((100%-2rem)/3)]",
+} as const
+
+export function ProductCarousel({ children, labelledBy, prevLabel, nextLabel, size = "product" }: Props) {
   const trackRef = useRef<HTMLUListElement>(null)
   const [edges, setEdges] = useState({ start: true, end: false })
 
@@ -51,7 +58,7 @@ export function ProductCarousel({ children, labelledBy, prevLabel, nextLabel }: 
         className="-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto overscroll-x-contain px-4 pb-6 pt-1 [scrollbar-width:none] sm:gap-4 md:-mx-6 md:scroll-px-6 md:px-6 [&::-webkit-scrollbar]:hidden"
       >
         {Children.map(children, (child) => (
-          <li className="flex shrink-0 basis-[calc((100%-0.75rem)/2.15)] snap-start sm:basis-[calc((100%-2rem)/2.6)] md:basis-[calc((100%-2rem)/3)] lg:basis-[calc((100%-3rem)/4)] [&>*]:w-full">
+          <li className={`flex shrink-0 snap-start [&>*]:w-full ${ITEM_BASIS[size]}`}>
             {child}
           </li>
         ))}

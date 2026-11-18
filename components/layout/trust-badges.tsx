@@ -2,6 +2,8 @@ import { Suspense } from "react"
 import Image from "next/image"
 import { ArrowUpRight } from "lucide-react"
 import { ScamAdviserLogo } from "@/components/layout/scamadviser-logo"
+import { StampedBadge, StampedBadgeCard } from "@/components/layout/stamped-badge"
+import type { Store } from "@/lib/i18n"
 import { COMPANY } from "@/lib/company"
 import { getCheckShopScore, getScamAdviserScore } from "@/lib/trust-scores"
 
@@ -96,9 +98,14 @@ async function CheckShopBadge() {
   return <BadgeCard {...checkShop} result={await getCheckShopScore()} />
 }
 
-export function TrustBadges({ ariaLabel }: { ariaLabel: string }) {
+export function TrustBadges({ ariaLabel, store }: { ariaLabel: string; store: Store }) {
   return (
     <ul aria-label={ariaLabel} className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap">
+      <li className="col-span-2 min-w-0 sm:col-span-1">
+        <Suspense fallback={<StampedBadgeCard store={store} stats={null} />}>
+          <StampedBadge store={store} />
+        </Suspense>
+      </li>
       <li className="min-w-0">
         <Suspense fallback={<BadgeCard {...scamAdviser} result={null} />}>
           <ScamAdviserBadge />

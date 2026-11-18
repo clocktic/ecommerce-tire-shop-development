@@ -23,7 +23,31 @@ function gtinProperty(gtin?: string) {
 
 // Shipping and return terms in the markup come from lib/policies.ts, the same
 // source as the policy pages and the Google feed, so the three never disagree.
-export function productJsonLd(product: Product, store: Store) {
+type JsonLdReview = { author: string; rating: number; title: string; body: string; date: string }
+
+function reviewMarkup(reviews: readonly JsonLdReview[]) {
+  if (!reviews.length) return {}
+  const average = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+  return {
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: average.toFixed(1),
+      reviewCount: reviews.length,
+      bestRating: 5,
+      worstRating: 1,
+    },
+    review: reviews.slice(0, 10).map((r) => ({
+      "@type": "Review",
+      author: { "@type": "Person", name: r.author },
+      datePublished: r.date.slice(0, 10),
+      ...(r.title ? { name: r.title } : {}),
+      reviewBody: r.body,
+      reviewRating: { "@type": "Rating", ratingValue: r.rating, bestRating: 5, worstRating: 1 },
+    })),
+  }
+}
+
+export function productJsonLd(product: Product, store: Store, reviews: readonly JsonLdReview[] = []) {
   const { market } = store
   const offer = offerFor(product, market)
   if (!offer) return null
@@ -54,6 +78,7 @@ export function productJsonLd(product: Product, store: Store) {
           }
         : {}),
     brand: { "@type": "Brand", name: product.brand },
+    ...reviewMarkup(reviews),
     offers: {
       "@type": "Offer",
       url: productUrl,
