@@ -1,11 +1,56 @@
 import { buildGoogleFeed, FeedValidationError } from "@/lib/feeds/google"
+import { buildUsTop500Feed } from "@/lib/feeds/us-top500"
+import { renderTop500Preview } from "@/lib/feeds/us-top500-preview"
 import { localeMeta, parseStore } from "@/lib/i18n/config"
 
 export const dynamic = "force-dynamic"
+export const maxDuration = 60
+
+const CONTENT_TYPES = {
+  xml: "application/xml; charset=utf-8",
+  txt: "text/plain; charset=utf-8",
+  html: "text/html; charset=utf-8",
+} as const
+
+function unavailable(error: unknown) {
+  console.error("Product feed generation failed", error instanceof FeedValidationError ? error.issues : "catalog unavailable")
+  return new Response("Product feed temporarily unavailable. Please retry later.", {
+    status: 503,
+    headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store", "Retry-After": "300" },
+  })
+}
+
+// US Top 500: /feeds/google-us-<lang>-top500.(xml|txt|html). The .html file is a
+// human-readable preview of the same selection and is never indexed.
+async function top500(file: string, lang: string, ext: keyof typeof CONTENT_TYPES) {
+  const store = parseStore("us", lang)
+  if (!store) return new Response("Not found", { status: 404 })
+  try {
+    const feed = await buildUsTop500Feed(store)
+    const base = `/feeds/google-us-${lang}-top500`
+    const body = ext === "xml" ? feed.xml : ext === "txt" ? feed.text : renderTop500Preview(feed, { xml: `${base}.xml`, txt: `${base}.txt` })
+    const headers: Record<string, string> = {
+      "Content-Type": CONTENT_TYPES[ext],
+      "Content-Language": localeMeta(store).hreflang,
+      "Cache-Control": "no-store",
+      "X-Content-Type-Options": "nosniff",
+      "X-Feed-Version": "top500-1",
+      "X-Feed-Items": String(feed.items.length),
+    }
+    if (ext === "html") headers["X-Robots-Tag"] = "noindex, nofollow"
+    else headers["Content-Disposition"] = `attachment; filename="${file}"`
+    return new Response(body, { headers })
+  } catch (error) {
+    return unavailable(error)
+  }
+}
 
 // XML remains available for every store; US stores also offer tab-delimited TXT.
 export async function GET(request: Request, { params }: { params: Promise<{ file: string }> }) {
   const { file } = await params
+  const top = file.match(/^google-us-([a-z]{2})-top500\.(xml|txt|html)$/)
+  if (top) return top500(file, top[1], top[2] as keyof typeof CONTENT_TYPES)
+
   const match = file.match(/^google-(us|eu)-([a-z]{2})\.(xml|txt)$/)
   const store = match ? parseStore(match[1], match[2]) : null
   const isText = match?.[3] === "txt"
@@ -28,11 +73,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ file
       },
     })
   } catch (error) {
-    console.error("Product feed generation failed", error instanceof FeedValidationError ? error.issues : "catalog unavailable")
-    return new Response("Product feed temporarily unavailable. Please retry later.", {
-      status: 503,
-      headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store", "Retry-After": "300" },
-    })
+    return unavailable(error)
   }
 }
 
