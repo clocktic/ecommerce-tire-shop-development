@@ -68,6 +68,24 @@ export async function readPopularProducts(market: Market, limit = 20): Promise<D
   return { ok: true, data: mixed }
 }
 
+// Products with customer reviews, most-reviewed and best-rated first.
+export async function readReviewedProducts(
+  market: Market,
+  ratings: ReadonlyMap<string, { count: number; average: number }>,
+  limit = 20,
+): Promise<DatabaseReadResult<Product[]>> {
+  const result = await readProducts(market)
+  if (!result.ok) return result
+  const reviewed = result.data
+    .filter((p) => ratings.has(p.slug) && p.images[0] && !p.sample && p.offers[market]?.availability !== "out_of_stock")
+    .sort((a, b) => {
+      const ra = ratings.get(a.slug)!
+      const rb = ratings.get(b.slug)!
+      return rb.count - ra.count || rb.average - ra.average
+    })
+  return { ok: true, data: reviewed.slice(0, limit) }
+}
+
 export const readProductBySlug = cache((slug: string) => readDatabase(async (): Promise<Product | undefined> => {
   const [row] = await db.select({ data: products.data }).from(products)
     .where(and(eq(products.archived, false), eq(products.slug, slug))).limit(1)

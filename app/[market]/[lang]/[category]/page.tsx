@@ -19,6 +19,7 @@ import {
   type Product,
 } from "@/lib/catalog"
 import { readProductsByCategory } from "@/lib/catalog/queries"
+import { getRatingsBySlug } from "@/lib/stamped-reviews"
 import { CatalogUnavailable } from "@/components/catalog/catalog-unavailable"
 import { ALL_STORES, fmt, getDictionary, parseStore, storePath, type Dictionary, type Store } from "@/lib/i18n"
 import { storeAlternates } from "@/lib/seo"
@@ -65,7 +66,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
     Object.entries(raw).map(([k, v]) => [k, typeof v === "string" && v !== "" ? v : undefined]),
   )
   const copy = t.categories[category]
-  const catalog = await readProductsByCategory(store.market, category)
+  const [catalog, ratings] = await Promise.all([readProductsByCategory(store.market, category), getRatingsBySlug()])
   if (!catalog.ok) return <div className="mx-auto max-w-7xl px-4 md:px-6"><CatalogUnavailable store={store} /></div>
   const all = catalog.data.map((p) => localizeProduct(p, store))
   const brandCounts = new Map<string, number>()
@@ -238,7 +239,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
         >
           {visible.map(group => {
             const p = group[0]
-            if (p.category !== 'tires') return <ProductCard key={p.slug} product={p} store={store} />
+            if (p.category !== 'tires') return <ProductCard key={p.slug} product={p} store={store} rating={ratings.get(p.slug)} />
             const variants = group.filter((v): v is TireProduct => v.category === 'tires')
               .sort((a, b) => a.offers[store.market]!.priceCents - b.offers[store.market]!.priceCents)
               .map(({ id, slug, brand, name, mpn, gtin, images, offers, tire }) => ({ id, slug, brand, name, mpn, gtin, images, offers, tire }))

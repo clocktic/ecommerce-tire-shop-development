@@ -17,6 +17,7 @@
   --font-sans: var(--font-archivo), 'Archivo', ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), 'JetBrains Mono', ui-monospace, monospace;
 
+  --color-rating: oklch(0.8 0.16 80);
   --color-photo: var(--photo);
   --color-ring: var(--ring);
   --color-input: var(--input);

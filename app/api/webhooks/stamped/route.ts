@@ -1,5 +1,6 @@
 import crypto from "node:crypto"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
+import { STAMPED_REVIEWS_TAG } from "@/lib/stamped-reviews"
 import { NextResponse } from "next/server"
 import { STAMPED_STORE_HASH } from "@/lib/stamped"
 import { STAMPED_PRIVATE_API_KEY } from "@/lib/stamped-server"
@@ -88,6 +89,8 @@ export async function POST(request: Request) {
       (typeof data.body === "string" && data.body) ||
       (typeof data.question === "string" && data.question) ||
       ""
+
+    revalidateTag(STAMPED_REVIEWS_TAG, "max")
 
     if (productSlug) {
       for (const market of ["us", "eu"]) {

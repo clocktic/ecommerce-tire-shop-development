@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { localizeProduct } from "@/lib/catalog"
-import { readPopularProducts } from "@/lib/catalog/queries"
+import { readPopularProducts, readReviewedProducts } from "@/lib/catalog/queries"
 import { ProductCarousel } from "@/components/home/product-carousel"
 import { CatalogUnavailable } from "@/components/catalog/catalog-unavailable"
 import { getDictionary, parseStore, storePath } from "@/lib/i18n"
@@ -11,14 +11,20 @@ import { MemberClubShowcase } from "@/components/home/member-club-showcase"
 import { SidewallDecoder } from "@/components/home/sidewall-decoder"
 import { MarketPromise } from "@/components/home/market-promise"
 import { TrustStrip } from "@/components/home/trust-strip"
+import { ReviewsShowcase } from "@/components/home/reviews-showcase"
 import { ProductCard } from "@/components/product/product-card"
+import { getRatingsBySlug, getStampedReviews } from "@/lib/stamped-reviews"
+
+const MIN_REVIEWED = 4
 
 export default async function HomePage({ params }: { params: Promise<{ market: string; lang: string }> }) {
   const { market, lang } = await params
   const store = parseStore(market, lang)
   if (!store) notFound()
   const t = getDictionary(store)
-  const catalog = await readPopularProducts(store.market, 20)
+  const [reviews, ratings] = await Promise.all([getStampedReviews(), getRatingsBySlug()])
+  const reviewed = await readReviewedProducts(store.market, ratings, 20)
+  const catalog = reviewed.ok && reviewed.data.length >= MIN_REVIEWED ? reviewed : await readPopularProducts(store.market, 20)
   const featured = catalog.ok ? catalog.data.map((p) => localizeProduct(p, store)) : []
 
   return (
@@ -44,13 +50,15 @@ export default async function HomePage({ params }: { params: Promise<{ market: s
         {catalog.ok ? (
           <ProductCarousel labelledBy="featured-title" prevLabel={t.home.carouselPrev} nextLabel={t.home.carouselNext}>
             {featured.map((p) => (
-              <ProductCard key={p.slug} product={p} store={store} />
+              <ProductCard key={p.slug} product={p} store={store} rating={ratings.get(p.slug)} />
             ))}
           </ProductCarousel>
         ) : (
           <CatalogUnavailable store={store} />
         )}
       </section>
+
+      <ReviewsShowcase reviews={reviews} store={store} />
 
       <MarketPromise store={store} />
     </>
