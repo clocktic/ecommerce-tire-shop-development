@@ -7,7 +7,7 @@ import { readProductBySlug, readProductsByCategory } from "@/lib/catalog/queries
 import { CatalogUnavailable } from "@/components/catalog/catalog-unavailable"
 import { counterpart, fmt, getDictionary, parseStore, storePath, type Dictionary, type Store } from "@/lib/i18n"
 import { markets } from "@/lib/markets"
-import { storeAlternates } from "@/lib/seo"
+import { publicImageUrl, storeAlternates } from "@/lib/seo"
 import { productJsonLd } from "@/lib/structured-data"
 import { policyHref } from "@/lib/legal/pages"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     description: product.shortDescription,
     alternates: storeAlternates(store, `/product/${slug}`, availableIn),
     robots: product.sample || !product.offers[store.market] ? { index: false, follow: true } : undefined,
-    openGraph: { images: product.images.slice(0, 6) },
+    openGraph: { images: product.images.slice(0, 6).map(publicImageUrl) },
   }
 }
 
