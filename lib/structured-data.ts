@@ -3,7 +3,7 @@ import { COMPANY } from "@/lib/company"
 import { MARKETS } from "@/lib/markets"
 import { storePath, type Store } from "@/lib/i18n/config"
 import { POLICIES } from "@/lib/policies"
-import { absoluteUrl } from "@/lib/seo"
+import { absoluteUrl, publicImageUrl } from "@/lib/seo"
 
 const AVAILABILITY = {
   in_stock: "https://schema.org/InStock",
@@ -76,7 +76,7 @@ export function productJsonLd(
     name: product.name,
     description: product.description,
     url: productUrl,
-    image: product.images.map((src) => absoluteUrl(src)),
+    image: product.images.map((src) => publicImageUrl(src)),
     sku: product.id,
     itemCondition: "https://schema.org/NewCondition",
     ...(product.mpn ? { mpn: product.mpn } : {}),
