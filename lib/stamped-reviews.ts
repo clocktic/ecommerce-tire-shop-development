@@ -1,11 +1,12 @@
 import "server-only"
 
 import { cache } from "react"
+import { unstable_cache } from "next/cache"
 import { isMarket, type Market } from "@/lib/markets"
-import { STAMPED_PUBLIC_API_KEY, STAMPED_STORE_HASH } from "@/lib/stamped"
+import { STAMPED_PUBLIC_API_KEY, STAMPED_STORE_HASH, stampedProductId } from "@/lib/stamped"
 import { STAMPED_PRIVATE_API_KEY } from "@/lib/stamped-server"
 
-export const STAMPED_REVIEWS_TAG = "stamped-reviews"
+export const STAMPED_REVIEWS_TAG = "stamped-reviews-v2"
 
 export type StampedReview = {
   id: number
@@ -17,6 +18,7 @@ export type StampedReview = {
   reply: string
   date: string
   verified: boolean
+  productId: string
   productSlug: string
   productTitle: string
   productImage: string
@@ -39,6 +41,7 @@ type DashboardReview = {
   body?: string | null
   reply?: string | null
   isPublicReply?: boolean | null
+  productId?: number | string | null
   productHandle?: string | null
   productTitle?: string | null
   productUrl?: string | null
@@ -51,6 +54,17 @@ type DashboardPage = { totalPages?: number; results?: { review: DashboardReview 
 
 const PAGE_SIZE = 100
 const PUBLISHED = 1
+
+const HANDLE_ALIASES: Record<string, string> = {
+  "calibre-exile-r-19x8-5-5x108-et33-gloss-black": "calibre-exile-r-19x8-5-5x120-et33-gloss-black",
+  "ats-streetrallye-17x7-5x5x112-et45-dark-grey": "ats-streetrallye-17x7-5x112-et45-dark-grey",
+  "ats-streetrallye-17x7-5-5x112-et45-dark-grey": "ats-streetrallye-17x7-5x112-et45-dark-grey",
+}
+
+const PRODUCT_ID_TO_SLUG: Record<string, string> = {
+  "799949516897": "calibre-exile-r-19x8-5-5x120-et33-gloss-black",
+  "189208241331": "ats-streetrallye-17x7-5x112-et45-dark-grey",
+}
 
 // "Arthur Piotrowski" → "Arthur P." — Stamped stores full names, the storefront only shows initials.
 function shortName(name: string | null | undefined) {
@@ -72,7 +86,9 @@ function localImage(url: string | null | undefined) {
   }
 }
 
-function marketFromUrl(url: string | null | undefined): Market | null {
+function marketFromUrl(url: string | null | undefined, productSlug: string): Market | null {
+  if (productSlug.startsWith("ref-us-")) return "us"
+  if (productSlug.startsWith("ref-eu-")) return "eu"
   if (!url) return null
   try {
     const segment = new URL(url).pathname.split("/")[1]
@@ -82,9 +98,19 @@ function marketFromUrl(url: string | null | undefined): Market | null {
   }
 }
 
+function canonicalSlug(rawHandle: string | null | undefined, rawProductId: number | string | null | undefined): string {
+  const trimmed = (rawHandle ?? "").trim()
+  const pid = rawProductId != null ? String(rawProductId).trim() : ""
+  if (pid && PRODUCT_ID_TO_SLUG[pid]) return PRODUCT_ID_TO_SLUG[pid]
+  if (trimmed && HANDLE_ALIASES[trimmed]) return HANDLE_ALIASES[trimmed]
+  return trimmed
+}
+
 function normalize(review: DashboardReview): StampedReview | null {
-  if (review.reviewState !== PUBLISHED || !review.productHandle) return null
+  const productSlug = canonicalSlug(review.productHandle, review.productId)
+  if (review.reviewState !== PUBLISHED || !productSlug) return null
   const rating = Math.min(5, Math.max(1, Math.round(review.rating)))
+  const productId = review.productId != null ? String(review.productId) : stampedProductId(productSlug)
   return {
     id: review.id,
     author: shortName(review.author),
@@ -95,35 +121,41 @@ function normalize(review: DashboardReview): StampedReview | null {
     reply: review.isPublicReply === false ? "" : (review.reply?.trim() ?? ""),
     date: review.dateCreated,
     verified: (review.verifiedType ?? 0) > 0,
-    productSlug: review.productHandle,
+    productId,
+    productSlug,
     productTitle: review.productTitle?.trim() ?? "",
     productImage: localImage(review.productImageUrl),
-    productMarket: marketFromUrl(review.productUrl),
+    productMarket: marketFromUrl(review.productUrl, productSlug),
   }
 }
 
 async function fetchPage(page: number): Promise<DashboardPage> {
   const auth = Buffer.from(`${STAMPED_PUBLIC_API_KEY}:${STAMPED_PRIVATE_API_KEY}`).toString("base64")
-  const response = await fetch(
-    `https://stamped.io/api/v2/${encodeURIComponent(STAMPED_STORE_HASH)}/dashboard/reviews?page=${page}&take=${PAGE_SIZE}`,
-    {
-      headers: { Authorization: `Basic ${auth}`, Accept: "application/json" },
-      next: { revalidate: 1800, tags: [STAMPED_REVIEWS_TAG] },
-      signal: AbortSignal.timeout(8000),
-    },
-  )
-  if (!response.ok) throw new Error(`Stamped reviews request failed: ${response.status}`)
-  return response.json()
+  const url = `https://stamped.io/api/v2/${encodeURIComponent(STAMPED_STORE_HASH)}/dashboard/reviews?page=${page}&take=${PAGE_SIZE}`
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const response = await fetch(url, {
+        headers: { Authorization: `Basic ${auth}`, Accept: "application/json" },
+        cache: "no-store",
+        signal: AbortSignal.timeout(8000),
+      })
+      if (!response.ok) throw new Error(`Stamped reviews request failed: ${response.status}`)
+      return (await response.json()) as DashboardPage
+    } catch (err) {
+      if (attempt === 1) throw err
+    }
+  }
+  throw new Error("Stamped reviews request failed")
 }
 
-// The dashboard API (private key, server only) returns every published review with the
-// product handle, which the public widget API omits. Emails and IPs are dropped in normalize().
-export const getStampedReviews = cache(async (): Promise<StampedReview[]> => {
-  try {
+// Fetch all pages as a single atomic snapshot so page 1 and pages 2..N never
+// cache at different timestamps and shift pagination boundaries out of sync.
+const loadStampedReviewsSnapshot = unstable_cache(
+  async (): Promise<StampedReview[]> => {
     const first = await fetchPage(1)
     const totalPages = Math.min(first.totalPages ?? 1, 50)
     const rest = await Promise.all(
-      Array.from({ length: totalPages - 1 }, (_, i) => fetchPage(i + 2).catch(() => ({ results: [] }) as DashboardPage)),
+      Array.from({ length: totalPages - 1 }, (_, i) => fetchPage(i + 2)),
     )
     const seen = new Set<number>()
     return [first, ...rest]
@@ -135,6 +167,16 @@ export const getStampedReviews = cache(async (): Promise<StampedReview[]> => {
         return true
       })
       .sort((a, b) => b.date.localeCompare(a.date))
+  },
+  ["stamped-reviews-snapshot-v2"],
+  { revalidate: 300, tags: [STAMPED_REVIEWS_TAG] },
+)
+
+// The dashboard API (private key, server only) returns every published review with the
+// product handle, which the public widget API omits. Emails and IPs are dropped in normalize().
+export const getStampedReviews = cache(async (): Promise<StampedReview[]> => {
+  try {
+    return await loadStampedReviewsSnapshot()
   } catch {
     return []
   }
@@ -162,5 +204,8 @@ export const getRatingsBySlug = cache(async (): Promise<Map<string, RatingSummar
 })
 
 export async function getProductReviews(slug: string): Promise<StampedReview[]> {
-  return (await getStampedReviews()).filter((review) => review.productSlug === slug)
+  const targetId = stampedProductId(slug)
+  return (await getStampedReviews()).filter(
+    (review) => review.productSlug === slug || review.productId === targetId,
+  )
 }

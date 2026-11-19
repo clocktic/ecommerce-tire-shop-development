@@ -77,10 +77,14 @@ export default async function ProductPage({ params }: { params: Params }) {
     getStampedProductRating(product.slug),
   ])
   const stats = reviewStats(reviews)
-  const visibleRating = stampedRating
-    ? { count: stampedRating.count, average: stampedRating.rating }
-    : { count: stats.count, average: stats.average }
-  const jsonLd = productJsonLd(product, store, reviews, stampedRating)
+  const effectiveRating =
+    stats.count > 0 && stats.count >= (stampedRating?.count ?? 0)
+      ? { rating: stats.average, count: stats.count }
+      : stampedRating
+  const visibleRating = effectiveRating
+    ? { count: effectiveRating.count, average: effectiveRating.rating }
+    : { count: 0, average: 0 }
+  const jsonLd = productJsonLd(product, store, reviews, effectiveRating)
   if (!relatedResult.ok) return <div className="mx-auto max-w-7xl px-4 md:px-6"><CatalogUnavailable store={store} /></div>
   const categoryProducts = relatedResult.data
   const variants = base.category === "tires" ? tireVariants(base, categoryProducts) : []

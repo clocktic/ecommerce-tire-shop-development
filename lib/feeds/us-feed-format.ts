@@ -1,4 +1,4 @@
-import { offerFor, tireServiceDescription, tireSize, type Product } from "@/lib/catalog"
+import { offerFor, tireCodeNotations, tireServiceDescription, tireSize, type Product } from "@/lib/catalog"
 import { storePath, type Store } from "@/lib/i18n/config"
 import { POLICIES } from "@/lib/policies"
 import { absoluteUrl } from "@/lib/seo"
@@ -28,20 +28,16 @@ export function enrichedDescription(product: Product): string {
   if (!base) return ""
   if (product.category === "tires" && product.tire) {
     const t = product.tire
-    const service = tireServiceDescription(t)
-    const spacedSize = `${tireSize(t)} ${service}`
-    const compactCode = `${t.width}/${t.aspect}R${t.rim}`
-    const fullTyreCode = `${compactCode} ${service}`
+    const codes = tireCodeNotations(t)
     const seasonLabel = t.season === "all-season" ? "All-Season" : t.season === "winter" ? "Winter" : "Summer"
     const extraSpecs = [
-      `Tyre Code: ${fullTyreCode} (${compactCode})`,
-      `Size: ${spacedSize}`,
+      ...(!base.includes(codes.specBlock) ? [codes.specBlock] : []),
       `Section Width: ${t.width} mm`,
       `Aspect Ratio: ${t.aspect}`,
-      `Rim Diameter: ${t.rim} in`,
+      `Rim Diameter: ${t.rim} in (${t.rim}" R${t.rim})`,
       `Load Index: ${t.loadIndex}`,
       `Speed Rating: ${t.speedRating}`,
-      ...(t.extraLoad != null ? [`Load Range: ${t.extraLoad ? "XL" : "SL"}`] : []),
+      `Load Range: ${codes.loadRange}`,
       ...(t.season ? [`Season: ${seasonLabel}`] : []),
       ...(product.mpn ? [`MPN: ${product.mpn}`] : []),
       ...(product.gtin ? [`GTIN: ${product.gtin}`] : []),
@@ -86,7 +82,7 @@ function rowFor(product: Product, store: Store): Row {
     mpn: product.mpn ?? "",
     google_product_category: CATEGORIES[product.category],
     product_type: PRODUCT_TYPES[product.category],
-    size: product.category === "tires" ? `${tireSize(product.tire)} ${tireServiceDescription(product.tire)}`
+    size: product.category === "tires" ? `${product.tire.width}/${product.tire.aspect}R${product.tire.rim} ${tireServiceDescription(product.tire)}`
       : product.category === "wheels" ? `${product.wheel.diameter}x${product.wheel.width} ${product.wheel.boltPattern} ET${product.wheel.offset}` : "",
     color: product.category === "wheels" ? product.wheel.finish : "",
     custom_label_0: product.category,
@@ -96,9 +92,31 @@ function rowFor(product: Product, store: Store): Row {
 
 export function buildUsFeedItems(products: Product[], store: Store): { items: string[]; text: string } {
   const rows = products.map((product) => rowFor(product, store))
-  const items = rows.map((row) => {
+  const items = rows.map((row, idx) => {
+    const product = products[idx]
     const fields = HEADERS.filter((name) => name !== SHIPPING_HEADER && row[name])
       .map((name) => `      <g:${name}>${escapeFeedXml(feedText(row[name]))}</g:${name}>`)
+    if (product.category === "tires" && product.tire) {
+      const t = product.tire
+      const codes = tireCodeNotations(t)
+      const detailPairs: [string, string, string][] = [
+        ["Sizing", "Size", `${codes.compact} ${codes.svc} (${codes.spaced}, ${codes.pMetric}, ${codes.zrCompact})`],
+        ["Sizing", "Tyre Code", `${codes.compact} ${codes.svc} (${codes.compact} ${codes.svcSpaced}, ${codes.slashR}, ${codes.filtered})`],
+        ["Sizing", "Tire Code", `${codes.compact} ${codes.svc}`],
+        ["Sizing", "Tire Size", `${codes.compact} ${codes.svc}`],
+        ["Sizing", "Rim Size", `${t.rim} in (${t.rim}" R${t.rim})`],
+        ["Specifications", "Section Width", `${t.width} mm`],
+        ["Specifications", "Aspect Ratio", String(t.aspect)],
+        ["Specifications", "Load Index", String(t.loadIndex)],
+        ["Specifications", "Speed Rating", t.speedRating],
+        ["Specifications", "Load Range", codes.loadRange],
+      ]
+      for (const [sec, attr, val] of detailPairs) {
+        fields.push(
+          `      <g:product_detail><g:section_name>${escapeFeedXml(sec)}</g:section_name><g:attribute_name>${escapeFeedXml(attr)}</g:attribute_name><g:attribute_value>${escapeFeedXml(val)}</g:attribute_value></g:product_detail>`,
+        )
+      }
+    }
     const shippingNames = ["country", "price", "min_handling_time", "max_handling_time", "min_transit_time", "max_transit_time"]
     const shipping = row[SHIPPING_HEADER].split(":").map((value, index) =>
       `<g:${shippingNames[index]}>${escapeFeedXml(value)}</g:${shippingNames[index]}>`).join("")

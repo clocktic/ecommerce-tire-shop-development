@@ -1,4 +1,4 @@
-import { localizeProduct, offerFor, tireServiceDescription, tireSize, type Product } from "@/lib/catalog"
+import { localizeProduct, offerFor, tireCodeNotations, tireServiceDescription, tireSize, type Product } from "@/lib/catalog"
 import { getProducts, getProductsBySlugs } from "@/lib/catalog/queries"
 import { COMPANY } from "@/lib/company"
 import { US_GMC_STARTER_SLUGS } from "@/lib/feeds/us-starter-selection"
@@ -84,7 +84,7 @@ function description(product: Product): string {
   const specs = product.specs.map((s) => sentence(`${s.label}: ${s.value}`)).join(" ")
   const tireCodeExtra =
     product.category === "tires" && product.tire
-      ? `Tyre Code: ${product.tire.width}/${product.tire.aspect}R${product.tire.rim} ${tireServiceDescription(product.tire)} (${product.tire.width}/${product.tire.aspect}R${product.tire.rim}). Size: ${tireSize(product.tire)} ${tireServiceDescription(product.tire)}.`
+      ? `${tireCodeNotations(product.tire).specBlock}.`
       : ""
   const text = [product.description, tireCodeExtra, ...product.highlights, specs].filter(Boolean).map(sentence).join(" ")
   const compact = text.replace(/\s+/g, " ").trim()
@@ -95,7 +95,11 @@ function categoryDetails(product: Product, market: Market, d: Dictionary): [stri
   const approval = d.product.spec.approval
   if (product.category === "tires") {
     const t = product.tire
+    const codes = tireCodeNotations(t)
     const rows: [string, string][] = [
+      ["Size", `${codes.compact} ${codes.svc} (${codes.spaced}, ${codes.pMetric}, ${codes.zrCompact})`],
+      ["Tyre Code", `${codes.compact} ${codes.svc} (${codes.compact} ${codes.svcSpaced}, ${codes.slashR}, ${codes.filtered})`],
+      ["Tire Code", `${codes.compact} ${codes.svc}`],
       ["Size / LI / SI", `${tireSize(t)} ${tireServiceDescription(t)}`],
       [d.product.spec.season, d.labels.season[t.season]],
     ]

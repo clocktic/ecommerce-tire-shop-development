@@ -141,3 +141,44 @@ export function tireSize(t: TireProduct["tire"]): string {
 export function tireServiceDescription(t: TireProduct["tire"]): string {
   return `${t.loadIndex}${t.speedRating}${t.extraLoad ? " XL" : ""}`
 }
+
+export function tireCodeNotations(t: TireProduct["tire"]) {
+  const compact = `${t.width}/${t.aspect}R${t.rim}`
+  const spaced = `${t.width}/${t.aspect} R${t.rim}`
+  const etrto = `${t.width}/${t.aspect} R ${t.rim}`
+  const slashR = `${t.width}/${t.aspect}/R${t.rim}`
+  const slash = `${t.width}/${t.aspect}/${t.rim}`
+  const hyphenR = `${t.width}-${t.aspect}R${t.rim}`
+  const hyphen = `${t.width}-${t.aspect}-${t.rim}`
+  const filtered = `${t.width}${t.aspect}R${t.rim}`
+  const pMetric = `P${compact}`
+  const zrCompact = `${t.width}/${t.aspect}ZR${t.rim}`
+  const zrSpaced = `${t.width}/${t.aspect} ZR${t.rim}`
+  const loadSpeed = `${t.loadIndex}${t.speedRating}`
+  const loadSpeedSpaced = `${t.loadIndex} ${t.speedRating}`
+  const loadRange = t.extraLoad ? "XL" : "SL"
+  const svc = tireServiceDescription(t)
+  const svcSpaced = t.extraLoad ? `${loadSpeedSpaced} XL` : loadSpeedSpaced
+  const svcWithLoadRange = `${loadSpeed} ${loadRange}`
+  const inlineSummary = `Size: ${compact}, ${spaced}, ${pMetric}, ${zrCompact}, ${zrCompact} ${svc}, ${slash}, ${etrto}, ${t.rim}" R${t.rim}; Tyre Code / Tire Code: ${compact} ${svc}, ${compact} ${svcSpaced}, ${etrto} ${svcSpaced}, ${pMetric} ${svc}, ${zrCompact}/${loadRange}, ${compact}/${loadRange}, ${slashR}, ${hyphenR}, ${hyphen}, ${filtered}, ${compact} ${svc} TL`
+  const specBlock = `Tyre Code: ${compact} ${svc} (${compact}, ${compact} ${svcSpaced}, ${etrto} ${svcSpaced}, ${pMetric} ${svc}, ${zrCompact} ${svc}, ${zrCompact}/${loadRange}, ${compact}/${loadRange}, ${slashR}, ${slash}, ${hyphenR}, ${hyphen}, ${filtered}, ${compact} ${svc} TL). Tire Code: ${compact} ${svc} (${spaced} ${svcWithLoadRange}). Size: ${compact} ${svc} (${spaced} ${svc}, ${spaced} ${svcWithLoadRange}, ${pMetric}, ${zrCompact}, ${slash}, ${etrto}, ${t.rim}" R${t.rim})`
+  return {
+    compact,
+    spaced,
+    etrto,
+    slashR,
+    slash,
+    hyphenR,
+    hyphen,
+    filtered,
+    pMetric,
+    zrCompact,
+    zrSpaced,
+    loadRange,
+    svc,
+    svcSpaced,
+    svcWithLoadRange,
+    inlineSummary,
+    specBlock,
+  }
+}

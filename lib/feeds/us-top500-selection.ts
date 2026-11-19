@@ -1,4 +1,5 @@
 import type { Category, Product } from "@/lib/catalog"
+import { US_GMC_STARTER_SLUGS } from "@/lib/feeds/us-starter-selection"
 
 /*
  * US Top-500 Google Merchant Center selection.
@@ -191,6 +192,7 @@ export function scoreProduct(p: Product, signals: DemandSignals, now = new Date(
  */
 export function selectUsTop500(eligible: Product[], signals: DemandSignals, now = new Date()): ScoredProduct[] {
   const pinned = new Set(US_TOP500_PINNED)
+  const starter = new Set(US_GMC_STARTER_SLUGS)
   const scored = eligible
     .map((product) => ({ product, score: scoreProduct(product, signals, now), group: productGroup(product) }))
     .sort((a, b) => Number(pinned.has(b.product.slug)) - Number(pinned.has(a.product.slug)) || b.score - a.score || a.product.slug.localeCompare(b.product.slug))
@@ -209,9 +211,9 @@ export function selectUsTop500(eligible: Product[], signals: DemandSignals, now 
     groupCount.set(entry.group, (groupCount.get(entry.group) ?? 0) + 1)
   }
 
-  // Pinned SKUs and anything US customers actually bought skip the caps.
+  // Pinned SKUs, starter GMC SKUs, and anything US customers actually bought skip the caps.
   for (const entry of scored) {
-    if (pinned.has(entry.product.slug) || (signals.orderedQty.get(entry.product.slug) ?? 0) > 0) take(entry)
+    if (pinned.has(entry.product.slug) || starter.has(entry.product.slug) || (signals.orderedQty.get(entry.product.slug) ?? 0) > 0) take(entry)
   }
 
   const fill = (relaxCaps: boolean, targets: Record<Category, number>) => {
