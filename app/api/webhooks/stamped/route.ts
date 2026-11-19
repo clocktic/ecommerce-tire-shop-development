@@ -1,12 +1,28 @@
 import crypto from "node:crypto"
 import { revalidatePath, revalidateTag } from "next/cache"
-import { STAMPED_REVIEWS_TAG } from "@/lib/stamped-reviews"
+import { getStampedReviews, reviewStats, STAMPED_REVIEWS_TAG } from "@/lib/stamped-reviews"
 import { NextResponse } from "next/server"
 import { STAMPED_STORE_HASH } from "@/lib/stamped"
 import { STAMPED_PRIVATE_API_KEY } from "@/lib/stamped-server"
 import { escapeHtml, sendTelegramNotification } from "@/lib/telegram"
 
 export const dynamic = "force-dynamic"
+
+const MARKETS = ["us", "eu"] as const
+const LANGS = ["en", "de", "fr", "es", "it", "nl"] as const
+
+function revalidateReviewRoutes(productSlug?: string) {
+  revalidateTag(STAMPED_REVIEWS_TAG, "max")
+  for (const market of MARKETS) {
+    for (const lang of LANGS) {
+      revalidatePath(`/${market}/${lang}`)
+      revalidatePath(`/${market}/${lang}/reviews`)
+      if (productSlug) {
+        revalidatePath(`/${market}/${lang}/product/${productSlug}`)
+      }
+    }
+  }
+}
 
 function verifyStampedSignature(rawBody: string, signatureHeader: string | null): boolean {
   const secret = process.env.STAMPED_WEBHOOK_SECRET || STAMPED_PRIVATE_API_KEY
@@ -23,10 +39,16 @@ function verifyStampedSignature(rawBody: string, signatureHeader: string | null)
 }
 
 export async function GET() {
+  revalidateReviewRoutes()
+  const reviews = await getStampedReviews()
+  const stats = reviewStats(reviews)
   return NextResponse.json({
     ok: true,
     service: "stamped-webhook",
     storeHash: STAMPED_STORE_HASH,
+    publishedReviews: stats.count,
+    averageRating: Number(stats.average.toFixed(2)),
+    distribution: stats.distribution,
   })
 }
 
@@ -90,15 +112,7 @@ export async function POST(request: Request) {
       (typeof data.question === "string" && data.question) ||
       ""
 
-    revalidateTag(STAMPED_REVIEWS_TAG, "max")
-
-    if (productSlug) {
-      for (const market of ["us", "eu"]) {
-        for (const lang of ["en", "de", "fr", "es", "it", "nl"]) {
-          revalidatePath(`/${market}/${lang}/product/${productSlug}`)
-        }
-      }
-    }
+    revalidateReviewRoutes(productSlug || undefined)
 
     const stars =
       rating && rating >= 1 && rating <= 5

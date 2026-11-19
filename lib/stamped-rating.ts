@@ -26,7 +26,7 @@ export const getStampedProductRating = cache(async (slugOrId: string): Promise<S
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({ productIds: [{ productId }], apiKey: PUBLIC_KEY, storeUrl: STORE_HASH }),
-        next: { revalidate: 1800, tags: [STAMPED_REVIEWS_TAG] },
+        next: { revalidate: 300, tags: [STAMPED_REVIEWS_TAG] },
         signal: AbortSignal.timeout(5000),
       },
     )
@@ -36,10 +36,8 @@ export const getStampedProductRating = cache(async (slugOrId: string): Promise<S
     if (!badge) return null
     const rating = Number(badge.rating)
     const count = Number(badge.count)
-    return {
-      rating: Number.isFinite(rating) ? rating : 0,
-      count: Number.isInteger(count) && count > 0 ? count : 0,
-    }
+    if (!Number.isFinite(rating) || rating <= 0 || !Number.isInteger(count) || count <= 0) return null
+    return { rating, count }
   } catch {
     return null
   }
