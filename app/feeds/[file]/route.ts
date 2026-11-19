@@ -20,21 +20,28 @@ function unavailable(error: unknown) {
   })
 }
 
-// US Top 500: /feeds/google-us-<lang>-top500.(xml|txt|html). The .html file is a
-// human-readable preview of the same selection and is never indexed.
-async function top500(file: string, lang: string, ext: keyof typeof CONTENT_TYPES) {
+// US Top-N: /feeds/google-us-<lang>-top<N>.(xml|txt|html), e.g. top500, top600, top900, top1200.
+// Each step N is a strict cumulative superset of previous steps for daily GMC scaling.
+async function topFeed(file: string, lang: string, requestedTotal: number, ext: keyof typeof CONTENT_TYPES) {
   const store = parseStore("us", lang)
-  if (!store) return new Response("Not found", { status: 404 })
+  if (!store || !Number.isFinite(requestedTotal) || requestedTotal < 100 || requestedTotal > 10000) {
+    return new Response("Not found", { status: 404 })
+  }
   try {
-    const feed = await buildUsTop500Feed(store)
-    const base = `/feeds/google-us-${lang}-top500`
-    const body = ext === "xml" ? feed.xml : ext === "txt" ? feed.text : renderTop500Preview(feed, { xml: `${base}.xml`, txt: `${base}.txt` })
+    const feed = await buildUsTop500Feed(store, requestedTotal)
+    const base = `/feeds/google-us-${lang}-top${requestedTotal}`
+    const body =
+      ext === "xml"
+        ? feed.xml
+        : ext === "txt"
+          ? feed.text
+          : renderTop500Preview(feed, { xml: `${base}.xml`, txt: `${base}.txt`, lang })
     const headers: Record<string, string> = {
       "Content-Type": CONTENT_TYPES[ext],
       "Content-Language": localeMeta(store).hreflang,
       "Cache-Control": "no-store",
       "X-Content-Type-Options": "nosniff",
-      "X-Feed-Version": "top500-1",
+      "X-Feed-Version": `top${feed.items.length}-1`,
       "X-Feed-Items": String(feed.items.length),
     }
     if (ext === "html") headers["X-Robots-Tag"] = "noindex, nofollow"
@@ -48,8 +55,13 @@ async function top500(file: string, lang: string, ext: keyof typeof CONTENT_TYPE
 // XML remains available for every store; US stores also offer tab-delimited TXT.
 export async function GET(request: Request, { params }: { params: Promise<{ file: string }> }) {
   const { file } = await params
-  const top = file.match(/^google-us-([a-z]{2})-top500\.(xml|txt|html)$/)
-  if (top) return top500(file, top[1], top[2] as keyof typeof CONTENT_TYPES)
+  const top = file.match(/^google-us-([a-z]{2})-top(\d{3,5})\.(xml|txt|html)$/)
+  if (top) {
+    const url = new URL(request.url)
+    const limitOverride = Number(url.searchParams.get("limit"))
+    const total = Number.isFinite(limitOverride) && limitOverride >= 100 ? limitOverride : Number(top[2])
+    return topFeed(file, top[1], total, top[3] as keyof typeof CONTENT_TYPES)
+  }
 
   const match = file.match(/^google-(us|eu)-([a-z]{2})\.(xml|txt)$/)
   const store = match ? parseStore(match[1], match[2]) : null

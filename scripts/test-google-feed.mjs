@@ -19,11 +19,11 @@ const store = { market: "us", lang: "en" }
 const config = { storePath: (s, path = "") => `/${s.market}/${s.lang}${path}` }
 const company = { COMPANY: { url: "https://tiresshop.net", tradingName: "TiresShop" } }
 const seo = load("lib/seo.ts", { "@/lib/company": company, "@/lib/markets": {}, "@/lib/i18n/config": config })
+const catalogTypes = load("lib/catalog/types.ts", { "@/lib/markets": {} })
 const catalog = {
+  ...catalogTypes,
   offerFor: (product, market) => product.offers[market],
   localizeProduct: (product) => product,
-  tireSize: (t) => `${t.width}/${t.aspect} R${t.rim}`,
-  tireServiceDescription: (t) => `${t.loadIndex}${t.speedRating}`,
 }
 const policies = { POLICIES: { us: { shipping: { rateCents: 0, handlingDays: [1, 2], transitDays: [3, 6] } } } }
 const formatter = load("lib/feeds/us-feed-format.ts", {
@@ -96,8 +96,44 @@ await assert.rejects(() => feed.buildGoogleFeed(store, { fullCatalog: true }), f
 
 const route = load("app/feeds/[file]/route.ts", {
   "@/lib/feeds/google": feed,
+  "@/lib/feeds/us-top500": {
+    buildUsTop500Feed: async (_store, requestedTotal = 500) => ({
+      xml: "<rss/>",
+      text: "id\ttitle\n",
+      items: Array.from({ length: requestedTotal }, (_, i) => ({
+        product: source[i % source.length],
+        entry: { tier: "bestseller", score: 100 },
+        title: `Item ${i}`,
+        link: "https://tiresshop.net/us/en/product/x",
+        image: "https://cdn.example.com/product.jpg",
+        price: "123.45 USD",
+        nodes: [],
+        flat: { id: `id-${i}`, title: `Item ${i}`, brand: "Example", gtin: "", mpn: `MPN-${i}`, product_type: "Tires", availability: "in_stock", custom_label_0: "tires", custom_label_1: "all-season", custom_label_2: "100-199" },
+      })),
+      skipped: [],
+      generatedAt: "2026-11-19T00:00:00.000Z",
+      total: requestedTotal,
+    }),
+  },
+  "@/lib/feeds/us-top500-preview": load("lib/feeds/us-top500-preview.ts", {
+    "@/lib/company": company,
+    "@/lib/feeds/us-feed-format": formatter,
+  }),
   "@/lib/i18n/config": { parseStore: (market, lang) => lang === "en" ? { market, lang } : null, localeMeta: () => ({ hreflang: "en-US" }) },
 })
+const top600Res = await route.GET(
+  new Request("https://tiresshop.net/feeds/google-us-en-top600.xml"),
+  { params: Promise.resolve({ file: "google-us-en-top600.xml" }) },
+)
+assert.equal(top600Res.status, 200)
+assert.equal(top600Res.headers.get("x-feed-items"), "600")
+assert.equal(top600Res.headers.get("x-feed-version"), "top600-1")
+const top900Res = await route.GET(
+  new Request("https://tiresshop.net/feeds/google-us-en-top900.txt"),
+  { params: Promise.resolve({ file: "google-us-en-top900.txt" }) },
+)
+assert.equal(top900Res.status, 200)
+assert.equal(top900Res.headers.get("x-feed-items"), "900")
 const request = new Request("https://tiresshop.net/feeds/google-us-en.txt")
 const context = { params: Promise.resolve({ file: "google-us-en.txt" }) }
 products = structuredClone(source)
