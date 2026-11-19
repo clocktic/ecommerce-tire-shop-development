@@ -195,17 +195,18 @@ export function scoreProduct(p: Product, signals: DemandSignals, now = new Date(
   return base + demandBoost(p.slug, signals)
 }
 
-/**
- * Picks the US Top-N (default 500, or 600 / 900 / 1200 / ...) from feed-eligible products.
- * Filled in cumulative milestones (500 -> 600 -> 900 -> 1200 -> ...) so every larger feed
- * is a 100% strict superset of the previous feed size and never drops existing GMC IDs.
- */
-export function selectUsTop500(eligible: Product[], signals: DemandSignals, now = new Date(), total = US_TOP500_TOTAL): ScoredProduct[] {
-  const targetTotal = Math.min(Math.max(1, Math.trunc(total)), eligible.length)
-  const pinned = new Set(US_TOP500_PINNED)
-  const starter = new Set(US_GMC_STARTER_SLUGS)
+function selectBatchFromPool(
+  pool: Product[],
+  signals: DemandSignals,
+  now: Date,
+  total: number,
+  options: { includeStarter?: boolean; includePinned?: boolean } = {},
+): ScoredProduct[] {
+  const targetTotal = Math.min(Math.max(1, Math.trunc(total)), pool.length)
+  const pinned = new Set(options.includePinned !== false ? US_TOP500_PINNED : [])
+  const starter = new Set(options.includeStarter ? US_GMC_STARTER_SLUGS : [])
   const isCommercialTruckTire = (p: Product) => p.category === "tires" && !Number.isInteger(p.tire.rim)
-  const scored = eligible
+  const scored = pool
     .map((product) => ({ product, score: scoreProduct(product, signals, now), group: productGroup(product) }))
     .sort(
       (a, b) =>
@@ -229,7 +230,6 @@ export function selectUsTop500(eligible: Product[], signals: DemandSignals, now 
     groupCount.set(entry.group, (groupCount.get(entry.group) ?? 0) + 1)
   }
 
-  // Pinned SKUs, commercial truck tires, starter GMC SKUs, and anything US customers bought skip the caps.
   for (const entry of scored) {
     if (chosen.size >= targetTotal) break
     if (
@@ -255,25 +255,13 @@ export function selectUsTop500(eligible: Product[], signals: DemandSignals, now 
     }
   }
 
-  const milestones: number[] = []
-  if (targetTotal <= 500) {
-    milestones.push(targetTotal)
-  } else {
-    milestones.push(500)
-    if (targetTotal >= 600) milestones.push(600)
-    for (let step = 900; step < targetTotal; step += 300) milestones.push(step)
-    if (milestones[milestones.length - 1] !== targetTotal) milestones.push(targetTotal)
-  }
-
-  for (const milestone of milestones) {
-    const scale = Math.max(1, milestone / 500)
-    const targets = targetsForTopTotal(milestone)
-    fill(targets, milestone, 1 * scale)
-    fill(targets, milestone, 2 * scale)
-    if (milestone > 500) fill(targets, milestone, Infinity)
-    fill({ tires: Infinity, wheels: Infinity, brakes: Infinity }, milestone, 2 * scale)
-    fill({ tires: Infinity, wheels: Infinity, brakes: Infinity }, milestone, Infinity)
-  }
+  const scale = Math.max(1, targetTotal / 500)
+  const targets = targetsForTopTotal(targetTotal)
+  fill(targets, targetTotal, 1 * scale)
+  fill(targets, targetTotal, 2 * scale)
+  fill(targets, targetTotal, Infinity)
+  fill({ tires: Infinity, wheels: Infinity, brakes: Infinity }, targetTotal, 2 * scale)
+  fill({ tires: Infinity, wheels: Infinity, brakes: Infinity }, targetTotal, Infinity)
 
   const order: Record<Category, number> = { tires: 0, wheels: 1, brakes: 2 }
   const sorted = [...chosen.values()].sort(
@@ -285,7 +273,6 @@ export function selectUsTop500(eligible: Product[], signals: DemandSignals, now 
       a.product.slug.localeCompare(b.product.slug),
   )
 
-  // Tier by rank inside each category: top 25% bestseller, next 40% popular, rest core.
   const rank: Record<Category, number> = { tires: 0, wheels: 0, brakes: 0 }
   return sorted.map((entry) => {
     const { slug, category } = entry.product
@@ -301,4 +288,43 @@ export function selectUsTop500(eligible: Product[], signals: DemandSignals, now 
             : "core"
     return { ...entry, tier }
   })
+}
+
+/**
+ * Selects US GMC feed batches:
+ * - Batch 2 (`total = 500`, `batch = 2`): yesterday's 500-product feed (`top500`).
+ * - Batch 3 (`total = 600`, `batch = 3`, i.e. `top600`): 600 brand-new products with 0% overlap
+ *   against both the initial 100 starter products (`US_GMC_STARTER_SLUGS`) and Batch 2 (`top500`).
+ * - Subsequent daily batches (`batch = 4, 5, 6...`): each batch strictly excludes all products
+ *   from every earlier batch so every daily upload adds 100% new SKUs to GMC.
+ */
+export function selectUsTop500(
+  eligible: Product[],
+  signals: DemandSignals,
+  now = new Date(),
+  total = US_TOP500_TOTAL,
+  batch?: number,
+): ScoredProduct[] {
+  const effectiveBatch = batch ?? (total === 500 ? 2 : 3)
+  if (effectiveBatch <= 2) {
+    return selectBatchFromPool(eligible, signals, now, total, { includeStarter: false, includePinned: true })
+  }
+
+  const excluded = new Set<string>(US_GMC_STARTER_SLUGS)
+  for (const item of selectBatchFromPool(eligible, signals, now, 500, { includeStarter: false, includePinned: true })) {
+    excluded.add(item.product.slug)
+  }
+  for (const item of selectBatchFromPool(eligible, signals, now, 500, { includeStarter: true, includePinned: true })) {
+    excluded.add(item.product.slug)
+  }
+
+  for (let b = 3; b < effectiveBatch; b++) {
+    const prevPool = eligible.filter((p) => !excluded.has(p.slug))
+    for (const item of selectBatchFromPool(prevPool, signals, now, 600, { includeStarter: false, includePinned: false })) {
+      excluded.add(item.product.slug)
+    }
+  }
+
+  const pool = eligible.filter((p) => !excluded.has(p.slug))
+  return selectBatchFromPool(pool, signals, now, total, { includeStarter: false, includePinned: false })
 }

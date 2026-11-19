@@ -410,9 +410,10 @@ export type Top500Feed = {
   skipped: FeedSkip[]
   generatedAt: string
   total: number
+  batch: number
 }
 
-export async function buildUsTop500Feed(store: Store, requestedTotal = 500): Promise<Top500Feed> {
+export async function buildUsTop500Feed(store: Store, requestedTotal = 500, batch?: number): Promise<Top500Feed> {
   if (store.market !== "us") throw new Error("The US Top feed is US only")
   const [catalog, signals] = await Promise.all([getProducts("us"), demandSignals()])
   const skipped: FeedSkip[] = []
@@ -441,8 +442,9 @@ export async function buildUsTop500Feed(store: Store, requestedTotal = 500): Pro
   }
   if (skipped.length) throw new FeedValidationError(skipped)
 
+  const effectiveBatch = batch ?? (requestedTotal === 500 ? 2 : 3)
   const total = Math.min(Math.max(100, Math.trunc(requestedTotal)), eligible.length)
-  const selection = selectUsTop500(eligible, signals, new Date(), total)
+  const selection = selectUsTop500(eligible, signals, new Date(), total, effectiveBatch)
   if (selection.length < total) throw new FeedValidationError([{ slug: "feed", reason: `only ${selection.length} eligible products (requested ${total})` }])
 
   const items = selection.map((entry) => buildItem(entry, store))
@@ -450,20 +452,22 @@ export async function buildUsTop500Feed(store: Store, requestedTotal = 500): Pro
   const counts = { tires: 0, wheels: 0, brakes: 0 }
   for (const item of items) counts[item.product.category] += 1
   const brands = new Set(items.map((i) => i.product.brand)).size
+  const label = effectiveBatch <= 2 ? `Top ${items.length}` : `Batch ${effectiveBatch} (+${items.length} New)`
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ${COMPANY.tradingName} · Google Merchant Center · United States · Top ${items.length} (${store.lang.toUpperCase()})
+  ${COMPANY.tradingName} · Google Merchant Center · United States · ${label} (${store.lang.toUpperCase()})
   Generated ${generatedAt}
   ${items.length} items: ${counts.tires} tires · ${counts.wheels} wheels · ${counts.brakes} brakes · ${brands} brands
   Selection: US bestseller model lines, USTMA top replacement sizes, seasonal demand, store orders and reviews.
+  Zero-overlap batching: excludes all products from earlier GMC batches.
   custom_label_0 category · 1 segment · 2 price band · 3 popularity tier · 4 rim size / axle
 -->
 <rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
   <channel>
-    <title>${escapeFeedXml(`${COMPANY.tradingName} US Top ${items.length} ${store.lang.toUpperCase()}`)}</title>
+    <title>${escapeFeedXml(`${COMPANY.tradingName} US ${label} ${store.lang.toUpperCase()}`)}</title>
     <link>${escapeFeedXml(absoluteUrl(storePath(store)))}</link>
-    <description>${escapeFeedXml(`The ${items.length} most popular tires, wheels and brakes in the United States from ${COMPANY.tradingName}.`)}</description>
+    <description>${escapeFeedXml(`The ${items.length} most popular tires, wheels and brakes in the United States from ${COMPANY.tradingName} (${label}).`)}</description>
 ${items.map((item) => `    <item>\n${item.nodes.map((node) => renderNode(node, "      ")).join("\n")}\n    </item>`).join("\n")}
   </channel>
 </rss>
@@ -472,5 +476,5 @@ ${items.map((item) => `    <item>\n${item.nodes.map((node) => renderNode(node, "
   const text =
     [TEXT_COLUMNS.join("\t"), ...items.map((item) => TEXT_COLUMNS.map((c) => feedText(item.flat[c] ?? "").replaceAll("\t", " ")).join("\t"))].join("\n") + "\n"
 
-  return { xml, text, items, skipped, generatedAt, total: items.length }
+  return { xml, text, items, skipped, generatedAt, total: items.length, batch: effectiveBatch }
 }

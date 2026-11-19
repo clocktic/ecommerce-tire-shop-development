@@ -97,7 +97,7 @@ await assert.rejects(() => feed.buildGoogleFeed(store, { fullCatalog: true }), f
 const route = load("app/feeds/[file]/route.ts", {
   "@/lib/feeds/google": feed,
   "@/lib/feeds/us-top500": {
-    buildUsTop500Feed: async (_store, requestedTotal = 500) => ({
+    buildUsTop500Feed: async (_store, requestedTotal = 500, batch = 3) => ({
       xml: "<rss/>",
       text: "id\ttitle\n",
       items: Array.from({ length: requestedTotal }, (_, i) => ({
@@ -113,6 +113,7 @@ const route = load("app/feeds/[file]/route.ts", {
       skipped: [],
       generatedAt: "2026-11-19T00:00:00.000Z",
       total: requestedTotal,
+      batch,
     }),
   },
   "@/lib/feeds/us-top500-preview": load("lib/feeds/us-top500-preview.ts", {
@@ -127,13 +128,15 @@ const top600Res = await route.GET(
 )
 assert.equal(top600Res.status, 200)
 assert.equal(top600Res.headers.get("x-feed-items"), "600")
-assert.equal(top600Res.headers.get("x-feed-version"), "top600-1")
-const top900Res = await route.GET(
-  new Request("https://tiresshop.net/feeds/google-us-en-top900.txt"),
-  { params: Promise.resolve({ file: "google-us-en-top900.txt" }) },
+assert.equal(top600Res.headers.get("x-feed-version"), "top600-b3")
+assert.equal(top600Res.headers.get("x-feed-batch"), "3")
+const batch4Res = await route.GET(
+  new Request("https://tiresshop.net/feeds/google-us-en-batch4-600.txt"),
+  { params: Promise.resolve({ file: "google-us-en-batch4-600.txt" }) },
 )
-assert.equal(top900Res.status, 200)
-assert.equal(top900Res.headers.get("x-feed-items"), "900")
+assert.equal(batch4Res.status, 200)
+assert.equal(batch4Res.headers.get("x-feed-items"), "600")
+assert.equal(batch4Res.headers.get("x-feed-batch"), "4")
 const request = new Request("https://tiresshop.net/feeds/google-us-en.txt")
 const context = { params: Promise.resolve({ file: "google-us-en.txt" }) }
 products = structuredClone(source)

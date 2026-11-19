@@ -20,16 +20,22 @@ function unavailable(error: unknown) {
   })
 }
 
-// US Top-N: /feeds/google-us-<lang>-top<N>.(xml|txt|html), e.g. top500, top600, top900, top1200.
-// Each step N is a strict cumulative superset of previous steps for daily GMC scaling.
-async function topFeed(file: string, lang: string, requestedTotal: number, ext: keyof typeof CONTENT_TYPES) {
+// US Top-N and Daily Batches:
+// - /feeds/google-us-<lang>-top500.(xml|txt|html) -> Batch 2 (500 items uploaded yesterday)
+// - /feeds/google-us-<lang>-top600.(xml|txt|html) -> Batch 3 (+600 brand-new items, 0 overlap with starter 100 & top500)
+// - /feeds/google-us-<lang>-batch<B>-<N>.(xml|txt|html) -> Batch B (+N brand-new items, 0 overlap with Batches 1..B-1)
+async function topFeed(file: string, lang: string, requestedTotal: number, ext: keyof typeof CONTENT_TYPES, batch?: number) {
   const store = parseStore("us", lang)
   if (!store || !Number.isFinite(requestedTotal) || requestedTotal < 100 || requestedTotal > 10000) {
     return new Response("Not found", { status: 404 })
   }
   try {
-    const feed = await buildUsTop500Feed(store, requestedTotal)
-    const base = `/feeds/google-us-${lang}-top${requestedTotal}`
+    const effectiveBatch = batch ?? (requestedTotal === 500 ? 2 : 3)
+    const feed = await buildUsTop500Feed(store, requestedTotal, effectiveBatch)
+    const base =
+      batch && batch >= 4
+        ? `/feeds/google-us-${lang}-batch${batch}-${requestedTotal}`
+        : `/feeds/google-us-${lang}-top${requestedTotal}`
     const body =
       ext === "xml"
         ? feed.xml
@@ -41,8 +47,9 @@ async function topFeed(file: string, lang: string, requestedTotal: number, ext: 
       "Content-Language": localeMeta(store).hreflang,
       "Cache-Control": "no-store",
       "X-Content-Type-Options": "nosniff",
-      "X-Feed-Version": `top${feed.items.length}-1`,
+      "X-Feed-Version": `top${feed.items.length}-b${effectiveBatch}`,
       "X-Feed-Items": String(feed.items.length),
+      "X-Feed-Batch": String(effectiveBatch),
     }
     if (ext === "html") headers["X-Robots-Tag"] = "noindex, nofollow"
     else headers["Content-Disposition"] = `attachment; filename="${file}"`
@@ -55,12 +62,22 @@ async function topFeed(file: string, lang: string, requestedTotal: number, ext: 
 // XML remains available for every store; US stores also offer tab-delimited TXT.
 export async function GET(request: Request, { params }: { params: Promise<{ file: string }> }) {
   const { file } = await params
+  const batchMatch = file.match(/^google-us-([a-z]{2})-batch(\d{1,2})-(\d{3,4})\.(xml|txt|html)$/)
+  if (batchMatch) {
+    const batchNum = Number(batchMatch[2])
+    const total = Number(batchMatch[3])
+    if (batchNum < 2 || batchNum > 20) return new Response("Not found", { status: 404 })
+    return topFeed(file, batchMatch[1], total, batchMatch[4] as keyof typeof CONTENT_TYPES, batchNum)
+  }
+
   const top = file.match(/^google-us-([a-z]{2})-top(\d{3,5})\.(xml|txt|html)$/)
   if (top) {
     const url = new URL(request.url)
     const limitOverride = Number(url.searchParams.get("limit"))
+    const batchOverride = Number(url.searchParams.get("batch"))
     const total = Number.isFinite(limitOverride) && limitOverride >= 100 ? limitOverride : Number(top[2])
-    return topFeed(file, top[1], total, top[3] as keyof typeof CONTENT_TYPES)
+    const batch = Number.isFinite(batchOverride) && batchOverride >= 2 ? batchOverride : undefined
+    return topFeed(file, top[1], total, top[3] as keyof typeof CONTENT_TYPES, batch)
   }
 
   const match = file.match(/^google-(us|eu)-([a-z]{2})\.(xml|txt)$/)
