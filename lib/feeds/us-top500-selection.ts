@@ -15,6 +15,16 @@ import { US_GMC_STARTER_SLUGS } from "@/lib/feeds/us-starter-selection"
 
 export const US_TOP500_TARGETS: Record<Category, number> = { tires: 330, wheels: 100, brakes: 70 }
 export const US_TOP500_TOTAL = 500
+export const US_TOP600_TARGETS: Record<Category, number> = { tires: 396, wheels: 120, brakes: 84 }
+export const US_TOP600_TOTAL = 600
+
+export function targetsForTopTotal(total: number): Record<Category, number> {
+  if (total === 500) return US_TOP500_TARGETS
+  if (total === 600) return US_TOP600_TARGETS
+  const wheels = Math.round(total * 0.2)
+  const brakes = Math.round(total * 0.14)
+  return { tires: Math.max(0, total - wheels - brakes), wheels, brakes }
+}
 
 // Always in the feed, regardless of score.
 export const US_TOP500_PINNED: readonly string[] = ["michelin-x-line-version-t-385-65r22-5"]
@@ -185,17 +195,26 @@ export function scoreProduct(p: Product, signals: DemandSignals, now = new Date(
   return base + demandBoost(p.slug, signals)
 }
 
-/**
- * Picks the US Top-500 from feed-eligible products. Pinned SKUs and products with real
- * US demand go first; the rest are taken by score under brand and model-line caps, and
- * any category shortfall is refilled from the other categories so the feed stays at 500.
- */
-export function selectUsTop500(eligible: Product[], signals: DemandSignals, now = new Date()): ScoredProduct[] {
-  const pinned = new Set(US_TOP500_PINNED)
-  const starter = new Set(US_GMC_STARTER_SLUGS)
-  const scored = eligible
+function selectBatchFromPool(
+  pool: Product[],
+  signals: DemandSignals,
+  now: Date,
+  total: number,
+  options: { includeStarter?: boolean; includePinned?: boolean } = {},
+): ScoredProduct[] {
+  const targetTotal = Math.min(Math.max(1, Math.trunc(total)), pool.length)
+  const pinned = new Set(options.includePinned !== false ? US_TOP500_PINNED : [])
+  const starter = new Set(options.includeStarter ? US_GMC_STARTER_SLUGS : [])
+  const isCommercialTruckTire = (p: Product) => p.category === "tires" && !Number.isInteger(p.tire.rim)
+  const scored = pool
     .map((product) => ({ product, score: scoreProduct(product, signals, now), group: productGroup(product) }))
-    .sort((a, b) => Number(pinned.has(b.product.slug)) - Number(pinned.has(a.product.slug)) || b.score - a.score || a.product.slug.localeCompare(b.product.slug))
+    .sort(
+      (a, b) =>
+        Number(pinned.has(b.product.slug)) - Number(pinned.has(a.product.slug)) ||
+        Number(isCommercialTruckTire(b.product)) - Number(isCommercialTruckTire(a.product)) ||
+        b.score - a.score ||
+        a.product.slug.localeCompare(b.product.slug),
+    )
 
   const chosen = new Map<string, ScoredProduct>()
   const brandCount = new Map<string, number>()
@@ -211,43 +230,101 @@ export function selectUsTop500(eligible: Product[], signals: DemandSignals, now 
     groupCount.set(entry.group, (groupCount.get(entry.group) ?? 0) + 1)
   }
 
-  // Pinned SKUs, starter GMC SKUs, and anything US customers actually bought skip the caps.
   for (const entry of scored) {
-    if (pinned.has(entry.product.slug) || starter.has(entry.product.slug) || (signals.orderedQty.get(entry.product.slug) ?? 0) > 0) take(entry)
-  }
-
-  const fill = (relaxCaps: boolean, targets: Record<Category, number>) => {
-    for (const entry of scored) {
-      if (chosen.size >= US_TOP500_TOTAL) return
-      const { product } = entry
-      if (chosen.has(product.slug) || categoryCount[product.category] >= targets[product.category]) continue
-      const multiplier = relaxCaps ? 2 : 1
-      if ((brandCount.get(`${product.category}:${product.brand}`) ?? 0) >= brandCap(product) * multiplier) continue
-      if ((groupCount.get(entry.group) ?? 0) >= CAPS[product.category].perGroup * multiplier) continue
+    if (chosen.size >= targetTotal) break
+    if (
+      pinned.has(entry.product.slug) ||
+      isCommercialTruckTire(entry.product) ||
+      starter.has(entry.product.slug) ||
+      (signals.orderedQty.get(entry.product.slug) ?? 0) > 0
+    ) {
       take(entry)
     }
   }
 
-  fill(false, US_TOP500_TARGETS)
-  fill(true, US_TOP500_TARGETS)
-  fill(true, { tires: Infinity, wheels: Infinity, brakes: Infinity })
+  const fill = (targets: Record<Category, number>, limit: number, multiplier: number) => {
+    for (const entry of scored) {
+      if (chosen.size >= limit) return
+      const { product } = entry
+      if (chosen.has(product.slug) || categoryCount[product.category] >= targets[product.category]) continue
+      if (Number.isFinite(multiplier)) {
+        if ((brandCount.get(`${product.category}:${product.brand}`) ?? 0) >= Math.ceil(brandCap(product) * multiplier)) continue
+        if ((groupCount.get(entry.group) ?? 0) >= Math.ceil(CAPS[product.category].perGroup * multiplier)) continue
+      }
+      take(entry)
+    }
+  }
+
+  const scale = Math.max(1, targetTotal / 500)
+  const targets = targetsForTopTotal(targetTotal)
+  fill(targets, targetTotal, 1 * scale)
+  fill(targets, targetTotal, 2 * scale)
+  fill(targets, targetTotal, Infinity)
+  fill({ tires: Infinity, wheels: Infinity, brakes: Infinity }, targetTotal, 2 * scale)
+  fill({ tires: Infinity, wheels: Infinity, brakes: Infinity }, targetTotal, Infinity)
 
   const order: Record<Category, number> = { tires: 0, wheels: 1, brakes: 2 }
   const sorted = [...chosen.values()].sort(
     (a, b) =>
       order[a.product.category] - order[b.product.category] ||
       Number(pinned.has(b.product.slug)) - Number(pinned.has(a.product.slug)) ||
+      Number(isCommercialTruckTire(b.product)) - Number(isCommercialTruckTire(a.product)) ||
       b.score - a.score ||
       a.product.slug.localeCompare(b.product.slug),
   )
 
-  // Tier by rank inside each category: top 25% bestseller, next 40% popular, rest core.
   const rank: Record<Category, number> = { tires: 0, wheels: 0, brakes: 0 }
   return sorted.map((entry) => {
     const { slug, category } = entry.product
     const position = rank[category]++ / Math.max(categoryCount[category], 1)
     const ordered = (signals.orderedQty.get(slug) ?? 0) > 0
-    const tier: ScoredProduct["tier"] = pinned.has(slug) ? "pinned" : ordered || position < 0.25 ? "bestseller" : position < 0.65 ? "popular" : "core"
+    const tier: ScoredProduct["tier"] =
+      pinned.has(slug) || isCommercialTruckTire(entry.product)
+        ? "pinned"
+        : ordered || position < 0.25
+          ? "bestseller"
+          : position < 0.65
+            ? "popular"
+            : "core"
     return { ...entry, tier }
   })
+}
+
+/**
+ * Selects US GMC feed batches:
+ * - Batch 2 (`total = 500`, `batch = 2`): yesterday's 500-product feed (`top500`).
+ * - Batch 3 (`total = 600`, `batch = 3`, i.e. `top600`): 600 brand-new products with 0% overlap
+ *   against both the initial 100 starter products (`US_GMC_STARTER_SLUGS`) and Batch 2 (`top500`).
+ * - Subsequent daily batches (`batch = 4, 5, 6...`): each batch strictly excludes all products
+ *   from every earlier batch so every daily upload adds 100% new SKUs to GMC.
+ */
+export function selectUsTop500(
+  eligible: Product[],
+  signals: DemandSignals,
+  now = new Date(),
+  total = US_TOP500_TOTAL,
+  batch?: number,
+): ScoredProduct[] {
+  const effectiveBatch = batch ?? (total === 500 ? 2 : 3)
+  if (effectiveBatch <= 2) {
+    return selectBatchFromPool(eligible, signals, now, total, { includeStarter: false, includePinned: true })
+  }
+
+  const excluded = new Set<string>(US_GMC_STARTER_SLUGS)
+  for (const item of selectBatchFromPool(eligible, signals, now, 500, { includeStarter: false, includePinned: true })) {
+    excluded.add(item.product.slug)
+  }
+  for (const item of selectBatchFromPool(eligible, signals, now, 500, { includeStarter: true, includePinned: true })) {
+    excluded.add(item.product.slug)
+  }
+
+  for (let b = 3; b < effectiveBatch; b++) {
+    const prevPool = eligible.filter((p) => !excluded.has(p.slug))
+    for (const item of selectBatchFromPool(prevPool, signals, now, 600, { includeStarter: false, includePinned: false })) {
+      excluded.add(item.product.slug)
+    }
+  }
+
+  const pool = eligible.filter((p) => !excluded.has(p.slug))
+  return selectBatchFromPool(pool, signals, now, total, { includeStarter: false, includePinned: false })
 }

@@ -140,9 +140,20 @@ function details(p: Product, copy: Copy): Node[] {
   if (p.category === "tires") {
     const g = tireGeometry(p)
     const codes = tireCodeNotations(p.tire)
+    const isCommercial = !Number.isInteger(p.tire.rim)
     rows.push(
-      [copy.sizing, "Size", `${codes.compact} ${serviceDescription(p)} (${codes.spaced}, ${codes.pMetric}, ${codes.zrCompact})`],
-      [copy.sizing, "Tyre Code", `${codes.compact} ${serviceDescription(p)} (${codes.compact} ${codes.svcSpaced}, ${codes.slashR}, ${codes.filtered})`],
+      [
+        copy.sizing,
+        "Size",
+        isCommercial
+          ? `${codes.compact} ${serviceDescription(p)} (${codes.spaced})`
+          : `${codes.compact} ${serviceDescription(p)} (${codes.spaced}, ${codes.pMetric}, ${codes.zrCompact})`,
+      ],
+      [
+        copy.sizing,
+        "Tyre Code",
+        `${codes.compact} ${serviceDescription(p)} (${codes.compact} ${codes.svcSpaced}, ${codes.slashR}, ${codes.filtered})`,
+      ],
       [copy.sizing, "Tire Code", `${codes.compact} ${serviceDescription(p)}`],
       [copy.sizing, "Tire Size", `${sizeCode(p)} ${serviceDescription(p)}`],
       [copy.sizing, "Rim Size", `${p.tire.rim} in (${p.tire.rim}" R${p.tire.rim})`],
@@ -152,7 +163,7 @@ function details(p: Product, copy: Copy): Node[] {
       [copy.sizing, "Revolutions per Mile (approx.)", g.revsPerMile],
       [copy.specs, "Load Index", String(p.tire.loadIndex)],
       [copy.specs, "Speed Rating", p.tire.speedRating],
-      [copy.specs, "Load Range", codes.loadRange],
+      ...(isCommercial ? [] : ([[copy.specs, "Load Range", codes.loadRange]] as [string, string, string][])),
       [copy.specs, "Run Flat", p.tire.runFlat ? "Yes" : "No"],
     )
     if (p.tire.utqg) rows.push([copy.specs, "UTQG", `${p.tire.utqg.treadwear} ${p.tire.utqg.traction} ${p.tire.utqg.temperature}`])
@@ -202,8 +213,17 @@ function highlights(p: Product): string[] {
   const generated: string[] = []
   if (p.category === "tires") {
     const codes = tireCodeNotations(p.tire)
-    generated.push(`Size / Tyre Code: ${sizeCode(p)} ${serviceDescription(p)} (${codes.spaced}, ${codes.pMetric}, ${codes.zrCompact})`)
-    generated.push(`${sizeCode(p)} · Load Index ${p.tire.loadIndex} · Speed Rating ${p.tire.speedRating} · Load Range ${codes.loadRange}`)
+    const isCommercial = !Number.isInteger(p.tire.rim)
+    generated.push(
+      isCommercial
+        ? `Size / Tyre Code: ${sizeCode(p)} ${serviceDescription(p)} (${codes.spaced}, ${codes.slashR}, ${codes.filtered})`
+        : `Size / Tyre Code: ${sizeCode(p)} ${serviceDescription(p)} (${codes.spaced}, ${codes.pMetric}, ${codes.zrCompact})`,
+    )
+    generated.push(
+      isCommercial
+        ? `${sizeCode(p)} · Load Index ${p.tire.loadIndex} · Speed Rating ${p.tire.speedRating}`
+        : `${sizeCode(p)} · Load Index ${p.tire.loadIndex} · Speed Rating ${p.tire.speedRating} · Load Range ${codes.loadRange}`,
+    )
     if (p.tire.utqg) generated.push(`UTQG ${p.tire.utqg.treadwear} ${p.tire.utqg.traction} ${p.tire.utqg.temperature}`)
   } else if (p.category === "wheels") {
     generated.push(`${p.wheel.diameter}x${p.wheel.width} · ${p.wheel.boltPattern} · ET${p.wheel.offset} · ${p.wheel.centerBore} mm bore`)
@@ -389,10 +409,12 @@ export type Top500Feed = {
   items: Top500Item[]
   skipped: FeedSkip[]
   generatedAt: string
+  total: number
+  batch: number
 }
 
-export async function buildUsTop500Feed(store: Store): Promise<Top500Feed> {
-  if (store.market !== "us") throw new Error("The Top-500 feed is US only")
+export async function buildUsTop500Feed(store: Store, requestedTotal = 500, batch?: number): Promise<Top500Feed> {
+  if (store.market !== "us") throw new Error("The US Top feed is US only")
   const [catalog, signals] = await Promise.all([getProducts("us"), demandSignals()])
   const skipped: FeedSkip[] = []
   const seenIds = new Set<string>()
@@ -420,28 +442,32 @@ export async function buildUsTop500Feed(store: Store): Promise<Top500Feed> {
   }
   if (skipped.length) throw new FeedValidationError(skipped)
 
-  const selection = selectUsTop500(eligible, signals)
-  if (selection.length < 500) throw new FeedValidationError([{ slug: "feed", reason: `only ${selection.length} eligible products` }])
+  const effectiveBatch = batch ?? (requestedTotal === 500 ? 2 : 3)
+  const total = Math.min(Math.max(100, Math.trunc(requestedTotal)), eligible.length)
+  const selection = selectUsTop500(eligible, signals, new Date(), total, effectiveBatch)
+  if (selection.length < total) throw new FeedValidationError([{ slug: "feed", reason: `only ${selection.length} eligible products (requested ${total})` }])
 
   const items = selection.map((entry) => buildItem(entry, store))
   const generatedAt = new Date().toISOString()
   const counts = { tires: 0, wheels: 0, brakes: 0 }
   for (const item of items) counts[item.product.category] += 1
   const brands = new Set(items.map((i) => i.product.brand)).size
+  const label = effectiveBatch <= 2 ? `Top ${items.length}` : `Batch ${effectiveBatch} (+${items.length} New)`
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ${COMPANY.tradingName} · Google Merchant Center · United States · Top 500 (${store.lang.toUpperCase()})
+  ${COMPANY.tradingName} · Google Merchant Center · United States · ${label} (${store.lang.toUpperCase()})
   Generated ${generatedAt}
   ${items.length} items: ${counts.tires} tires · ${counts.wheels} wheels · ${counts.brakes} brakes · ${brands} brands
   Selection: US bestseller model lines, USTMA top replacement sizes, seasonal demand, store orders and reviews.
+  Zero-overlap batching: excludes all products from earlier GMC batches.
   custom_label_0 category · 1 segment · 2 price band · 3 popularity tier · 4 rim size / axle
 -->
 <rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
   <channel>
-    <title>${escapeFeedXml(`${COMPANY.tradingName} US Top 500 ${store.lang.toUpperCase()}`)}</title>
+    <title>${escapeFeedXml(`${COMPANY.tradingName} US ${label} ${store.lang.toUpperCase()}`)}</title>
     <link>${escapeFeedXml(absoluteUrl(storePath(store)))}</link>
-    <description>${escapeFeedXml(`The ${items.length} most popular tires, wheels and brakes in the United States from ${COMPANY.tradingName}.`)}</description>
+    <description>${escapeFeedXml(`The ${items.length} most popular tires, wheels and brakes in the United States from ${COMPANY.tradingName} (${label}).`)}</description>
 ${items.map((item) => `    <item>\n${item.nodes.map((node) => renderNode(node, "      ")).join("\n")}\n    </item>`).join("\n")}
   </channel>
 </rss>
@@ -450,5 +476,5 @@ ${items.map((item) => `    <item>\n${item.nodes.map((node) => renderNode(node, "
   const text =
     [TEXT_COLUMNS.join("\t"), ...items.map((item) => TEXT_COLUMNS.map((c) => feedText(item.flat[c] ?? "").replaceAll("\t", " ")).join("\t"))].join("\n") + "\n"
 
-  return { xml, text, items, skipped, generatedAt }
+  return { xml, text, items, skipped, generatedAt, total: items.length, batch: effectiveBatch }
 }

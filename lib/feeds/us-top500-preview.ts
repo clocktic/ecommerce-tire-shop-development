@@ -2,10 +2,11 @@ import { COMPANY } from "@/lib/company"
 import { escapeFeedXml as esc } from "@/lib/feeds/us-feed-format"
 import type { Top500Feed } from "@/lib/feeds/us-top500"
 
-// A human-readable view of the Top-500 feed for reviewing the selection before
+// A human-readable view of the US Top-N feed for reviewing the selection before
 // (re)submitting it to Merchant Center. Served with noindex; GMC never reads it.
-export function renderTop500Preview(feed: Top500Feed, files: { xml: string; txt: string }): string {
+export function renderTop500Preview(feed: Top500Feed, files: { xml: string; txt: string; lang?: string }): string {
   const { items } = feed
+  const lang = files.lang ?? "en"
   const count = (fn: (i: (typeof items)[number]) => boolean) => items.filter(fn).length
   const stats = [
     ["Items", items.length],
@@ -15,6 +16,22 @@ export function renderTop500Preview(feed: Top500Feed, files: { xml: string; txt:
     ["Brands", new Set(items.map((i) => i.product.brand)).size],
     ["With GTIN", count((i) => Boolean(i.product.gtin))],
   ] as const
+
+  const batch = feed.batch ?? (items.length === 500 ? 2 : 3)
+  const batches = [
+    { b: 2, label: "Batch 2 · 500 (Yesterday)", href: `/feeds/google-us-${esc(lang)}-top500.html` },
+    { b: 3, label: "Batch 3 · +600 New (Today)", href: `/feeds/google-us-${esc(lang)}-top600.html` },
+    { b: 4, label: "Batch 4 · +600 New", href: `/feeds/google-us-${esc(lang)}-batch4-600.html` },
+    { b: 5, label: "Batch 5 · +600 New", href: `/feeds/google-us-${esc(lang)}-batch5-600.html` },
+    { b: 6, label: "Batch 6 · +600 New", href: `/feeds/google-us-${esc(lang)}-batch6-600.html` },
+  ]
+  const stepLinks = batches
+    .map((entry) => {
+      const active = entry.b === batch
+      return `<a class="${active ? "" : "alt"}" href="${entry.href}">${entry.label}</a>`
+    })
+    .join("")
+  const heading = batch <= 2 ? `US Top ${items.length} (Batch 2)` : `US Batch ${batch} · +${items.length} New Products (0% Overlap)`
 
   const rows = items
     .map((item, index) => {
@@ -39,13 +56,14 @@ export function renderTop500Preview(feed: Top500Feed, files: { xml: string; txt:
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>${esc(COMPANY.tradingName)} · US Top 500 feed</title>
+<title>${esc(COMPANY.tradingName)} · ${esc(heading)} feed</title>
 <style>
 :root{--bg:#0b0d10;--card:#13171c;--line:#232a33;--fg:#e7ecf2;--mut:#8b96a5;--acc:#f5b301;--ok:#3ecf8e;--warn:#f0a030}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 header{padding:28px 24px 8px;max-width:1280px;margin:0 auto}h1{margin:0 0 4px;font-size:22px}p{margin:0;color:var(--mut)}
-.files{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.files a{color:var(--bg);background:var(--acc);padding:7px 12px;border-radius:8px;font-weight:600;text-decoration:none}
+.files{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center}.files a{color:var(--bg);background:var(--acc);padding:7px 12px;border-radius:8px;font-weight:600;text-decoration:none}
 .files a.alt{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.files .sep{width:1px;height:22px;background:var(--line);margin:0 4px}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;max-width:1280px;margin:18px auto;padding:0 24px}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}.stat b{display:block;font-size:22px}.stat span{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
 .bar{display:flex;gap:8px;flex-wrap:wrap;max-width:1280px;margin:0 auto 12px;padding:0 24px}
@@ -62,9 +80,9 @@ td img{border-radius:8px;background:#fff;object-fit:contain;display:block}td a{c
 </head>
 <body>
 <header>
-<h1>US Top 500 · Google Merchant Center feed</h1>
-<p>Generated ${esc(feed.generatedAt)} · ranked by US bestseller lines, top replacement sizes, seasonal demand, store orders and reviews.</p>
-<div class="files"><a href="${esc(files.xml)}">Download XML</a><a class="alt" href="${esc(files.txt)}">Download TXT</a></div>
+<h1>${esc(heading)} · Google Merchant Center feed</h1>
+<p>Generated ${esc(feed.generatedAt)} · 100% unique SKUs excluding all earlier GMC batches · ranked by US bestseller lines, top replacement sizes, seasonal demand, store orders and reviews.</p>
+<div class="files"><a href="${esc(files.xml)}">Download XML (${items.length})</a><a class="alt" href="${esc(files.txt)}">Download TXT (${items.length})</a><span class="sep" aria-hidden="true"></span>${stepLinks}</div>
 </header>
 <section class="stats" aria-label="Feed summary">${stats.map(([label, value]) => `<div class="stat"><b>${value}</b><span>${label}</span></div>`).join("")}</section>
 <div class="bar">
