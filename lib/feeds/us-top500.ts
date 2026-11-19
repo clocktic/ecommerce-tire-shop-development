@@ -1,7 +1,7 @@
 import "server-only"
 
 import { and, inArray, eq, sql } from "drizzle-orm"
-import { localizeProduct, offerFor, type Product } from "@/lib/catalog"
+import { localizeProduct, offerFor, tireCodeNotations, type Product } from "@/lib/catalog"
 import { getProducts } from "@/lib/catalog/queries"
 import { COMPANY } from "@/lib/company"
 import { db } from "@/lib/db"
@@ -139,14 +139,20 @@ function details(p: Product, copy: Copy): Node[] {
   const rows: [string, string, string][] = p.specs.map((s) => [copy.specs, s.label, s.value])
   if (p.category === "tires") {
     const g = tireGeometry(p)
+    const codes = tireCodeNotations(p.tire)
     rows.push(
+      [copy.sizing, "Size", `${codes.compact} ${serviceDescription(p)} (${codes.spaced}, ${codes.pMetric}, ${codes.zrCompact})`],
+      [copy.sizing, "Tyre Code", `${codes.compact} ${serviceDescription(p)} (${codes.compact} ${codes.svcSpaced}, ${codes.slashR}, ${codes.filtered})`],
+      [copy.sizing, "Tire Code", `${codes.compact} ${serviceDescription(p)}`],
       [copy.sizing, "Tire Size", `${sizeCode(p)} ${serviceDescription(p)}`],
+      [copy.sizing, "Rim Size", `${p.tire.rim} in (${p.tire.rim}" R${p.tire.rim})`],
       [copy.sizing, "Overall Diameter", g.diameter],
       [copy.sizing, "Section Width", g.width],
       [copy.sizing, "Sidewall Height", g.sidewall],
       [copy.sizing, "Revolutions per Mile (approx.)", g.revsPerMile],
       [copy.specs, "Load Index", String(p.tire.loadIndex)],
       [copy.specs, "Speed Rating", p.tire.speedRating],
+      [copy.specs, "Load Range", codes.loadRange],
       [copy.specs, "Run Flat", p.tire.runFlat ? "Yes" : "No"],
     )
     if (p.tire.utqg) rows.push([copy.specs, "UTQG", `${p.tire.utqg.treadwear} ${p.tire.utqg.traction} ${p.tire.utqg.temperature}`])
@@ -195,7 +201,9 @@ function details(p: Product, copy: Copy): Node[] {
 function highlights(p: Product): string[] {
   const generated: string[] = []
   if (p.category === "tires") {
-    generated.push(`${sizeCode(p)} · Load Index ${p.tire.loadIndex} · Speed Rating ${p.tire.speedRating}`)
+    const codes = tireCodeNotations(p.tire)
+    generated.push(`Size / Tyre Code: ${sizeCode(p)} ${serviceDescription(p)} (${codes.spaced}, ${codes.pMetric}, ${codes.zrCompact})`)
+    generated.push(`${sizeCode(p)} · Load Index ${p.tire.loadIndex} · Speed Rating ${p.tire.speedRating} · Load Range ${codes.loadRange}`)
     if (p.tire.utqg) generated.push(`UTQG ${p.tire.utqg.treadwear} ${p.tire.utqg.traction} ${p.tire.utqg.temperature}`)
   } else if (p.category === "wheels") {
     generated.push(`${p.wheel.diameter}x${p.wheel.width} · ${p.wheel.boltPattern} · ET${p.wheel.offset} · ${p.wheel.centerBore} mm bore`)
