@@ -55,6 +55,9 @@ export const CATALOG_SIZE_MAP: Record<number, Record<number, number[]>> = {
   305: { 25: [21], 30: [19, 20, 21, 22], 35: [19, 20, 21, 22, 23, 24], 40: [20, 21, 22], 45: [22], 50: [20] },
   315: { 30: [18, 19, 20, 21, 22], 35: [20, 21, 22, 24], 40: [21], 45: [21] },
   325: { 25: [20, 21], 30: [19, 20, 21, 23], 35: [20, 22, 23], 40: [21, 22] },
+  335: { 25: [22], 30: [20, 21, 23], 35: [17] },
+  345: { 30: [20] },
+  355: { 25: [21], 30: [19] },
 }
 
 export const POPULAR_TIRE_SIZES: Record<Market, { width: number; aspect: number; rim: number; tag: string }[]> = {
@@ -485,16 +488,10 @@ export function matchesBrakeVehicle(fitment: string[], vehicle: VehicleModel): b
     .map((s) => s.trim().toLowerCase())
     .filter((s) => s.length >= 2)
 
-  const exactMatch = fitment.some((entry) => {
+  return fitment.some((entry) => {
     const text = entry.toLowerCase()
     if (!text.includes(needleMake)) return false
     return modelParts.some((part) => text.includes(part))
-  })
-  if (exactMatch) return true
-
-  return fitment.some((entry) => {
-    const text = entry.toLowerCase()
-    return text.includes(needleMake) && !text.includes("(")
   })
 }
 
