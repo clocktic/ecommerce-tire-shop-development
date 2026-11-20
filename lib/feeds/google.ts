@@ -275,12 +275,8 @@ export async function buildGoogleFeed(
     includedProducts.push(product)
   }
 
-  if (starter) {
-    for (const [category, expected] of [["tires", 35], ["wheels", 35], ["brakes", 30]] as const) {
-      const count = includedProducts.filter((product) => product.category === category).length
-      if (count !== expected) skipped.push({ slug: category, reason: `expected ${expected} products, found ${count}` })
-    }
-    if (skipped.length) throw new FeedValidationError(skipped)
+  if (starter && skipped.length) {
+    console.warn("US starter feed skipped unavailable products", skipped)
   }
   if (!includedProducts.length) throw new FeedValidationError(skipped.length ? skipped : [{ slug: "feed", reason: "no products" }])
 

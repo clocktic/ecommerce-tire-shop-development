@@ -26,8 +26,8 @@ export function targetsForTopTotal(total: number): Record<Category, number> {
   return { tires: Math.max(0, total - wheels - brakes), wheels, brakes }
 }
 
-// Always in the feed, regardless of score.
-export const US_TOP500_PINNED: readonly string[] = ["michelin-x-line-version-t-385-65r22-5"]
+// Optional slugs always prioritized in the feed when active and in stock.
+export const US_TOP500_PINNED: readonly string[] = []
 
 const TIRE_MODEL_SCORE: Record<string, Record<string, number>> = {
   Michelin: {

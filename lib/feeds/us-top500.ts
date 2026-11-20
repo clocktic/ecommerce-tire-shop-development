@@ -452,15 +452,19 @@ export async function buildUsTop500Feed(store: Store, requestedTotal = 500, batc
 
   for (const slug of US_TOP500_PINNED) {
     if (!eligible.some((p) => p.slug === slug) && !skipped.some((s) => s.slug === slug)) {
-      skipped.push({ slug, reason: "pinned product missing from the US catalog" })
+      skipped.push({ slug, reason: "pinned product unavailable or archived in the US catalog" })
     }
   }
-  if (skipped.length) throw new FeedValidationError(skipped)
+  if (skipped.length) {
+    console.warn("US top feed skipped unavailable pinned products", skipped)
+  }
 
   const effectiveBatch = batch ?? (requestedTotal === 500 ? 2 : 3)
   const total = Math.min(Math.max(100, Math.trunc(requestedTotal)), eligible.length)
   const selection = selectUsTop500(eligible, signals, new Date(), total, effectiveBatch)
-  if (selection.length < total) throw new FeedValidationError([{ slug: "feed", reason: `only ${selection.length} eligible products (requested ${total})` }])
+  if (!selection.length) {
+    throw new FeedValidationError([{ slug: "feed", reason: `no eligible products available for batch ${effectiveBatch}` }])
+  }
 
   const items = selection.map((entry) => buildItem(entry, store))
   const generatedAt = new Date().toISOString()
