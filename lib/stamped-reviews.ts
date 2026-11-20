@@ -171,22 +171,23 @@ const loadStampedReviewsSnapshot = unstable_cache(
 
     const seenIds = new Set<number>()
     const seenProductAuthors = new Set<string>()
-    const seenProductBodies = new Set<string>()
+    const seenBodies = new Set<string>()
 
     return candidates
       .filter((review) => {
         if (seenIds.has(review.id)) return false
         const authorKey = `${review.productSlug}::${review.author.toLowerCase()}`
-        const bodyKey = `${review.productSlug}::${review.title.toLowerCase()}::${review.body.toLowerCase()}`
-        if (seenProductAuthors.has(authorKey) || seenProductBodies.has(bodyKey)) return false
+        const normalizedBody = review.body.toLowerCase().replace(/\s+/g, " ").trim()
+        const bodyKey = normalizedBody || `${review.productSlug}::${review.title.toLowerCase()}`
+        if (seenProductAuthors.has(authorKey) || seenBodies.has(bodyKey)) return false
         seenIds.add(review.id)
         seenProductAuthors.add(authorKey)
-        seenProductBodies.add(bodyKey)
+        seenBodies.add(bodyKey)
         return true
       })
       .sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id)
   },
-  ["stamped-reviews-snapshot-v3"],
+  ["stamped-reviews-snapshot-v4"],
   { revalidate: 300, tags: [STAMPED_REVIEWS_TAG] },
 )
 
