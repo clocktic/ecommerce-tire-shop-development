@@ -5,7 +5,7 @@ import type { ContentLang } from "@/lib/i18n/config"
 import type { Market } from "@/lib/markets"
 import { cn } from "@/lib/utils"
 
-type PaymentChoice = "card" | "paypal"
+export type PaymentChoice = "card" | "paypal"
 
 interface Copy {
   heading: string
@@ -90,15 +90,24 @@ export function getPaymentMethodCopy(lang: string): Copy {
 export function PaymentMethodSelector({
   lang = "en",
   market = "us",
+  choice: controlledChoice,
+  onChoiceChange,
   cardAction,
   paypalAction,
 }: {
   lang?: string
   market?: Market
+  choice?: PaymentChoice
+  onChoiceChange?: (choice: PaymentChoice) => void
   cardAction: React.ReactNode
   paypalAction: React.ReactNode
 }) {
-  const [choice, setChoice] = useState<PaymentChoice>("paypal")
+  const [internalChoice, setInternalChoice] = useState<PaymentChoice>("paypal")
+  const choice = controlledChoice ?? internalChoice
+  const setChoice = (next: PaymentChoice) => {
+    setInternalChoice(next)
+    onChoiceChange?.(next)
+  }
   const c = getPaymentMethodCopy(lang)
 
   return (

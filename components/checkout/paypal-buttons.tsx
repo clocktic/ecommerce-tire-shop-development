@@ -89,15 +89,18 @@ export function PayPalOrderButtons({
   getOrderNumber,
   onSuccess,
   onErrorMessage,
+  onFallbackToCard,
 }: {
   currency: string
   disabled?: boolean
   getOrderNumber: () => Promise<string | null>
   onSuccess: (orderNumber: string) => void
   onErrorMessage?: (msg: string) => void
+  onFallbackToCard?: () => void
 }) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [sdkReady, setSdkReady] = useState(false)
+  const [timedOut, setTimedOut] = useState(false)
   const [renderKey, setRenderKey] = useState(0)
   const [error, setError] = useState<string | null>(null)
 
@@ -115,15 +118,26 @@ export function PayPalOrderButtons({
   useEffect(() => {
     let cancelled = false
     setSdkReady(false)
+    setTimedOut(false)
+    const timer = window.setTimeout(() => {
+      if (!cancelled) setTimedOut(true)
+    }, 8000)
     loadPayPalSdk(currency)
       .then(() => {
-        if (!cancelled) setSdkReady(true)
+        if (!cancelled) {
+          window.clearTimeout(timer)
+          setSdkReady(true)
+        }
       })
       .catch(() => {
-        if (!cancelled) setError("Could not load PayPal Checkout.")
+        if (!cancelled) {
+          window.clearTimeout(timer)
+          setError("Could not load PayPal Checkout.")
+        }
       })
     return () => {
       cancelled = true
+      window.clearTimeout(timer)
     }
   }, [currency])
 
@@ -304,15 +318,39 @@ export function PayPalOrderButtons({
         }
         aria-disabled={disabled}
       >
+        {!sdkReady && !error && !timedOut && (
+          <div className="flex flex-col gap-2 rounded-md border border-border bg-muted/40 p-3">
+            <div className="h-10 w-full animate-pulse rounded bg-muted" />
+            <div className="h-10 w-full animate-pulse rounded bg-muted/70" />
+            <p className="text-center text-[11px] text-muted-foreground">
+              Loading PayPal, Venmo &amp; Card checkout…
+            </p>
+          </div>
+        )}
         <div
           ref={containerRef}
-          className="min-h-[48px] w-full rounded-md bg-white p-2 shadow-sm sm:rounded-lg sm:p-2.5"
+          className={
+            sdkReady
+              ? "min-h-[48px] w-full rounded-md bg-white p-2 shadow-sm sm:rounded-lg sm:p-2.5"
+              : "hidden"
+          }
         />
       </div>
-      {error && (
-        <p role="alert" className="text-xs text-primary">
-          {error}
-        </p>
+      {(error || (timedOut && !sdkReady)) && (
+        <div role="alert" className="flex flex-col gap-2 rounded-md border border-border bg-muted/30 p-3 text-xs text-muted-foreground">
+          <p className="text-primary">
+            {error || "PayPal checkout is taking longer than expected or is blocked by your browser."}
+          </p>
+          {onFallbackToCard && (
+            <button
+              type="button"
+              onClick={onFallbackToCard}
+              className="inline-flex h-10 w-full items-center justify-center rounded-md bg-primary px-4 font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              Pay with Credit / Debit Card or Express Wallet
+            </button>
+          )}
+        </div>
       )}
     </div>
   )

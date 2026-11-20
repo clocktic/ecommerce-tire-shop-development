@@ -104,7 +104,9 @@ export function AddToCart({ slug, name, image, priceCents, defaultQuantity, show
         )}
         <Button size="lg" className="flex-1" disabled={disabled} onClick={handleAdd}>
           {added ? <Check aria-hidden="true" /> : null}
-          {added ? t.product.added : t.product.add}
+          {added
+            ? t.product.added
+            : `${t.product.add} · ${formatPrice(priceCents * quantity, store.market, intl)}`}
         </Button>
       </div>
       {added && (

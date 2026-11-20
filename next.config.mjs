@@ -2,7 +2,7 @@
 const nextConfig = {
   images: {
     unoptimized: true,
-    qualities: [75, 95],
+    qualities: [75, 90, 95],
   },
   async rewrites() {
     return [
