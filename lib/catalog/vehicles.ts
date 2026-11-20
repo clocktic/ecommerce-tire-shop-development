@@ -287,8 +287,8 @@ const SPECS: VehicleSpec[] = [
   ["land-rover-evoque", "Land Rover", "Range Rover Evoque", 2019, 2026, both, "5x108", 63.4, [["18", "S 18\"", 235, 60, 18], ["19", "Dynamic SE 19\"", 235, 55, 19], ["20", "Autobiography 20\"", 235, 50, 20]]],
   ["land-rover-velar", "Land Rover", "Range Rover Velar", 2018, 2026, both, "5x108", 63.4, [["19", "S 19\"", 255, 55, 19], ["20", "Dynamic SE 20\"", 255, 50, 20], ["21", "HSE 21\"", 265, 45, 21]]],
   ["land-rover-defender", "Land Rover", "Defender 90 / 110 / 130", 2020, 2026, both, "5x120", 72.6, [["19", "S 19\"", 255, 65, 19], ["20", "X-Dynamic / SE 20\"", 255, 60, 20], ["22", "V8 / Carpathian 22\"", 275, 45, 22]]],
-  ["land-rover-rr-sport", "Land Rover", "Range Rover Sport", 2019, 2026, both, "5x120", 72.6, [["21", "SE / Dynamic 21\"", 275, 50, 21], ["22", "Autobiography 22\"", 285, 45, 22], ["23", "SV 23\"", 285, 40, 23]]],
-  ["land-rover-rr", "Land Rover", "Range Rover", 2022, 2026, both, "5x120", 72.6, [["21", "SE 21\"", 275, 50, 21], ["22", "Autobiography 22\"", 285, 45, 22], ["23", "SV 23\"", 285, 40, 23]]],
+  ["land-rover-rr-sport", "Land Rover", "Range Rover Sport", 2019, 2026, both, "5x120", 72.6, [["20", "S / SE 20\"", 255, 55, 20], ["21", "SE / Dynamic 21\"", 275, 50, 21], ["22", "Autobiography 22\"", 285, 45, 22], ["23", "SV 23\"", 285, 40, 23]]],
+  ["land-rover-rr", "Land Rover", "Range Rover", 2022, 2026, both, "5x120", 72.6, [["20", "Base 20\"", 275, 50, 20], ["21", "SE 21\"", 275, 50, 21], ["22", "Autobiography 22\"", 285, 45, 22], ["23", "SV 23\"", 285, 40, 23]]],
 
   // Lexus
   ["lexus-is", "Lexus", "IS 300 / IS 350 / IS 500", 2021, 2026, us, "5x114.3", 60.1, [["18", "IS 300 18\"", 235, 45, 18], ["19", "F SPORT Front 19\"", 235, 40, 19], ["19-rear", "F SPORT Rear 19\"", 265, 35, 19]]],
