@@ -11,6 +11,18 @@ import { getProductWarranty, type Product } from "@/lib/catalog"
 import { getDictionary, type Dictionary, type Store } from "@/lib/i18n"
 import { policyHref } from "@/lib/legal/pages"
 
+function formatDisplaySpecValue(label: string, value: string): string {
+  const val = value.trim()
+  const key = label.trim().toLowerCase()
+  if (key === "section width" && /^\d+(\.\d+)?$/.test(val)) return `${val} mm`
+  if (key === "aspect ratio" && /^\d+(\.\d+)?$/.test(val)) return `${val}%`
+  if ((key === "rim diameter" || key === "overall diameter" || key === "approved rim width") && /^[\d.-]+$/.test(val)) {
+    return `${val} in`
+  }
+  if (key === "tread depth" && /^\d+\/\d+$/.test(val)) return `${val} in`
+  return val
+}
+
 export function ProductDetails({ product, store }: { product: Product; store: Store }) {
   const t = getDictionary(store)
   const warranty = getProductWarranty(product, store)
@@ -21,15 +33,20 @@ export function ProductDetails({ product, store }: { product: Product; store: St
     { label: warranty.specLabel, value: warranty.specValue },
   ]
   const seenLabels = new Set<string>()
-  const specs = rawSpecs.filter((s) => {
-    const key = s.label.trim().toLowerCase()
-    if (seenLabels.has(key)) return false
-    seenLabels.add(key)
-    return true
-  })
+  const specs = rawSpecs
+    .filter((s) => {
+      const key = s.label.trim().toLowerCase().replace(/[\s_-]+/g, "")
+      if (seenLabels.has(key)) return false
+      seenLabels.add(key)
+      return true
+    })
+    .map((s) => ({ label: s.label, value: formatDisplaySpecValue(s.label, s.value) }))
 
   return (
-    <Accordion defaultValue={["specs"]} className="border-t border-border">
+    <Accordion
+      defaultValue={product.category === "brakes" ? ["specs", "fitment"] : ["specs"]}
+      className="border-t border-border"
+    >
       <AccordionItem value="specs" className="border-b border-border">
         <AccordionTrigger className="rounded-none py-4 text-sm font-semibold uppercase tracking-wide hover:no-underline">
           {t.product.descSpecs}

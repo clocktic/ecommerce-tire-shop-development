@@ -48,7 +48,14 @@ export default async function ReviewsPage({ params, searchParams }: { params: Pa
   const stats = reviewStats(reviews)
   const ratingParam = Number(single(query.rating))
   const rating = Number.isInteger(ratingParam) && ratingParam >= 1 && ratingParam <= 5 ? ratingParam : null
-  const filtered = rating ? reviews.filter((r) => r.rating === rating) : reviews
+  const seenDirectoryKeys = new Set<string>()
+  const uniqueDirectoryReviews = reviews.filter((r) => {
+    const key = `${r.author.toLowerCase()}::${r.title.toLowerCase()}::${r.body.toLowerCase()}`
+    if (seenDirectoryKeys.has(key)) return false
+    seenDirectoryKeys.add(key)
+    return true
+  })
+  const filtered = rating ? uniqueDirectoryReviews.filter((r) => r.rating === rating) : uniqueDirectoryReviews
   const pages = Math.max(1, Math.ceil(filtered.length / PER_PAGE))
   const pageParam = Number(single(query.page))
   const page = Number.isInteger(pageParam) ? Math.min(Math.max(pageParam, 1), pages) : 1

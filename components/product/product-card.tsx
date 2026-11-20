@@ -61,6 +61,13 @@ export function ProductCard({ product, store, rating }: { product: Product; stor
         <div className="flex flex-col gap-0.5">
           <p className="truncate font-mono text-xs font-semibold sm:text-sm">{code}</p>
           <p className="truncate font-mono text-[11px] text-muted-foreground sm:text-xs">{meta}</p>
+          {product.category === "brakes" && product.brake.fitment.length > 0 && (
+            <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground sm:text-xs">
+              <span className="font-semibold text-foreground/85">{t.product.fitment}:</span>{" "}
+              {product.brake.fitment.slice(0, 2).join(" · ")}
+              {product.brake.fitment.length > 2 ? ` +${product.brake.fitment.length - 2}` : ""}
+            </p>
+          )}
           {(product.mpn || product.gtin) && (
             <p className="mt-0.5 hidden truncate font-mono text-[11px] text-muted-foreground/85 sm:block">
               {product.mpn ? `MPN: ${product.mpn}` : ""}

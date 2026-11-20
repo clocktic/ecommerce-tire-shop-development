@@ -163,6 +163,24 @@ export default async function ProductPage({ params }: { params: Params }) {
             }
           />
 
+          {product.category === "brakes" && product.brake.fitment.length > 0 && (
+            <div className="rounded-lg border border-border bg-muted/25 p-3.5">
+              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                {t.product.fitment}
+              </p>
+              <ul className="mt-2 flex flex-wrap gap-1.5">
+                {product.brake.fitment.map((vehicle) => (
+                  <li
+                    key={vehicle}
+                    className="rounded-md border border-border bg-card px-2.5 py-1 text-xs font-medium text-foreground shadow-chip"
+                  >
+                    {vehicle}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {product.category === "tires" && t.product.euLabel && product.tire.euLabel && (
             <EuTyreLabel label={product.tire.euLabel} text={t.product.euLabel} />
           )}
