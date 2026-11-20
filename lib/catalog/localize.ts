@@ -886,6 +886,86 @@ const SPEC_LABEL_MAP: Record<string, Record<NonEnLang, string>> = {
     nl: "Incl. parkeerrem",
     "es-419": "Incluye freno de estacionamiento",
   },
+  "oe reference numbers": {
+    de: "OE-Vergleichsnummern",
+    fr: "Références OE",
+    it: "Codici di riferimento OE",
+    es: "Referencias OE",
+    nl: "OE-referentienummers",
+    "es-419": "Números de referencia OE",
+  },
+  "corrosion finish": {
+    de: "Korrosionsschutz",
+    fr: "Traitement anticorrosion",
+    it: "Trattamento anticorrosione",
+    es: "Protección anticorrosión",
+    nl: "Corrosiebescherming",
+    "es-419": "Protección anticorrosión",
+  },
+  "hardware included": {
+    de: "Befestigungssatz enthalten",
+    fr: "Kit de montage inclus",
+    it: "Hardware di montaggio incluso",
+    es: "Herrajes incluidos",
+    nl: "Montagemateriaal inbegrepen",
+    "es-419": "Herrajes incluidos",
+  },
+  "noise suppression": {
+    de: "Geräuschdämpfung",
+    fr: "Réduction du bruit",
+    it: "Riduzione rumorosità",
+    es: "Supresión de ruido",
+    nl: "Geluidsdemping",
+    "es-419": "Supresión de ruido",
+  },
+  "pad formulation": {
+    de: "Belagmischung",
+    fr: "Formulation des plaquettes",
+    it: "Mescola pastiglie",
+    es: "Formulación de pastillas",
+    nl: "Remblokformule",
+    "es-419": "Formulación de balatas",
+  },
+  "rotor metallurgy": {
+    de: "Scheibenmetallurgie",
+    fr: "Métallurgie du disque",
+    it: "Metallurgia del disco",
+    es: "Metalurgia del disco",
+    nl: "Schijfmetallurgie",
+    "es-419": "Metalurgia del disco",
+  },
+  "test mark": {
+    de: "Prüfzeichen",
+    fr: "Marque d’homologation",
+    it: "Marchio di omologazione",
+    es: "Marca de ensayo",
+    nl: "Keurmerk",
+    "es-419": "Marca de certificación",
+  },
+  "wva number": {
+    de: "WVA-Nummer",
+    fr: "Numéro WVA",
+    it: "Numero WVA",
+    es: "Número WVA",
+    nl: "WVA-nummer",
+    "es-419": "Número WVA",
+  },
+  "zero-drag technology": {
+    de: "Zero-Drag-Technologie",
+    fr: "Technologie Zero-Drag",
+    it: "Tecnologia Zero-Drag",
+    es: "Tecnología Zero-Drag",
+    nl: "Zero-Drag-technologie",
+    "es-419": "Tecnología Zero-Drag",
+  },
+  "disc brake pad fmsi number": {
+    de: "FMSI-Belagnummer",
+    fr: "Numéro FMSI des plaquettes",
+    it: "Codice FMSI pastiglie",
+    es: "Número FMSI de pastillas",
+    nl: "FMSI-bloknummer",
+    "es-419": "Número FMSI de balatas",
+  },
 }
 
 const SPEC_VALUE_EXACT: Record<string, Record<NonEnLang, string>> = {
@@ -1243,17 +1323,136 @@ const SPEC_VALUE_EXACT: Record<string, Record<NonEnLang, string>> = {
     nl: "Geventileerde high-carbon remschijf",
     "es-419": "Disco ventilado de alto carbono",
   },
+  "high-carbon coated brake disc": {
+    de: "High-Carbon-Bremsscheibe (beschichtet)",
+    fr: "Disque de frein High-Carbon revêtu",
+    it: "Disco freno High-Carbon rivestito",
+    es: "Disco de freno High-Carbon recubierto",
+    nl: "Gecoate High-Carbon remschijf",
+    "es-419": "Disco de freno High-Carbon recubierto",
+  },
+  "complete big brake system kit": {
+    de: "Big-Brake-Komplettanlage",
+    fr: "Kit gros freins complet",
+    it: "Kit impianto frenante maggiorato",
+    es: "Kit completo de frenos sobredimensionados",
+    nl: "Complete Big-Brake-systeemkit",
+    "es-419": "Kit completo de frenos de alto desempeño",
+  },
+  "eradispeed+ 2-piece performance rotor": {
+    de: "EradiSpeed+ zweiteilige Performance-Bremsscheibe",
+    fr: "Disque Performance 2 pièces EradiSpeed+",
+    it: "Disco Performance 2 pezzi EradiSpeed+",
+    es: "Disco Performance de 2 piezas EradiSpeed+",
+    nl: "EradiSpeed+ 2-delige Performance-remschijf",
+    "es-419": "Disco Performance de 2 piezas EradiSpeed+",
+  },
+  oiled: {
+    de: "Geölt (Korrosionsschutz)",
+    fr: "Huilé (protection anticorrosion)",
+    it: "Oliato (protezione anticorrosione)",
+    es: "Aceitado (protección anticorrosión)",
+    nl: "Geolied (corrosiebescherming)",
+    "es-419": "Aceitado (protección anticorrosión)",
+  },
+  "slotted & drilled": {
+    de: "Geschlitzt & gelocht",
+    fr: "Rainuré et percé",
+    it: "Baffato e forato",
+    es: "Ranurado y perforado",
+    nl: "Gegroefd & geboord",
+    "es-419": "Ranurado y perforado",
+  },
+  "slotted x drilled": {
+    de: "Geschlitzt & gelocht",
+    fr: "Rainuré et percé",
+    it: "Baffato e forato",
+    es: "Ranurado y perforado",
+    nl: "Gegroefd & geboord",
+    "es-419": "Ranurado y perforado",
+  },
+  "slotted, drilled & zinc plated": {
+    de: "Geschlitzt, gelocht & verzinkt",
+    fr: "Rainuré, percé et zingué",
+    it: "Baffato, forato e zincato",
+    es: "Ranurado, perforado y zincado",
+    nl: "Gegroefd, geboord & verzinkt",
+    "es-419": "Ranurado, perforado y zincado",
+  },
+  "stainless steel": {
+    de: "Edelstahl",
+    fr: "Acier inoxydable",
+    it: "Acciaio inossidabile",
+    es: "Acero inoxidable",
+    nl: "Roestvrij staal",
+    "es-419": "Acero inoxidable",
+  },
+  "re-uses oe hoses": {
+    de: "Verwendet serienmäßige Bremsschläuche",
+    fr: "Réutilise les flexibles d’origine (OE)",
+    it: "Riutilizza i tubi freno originali (OE)",
+    es: "Reutiliza los latiguillos originales (OE)",
+    nl: "Gebruikt originele remslangen (OE)",
+    "es-419": "Reutiliza mangueras originales (OE)",
+  },
+  red: {
+    de: "Rot",
+    fr: "Rouge",
+    it: "Rosso",
+    es: "Rojo",
+    nl: "Rood",
+    "es-419": "Rojo",
+  },
+  "fire red": {
+    de: "Feuerrot",
+    fr: "Rouge vif",
+    it: "Rosso fuoco",
+    es: "Rojo fuego",
+    nl: "Vuurrood",
+    "es-419": "Rojo fuego",
+  },
+  black: {
+    de: "Schwarz",
+    fr: "Noir",
+    it: "Nero",
+    es: "Negro",
+    nl: "Zwart",
+    "es-419": "Negro",
+  },
+  silver: {
+    de: "Silber",
+    fr: "Argent",
+    it: "Argento",
+    es: "Plata",
+    nl: "Zilver",
+    "es-419": "Plata",
+  },
+  performance: {
+    de: "Performance",
+    fr: "Performance",
+    it: "Performance",
+    es: "Alto rendimiento",
+    nl: "Performance",
+    "es-419": "Alto desempeño",
+  },
 }
 
 function localizeSpec(spec: Spec, lang: NonEnLang): Spec {
   const key = spec.label.trim().toLowerCase()
   const label = SPEC_LABEL_MAP[key]?.[lang] ?? spec.label
-  const valKey = spec.value.trim().toLowerCase()
-  const value =
+  const rawVal = spec.value.trim()
+  const valKey = rawVal.toLowerCase()
+  let value =
     SPEC_VALUE_EXACT[valKey]?.[lang] ??
     TIRE_SEGMENT_VALUE[valKey]?.[lang] ??
     VEHICLE_TYPE_VALUE[valKey]?.[lang] ??
-    spec.value
+    rawVal
+  if (value === rawVal && /\(([^,]+),\s*(Germany|Italy|United States|United Kingdom|USA)\)$/i.test(rawVal)) {
+    value = rawVal.replace(/\b(Germany|Italy|United States|United Kingdom|USA)\b/gi, (m) => {
+      const k = m.toLowerCase() === "usa" ? "united states" : m.toLowerCase()
+      return SPEC_VALUE_EXACT[k]?.[lang] ?? m
+    })
+  }
   return { label, value }
 }
 
@@ -1342,6 +1541,49 @@ function localizeHighlight(h: string, lang: NonEnLang): string {
       "es-419": "Gama Media OE+",
     }[lang]
     return `${prefix} · ${rest}`
+  }
+
+  if (trimmed.startsWith("Mid-Range Segment · ")) {
+    const rest = trimmed.slice("Mid-Range Segment · ".length)
+    const prefix = {
+      de: "Mittelklasse-Segment",
+      fr: "Segment Milieu de Gamme",
+      it: "Segmento Fascia Media",
+      es: "Segmento Gama Media",
+      nl: "Middenklasse-segment",
+      "es-419": "Segmento Gama Media",
+    }[lang]
+    return `${prefix} · ${rest}`
+  }
+
+  if (/^(Front|Rear) Axle\s*·\s*/i.test(trimmed)) {
+    const isFront = /^Front/i.test(trimmed)
+    const rest = trimmed.replace(/^(Front|Rear) Axle\s*·\s*/i, "")
+    const axleLabel = SPEC_VALUE_EXACT[isFront ? "front axle" : "rear axle"][lang]
+    return `${axleLabel} · ${rest}`
+  }
+
+  if (/^Homologation:\s*/i.test(trimmed)) {
+    const rest = trimmed.replace(/^Homologation:\s*/i, "")
+    const label = SPEC_LABEL_MAP.approval[lang]
+    return `${label}: ${rest}`
+  }
+
+  if (/^OE Replacements:\s*/i.test(trimmed)) {
+    const rest = trimmed.replace(/^OE Replacements:\s*/i, "")
+    const label = SPEC_LABEL_MAP["oe reference numbers"][lang]
+    return `${label}: ${rest}`
+  }
+
+  if (lower === "geomet anti-corrosion coated") {
+    return {
+      de: "Geomet-Korrosionsschutzbeschichtung",
+      fr: "Revêtement anticorrosion Geomet",
+      it: "Rivestimento anticorrosione Geomet",
+      es: "Recubrimiento anticorrosión Geomet",
+      nl: "Geomet-corrosiebeschermende coating",
+      "es-419": "Recubrimiento anticorrosión Geomet",
+    }[lang]
   }
 
   return trimmed
@@ -1811,6 +2053,61 @@ const BRAKE_NAME_PATTERNS: Array<{
       es: "Disco de repuesto",
       nl: "Vervangende remschijf",
       "es-419": "Disco de reemplazo",
+    },
+  },
+  {
+    pattern: /\bSolid Rear\b/gi,
+    replace: {
+      de: "Massiv Hinten",
+      fr: "Plein Arrière",
+      it: "Pieno Posteriore",
+      es: "Macizo Trasero",
+      nl: "Massief Achter",
+      "es-419": "Sólido Trasero",
+    },
+  },
+  {
+    pattern: /\bVented Rear\b/gi,
+    replace: {
+      de: "Innenbelüftet Hinten",
+      fr: "Ventilé Arrière",
+      it: "Ventilato Posteriore",
+      es: "Ventilado Trasero",
+      nl: "Geventileerd Achter",
+      "es-419": "Ventilado Trasero",
+    },
+  },
+  {
+    pattern: /\bSolid Front\b/gi,
+    replace: {
+      de: "Massiv Vorne",
+      fr: "Plein Avant",
+      it: "Pieno Anteriore",
+      es: "Macizo Delantero",
+      nl: "Massief Voor",
+      "es-419": "Sólido Delantero",
+    },
+  },
+  {
+    pattern: /\bVented Front\b/gi,
+    replace: {
+      de: "Innenbelüftet Vorne",
+      fr: "Ventilé Avant",
+      it: "Ventilato Anteriore",
+      es: "Ventilado Delantero",
+      nl: "Geventileerd Voor",
+      "es-419": "Ventilado Delantero",
+    },
+  },
+  {
+    pattern: /\b(\d+)-Piston\b/gi,
+    replace: {
+      de: "$1-Kolben",
+      fr: "$1 pistons",
+      it: "$1 pistoni",
+      es: "$1 pistones",
+      nl: "$1-zuiger",
+      "es-419": "$1 pistones",
     },
   },
 ]

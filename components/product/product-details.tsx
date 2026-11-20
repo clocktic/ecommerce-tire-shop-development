@@ -11,16 +11,69 @@ import { getProductWarranty, type Product } from "@/lib/catalog"
 import { getDictionary, type Dictionary, type Store } from "@/lib/i18n"
 import { policyHref } from "@/lib/legal/pages"
 
-function formatDisplaySpecValue(label: string, value: string): string {
+function formatDisplaySpecValue(label: string, value: string, market: Store["market"]): string {
   const val = value.trim()
   const key = label.trim().toLowerCase()
-  if (key === "section width" && /^\d+(\.\d+)?$/.test(val)) return `${val} mm`
-  if (key === "aspect ratio" && /^\d+(\.\d+)?$/.test(val)) return `${val}%`
-  if ((key === "rim diameter" || key === "overall diameter" || key === "approved rim width") && /^[\d.-]+$/.test(val)) {
+  if (
+    (key === "section width" ||
+      key === "reifenbreite (mm)" ||
+      key === "largeur de section (mm)" ||
+      key === "larghezza sezione (mm)" ||
+      key === "ancho de sección (mm)" ||
+      key === "bandbreedte (mm)") &&
+    /^\d+(\.\d+)?$/.test(val)
+  ) {
+    return `${val} mm`
+  }
+  if (
+    (key === "aspect ratio" ||
+      key === "querschnittsverhältnis (%)" ||
+      key === "rapport d’aspect (%)" ||
+      key === "rapporto d’aspetto (%)" ||
+      key === "perfil (%)" ||
+      key === "hoogte-breedteverhouding (%)") &&
+    /^\d+(\.\d+)?$/.test(val)
+  ) {
+    return `${val}%`
+  }
+  if (
+    (key === "rim diameter" ||
+      key === "overall diameter" ||
+      key === "approved rim width" ||
+      key === "felgendurchmesser (zoll)" ||
+      key === "außendurchmesser (zoll)" ||
+      key === "zulässige maulweite (zoll)") &&
+    /^[\d.-]+$/.test(val)
+  ) {
+    return market === "eu" ? `${val}″` : `${val} in`
+  }
+  if (
+    (key === "tread depth" ||
+      key === "profiltiefe" ||
+      key === "profondeur de sculpture" ||
+      key === "profondità battistrada" ||
+      key === "profundidad de dibujo" ||
+      key === "profieldiepte") &&
+    /^\d+\/\d+$/.test(val)
+  ) {
+    const [num, den] = val.split("/").map(Number)
+    if (market === "eu" && num && den) {
+      const mm = ((num / den) * 25.4).toFixed(1)
+      return `${mm} mm (${val}")`
+    }
     return `${val} in`
   }
-  if (key === "tread depth" && /^\d+\/\d+$/.test(val)) return `${val} in`
   return val
+}
+
+function canonicalSpecKey(label: string): string {
+  const key = label.trim().toLowerCase()
+  if (key.includes("runflat") || key.includes("run-flat") || key.includes("run flat")) return "runflat"
+  if (key === "season" || key === "saison" || key === "stagione" || key === "temporada" || key === "seizoen") return "season"
+  if (key === "load rating" || key === "traglast" || key === "charge admissible" || key === "carico ammesso" || key === "carga admitida" || key === "draagvermogen" || key === "capacidad de carga") {
+    return "loadrating"
+  }
+  return key.replace(/[\s_-]+/g, "")
 }
 
 export function ProductDetails({ product, store }: { product: Product; store: Store }) {
@@ -34,13 +87,14 @@ export function ProductDetails({ product, store }: { product: Product; store: St
   ]
   const seenLabels = new Set<string>()
   const specs = rawSpecs
+    .filter((s) => s.value && !/^(undefined|null|nan)(\s|$)/i.test(s.value.trim()))
     .filter((s) => {
-      const key = s.label.trim().toLowerCase().replace(/[\s_-]+/g, "")
+      const key = canonicalSpecKey(s.label)
       if (seenLabels.has(key)) return false
       seenLabels.add(key)
       return true
     })
-    .map((s) => ({ label: s.label, value: formatDisplaySpecValue(s.label, s.value) }))
+    .map((s) => ({ label: s.label, value: formatDisplaySpecValue(s.label, s.value, store.market) }))
 
   return (
     <Accordion
@@ -143,6 +197,7 @@ const EXCLUDED_SPEC_LABELS = new Set([
   "mpn",
   "gtin",
   "supplier part",
+  "lieferantennummer",
   "manufacturer part",
   "manufacturer part number (mpn)",
   "ean / gtin-13",
@@ -151,6 +206,12 @@ const EXCLUDED_SPEC_LABELS = new Set([
   "manufacturer warranty",
   "warranty",
   "reference checked",
+  "compatible applications",
+  "passende fahrzeuge",
+  "véhicules compatibles",
+  "veicoli compatibili",
+  "vehículos compatibles",
+  "geschikte voertuigen",
 ])
 
 function identifierSpecs(product: Product, t: Dictionary) {
@@ -158,7 +219,9 @@ function identifierSpecs(product: Product, t: Dictionary) {
   return [
     ...(product.mpn ? [{ label: label.mpn, value: product.mpn }] : []),
     ...(product.gtin ? [{ label: product.gtin.length === 12 ? label.upc : label.ean, value: product.gtin }] : []),
-    ...(product.supplierSku ? [{ label: label.supplierPart, value: product.supplierSku }] : []),
+    ...(!product.mpn && !product.gtin && product.supplierSku
+      ? [{ label: label.supplierPart, value: product.supplierSku }]
+      : []),
   ]
 }
 
@@ -170,7 +233,7 @@ function categorySpecs(product: Product, { market, lang }: Store, t: Dictionary)
     return [
       { label: label.finish, value: w.finish },
       { label: label.construction, value: constr },
-      { label: label.loadRating, value: `${w.loadRatingKg} kg` },
+      ...(w.loadRatingKg ? [{ label: label.loadRating, value: `${w.loadRatingKg} kg` }] : []),
       ...(w.approvals[market] ? [{ label: label.approval, value: w.approvals[market]! }] : []),
     ]
   }

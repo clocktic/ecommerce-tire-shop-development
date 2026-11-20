@@ -78,7 +78,7 @@ export default async function ProductPage({ params }: { params: Params }) {
   ])
   const stats = reviewStats(reviews)
   const effectiveRating =
-    stats.count > 0 && stats.count >= (stampedRating?.count ?? 0)
+    stats.count > 0
       ? { rating: stats.average, count: stats.count }
       : stampedRating
   const visibleRating = effectiveRating
@@ -270,7 +270,9 @@ function Identifiers({ product, labels }: { product: Product; labels: Dictionary
   const rows = [
     product.mpn ? { label: labels.mpn, value: product.mpn } : null,
     product.gtin ? { label: product.gtin.length === 12 ? labels.upc : labels.ean, value: product.gtin } : null,
-    product.supplierSku ? { label: labels.supplierPart, value: product.supplierSku } : null,
+    !product.mpn && !product.gtin && product.supplierSku
+      ? { label: labels.supplierPart, value: product.supplierSku }
+      : null,
   ].filter((row) => row !== null)
   if (!rows.length) return null
   return (
