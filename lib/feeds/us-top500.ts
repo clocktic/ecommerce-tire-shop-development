@@ -136,7 +136,7 @@ function tireGeometry(t: Tire) {
 }
 
 function details(p: Product, copy: Copy): Node[] {
-  const rows: [string, string, string][] = p.specs.map((s) => [copy.specs, s.label, s.value])
+  const rows: [string, string, string][] = []
   if (p.category === "tires") {
     const g = tireGeometry(p)
     const codes = tireCodeNotations(p.tire)
@@ -146,19 +146,23 @@ function details(p: Product, copy: Copy): Node[] {
         copy.sizing,
         "Size",
         isCommercial
-          ? `${codes.compact} ${serviceDescription(p)} (${codes.spaced})`
-          : `${codes.compact} ${serviceDescription(p)} (${codes.spaced}, ${codes.pMetric}, ${codes.zrCompact})`,
+          ? `${codes.compact} (${codes.spaced}, ${p.tire.rim} in)`
+          : `${codes.compact} (${codes.spaced}, ${codes.compactLoadRange}, ${codes.pMetric}${codes.isZR ? `, ${codes.zrCompact}` : ""}, ${p.tire.rim} in)`,
       ],
       [
         copy.sizing,
         "Tyre Code",
-        `${codes.compact} ${serviceDescription(p)} (${codes.compact} ${codes.svcSpaced}, ${codes.slashR}, ${codes.filtered})`,
+        isCommercial
+          ? `${codes.compact} ${serviceDescription(p)} (${codes.spaced} ${serviceDescription(p)}, ${codes.slashR})`
+          : `${codes.compact} ${serviceDescription(p)} (${codes.spaced} ${serviceDescription(p)}, ${codes.compactLoadRangeSvc}, ${codes.pMetricSvc}, ${codes.slashLoadRange})`,
       ],
       [copy.sizing, "Tire Code", `${codes.compact} ${serviceDescription(p)}`],
       [copy.sizing, "Tire Size", `${sizeCode(p)} ${serviceDescription(p)}`],
       [copy.sizing, "Rim Size", `${p.tire.rim} in (${p.tire.rim}" R${p.tire.rim})`],
-      [copy.sizing, "Overall Diameter", g.diameter],
+      [copy.sizing, "Rim Diameter", `${p.tire.rim} in`],
       [copy.sizing, "Section Width", g.width],
+      [copy.sizing, "Aspect Ratio", `${p.tire.aspect}%`],
+      [copy.sizing, "Overall Diameter", g.diameter],
       [copy.sizing, "Sidewall Height", g.sidewall],
       [copy.sizing, "Revolutions per Mile (approx.)", g.revsPerMile],
       [copy.specs, "Load Index", String(p.tire.loadIndex)],
@@ -186,6 +190,17 @@ function details(p: Product, copy: Copy): Node[] {
     if (b.pistons) rows.push([copy.specs, "Caliper Pistons", `${b.pistons}-Piston`])
     if (b.fitment.length) rows.push([copy.fitment, "Compatible Vehicles", b.fitment.slice(0, 12).join(", ")])
     if (b.approvals.us) rows.push([copy.specs, "Certification", b.approvals.us])
+  }
+  for (const s of p.specs) {
+    const k = s.label.toLowerCase()
+    const v = s.value.trim()
+    const formatted =
+      k === "approved rim width" && /^[\d.-]+$/.test(v)
+        ? `${v} in`
+        : k === "tread depth" && /^\d+\/\d+$/.test(v)
+          ? `${v} in`
+          : v
+    rows.push([copy.specs, s.label, formatted])
   }
   if (p.mpn) rows.push([copy.specs, "Manufacturer Part Number", p.mpn])
 
@@ -216,8 +231,8 @@ function highlights(p: Product): string[] {
     const isCommercial = !Number.isInteger(p.tire.rim)
     generated.push(
       isCommercial
-        ? `Size / Tyre Code: ${sizeCode(p)} ${serviceDescription(p)} (${codes.spaced}, ${codes.slashR}, ${codes.filtered})`
-        : `Size / Tyre Code: ${sizeCode(p)} ${serviceDescription(p)} (${codes.spaced}, ${codes.pMetric}, ${codes.zrCompact})`,
+        ? `Size: ${sizeCode(p)} (${codes.spaced}) · Tyre Code: ${sizeCode(p)} ${serviceDescription(p)}`
+        : `Size: ${sizeCode(p)} (${codes.spaced}, ${codes.compactLoadRange}) · Tyre Code: ${sizeCode(p)} ${serviceDescription(p)} (${codes.compactLoadRangeSvc})`,
     )
     generated.push(
       isCommercial

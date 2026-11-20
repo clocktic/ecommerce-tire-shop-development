@@ -1545,6 +1545,18 @@ function wordCount(text: string): number {
     .filter(Boolean).length
 }
 
+function formatSpecWithUnit(s: Spec): string {
+  const val = s.value.trim()
+  const key = s.label.toLowerCase()
+  if (key === "section width" && /^\d+(\.\d+)?$/.test(val)) return `${s.label}: ${val} mm`
+  if (key === "aspect ratio" && /^\d+(\.\d+)?$/.test(val)) return `${s.label}: ${val}%`
+  if ((key === "rim diameter" || key === "overall diameter" || key === "approved rim width") && /^[\d.-]+$/.test(val)) {
+    return `${s.label}: ${val} in`
+  }
+  if (key === "tread depth" && /^\d+\/\d+$/.test(val)) return `${s.label}: ${val} in`
+  return `${s.label}: ${val}`
+}
+
 function ensureDetailedDescription(product: Product, baseDescription: string, lang: ContentLang, specs: Spec[]): string {
   const clean = baseDescription.trim()
   if (wordCount(clean) >= 140) return clean
@@ -1553,7 +1565,7 @@ function ensureDetailedDescription(product: Product, baseDescription: string, la
   const gtinText = product.gtin ? ` (${product.gtin.length === 12 ? "UPC" : "EAN/GTIN"}: ${product.gtin})` : ""
   const specSummary = specs
     .slice(0, 16)
-    .map((s) => `${s.label}: ${s.value}`)
+    .map(formatSpecWithUnit)
     .join("; ")
 
   if (product.category === "tires") {
@@ -1574,15 +1586,15 @@ function ensureDetailedDescription(product: Product, baseDescription: string, la
         }[lang]
       : ""
     const extra = {
-      en: `Engineered by ${product.brand} for the ${model} product line, this ${codes.compact} ${svc} / ${size} ${codes.svcWithLoadRange} tire (manufacturer reference ${mpn}${gtinText}) features a ${t.width} mm section width, ${t.aspect}% aspect ratio, and ${t.rim}-inch (${t.rim}" R${t.rim}) rim diameter with load index ${t.loadIndex} and speed symbol ${t.speedRating}.${t.extraLoad ? " Reinforced Extra Load (XL) casing construction supports higher inflation pressures and axle loads." : " Standard load (SL) casing construction delivers balanced ride compliance and predictable handling response."}${t.runFlat ? " Self-supporting run-flat sidewalls allow continued mobility after a pressure loss." : ""} Technical specifications: ${specSummary}; ${codes.specBlock}. Supplied as a brand-new, factory-first quality tire; always verify the exact sidewall dimension, load index, and speed rating against your vehicle placard before installation.`,
+      en: `Engineered by ${product.brand} for the ${model} product line, this ${codes.compact} ${svc} (${size} ${codes.svcWithLoadRange}, ${codes.compactLoadRangeSvc}) tire (manufacturer reference ${mpn}${gtinText}) features a ${t.width} mm section width, ${t.aspect}% aspect ratio, and ${t.rim}-inch (${t.rim} in / R${t.rim}) rim diameter with load index ${t.loadIndex} and speed symbol ${t.speedRating}.${t.extraLoad ? " Reinforced Extra Load (XL) casing construction supports higher inflation pressures and axle loads." : " Standard load (SL) casing construction delivers balanced ride compliance and predictable handling response."}${t.runFlat ? " Self-supporting run-flat sidewalls allow continued mobility after a pressure loss." : ""} Technical specifications: ${ codes.specBlock}; ${specSummary}.${euPart ? ` ${euPart}` : ""} Supplied as a brand-new, factory-first quality tire; always verify the exact sidewall dimension, load index, and speed rating against your vehicle placard before installation.`,
       de: `Gefertigt von ${product.brand} innerhalb der Modellreihe ${model}, verfügt dieser Reifen in der Dimension ${size} ${svc} (Herstellernummer ${mpn}${gtinText}) über ${t.width} mm Reifenbreite, ${t.aspect} % Querschnittsverhältnis und ${t.rim} Zoll Felgendurchmesser bei Tragfähigkeitsindex ${t.loadIndex} und Geschwindigkeitsindex ${t.speedRating}.${t.extraLoad ? " Die verstärkte Extra-Load-Karkasse (XL) ist für höhere Radlasten und Fülldrücke ausgelegt." : " Die präzise abgestimmte Karkassenkonstruktion sorgt für ausgewogenen Fahrkomfort und direktes Lenkverhalten."} Technische Eckdaten: ${specSummary}. Lieferung als fabrikneuer Originalreifen; bitte vergleichen Sie Reifengröße, Last- und Geschwindigkeitsindex vor der Montage mit Ihren Fahrzeugpapieren.`,
       fr: `Conçu par ${product.brand} au sein de la gamme ${model}, ce pneumatique en dimension ${size} ${svc} (référence ${mpn}${gtinText}) présente une largeur de section de ${t.width} mm, un rapport de flanc de ${t.aspect} % et un diamètre de jante de ${t.rim} pouces avec indice de charge ${t.loadIndex} et code de vitesse ${t.speedRating}.${t.extraLoad ? " La carcasse renforcée Extra Load (XL) supporte des charges par essieu supérieures." : " L'architecture radiale assure une empreinte au sol homogène, une usure régulière et une tenue de cap précise."} Caractéristiques techniques : ${specSummary}. Livré neuf d'origine ; vérifiez systématiquement les dimensions homologuées par le constructeur de votre véhicule avant le montage.`,
       it: `Progettato da ${product.brand} nella gamma ${model}, questo pneumatico nella misura ${size} ${svc} (codice ${mpn}${gtinText}) presenta una larghezza di sezione di ${t.width} mm, rapporto d'aspetto del ${t.aspect}% e calettamento da ${t.rim} pollici con indice di carico ${t.loadIndex} e codice di velocità ${t.speedRating}.${t.extraLoad ? " La struttura rinforzata Extra Load (XL) supporta carichi e pressioni di gonfiaggio superiori." : " La carcassa radiale garantisce impronta a terra uniforme, stabilità direzionale e comfort acustico."} Specifiche tecniche: ${specSummary}. Fornito nuovo di fabbrica; controllare sempre misura, indice di carico e codice di velocità riportati sulla carta di circolazione prima del montaggio.`,
-      es: `Desarrollado por ${product.brand} dentro de la familia ${model}, este neumático en medida ${size} ${svc} (referencia ${mpn}${gtinText}) cuenta con ${t.width} mm de ancho de sección, perfil del ${t.aspect} % y llanta de ${t.rim} pulgadas con índice de carga ${t.loadIndex} y código de velocidad ${t.speedRating}.${t.extraLoad ? " Su carcasa reforzada Extra Load (XL) admite mayores cargas por eje y presiones de inflado." : " Su estructura radial proporciona un contacto uniforme con el asfalto, desgaste regular y respuesta precisa."} Especificaciones técnicas: ${specSummary}. Se suministra nuevo de fábrica; verifique siempre la medida y los índices homologados en la ficha técnica del vehículo antes del montaje.`,
+      es: `Desarrollado por ${product.brand} dentro de la familia ${model}, este neumático en medida ${size} ${svc} (referencia ${mpn}${gtinText}) cuenta con ${t.width} mm de ancho de sección, perfil del ${t.aspect} % y llanta de ${t.rim} pulgadas con índice de carga ${t.loadIndex} y código de velocidad ${t.speedRating}.${t.extraLoad ? " Su carcasa reforzada Extra Load (XL) admite mayores cargas por eje y presiones de inflado." : " Su estructura radial proporciona un contacto uniforme con el asfalto, desgaste regular y respuesta precisa."} Especificaciones técnicas: ${specSummary}. Se suministra nuevo de fábrica; verifique siempre la medida y los índices homologados en la ficha técnica del vehículo antes de montaje.`,
       nl: `Ontwikkeld door ${product.brand} binnen de ${model}-serie: deze band in de maat ${size} ${svc} (onderdeelnummer ${mpn}${gtinText}) heeft een loopvlakbreedte van ${t.width} mm, een hoogte-breedteverhouding van ${t.aspect}% en een velgdiameter van ${t.rim} inch met draagvermogen-index ${t.loadIndex} en snelheidscodering ${t.speedRating}.${t.extraLoad ? " De versterkte Extra Load (XL) karkasconstructie is berekend op hogere aslasten en bandenspanningen." : " De radiale karkasopbouw biedt een gelijkmatige drukverdeling, koersvastheid en rijcomfort."} Technische gegevens: ${specSummary}. Geleverd als fabrieksnieuwe band; controleer altijd de voorgeschreven bandenmaat en draagvermogen-index van uw voertuig vóór montage.`,
       "es-419": `Fabricada por ${product.brand} dentro de la línea ${model}, esta llanta en medida ${size} ${svc} (número de parte ${mpn}${gtinText}) combina ${t.width} mm de ancho de sección, relación de aspecto de ${t.aspect}% y diámetro de rin de ${t.rim} pulgadas con índice de carga ${t.loadIndex} y rango de velocidad ${t.speedRating}.${t.extraLoad ? " La carcasa reforzada Extra Load (XL) soporta mayor capacidad de carga y presión de inflado." : " Su construcción radial ofrece desgaste uniforme, tracción confiable y estabilidad en carretera."} Especificaciones técnicas: ${specSummary}. Producto nuevo de fábrica; confirme siempre la medida y especificaciones en la etiqueta de la puerta de su vehículo antes de la instalación.`,
     }[lang]
-    return `${clean} ${euPart ? `${euPart} ` : ""}${extra}`.replace(/\s+/g, " ").trim()
+    return `${clean} ${lang !== "en" && euPart ? `${euPart} ` : ""}${extra}`.replace(/\s+/g, " ").trim()
   }
 
   if (product.category === "wheels") {
