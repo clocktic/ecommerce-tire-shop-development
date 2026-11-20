@@ -400,6 +400,10 @@
   filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.35));
   mix-blend-mode: multiply;
 }
+.dark [data-cta-roll]:not(.bg-primary) .cta-roll-wheel {
+  mix-blend-mode: normal;
+  filter: drop-shadow(0 2px 6px rgb(0 0 0 / 0.55)) brightness(1.15);
+}
 
 @keyframes parallax-drift {
   to {

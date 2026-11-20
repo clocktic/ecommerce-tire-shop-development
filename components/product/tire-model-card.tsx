@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import { useCart } from '@/components/cart/cart-provider'
 import { ProductFitmentBadge } from '@/components/garage/product-fitment-badge'
 import { useGarage } from '@/components/garage/garage-provider'
+import { BLACK_FRIDAY_PROMO } from '@/lib/black-friday'
+import { offerFor } from '@/lib/catalog'
 import { tireSize, tireServiceDescription, type TireProduct } from '@/lib/catalog/types'
 import { getDictionary, storePath, type Store } from '@/lib/i18n'
 import { tireReferenceCopy } from '@/lib/i18n/tire-reference'
@@ -33,7 +35,7 @@ export function TireModelCard({ variants, store }: { variants: TireCardVariant[]
     variants[0]
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const product = variants.find(p => p.id === selectedId) || defaultProduct
-  const offer = product.offers[store.market]!
+  const offer = offerFor(product, store.market)!
   const t = getDictionary(store)
   const labels = tireReferenceCopy(store.lang, store.market)
   const size = tireSize(product.tire)
@@ -52,6 +54,11 @@ export function TireModelCard({ variants, store }: { variants: TireCardVariant[]
           sizes="(min-width:1024px) 260px,(min-width:768px) 300px,(min-width:640px) 45vw,90vw"
           className="object-contain p-5 transition-transform duration-700 ease-out group-hover:-rotate-6 group-hover:scale-[1.05] motion-reduce:transition-none sm:p-6"
         />
+        {BLACK_FRIDAY_PROMO.active && (
+          <span className="absolute left-2.5 top-2.5 rounded-sm bg-zinc-950/90 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-white">
+            <span className="text-primary">−{BLACK_FRIDAY_PROMO.discountPercent}%</span> BF
+          </span>
+        )}
         <span className="absolute right-2.5 top-2.5 rounded-sm border border-border/80 bg-background/90 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-foreground backdrop-blur-xs">
           {t.labels.season[product.tire.season]}
         </span>

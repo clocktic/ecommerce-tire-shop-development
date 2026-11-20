@@ -1,13 +1,15 @@
 import Link from "next/link"
-import { ArrowRight, Tag } from "lucide-react"
+import { ArrowRight, Flame, Tag } from "lucide-react"
 import { HeroVideo } from "@/components/home/hero-video"
 import { SizeFinder } from "@/components/home/size-finder"
+import { BLACK_FRIDAY_PROMO, blackFridayCopy } from "@/lib/black-friday"
 import { getDictionary, storePath, type Store } from "@/lib/i18n"
 import { getExtras } from "@/lib/i18n/extras"
 
 export function Hero({ store }: { store: Store }) {
   const t = getDictionary(store)
   const x = getExtras(store)
+  const bf = blackFridayCopy(store.lang)
   return (
     <section aria-labelledby="hero-title" className="relative overflow-hidden bg-photo">
       <div className="pointer-events-none relative aspect-[3/1] w-full overflow-hidden sm:aspect-video lg:absolute lg:inset-0 lg:aspect-auto">
@@ -21,6 +23,17 @@ export function Hero({ store }: { store: Store }) {
       <div className="relative mx-auto grid min-w-0 max-w-7xl px-4 py-5 sm:py-8 md:px-6 lg:min-h-[640px] lg:grid-cols-12 lg:py-16">
         <div className="flex min-w-0 flex-col gap-4 sm:gap-6 lg:col-span-5 lg:col-start-8">
           <div className="flex flex-col gap-3 border border-border/60 bg-background/95 p-4 shadow-lifted backdrop-blur-sm sm:gap-4 sm:p-6 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-none">
+            {BLACK_FRIDAY_PROMO.active && (
+              <Link
+                href={storePath(store, "/tires")}
+                data-cta-roll
+                className="group inline-flex w-fit items-center gap-2 rounded-md border border-primary/40 bg-secondary px-3 py-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-secondary-foreground shadow-chip transition-colors hover:border-primary"
+              >
+                <Flame className="size-3.5 text-primary" aria-hidden="true" />
+                <span>{bf.heroPill}</span>
+                <ArrowRight className="size-3 text-primary transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              </Link>
+            )}
             <div className="flex flex-wrap items-center justify-between gap-2">
               <p className="label-caps text-primary">{t.home.eyebrow}</p>
               <Link
