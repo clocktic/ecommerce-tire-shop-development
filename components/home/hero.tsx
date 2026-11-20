@@ -26,7 +26,8 @@ export function Hero({ store }: { store: Store }) {
             {BLACK_FRIDAY_PROMO.active && (
               <Link
                 href={storePath(store, "/tires")}
-                className="group inline-flex w-fit items-center gap-2 rounded-md border border-primary/40 bg-zinc-950 px-3 py-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-white shadow-chip transition-colors hover:border-primary"
+                data-cta-roll
+                className="group inline-flex w-fit items-center gap-2 rounded-md border border-primary/40 bg-secondary px-3 py-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-secondary-foreground shadow-chip transition-colors hover:border-primary"
               >
                 <Flame className="size-3.5 text-primary" aria-hidden="true" />
                 <span>{bf.heroPill}</span>
