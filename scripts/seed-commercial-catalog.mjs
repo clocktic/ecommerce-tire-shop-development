@@ -20,7 +20,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,072 mm (42.2 in)",
     recommendedRim: "11.75 x 22.5 (12.25 x 22.5 allowed)",
     priceUs: 61900, priceEu: 55900,
-    images: ["/images/commercial/tire-trailer-wide-1.png", "/images/commercial/tire-trailer-wide-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/continental-cht5-385-65r22-5-1-QuKLFtJfGAFao4UjCXo76DDnvzBZkW.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/continental-cht5-385-65r22-5-2-RF4by6hk6ALyiINbXUCbm4gWbhsz01.jpg"],
   },
   {
     slug: "continental-ht3-hybrid-plus-385-65r22-5",
@@ -40,7 +40,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,072 mm (42.2 in)",
     recommendedRim: "11.75 x 22.5 (12.25 x 22.5 allowed)",
     priceUs: 58900, priceEu: 52900,
-    images: ["/images/commercial/tire-trailer-wide-1.png", "/images/commercial/tire-trailer-wide-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/continental-cht5-385-65r22-5-1-QuKLFtJfGAFao4UjCXo76DDnvzBZkW.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/continental-cht5-385-65r22-5-2-RF4by6hk6ALyiINbXUCbm4gWbhsz01.jpg"],
   },
   {
     slug: "continental-chs5-385-65r22-5",
@@ -60,7 +60,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,072 mm (42.2 in)",
     recommendedRim: "11.75 x 22.5",
     priceUs: 64900, priceEu: 58500,
-    images: ["/images/commercial/tire-steer-highway-1.png", "/images/commercial/tire-steer-highway-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/continental-chs5-385-65r22-5-1-8h2KR5BAayThhIUTiw5EBBnX9YPB6L.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/continental-chs5-385-65r22-5-2-sXhbRidAJ8dFmuGaTI0CiMlEMORsoR.jpg"],
   },
   {
     slug: "goodyear-kmax-t-gen2-385-65r22-5",
@@ -80,7 +80,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,072 mm (42.2 in)",
     recommendedRim: "11.75 x 22.5",
     priceUs: 59900, priceEu: 53900,
-    images: ["/images/commercial/tire-trailer-wide-1.png", "/images/commercial/tire-trailer-wide-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/goodyear-kmax-t-gen2-385-65r22-5-1-KqyVEYPYUX2LN6qE8ym3NLy2iEYKST.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/goodyear-kmax-t-gen2-385-65r22-5-2-g1KAs5tsrWdjdjgEYGdwNWeGeGYaD7.jpg"],
   },
   {
     slug: "goodyear-kmax-t-gen3-385-65r22-5",
@@ -100,7 +100,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,072 mm (42.2 in)",
     recommendedRim: "11.75 x 22.5",
     priceUs: 63900, priceEu: 57900,
-    images: ["/images/commercial/tire-trailer-wide-1.png", "/images/commercial/tire-trailer-wide-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/goodyear-kmax-t-gen2-385-65r22-5-1-KqyVEYPYUX2LN6qE8ym3NLy2iEYKST.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/goodyear-kmax-t-gen2-385-65r22-5-2-g1KAs5tsrWdjdjgEYGdwNWeGeGYaD7.jpg"],
   },
   {
     slug: "goodyear-fuelmax-t-385-65r22-5",
@@ -120,7 +120,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,072 mm (42.2 in)",
     recommendedRim: "11.75 x 22.5",
     priceUs: 60900, priceEu: 54900,
-    images: ["/images/commercial/tire-trailer-wide-1.png", "/images/commercial/tire-trailer-wide-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/goodyear-fuelmax-t-385-65r22-5-1-GLDJjAH8VgvekQ4ImFi1THQREvdOfC.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/goodyear-fuelmax-t-385-65r22-5-2-7m9qkwcyXH07nLflnpC4vGmPrJH5RO.jpg"],
   },
   {
     slug: "bridgestone-m748-evo-385-65r22-5",
@@ -140,7 +140,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,072 mm (42.2 in)",
     recommendedRim: "11.75 x 22.5",
     priceUs: 62900, priceEu: 56500,
-    images: ["/images/commercial/tire-mixed-onoff-1.png", "/images/commercial/tire-mixed-onoff-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/bridgestone-m748-evo-385-65r22-5-1-rhUf6WBUgMzPgclBoOPyMFxHKO8pza.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/bridgestone-m748-evo-385-65r22-5-2-4WXg08jatN7qWjt0lvxAVyjRLfMdUK.jpg"],
   },
   {
     slug: "michelin-x-multiway-hd-xze-385-65r22-5",
@@ -159,7 +159,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,072 mm (42.2 in)",
     recommendedRim: "11.75 x 22.5",
     priceUs: 66900, priceEu: 59900,
-    images: ["/images/commercial/tire-trailer-wide-1.png", "/images/commercial/tire-trailer-wide-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/michelin-x-multiway-hd-xze-385-65r22-5-1-SNJOkyjAq2qaHfQGlZ7MYPX7vQDVY0.jpg"],
   },
   {
     slug: "michelin-x-works-hl-z-385-65r22-5",
@@ -178,7 +178,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,072 mm (42.2 in)",
     recommendedRim: "11.75 x 22.5",
     priceUs: 68900, priceEu: 61900,
-    images: ["/images/commercial/tire-mixed-onoff-1.png", "/images/commercial/tire-mixed-onoff-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/michelin-x-works-hl-z-385-65r22-5-1-hFRfS1lCZeb0PoZ2mLmlorLCwcqZ6p.png"],
   },
   {
     slug: "hankook-smart-work-tm11-385-65r22-5",
@@ -197,7 +197,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,072 mm (42.2 in)",
     recommendedRim: "11.75 x 22.5",
     priceUs: 51900, priceEu: 46900,
-    images: ["/images/commercial/tire-mixed-onoff-1.png", "/images/commercial/tire-mixed-onoff-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/hankook-smart-work-tm11-385-65r22-5-1-J6q8QSkI2n1JNPMsZT0Xf8m0zmVTsO.jpg"],
   },
 
   // 4x 315/80R22.5 & 315/70R22.5 Steer & Drive Commercial Truck Tires
@@ -218,7 +218,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,076 mm (42.4 in)",
     recommendedRim: "9.00 x 22.5",
     priceUs: 63500, priceEu: 56900,
-    images: ["/images/commercial/tire-steer-highway-1.png", "/images/commercial/tire-steer-highway-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/michelin-x-multi-z-315-80r22-5-1-NEC0Ppq6qFKhEY8Pr8POzJyvKHxkfW.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/michelin-x-multi-z-315-80r22-5-2-FDuk7LjsZa23wHpl6C6uhvzIee84gp.jpg"],
   },
   {
     slug: "bridgestone-duravis-r-steer-002-315-80r22-5",
@@ -238,7 +238,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,076 mm (42.4 in)",
     recommendedRim: "9.00 x 22.5",
     priceUs: 60900, priceEu: 54900,
-    images: ["/images/commercial/tire-steer-highway-1.png", "/images/commercial/tire-steer-highway-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/bridgestone-duravis-r-steer-002-315-80r22-5-1-bX2MQxdi0icqLo9IMJt1OmtDawTZDB.jpg"],
   },
   {
     slug: "goodyear-kmax-s-gen2-315-80r22-5",
@@ -257,7 +257,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,076 mm (42.4 in)",
     recommendedRim: "9.00 x 22.5",
     priceUs: 59500, priceEu: 53500,
-    images: ["/images/commercial/tire-steer-highway-1.png", "/images/commercial/tire-steer-highway-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/goodyear-kmax-s-gen2-315-80r22-5-1-aRe5aH9q2UnlVyibY0tN2iLWPf4TQw.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/goodyear-kmax-s-gen2-315-80r22-5-2-vDVd4QnGl5v7vCWgokZGQ6IYPudEnE.jpg"],
   },
   {
     slug: "continental-eco-plus-hd3-315-70r22-5",
@@ -277,7 +277,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,014 mm (39.9 in)",
     recommendedRim: "9.00 x 22.5",
     priceUs: 61500, priceEu: 55500,
-    images: ["/images/commercial/tire-drive-traction-1.png", "/images/commercial/tire-drive-traction-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/continental-eco-plus-hd3-315-70r22-5-1-jL3WNASMndkBSyOaHHxTcEdNPSKCbq.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/continental-eco-plus-hd3-315-70r22-5-2-oC9pnMpvGvH0gOqngI88EAbwZbAArM.jpg"],
   },
 
   // 4x 295/75R22.5 US Class-8 Long-Haul Highway Tires (SmartWay Verified)
@@ -298,7 +298,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,019 mm (40.1 in)",
     recommendedRim: "8.25 x 22.5 (9.00 x 22.5 allowed)",
     priceUs: 58900, priceEu: 53900,
-    images: ["/images/commercial/tire-longhaul-us-1.png", "/images/commercial/tire-longhaul-us-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/michelin-x-line-energy-z-plus-295-75r22-5-1-SbDqyr6VsuIs2WLhVUL9sIiw5FDO2F.jpg"],
   },
   {
     slug: "goodyear-endurance-lhs-295-75r22-5",
@@ -317,7 +317,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,016 mm (40.0 in)",
     recommendedRim: "8.25 x 22.5 (9.00 x 22.5 allowed)",
     priceUs: 55900, priceEu: 50900,
-    images: ["/images/commercial/tire-longhaul-us-1.png", "/images/commercial/tire-longhaul-us-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/goodyear-endurance-lhs-295-75r22-5-1-5Xs99ObpE0FoZT3yZwYdwvM62LAJot.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/goodyear-endurance-lhs-295-75r22-5-2-PtfimmHTgXYz8rs8x8iYJ3rOY3VyoT.jpg"],
   },
   {
     slug: "continental-hsl3-295-75r22-5",
@@ -336,7 +336,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,016 mm (40.0 in)",
     recommendedRim: "8.25 x 22.5 (9.00 x 22.5 allowed)",
     priceUs: 52900, priceEu: 48500,
-    images: ["/images/commercial/tire-longhaul-us-1.png", "/images/commercial/tire-longhaul-us-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/continental-hsl3-295-75r22-5-1-CW3cM3s8j1qdDzFFzIdidvAcD140wX.png","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/continental-hsl3-295-75r22-5-2-Q7c35vfcDhTGiIP1YOLuV07UdDRn0q.png"],
   },
   {
     slug: "bridgestone-r284-ecopia-295-75r22-5",
@@ -355,7 +355,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,016 mm (40.0 in)",
     recommendedRim: "8.25 x 22.5 (9.00 x 22.5 allowed)",
     priceUs: 56900, priceEu: 51900,
-    images: ["/images/commercial/tire-longhaul-us-1.png", "/images/commercial/tire-longhaul-us-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/bridgestone-r284-ecopia-295-75r22-5-1-DJ7E030A06fDJpSd3H6U2nYHezut5U.jpg"],
   },
 
   // 2x 425/65R22.5 Super-Single Wide-Base Vocational / Heavy-Haul Tires
@@ -376,7 +376,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,130 mm (44.5 in)",
     recommendedRim: "12.25 x 22.5 (13.00 x 22.5 allowed)",
     priceUs: 84900, priceEu: 76900,
-    images: ["/images/commercial/tire-mixed-onoff-1.png", "/images/commercial/tire-mixed-onoff-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/michelin-xzy-3-425-65r22-5-1-bdlJK0aTgPjldUF3fctS6llfdDv2Mq.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/michelin-xzy-3-425-65r22-5-2-7hfapMFvbdmmtRFh9TFG7hUnmR8L7R.jpg"],
   },
   {
     slug: "goodyear-g296-msa-425-65r22-5",
@@ -395,7 +395,7 @@ const COMMERCIAL_TIRES = [
     overallDiameter: "1,135 mm (44.7 in)",
     recommendedRim: "12.25 x 22.5",
     priceUs: 78900, priceEu: 71500,
-    images: ["/images/commercial/tire-mixed-onoff-1.png", "/images/commercial/tire-mixed-onoff-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/goodyear-g296-msa-425-65r22-5-1-VmDLi9ORujp4x793v2TEIMBsBVD8tC.png","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/goodyear-g296-msa-425-65r22-5-2-cJjkRl9OIOWtWJ8X8ddFLkSNTv9T9W.png"],
   },
 ]
 
@@ -412,7 +412,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 3357, loadRatingLbs: 7400, weightLbs: 40,
     approvals: { us: "DOT · SAE J267 · Hub-Piloted 10-Hole (285.75mm BCD)", eu: "TÜV / ECE R124 Equivalent Spec · ISO Hub-Piloted" },
     priceUs: 41900, priceEu: 38900,
-    images: ["/images/commercial/wheel-forged-mirror-1.png", "/images/commercial/wheel-forged-mirror-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/alcoa-eu-22-5x9-00-89u513db-dura-bright-1-mX9MserTaooQmhbbITWj5KnMTSejtH.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/alcoa-eu-22-5x11-75-81u523db-et120-dura-bright-2-t4R3jpoE3VBmNIkbqncXfokq232yPc.jpg"],
   },
   {
     slug: "alcoa-ultra-one-22-5x8-25-883671db-dura-bright",
@@ -425,7 +425,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 3357, loadRatingLbs: 7400, weightLbs: 40,
     approvals: { us: "DOT · SAE J267 · Hub-Piloted 10-Hole (285.75mm BCD)", eu: "TÜV Certified · Dura-Bright Corrosion Protection" },
     priceUs: 51900, priceEu: 47900,
-    images: ["/images/commercial/wheel-forged-mirror-1.png", "/images/commercial/wheel-forged-mirror-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/alcoa-eu-22-5x11-75-81u523db-et120-dura-bright-2-t4R3jpoE3VBmNIkbqncXfokq232yPc.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/alcoa-eu-22-5x9-00-89u513db-dura-bright-2-5OV9EmjOnyh1k4IkzSdvX7A1PwzQTE.png"],
   },
   {
     slug: "alcoa-ultra-one-22-5x8-25-883671dd-dura-flange",
@@ -438,7 +438,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 3357, loadRatingLbs: 7400, weightLbs: 40,
     approvals: { us: "DOT · SAE J267 · Hub-Piloted 10-Hole (285.75mm BCD)", eu: "TÜV Certified · Heavy-Haul Rim Flange Protection" },
     priceUs: 55900, priceEu: 51500,
-    images: ["/images/commercial/wheel-forged-mirror-1.png", "/images/commercial/wheel-forged-mirror-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/alcoa-eu-22-5x9-00-89u513db-dura-bright-1-mX9MserTaooQmhbbITWj5KnMTSejtH.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/alcoa-eu-22-5x11-75-81u523db-et120-dura-bright-2-t4R3jpoE3VBmNIkbqncXfokq232yPc.jpg"],
   },
   {
     slug: "alcoa-ultra-one-24-5x8-25-88u637-high-polish",
@@ -451,7 +451,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 3357, loadRatingLbs: 7400, weightLbs: 46,
     approvals: { us: "DOT · SAE J267 · Hub-Piloted 10-Hole (285.75mm BCD)", eu: "ISO Hub-Piloted Commercial Spec" },
     priceUs: 46900, priceEu: 43500,
-    images: ["/images/commercial/wheel-forged-mirror-1.png", "/images/commercial/wheel-forged-mirror-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/alcoa-eu-22-5x9-00-89u513db-dura-bright-1-mX9MserTaooQmhbbITWj5KnMTSejtH.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/alcoa-eu-22-5x11-75-81u523db-et120-dura-bright-2-t4R3jpoE3VBmNIkbqncXfokq232yPc.jpg"],
   },
   {
     slug: "alcoa-ultra-one-22-5x9-00-89u517-lvl-one",
@@ -464,7 +464,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 4536, loadRatingLbs: 10000, weightLbs: 52,
     approvals: { us: "DOT · SAE J267 · 10,000 lb Severe-Service Rated", eu: "TÜV Certified · Heavy Steer & Vocational Rated" },
     priceUs: 48900, priceEu: 45500,
-    images: ["/images/commercial/wheel-forged-wide-1.png", "/images/commercial/wheel-forged-wide-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/alcoa-ultra-one-22-5x9-00-89u517-lvl-one-1-f4JBjLoLadGgIqJQSnd31F41TeAqhw.png","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/alcoa-eu-22-5x9-00-89u513db-dura-bright-1-mX9MserTaooQmhbbITWj5KnMTSejtH.jpg"],
   },
   {
     slug: "alcoa-ultra-one-22-5x11-75-81u517-lvl-one",
@@ -477,7 +477,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 4536, loadRatingLbs: 10000, weightLbs: 54,
     approvals: { us: "DOT · SAE J267 · Wide-Base 385/65R22.5 Ready", eu: "TÜV Certified · Wide-Base Trailer & Steer Spec" },
     priceUs: 54900, priceEu: 50500,
-    images: ["/images/commercial/wheel-forged-wide-1.png", "/images/commercial/wheel-forged-wide-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/alcoa-eu-22-5x11-75-81u523db-et120-dura-bright-1-7FTNbEGfdrKWzYP22bKHo7OGhzHCyC.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/alcoa-eu-22-5x9-00-89u513db-dura-bright-1-mX9MserTaooQmhbbITWj5KnMTSejtH.jpg"],
   },
   {
     slug: "accuride-accu-lite-22-5x8-25-42644-aluminum",
@@ -490,7 +490,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 3357, loadRatingLbs: 7400, weightLbs: 40,
     approvals: { us: "DOT · SAE J267 · 131 PSI Rated · Hub-Piloted", eu: "ISO Commercial Fleet Standard" },
     priceUs: 37900, priceEu: 34900,
-    images: ["/images/commercial/wheel-forged-mirror-1.png", "/images/commercial/wheel-forged-mirror-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/accuride-accu-lite-22-5x8-25-42644-aluminum-1-QldhwTd7rVzzV6ikp7SSa2C0nAcB5u.jpg"],
   },
   {
     slug: "accuride-ultra-light-22-5x8-25-43644-aluminum",
@@ -503,7 +503,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 3357, loadRatingLbs: 7400, weightLbs: 38,
     approvals: { us: "DOT · SAE J267 · Ultra-Light Fuel-Saving Spec", eu: "ISO Commercial Fleet Standard" },
     priceUs: 40900, priceEu: 37900,
-    images: ["/images/commercial/wheel-forged-mirror-1.png", "/images/commercial/wheel-forged-mirror-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/accuride-ultra-light-22-5x8-25-43644-aluminum-1-qNWLI7aDfEC5t4VLYSJZmKMqsgaOuj.jpg"],
   },
   {
     slug: "accuride-extra-heavy-22-5x9-00-41730-aluminum",
@@ -516,7 +516,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 4536, loadRatingLbs: 10000, weightLbs: 58,
     approvals: { us: "DOT · SAE J267 · 10,000 lb / 130 PSI Severe Duty", eu: "ISO Heavy Commercial Standard" },
     priceUs: 46500, priceEu: 42900,
-    images: ["/images/commercial/wheel-forged-wide-1.png", "/images/commercial/wheel-forged-wide-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/accuride-extra-heavy-22-5x9-00-41730-aluminum-1-OU0zuAJGo4Z9e8NFLOYldpajK4wSE3.jpg"],
   },
   {
     slug: "accuride-steel-armor-22-5x8-25-50408-white",
@@ -529,7 +529,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 3357, loadRatingLbs: 7400, weightLbs: 67,
     approvals: { us: "DOT · SAE J267 · 120 PSI · 5-Year Corrosion Warranty", eu: "ISO Heavy-Duty Fleet Steel Spec" },
     priceUs: 16900, priceEu: 15500,
-    images: ["/images/commercial/wheel-steel-white-1.png", "/images/commercial/wheel-steel-white-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/accuride-steel-armor-22-5x12-25-29807-white-1-vMBGSNz0K9GEk4TCdmREGvgUEY1udA.jpg"],
   },
   {
     slug: "accuride-steel-armor-22-5x8-25-51487-white",
@@ -542,7 +542,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 3357, loadRatingLbs: 7400, weightLbs: 65,
     approvals: { us: "DOT · SAE J267 · Hub-Piloted 10-Hole", eu: "ISO Heavy-Duty Fleet Steel Spec" },
     priceUs: 17900, priceEu: 16500,
-    images: ["/images/commercial/wheel-steel-white-1.png", "/images/commercial/wheel-steel-white-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/accuride-steel-armor-22-5x12-25-29807-white-1-vMBGSNz0K9GEk4TCdmREGvgUEY1udA.jpg"],
   },
   {
     slug: "accuride-steel-armor-22-5x9-00-29300-white",
@@ -555,7 +555,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 4536, loadRatingLbs: 10000, weightLbs: 108,
     approvals: { us: "DOT · SAE J267 · 10,000 lb / 130 PSI Vocational Rated", eu: "ISO Severe-Duty Commercial Spec" },
     priceUs: 24900, priceEu: 22900,
-    images: ["/images/commercial/wheel-steel-white-1.png", "/images/commercial/wheel-steel-white-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/accuride-steel-armor-22-5x9-00-29300-white-1-zgC7FrLNenbftyGs2IriAtbtUMAaro.jpg"],
   },
   {
     slug: "accuride-steel-armor-24-5x8-25-50409-white",
@@ -568,7 +568,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 3357, loadRatingLbs: 7400, weightLbs: 78,
     approvals: { us: "DOT · SAE J267 · 120 PSI · Hub-Piloted 10-Hole", eu: "ISO Heavy-Duty Fleet Steel Spec" },
     priceUs: 19900, priceEu: 18500,
-    images: ["/images/commercial/wheel-steel-white-1.png", "/images/commercial/wheel-steel-white-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/accuride-steel-armor-22-5x12-25-29807-white-1-vMBGSNz0K9GEk4TCdmREGvgUEY1udA.jpg"],
   },
   {
     slug: "accuride-steel-armor-22-5x12-25-29807-white",
@@ -581,7 +581,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 5171, loadRatingLbs: 11400, weightLbs: 126,
     approvals: { us: "DOT · SAE J267 · 11,400 lb Super-Single Vocational Rated", eu: "ISO Severe-Duty Commercial Spec" },
     priceUs: 32900, priceEu: 29900,
-    images: ["/images/commercial/wheel-steel-white-1.png", "/images/commercial/wheel-steel-white-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/accuride-steel-armor-22-5x12-25-29807-white-1-vMBGSNz0K9GEk4TCdmREGvgUEY1udA.jpg"],
   },
 
   // 6x EU ISO Hub-Piloted 10x335 (281 mm CB, TÜV / ECE R124 / ISO 4107)
@@ -596,7 +596,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 4500, loadRatingLbs: 9920, weightLbs: 51,
     approvals: { eu: "TÜV Certified · ECE R124 · ISO 4107 (10x335, 281mm CB)", us: "DOT Equivalent · Export / Euro-Axle Fitment" },
     priceUs: 53900, priceEu: 48900,
-    images: ["/images/commercial/wheel-forged-mirror-1.png", "/images/commercial/wheel-forged-mirror-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/alcoa-eu-22-5x9-00-89u513db-dura-bright-1-mX9MserTaooQmhbbITWj5KnMTSejtH.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/alcoa-eu-22-5x9-00-89u513db-dura-bright-2-5OV9EmjOnyh1k4IkzSdvX7A1PwzQTE.png"],
   },
   {
     slug: "alcoa-eu-22-5x11-75-81u523db-et120-dura-bright",
@@ -609,7 +609,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 5000, loadRatingLbs: 11023, weightLbs: 53,
     approvals: { eu: "TÜV Certified · ECE R124 · ISO 4107 (10x335 ET120)", us: "DOT Equivalent · Wide-Base Euro Trailer Axle" },
     priceUs: 58900, priceEu: 53500,
-    images: ["/images/commercial/wheel-forged-wide-1.png", "/images/commercial/wheel-forged-wide-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/alcoa-eu-22-5x11-75-81u523db-et120-dura-bright-1-7FTNbEGfdrKWzYP22bKHo7OGhzHCyC.jpg","https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/alcoa-eu-22-5x11-75-81u523db-et120-dura-bright-2-t4R3jpoE3VBmNIkbqncXfokq232yPc.jpg"],
   },
   {
     slug: "speedline-truck-slt-22-5x11-75-999024150-et120",
@@ -622,7 +622,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 5000, loadRatingLbs: 11023, weightLbs: 54,
     approvals: { eu: "TÜV Certified · ABE / ECE R124 · ISO 4107 (10x335)", us: "DOT Equivalent · Euro-Axle Trailer Fitment" },
     priceUs: 48900, priceEu: 44500,
-    images: ["/images/commercial/wheel-forged-wide-1.png", "/images/commercial/wheel-forged-wide-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/speedline-truck-slt-22-5x11-75-999024150-et120-1-4vBPBUCafjISbezhJHCBprXcPMNmbl.jpg"],
   },
   {
     slug: "jantsa-steel-22-5x11-75-2920996-et120",
@@ -635,7 +635,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 5000, loadRatingLbs: 11023, weightLbs: 83,
     approvals: { eu: "TÜV Certified · EUWA / ISO 4107 · 385/65R22.5 Trailer", us: "Export / Euro-Axle Semi-Trailer Fitment" },
     priceUs: 19900, priceEu: 17500,
-    images: ["/images/commercial/wheel-steel-silver-1.png", "/images/commercial/wheel-steel-silver-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/jantsa-steel-22-5x11-75-2920801-et0-1-sZoREpfCgHf4MyE5hzd1DAFC3pF6Uw.jpg"],
   },
   {
     slug: "jantsa-steel-22-5x11-75-2920801-et0",
@@ -648,7 +648,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 5000, loadRatingLbs: 11023, weightLbs: 84,
     approvals: { eu: "TÜV Certified · EUWA / ISO 4107 · ET0 Drum-Brake Trailer", us: "Export / Euro-Axle Drum-Brake Trailer Fitment" },
     priceUs: 19900, priceEu: 17500,
-    images: ["/images/commercial/wheel-steel-silver-1.png", "/images/commercial/wheel-steel-silver-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/jantsa-steel-22-5x11-75-2920801-et0-1-sZoREpfCgHf4MyE5hzd1DAFC3pF6Uw.jpg"],
   },
   {
     slug: "maxion-lemmerz-22-5x9-00-2921010-et175",
@@ -661,7 +661,7 @@ const COMMERCIAL_WHEELS = [
     loadRatingKg: 4500, loadRatingLbs: 9920, weightLbs: 76,
     approvals: { eu: "TÜV Certified · EUWA / ECE R124 · ISO 4107 (10x335)", us: "Export / Euro-Axle Heavy Truck Fitment" },
     priceUs: 18500, priceEu: 16500,
-    images: ["/images/commercial/wheel-steel-silver-1.png", "/images/commercial/wheel-steel-silver-2.png"],
+    images: ["https://tpnykvdnqxyidby1.public.blob.vercel-storage.com/commercial-products/maxion-lemmerz-22-5x9-00-2921010-et175-1-yx52Rv1US31RfwxRHtN5wrcfWlmNdI.jpg"],
   },
 ]
 
