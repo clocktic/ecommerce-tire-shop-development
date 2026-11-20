@@ -17,6 +17,9 @@ export const US_TOP500_TARGETS: Record<Category, number> = { tires: 330, wheels:
 export const US_TOP500_TOTAL = 500
 export const US_TOP600_TARGETS: Record<Category, number> = { tires: 396, wheels: 120, brakes: 84 }
 export const US_TOP600_TOTAL = 600
+// Current target size for the single cumulative US GMC master feed (`/feeds/google-us-en-master.xml`).
+// Bump this number in increments (e.g. 2400 -> 3000 -> 3600) to grow GMC in one source without adding feeds.
+export const US_MASTER_FEED_LIMIT = 2400
 
 export function targetsForTopTotal(total: number): Record<Category, number> {
   if (total === 500) return US_TOP500_TARGETS
@@ -403,4 +406,63 @@ export function selectUsTop500(
   const pool = finalSource.filter((p) => !excluded.has(p.slug))
   const prioritySlugs = effectiveBatch === 4 ? BATCH4_COMMERCIAL_SET : undefined
   return selectBatchFromPool(pool, signals, now, total, { includeStarter: false, includePinned: false, prioritySlugs })
+}
+
+/**
+ * Builds a single cumulative US GMC feed preserving 100% of all previously uploaded
+ * batches (Starter 100 + Batch 2 top500 + Batch 3 top600 + Batch 4 with all 40 commercial
+ * truck SKUs + Batch 5 + subsequent 600-SKU increments) with zero duplicates.
+ */
+export function selectUsCumulative(
+  eligible: Product[],
+  signals: DemandSignals,
+  now = new Date(),
+  total = US_MASTER_FEED_LIMIT,
+): ScoredProduct[] {
+  const targetTotal = Math.min(Math.max(100, Math.trunc(total)), eligible.length)
+  const preBatch4Eligible = eligible.filter((p) => !BATCH4_COMMERCIAL_SET.has(p.slug))
+
+  const result: ScoredProduct[] = []
+  const seen = new Set<string>()
+  const pushAll = (items: ScoredProduct[]) => {
+    for (const item of items) {
+      if (result.length >= targetTotal) break
+      if (seen.has(item.product.slug)) continue
+      seen.add(item.product.slug)
+      result.push(item)
+    }
+  }
+
+  // 1. Batches 1 & 2 (Starter 100 + Top 500)
+  const batch2 = selectUsTop500(eligible, signals, now, 500, 2)
+  pushAll(batch2)
+
+  // Keep the exact same exclusion baseline used by Batch 3+ so every existing GMC ID stays intact.
+  const excluded = new Set<string>(seen)
+  for (const slug of US_GMC_STARTER_SLUGS) excluded.add(slug)
+  for (const item of selectBatchFromPool(preBatch4Eligible, signals, now, 500, { includeStarter: true, includePinned: true })) {
+    excluded.add(item.product.slug)
+  }
+
+  // 2. Batch 3 (600), Batch 4 (600 incl. all 40 commercial truck SKUs), Batch 5+, ...
+  let batchNum = 3
+  while (result.length < targetTotal) {
+    const source = batchNum === 3 ? preBatch4Eligible : eligible
+    const pool = source.filter((p) => !excluded.has(p.slug) && !seen.has(p.slug))
+    if (!pool.length) break
+    const remaining = targetTotal - result.length
+    const chunkSize = batchNum <= 5 ? 600 : Math.min(600, remaining)
+    const prioritySlugs = batchNum === 4 ? BATCH4_COMMERCIAL_SET : undefined
+    const batchItems = selectBatchFromPool(pool, signals, now, chunkSize, {
+      includeStarter: false,
+      includePinned: false,
+      prioritySlugs,
+    })
+    if (!batchItems.length) break
+    pushAll(batchItems)
+    for (const item of batchItems) excluded.add(item.product.slug)
+    batchNum += 1
+  }
+
+  return result
 }
