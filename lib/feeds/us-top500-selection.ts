@@ -29,6 +29,53 @@ export function targetsForTopTotal(total: number): Record<Category, number> {
 // Optional slugs always prioritized in the feed when active and in stock.
 export const US_TOP500_PINNED: readonly string[] = []
 
+// 40 commercial truck & trailer tires (20) and wheels (20) added after Batches 1–3 were uploaded.
+// Excluded from simulated Batches 2–3 and guaranteed in Batch 4 (`batch4-600`) so all 40 go live in GMC.
+export const US_BATCH4_COMMERCIAL_SLUGS: readonly string[] = [
+  "bridgestone-duravis-r-steer-002-315-80r22-5",
+  "bridgestone-m748-evo-385-65r22-5",
+  "bridgestone-r284-ecopia-295-75r22-5",
+  "continental-chs5-385-65r22-5",
+  "continental-cht5-385-65r22-5",
+  "continental-eco-plus-hd3-315-70r22-5",
+  "continental-hsl3-295-75r22-5",
+  "continental-ht3-hybrid-plus-385-65r22-5",
+  "goodyear-endurance-lhs-295-75r22-5",
+  "goodyear-fuelmax-t-385-65r22-5",
+  "goodyear-g296-msa-425-65r22-5",
+  "goodyear-kmax-s-gen2-315-80r22-5",
+  "goodyear-kmax-t-gen2-385-65r22-5",
+  "goodyear-kmax-t-gen3-385-65r22-5",
+  "hankook-smart-work-tm11-385-65r22-5",
+  "michelin-x-line-energy-z-plus-295-75r22-5",
+  "michelin-x-multi-z-315-80r22-5",
+  "michelin-x-multiway-hd-xze-385-65r22-5",
+  "michelin-x-works-hl-z-385-65r22-5",
+  "michelin-xzy-3-425-65r22-5",
+  "accuride-accu-lite-22-5x8-25-42644-aluminum",
+  "accuride-extra-heavy-22-5x9-00-41730-aluminum",
+  "accuride-steel-armor-22-5x12-25-29807-white",
+  "accuride-steel-armor-22-5x8-25-50408-white",
+  "accuride-steel-armor-22-5x8-25-51487-white",
+  "accuride-steel-armor-22-5x9-00-29300-white",
+  "accuride-steel-armor-24-5x8-25-50409-white",
+  "accuride-ultra-light-22-5x8-25-43644-aluminum",
+  "alcoa-eu-22-5x11-75-81u523db-et120-dura-bright",
+  "alcoa-eu-22-5x9-00-89u513db-dura-bright",
+  "alcoa-ultra-one-22-5x11-75-81u517-lvl-one",
+  "alcoa-ultra-one-22-5x8-25-883671-mirror",
+  "alcoa-ultra-one-22-5x8-25-883671db-dura-bright",
+  "alcoa-ultra-one-22-5x8-25-883671dd-dura-flange",
+  "alcoa-ultra-one-22-5x9-00-89u517-lvl-one",
+  "alcoa-ultra-one-24-5x8-25-88u637-high-polish",
+  "jantsa-steel-22-5x11-75-2920801-et0",
+  "jantsa-steel-22-5x11-75-2920996-et120",
+  "maxion-lemmerz-22-5x9-00-2921010-et175",
+  "speedline-truck-slt-22-5x11-75-999024150-et120",
+]
+
+const BATCH4_COMMERCIAL_SET = new Set<string>(US_BATCH4_COMMERCIAL_SLUGS)
+
 const TIRE_MODEL_SCORE: Record<string, Record<string, number>> = {
   Michelin: {
     "CrossClimate 2": 100, "Pilot Sport 4S": 96, "Pilot Sport All Season 4": 95, "Primacy Tour A/S": 92,
@@ -200,18 +247,24 @@ function selectBatchFromPool(
   signals: DemandSignals,
   now: Date,
   total: number,
-  options: { includeStarter?: boolean; includePinned?: boolean } = {},
+  options: { includeStarter?: boolean; includePinned?: boolean; prioritySlugs?: ReadonlySet<string> } = {},
 ): ScoredProduct[] {
   const targetTotal = Math.min(Math.max(1, Math.trunc(total)), pool.length)
-  const pinned = new Set(options.includePinned !== false ? US_TOP500_PINNED : [])
+  const pinned = new Set<string>(options.includePinned !== false ? US_TOP500_PINNED : [])
+  if (options.prioritySlugs) {
+    for (const slug of options.prioritySlugs) pinned.add(slug)
+  }
   const starter = new Set(options.includeStarter ? US_GMC_STARTER_SLUGS : [])
   const isCommercialTruckTire = (p: Product) => p.category === "tires" && !Number.isInteger(p.tire.rim)
+  const isCommercialTruckWheel = (p: Product) =>
+    p.category === "wheels" && (!Number.isInteger(p.wheel.diameter) || /^10x/i.test(p.wheel.boltPattern))
+  const isCommercialTruck = (p: Product) => isCommercialTruckTire(p) || isCommercialTruckWheel(p)
   const scored = pool
     .map((product) => ({ product, score: scoreProduct(product, signals, now), group: productGroup(product) }))
     .sort(
       (a, b) =>
         Number(pinned.has(b.product.slug)) - Number(pinned.has(a.product.slug)) ||
-        Number(isCommercialTruckTire(b.product)) - Number(isCommercialTruckTire(a.product)) ||
+        Number(isCommercialTruck(b.product)) - Number(isCommercialTruck(a.product)) ||
         b.score - a.score ||
         a.product.slug.localeCompare(b.product.slug),
     )
@@ -234,7 +287,7 @@ function selectBatchFromPool(
     if (chosen.size >= targetTotal) break
     if (
       pinned.has(entry.product.slug) ||
-      isCommercialTruckTire(entry.product) ||
+      isCommercialTruck(entry.product) ||
       starter.has(entry.product.slug) ||
       (signals.orderedQty.get(entry.product.slug) ?? 0) > 0
     ) {
@@ -268,7 +321,7 @@ function selectBatchFromPool(
     (a, b) =>
       order[a.product.category] - order[b.product.category] ||
       Number(pinned.has(b.product.slug)) - Number(pinned.has(a.product.slug)) ||
-      Number(isCommercialTruckTire(b.product)) - Number(isCommercialTruckTire(a.product)) ||
+      Number(isCommercialTruck(b.product)) - Number(isCommercialTruck(a.product)) ||
       b.score - a.score ||
       a.product.slug.localeCompare(b.product.slug),
   )
@@ -279,7 +332,7 @@ function selectBatchFromPool(
     const position = rank[category]++ / Math.max(categoryCount[category], 1)
     const ordered = (signals.orderedQty.get(slug) ?? 0) > 0
     const tier: ScoredProduct["tier"] =
-      pinned.has(slug) || isCommercialTruckTire(entry.product)
+      pinned.has(slug) || isCommercialTruck(entry.product)
         ? "pinned"
         : ordered || position < 0.25
           ? "bestseller"
@@ -292,10 +345,12 @@ function selectBatchFromPool(
 
 /**
  * Selects US GMC feed batches:
- * - Batch 2 (`total = 500`, `batch = 2`): yesterday's 500-product feed (`top500`).
+ * - Batch 2 (`total = 500`, `batch = 2`): 500-product feed (`top500`).
  * - Batch 3 (`total = 600`, `batch = 3`, i.e. `top600`): 600 brand-new products with 0% overlap
  *   against both the initial 100 starter products (`US_GMC_STARTER_SLUGS`) and Batch 2 (`top500`).
- * - Subsequent daily batches (`batch = 4, 5, 6...`): each batch strictly excludes all products
+ * - Batch 4 (`batch = 4`, i.e. `batch4-600`): 600 brand-new products with 0% overlap against
+ *   Batches 1–3, guaranteed to include all 40 new commercial truck & trailer tires and wheels.
+ * - Subsequent daily batches (`batch = 5, 6...`): each batch strictly excludes all products
  *   from every earlier batch so every daily upload adds 100% new SKUs to GMC.
  */
 export function selectUsTop500(
@@ -306,12 +361,17 @@ export function selectUsTop500(
   batch?: number,
 ): ScoredProduct[] {
   const effectiveBatch = batch ?? (total === 500 ? 2 : 3)
+  // Batches 2 & 3 were uploaded before the 40 new commercial truck tires & wheels were added,
+  // so keep those 40 slugs out of Batches 2–3 and deliver all 40 in Batch 4 (`batch4-600`).
+  const preBatch4Eligible = eligible.filter((p) => !BATCH4_COMMERCIAL_SET.has(p.slug))
+
   if (effectiveBatch <= 2) {
-    const base = selectBatchFromPool(eligible, signals, now, total, { includeStarter: false, includePinned: true })
+    const source = total === 500 ? preBatch4Eligible : eligible
+    const base = selectBatchFromPool(source, signals, now, total, { includeStarter: false, includePinned: true })
     if (total !== 500) return base
     const chosenSlugs = new Set(base.map((item) => item.product.slug))
     const starterSet = new Set<string>(US_GMC_STARTER_SLUGS)
-    const extraStarter = eligible
+    const extraStarter = source
       .filter((p) => starterSet.has(p.slug) && !chosenSlugs.has(p.slug))
       .map((product) => ({
         product,
@@ -323,20 +383,24 @@ export function selectUsTop500(
   }
 
   const excluded = new Set<string>(US_GMC_STARTER_SLUGS)
-  for (const item of selectBatchFromPool(eligible, signals, now, 500, { includeStarter: false, includePinned: true })) {
+  for (const item of selectBatchFromPool(preBatch4Eligible, signals, now, 500, { includeStarter: false, includePinned: true })) {
     excluded.add(item.product.slug)
   }
-  for (const item of selectBatchFromPool(eligible, signals, now, 500, { includeStarter: true, includePinned: true })) {
+  for (const item of selectBatchFromPool(preBatch4Eligible, signals, now, 500, { includeStarter: true, includePinned: true })) {
     excluded.add(item.product.slug)
   }
 
   for (let b = 3; b < effectiveBatch; b++) {
-    const prevPool = eligible.filter((p) => !excluded.has(p.slug))
-    for (const item of selectBatchFromPool(prevPool, signals, now, 600, { includeStarter: false, includePinned: false })) {
+    const source = b === 3 ? preBatch4Eligible : eligible
+    const prevPool = source.filter((p) => !excluded.has(p.slug))
+    const prioritySlugs = b === 4 ? BATCH4_COMMERCIAL_SET : undefined
+    for (const item of selectBatchFromPool(prevPool, signals, now, 600, { includeStarter: false, includePinned: false, prioritySlugs })) {
       excluded.add(item.product.slug)
     }
   }
 
-  const pool = eligible.filter((p) => !excluded.has(p.slug))
-  return selectBatchFromPool(pool, signals, now, total, { includeStarter: false, includePinned: false })
+  const finalSource = effectiveBatch === 3 ? preBatch4Eligible : eligible
+  const pool = finalSource.filter((p) => !excluded.has(p.slug))
+  const prioritySlugs = effectiveBatch === 4 ? BATCH4_COMMERCIAL_SET : undefined
+  return selectBatchFromPool(pool, signals, now, total, { includeStarter: false, includePinned: false, prioritySlugs })
 }
