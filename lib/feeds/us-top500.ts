@@ -88,6 +88,16 @@ function sizeCode(t: Tire) {
   return `${t.tire.width}/${t.tire.aspect}R${t.tire.rim}`
 }
 
+function isCommercialWheel(w: Wheel): boolean {
+  return !Number.isInteger(w.wheel.diameter) || /^10x/i.test(w.wheel.boltPattern)
+}
+
+function wheelMaterial(construction: string): string {
+  if (/steel/i.test(construction)) return "Steel"
+  if (/aluminum|alloy/i.test(construction)) return /forged/i.test(construction) ? "Forged Aluminum" : construction
+  return `${construction} Aluminum Alloy`
+}
+
 function wheelStyle(w: Wheel) {
   return w.name.replace(/\s+\d{1,2}(?:\.\d)?x\d{1,2}(?:\.\d)?\b.*$/i, "").trim() || w.name
 }
@@ -106,17 +116,27 @@ function title(p: Product, copy: Copy, lang: "en" | "es"): string {
   if (p.category === "wheels") {
     const w = p.wheel
     const size = `${w.diameter}x${w.width} ${w.boltPattern} ET${w.offset}`
-    const core = `${p.brand} ${wheelStyle(p)} ${size} ${w.finish}`
+    const core = `${brandPrefixed(p.brand, wheelStyle(p))} ${size} ${w.finish}`
+    if (isCommercialWheel(p)) {
+      return feedText(
+        lang === "es" ? `Rin Comercial para Camión ${core}` : `${core} Commercial Truck ${copy.wheel}`,
+      ).slice(0, 150)
+    }
     return feedText(lang === "es" ? `${copy.wheel} ${core} ${w.construction}` : `${core} ${w.construction} ${copy.wheel}`).slice(0, 150)
   }
   return feedText(brandPrefixed(p.brand, p.name)).slice(0, 150)
 }
 
-function productType(p: Product, copy: Copy): string {
+function productType(p: Product, copy: Copy, lang: "en" | "es"): string {
   if (p.category === "tires") {
     return [copy.tires, copy.segmentPlural[tireSegment(p)], p.brand, p.tire.model].filter(Boolean).join(" > ")
   }
-  if (p.category === "wheels") return [copy.wheels, copy.inchWheels(p.wheel.diameter), p.brand, wheelStyle(p)].join(" > ")
+  if (p.category === "wheels") {
+    if (isCommercialWheel(p)) {
+      return [copy.wheels, lang === "es" ? "Rines Comerciales para Camión" : "Commercial Truck Wheels", copy.inchWheels(p.wheel.diameter), p.brand].join(" > ")
+    }
+    return [copy.wheels, copy.inchWheels(p.wheel.diameter), p.brand, wheelStyle(p)].join(" > ")
+  }
   return [copy.brakes, copy.brakeKind[p.brake.kind], p.brand].join(" > ")
 }
 
@@ -301,7 +321,7 @@ function buildItem(entry: ScoredProduct, store: Store): Top500Item {
   const itemTitle = title(p, copy, lang)
   const segment =
     p.category === "tires" ? tireSegment(p)
-    : p.category === "wheels" ? (/^(6|8)x/.test(p.wheel.boltPattern) ? "truck-suv" : "car")
+    : p.category === "wheels" ? (isCommercialWheel(p) ? "commercial" : /^(6|8)x/.test(p.wheel.boltPattern) ? "truck-suv" : "car")
     : p.brake.kind
   const shippingService = `Free Ground Shipping (${shipping.carriers.join(" / ")})`
   const tireOrWheelSize =
@@ -328,10 +348,10 @@ function buildItem(entry: ScoredProduct, store: Store): Top500Item {
     mpn: p.mpn ?? "",
     google_product_category:
       p.category === "tires" && segment === "commercial" ? GOOGLE_CATEGORY.commercialTires : GOOGLE_CATEGORY[p.category],
-    product_type: productType(p, copy),
+    product_type: productType(p, copy, lang),
     size: tireOrWheelSize,
     color: p.category === "wheels" ? p.wheel.finish : "",
-    material: p.category === "wheels" ? `${p.wheel.construction} Aluminum Alloy` : "",
+    material: p.category === "wheels" ? wheelMaterial(p.wheel.construction) : "",
     is_bundle: p.category === "brakes" && (p.brake.kind === "kit" || p.brake.kind === "pads-and-discs") ? "yes" : "",
     ships_from_country: "US",
     min_handling_time: String(shipping.handlingDays[0]),
