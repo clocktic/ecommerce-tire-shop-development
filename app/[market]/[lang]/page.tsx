@@ -6,6 +6,7 @@ import { ProductCarousel } from "@/components/home/product-carousel"
 import { CatalogUnavailable } from "@/components/catalog/catalog-unavailable"
 import { getDictionary, parseStore, storePath } from "@/lib/i18n"
 import { Hero } from "@/components/home/hero"
+import { BlackFridayBanner } from "@/components/home/black-friday-banner"
 import { CategoryTiles } from "@/components/home/category-tiles"
 import { MemberClubShowcase } from "@/components/home/member-club-showcase"
 import { SidewallDecoder } from "@/components/home/sidewall-decoder"
@@ -30,6 +31,7 @@ export default async function HomePage({ params }: { params: Promise<{ market: s
   return (
     <>
       <Hero store={store} />
+      <BlackFridayBanner store={store} />
       <TrustStrip store={store} />
       <CategoryTiles store={store} />
       <MemberClubShowcase />

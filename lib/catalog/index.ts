@@ -1,3 +1,4 @@
+import { applyBlackFridayDiscount } from "@/lib/black-friday"
 import type { Category, Offer, Product } from "@/lib/catalog/types"
 import { findVehicleById, matchesBrakeVehicle } from "@/lib/catalog/vehicles"
 import type { Market } from "@/lib/markets"
@@ -38,14 +39,16 @@ export function getCategory(slug: Category) {
   return CATEGORIES.find((c) => c.slug === slug)!
 }
 
-// Effective offer for a market: a sale with a past end date reverts to the regular price.
-export function offerFor(product: Product, market: Market, now = new Date()): Offer | undefined {
+// Effective offer for a market: a sale with a past end date reverts to the regular price,
+// and active sitewide promotions (such as Black Friday 10% off) apply uniformly everywhere.
+export function offerFor(product: Pick<Product, "offers">, market: Market, now = new Date()): Offer | undefined {
   const offer = product.offers[market]
   if (!offer) return undefined
-  if (offer.compareAtCents && offer.saleEndsAt && new Date(offer.saleEndsAt) < now) {
-    return { priceCents: offer.compareAtCents, availability: offer.availability }
-  }
-  return offer
+  const resolved =
+    offer.compareAtCents && offer.saleEndsAt && new Date(offer.saleEndsAt) < now
+      ? { priceCents: offer.compareAtCents, availability: offer.availability }
+      : offer
+  return applyBlackFridayDiscount(resolved)
 }
 
 export type CatalogFilters = Record<string, string | undefined>
@@ -91,7 +94,7 @@ export function filterProducts(products: Product[], filters: CatalogFilters, mar
     if (filters.brand && p.brand !== filters.brand) return false
     if (market && filters.stock && p.offers[market]?.availability !== filters.stock) return false
     if (market && filters.price) {
-      const cents = p.offers[market]?.priceCents
+      const cents = offerFor(p, market)?.priceCents
       const band = PRICE_BANDS.find((item) => item.id === filters.price)
       if (cents == null || !band || cents < band.min || cents >= band.max) return false
     }

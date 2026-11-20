@@ -1,6 +1,7 @@
 import "server-only"
 
 import { and, inArray, eq, sql } from "drizzle-orm"
+import { BLACK_FRIDAY_PROMO } from "@/lib/black-friday"
 import { localizeProduct, offerFor, tireCodeNotations, type Product } from "@/lib/catalog"
 import { getProducts } from "@/lib/catalog/queries"
 import { COMPANY } from "@/lib/company"
@@ -317,7 +318,8 @@ function buildItem(entry: ScoredProduct, store: Store): Top500Item {
   const { shipping } = POLICIES.us
   const link = absoluteUrl(storePath(store, `/product/${p.slug}`))
   const images = p.images.filter((src) => src && !/\.(avif|gif)(?:[?#]|$)/i.test(src)).map(publicImageUrl)
-  const onSale = Boolean(offer.compareAtCents && offer.compareAtCents > offer.priceCents)
+  // During sitewide Black Friday, emit ONLY the single discounted price in feeds (no sale_price / compare-at).
+  const onSale = !BLACK_FRIDAY_PROMO.active && Boolean(offer.compareAtCents && offer.compareAtCents > offer.priceCents)
   const itemTitle = title(p, copy, lang)
   const segment =
     p.category === "tires" ? tireSegment(p)

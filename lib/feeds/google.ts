@@ -1,3 +1,4 @@
+import { BLACK_FRIDAY_PROMO } from "@/lib/black-friday"
 import { localizeProduct, offerFor, tireCodeNotations, tireServiceDescription, tireSize, type Product } from "@/lib/catalog"
 import { getProducts, getProductsBySlugs } from "@/lib/catalog/queries"
 import { COMPANY } from "@/lib/company"
@@ -163,7 +164,7 @@ function item(product: Product, store: Store, d: Dictionary): string {
   const { shipping } = POLICIES[market]
   const link = absoluteUrl(storePath(store, `/product/${product.slug}`))
   const [hero, ...rest] = supportedFeedImages(product.images).map((src) => absoluteUrl(src))
-  const onSale = offer.compareAtCents && offer.compareAtCents > offer.priceCents
+  const onSale = !BLACK_FRIDAY_PROMO.active && Boolean(offer.compareAtCents && offer.compareAtCents > offer.priceCents)
   const lines: string[] = []
   const tag = (name: string, value: string | number) => lines.push(`      <g:${name}>${xml(String(value))}</g:${name}>`)
 

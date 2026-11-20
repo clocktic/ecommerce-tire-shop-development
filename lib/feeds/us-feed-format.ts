@@ -1,3 +1,4 @@
+import { BLACK_FRIDAY_PROMO } from "@/lib/black-friday"
 import { offerFor, tireCodeNotations, tireServiceDescription, type Product } from "@/lib/catalog"
 import { storePath, type Store } from "@/lib/i18n/config"
 import { POLICIES } from "@/lib/policies"
@@ -108,7 +109,7 @@ function rowFor(product: Product, store: Store): Row {
   const title = product.name.toLowerCase().startsWith(product.brand.toLowerCase())
     ? product.name : `${product.brand} ${product.name}`
   const image = product.images.find((src) => src && !/\.(avif|gif)(?:[?#]|$)/i.test(src))!
-  const onSale = Boolean(offer.compareAtCents && offer.compareAtCents > offer.priceCents)
+  const onSale = !BLACK_FRIDAY_PROMO.active && Boolean(offer.compareAtCents && offer.compareAtCents > offer.priceCents)
   return {
     id: product.id.slice(0, 50),
     title: feedText(title).slice(0, 150),
@@ -140,7 +141,7 @@ export function buildUsFeedItems(products: Product[], store: Store): { items: st
     const fields = HEADERS.filter((name) => name !== SHIPPING_HEADER && row[name])
       .map((name) => `      <g:${name}>${escapeFeedXml(feedText(row[name]))}</g:${name}>`)
     fields.push(`      <g:canonical_link>${escapeFeedXml(row.link)}</g:canonical_link>`)
-    if (offer.compareAtCents && offer.compareAtCents > offer.priceCents) {
+    if (!BLACK_FRIDAY_PROMO.active && offer.compareAtCents && offer.compareAtCents > offer.priceCents) {
       fields.push(`      <g:sale_price>${(offer.priceCents / 100).toFixed(2)} USD</g:sale_price>`)
       if (offer.saleEndsAt) {
         fields.push(

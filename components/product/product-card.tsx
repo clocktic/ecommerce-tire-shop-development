@@ -1,5 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
+import { BLACK_FRIDAY_PROMO } from "@/lib/black-friday"
 import { offerFor, tireServiceDescription, tireSize, type Product } from "@/lib/catalog"
 import { getDictionary, storePath, type Dictionary, type Store } from "@/lib/i18n"
 import { Price } from "@/components/product/price"
@@ -42,11 +43,15 @@ export function ProductCard({ product, store, rating }: { product: Product; stor
           sizes="(min-width: 1024px) 260px, (min-width: 768px) 300px, (min-width: 640px) 45vw, 50vw"
           className="object-contain p-4 transition-transform duration-700 ease-out group-hover:-rotate-6 group-hover:scale-[1.05] motion-reduce:transition-none sm:p-6"
         />
-        {product.sample && (
+        {product.sample ? (
           <span className="rounded-md absolute left-2 top-2 bg-background px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] shadow-chip sm:left-3 sm:top-3 sm:px-2 sm:py-1 sm:text-xs">
             {t.product.demo}
           </span>
-        )}
+        ) : BLACK_FRIDAY_PROMO.active ? (
+          <span className="rounded-md absolute left-2 top-2 bg-zinc-950/90 px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-white shadow-chip sm:left-2.5 sm:top-2.5 sm:px-2">
+            <span className="text-primary">−{BLACK_FRIDAY_PROMO.discountPercent}%</span> BF
+          </span>
+        ) : null}
       </div>
       <div className="flex flex-1 flex-col gap-2 p-3 sm:gap-3 sm:p-4">
         <div className="flex flex-col gap-1 sm:gap-1.5">
