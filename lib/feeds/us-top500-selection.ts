@@ -19,7 +19,7 @@ export const US_TOP600_TARGETS: Record<Category, number> = { tires: 396, wheels:
 export const US_TOP600_TOTAL = 600
 // Current target size for the single cumulative US GMC master feed (`/feeds/google-us-en-master.xml`).
 // Bump this number in increments (e.g. 2400 -> 3000 -> 3600) to grow GMC in one source without adding feeds.
-export const US_MASTER_FEED_LIMIT = 2400
+export const US_MASTER_FEED_LIMIT = 3000
 
 export function targetsForTopTotal(total: number): Record<Category, number> {
   if (total === 500) return US_TOP500_TARGETS
