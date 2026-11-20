@@ -152,16 +152,44 @@ export function tireCodeNotations(t: TireProduct["tire"]) {
   const hyphen = `${t.width}-${t.aspect}-${t.rim}`
   const filtered = `${t.width}${t.aspect}R${t.rim}`
   const pMetric = `P${compact}`
+  const isZR = ["W", "Y", "Z"].includes(t.speedRating.toUpperCase())
   const zrCompact = `${t.width}/${t.aspect}ZR${t.rim}`
   const zrSpaced = `${t.width}/${t.aspect} ZR${t.rim}`
   const loadSpeed = `${t.loadIndex}${t.speedRating}`
   const loadSpeedSpaced = `${t.loadIndex} ${t.speedRating}`
   const loadRange = t.extraLoad ? "XL" : "SL"
+  const compactLoadRange = `${compact}${loadRange}`
+  const spacedLoadRange = `${compact} ${loadRange}`
+  const slashLoadRange = `${compact}/${loadRange}`
   const svc = tireServiceDescription(t)
   const svcSpaced = t.extraLoad ? `${loadSpeedSpaced} XL` : loadSpeedSpaced
   const svcWithLoadRange = `${loadSpeed} ${loadRange}`
-  const inlineSummary = `Size: ${compact}, ${spaced}, ${pMetric}, ${zrCompact}, ${zrCompact} ${svc}, ${slash}, ${etrto}, ${t.rim}" R${t.rim}; Tyre Code / Tire Code: ${compact} ${svc}, ${compact} ${svcSpaced}, ${etrto} ${svcSpaced}, ${pMetric} ${svc}, ${zrCompact}/${loadRange}, ${compact}/${loadRange}, ${slashR}, ${hyphenR}, ${hyphen}, ${filtered}, ${compact} ${svc} TL`
-  const specBlock = `Tyre Code: ${compact} ${svc} (${compact}, ${compact} ${svcSpaced}, ${etrto} ${svcSpaced}, ${pMetric} ${svc}, ${zrCompact} ${svc}, ${zrCompact}/${loadRange}, ${compact}/${loadRange}, ${slashR}, ${slash}, ${hyphenR}, ${hyphen}, ${filtered}, ${compact} ${svc} TL). Tire Code: ${compact} ${svc} (${spaced} ${svcWithLoadRange}). Size: ${compact} ${svc} (${spaced} ${svc}, ${spaced} ${svcWithLoadRange}, ${pMetric}, ${zrCompact}, ${slash}, ${etrto}, ${t.rim}" R${t.rim})`
+  const compactLoadRangeSvc = `${compactLoadRange} ${loadSpeed}`
+  const pMetricSvc = `${pMetric} ${svc}`
+  const unique = (items: string[]) => [...new Set(items.filter(Boolean))]
+  const sizeVariants = unique([
+    compact,
+    spaced,
+    compactLoadRange,
+    pMetric,
+    ...(isZR ? [zrCompact] : []),
+    slash,
+    `${t.rim}" R${t.rim}`,
+  ])
+  const codeVariants = unique([
+    `${compact} ${svc}`,
+    `${spaced} ${svc}`,
+    compactLoadRangeSvc,
+    `${compact} ${svcWithLoadRange}`,
+    pMetricSvc,
+    ...(isZR ? [`${zrCompact} ${svc}`] : []),
+    slashLoadRange,
+    `${compact} ${ svcSpaced}`,
+    slashR,
+    filtered,
+  ])
+  const inlineSummary = `Size: ${sizeVariants[0]} (${sizeVariants.slice(1).join(", ")}); Tyre Code / Tire Code: ${codeVariants[0]} (${codeVariants.slice(1).join(", ")})`
+  const specBlock = `Size: ${compact} (${spaced}, ${compactLoadRange}, ${pMetric}${isZR ? `, ${zrCompact}` : ""}, ${t.rim} in / R${t.rim}); Tyre Code: ${compact} ${svc} (${spaced} ${svc}, ${compactLoadRangeSvc}, ${compact} ${svcWithLoadRange}, ${pMetricSvc}${isZR ? `, ${zrCompact} ${svc}` : ""}, ${slashLoadRange}); Tire Code: ${compact} ${svc} (${compactLoadRangeSvc})`
   return {
     compact,
     spaced,
@@ -172,9 +200,15 @@ export function tireCodeNotations(t: TireProduct["tire"]) {
     hyphen,
     filtered,
     pMetric,
+    pMetricSvc,
+    isZR,
     zrCompact,
     zrSpaced,
     loadRange,
+    compactLoadRange,
+    spacedLoadRange,
+    slashLoadRange,
+     compactLoadRangeSvc,
     svc,
     svcSpaced,
     svcWithLoadRange,

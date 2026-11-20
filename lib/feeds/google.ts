@@ -83,7 +83,7 @@ function description(product: Product): string {
   const sentence = (value: string) => (/[.!?]$/.test(value.trim()) ? value.trim() : `${value.trim()}.`)
   const specs = product.specs.map((s) => sentence(`${s.label}: ${s.value}`)).join(" ")
   const tireCodeExtra =
-    product.category === "tires" && product.tire
+    product.category === "tires" && product.tire && !product.description.includes("Tyre Code:")
       ? `${tireCodeNotations(product.tire).specBlock}.`
       : ""
   const text = [product.description, tireCodeExtra, ...product.highlights, specs].filter(Boolean).map(sentence).join(" ")
@@ -97,8 +97,8 @@ function categoryDetails(product: Product, market: Market, d: Dictionary): [stri
     const t = product.tire
     const codes = tireCodeNotations(t)
     const rows: [string, string][] = [
-      ["Size", `${codes.compact} ${codes.svc} (${codes.spaced}, ${codes.pMetric}, ${codes.zrCompact})`],
-      ["Tyre Code", `${codes.compact} ${codes.svc} (${codes.compact} ${codes.svcSpaced}, ${codes.slashR}, ${codes.filtered})`],
+      ["Size", `${codes.compact} (${codes.spaced}, ${codes.compactLoadRange}, ${codes.pMetric}${codes.isZR ? `, ${codes.zrCompact}` : ""}, ${t.rim} in)`],
+      ["Tyre Code", `${codes.compact} ${codes.svc} (${codes.spaced} ${codes.svc}, ${codes.compactLoadRangeSvc}, ${codes.pMetricSvc}, ${codes.slashLoadRange})`],
       ["Tire Code", `${codes.compact} ${codes.svc}`],
       ["Size / LI / SI", `${tireSize(t)} ${tireServiceDescription(t)}`],
       [d.product.spec.season, d.labels.season[t.season]],

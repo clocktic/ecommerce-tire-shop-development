@@ -30,19 +30,23 @@ export function enrichedDescription(product: Product): string {
     const t = product.tire
     const codes = tireCodeNotations(t)
     const seasonLabel = t.season === "all-season" ? "All-Season" : t.season === "winter" ? "Winter" : "Summer"
-    const extraSpecs = [
-      ...(!base.includes(codes.specBlock) ? [codes.specBlock] : []),
-      `Section Width: ${t.width} mm`,
-      `Aspect Ratio: ${t.aspect}`,
-      `Rim Diameter: ${t.rim} in (${t.rim}" R${t.rim})`,
-      `Load Index: ${t.loadIndex}`,
-      `Speed Rating: ${t.speedRating}`,
-      `Load Range: ${codes.loadRange}`,
-      ...(t.season ? [`Season: ${seasonLabel}`] : []),
-      ...(product.mpn ? [`MPN: ${product.mpn}`] : []),
-      ...(product.gtin ? [`GTIN: ${product.gtin}`] : []),
-    ].join(". ")
-    return feedText(`${base} ${extraSpecs}.`).slice(0, 5000)
+    const extraSpecs: string[] = []
+    if (!base.includes("Tyre Code:") && !base.includes("Tyre Code / Tire Code:")) {
+      extraSpecs.push(codes.specBlock)
+    }
+    if (!base.includes(`Section Width: ${t.width} mm`)) extraSpecs.push(`Section Width: ${t.width} mm`)
+    if (!base.includes(`Aspect Ratio: ${t.aspect}`)) extraSpecs.push(`Aspect Ratio: ${t.aspect}%`)
+    if (!base.includes(`Rim Diameter: ${t.rim} in`)) extraSpecs.push(`Rim Diameter: ${t.rim} in (${t.rim}" R${t.rim})`)
+    if (!base.includes(`Load Index: ${t.loadIndex}`)) extraSpecs.push(`Load Index: ${t.loadIndex}`)
+    if (!base.includes(`Speed Rating: ${t.speedRating}`)) extraSpecs.push(`Speed Rating: ${t.speedRating}`)
+    if (!base.includes(`Load Range: ${codes.loadRange}`)) extraSpecs.push(`Load Range: ${codes.loadRange}`)
+    if (t.season && !base.includes(`Season: ${seasonLabel}`) && !base.includes(`Season: ${seasonLabel.replace("-", " ")}`)) {
+      extraSpecs.push(`Season: ${seasonLabel}`)
+    }
+    if (product.mpn && !base.includes(product.mpn)) extraSpecs.push(`MPN: ${product.mpn}`)
+    if (product.gtin && !base.includes(product.gtin)) extraSpecs.push(`GTIN: ${product.gtin}`)
+    if (!extraSpecs.length) return base.slice(0, 5000)
+    return feedText(`${base} ${extraSpecs.join(". ")}.`).slice(0, 5000)
   }
   if (product.category === "wheels" && product.wheel) {
     const w = product.wheel
@@ -100,13 +104,13 @@ export function buildUsFeedItems(products: Product[], store: Store): { items: st
       const t = product.tire
       const codes = tireCodeNotations(t)
       const detailPairs: [string, string, string][] = [
-        ["Sizing", "Size", `${codes.compact} ${codes.svc} (${codes.spaced}, ${codes.pMetric}, ${codes.zrCompact})`],
-        ["Sizing", "Tyre Code", `${codes.compact} ${codes.svc} (${codes.compact} ${codes.svcSpaced}, ${codes.slashR}, ${codes.filtered})`],
-        ["Sizing", "Tire Code", `${codes.compact} ${codes.svc}`],
+        ["Sizing", "Size", `${codes.compact} (${codes.spaced}, ${codes.compactLoadRange}, ${codes.pMetric}${codes.isZR ? `, ${codes.zrCompact}` : ""}, ${t.rim} in)`],
+        ["Sizing", "Tyre Code", `${codes.compact} ${codes.svc} (${codes.spaced} ${codes.svc}, ${codes.compactLoadRangeSvc}, ${codes.pMetricSvc}, ${codes.slashLoadRange})`],
+        ["Sizing", "Tire Code", `${codes.compact} ${codes.svc} (${codes.compactLoadRangeSvc})`],
         ["Sizing", "Tire Size", `${codes.compact} ${codes.svc}`],
         ["Sizing", "Rim Size", `${t.rim} in (${t.rim}" R${t.rim})`],
         ["Specifications", "Section Width", `${t.width} mm`],
-        ["Specifications", "Aspect Ratio", String(t.aspect)],
+        ["Specifications", "Aspect Ratio", `${t.aspect}%`],
         ["Specifications", "Load Index", String(t.loadIndex)],
         ["Specifications", "Speed Rating", t.speedRating],
         ["Specifications", "Load Range", codes.loadRange],

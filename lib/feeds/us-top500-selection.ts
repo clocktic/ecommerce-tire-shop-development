@@ -307,7 +307,19 @@ export function selectUsTop500(
 ): ScoredProduct[] {
   const effectiveBatch = batch ?? (total === 500 ? 2 : 3)
   if (effectiveBatch <= 2) {
-    return selectBatchFromPool(eligible, signals, now, total, { includeStarter: false, includePinned: true })
+    const base = selectBatchFromPool(eligible, signals, now, total, { includeStarter: false, includePinned: true })
+    if (total !== 500) return base
+    const chosenSlugs = new Set(base.map((item) => item.product.slug))
+    const starterSet = new Set<string>(US_GMC_STARTER_SLUGS)
+    const extraStarter = eligible
+      .filter((p) => starterSet.has(p.slug) && !chosenSlugs.has(p.slug))
+      .map((product) => ({
+        product,
+        score: scoreProduct(product, signals, now),
+        group: productGroup(product),
+        tier: "core" as const,
+      }))
+    return [...base, ...extraStarter]
   }
 
   const excluded = new Set<string>(US_GMC_STARTER_SLUGS)
