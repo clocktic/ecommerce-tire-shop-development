@@ -20,26 +20,35 @@ export function BlackFridayBanner({ store }: { store: Store }) {
           className="pointer-events-none absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-transparent"
         />
 
-        <div className="relative flex min-w-0 flex-1 flex-col gap-3 px-4 py-3.5 sm:px-5 sm:py-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
-          <div className="flex min-w-0 items-center gap-3.5 sm:gap-4">
-            <div className="flex shrink-0 flex-col items-start">
-              <span className="font-expanded text-3xl font-black leading-none tracking-tight text-primary sm:text-4xl">
-                −{BLACK_FRIDAY_PROMO.discountPercent}%
-              </span>
-              <span className="mt-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                SITEWIDE
-              </span>
+        <div className="relative flex min-w-0 flex-1 flex-col gap-3 px-3.5 py-3.5 sm:px-5 sm:py-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
+          <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+            <div className="flex items-center justify-between gap-2 sm:block sm:shrink-0">
+              <div className="flex items-baseline gap-2 sm:flex-col sm:items-start sm:gap-0">
+                <span className="font-expanded text-2xl font-black leading-none tracking-tight text-primary sm:text-4xl">
+                  −{BLACK_FRIDAY_PROMO.discountPercent}%
+                </span>
+                <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.18em] text-muted-foreground sm:mt-0.5">
+                  SITEWIDE
+                </span>
+              </div>
+              <Badge
+                variant="default"
+                className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] sm:hidden"
+              >
+                <Flame data-icon="inline-start" aria-hidden="true" />
+                {c.badge}
+              </Badge>
             </div>
 
             <Separator orientation="vertical" className="hidden h-10 sm:block" />
 
             <div className="flex min-w-0 flex-col gap-1">
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="hidden flex-wrap items-center gap-2 sm:flex">
                 <Badge variant="default" className="font-mono text-[10px] font-bold uppercase tracking-[0.14em]">
                   <Flame data-icon="inline-start" aria-hidden="true" />
                   {c.badge}
                 </Badge>
-                <span className="hidden font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground sm:inline">
+                <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
                   {c.tagAll}
                 </span>
               </div>
@@ -55,13 +64,13 @@ export function BlackFridayBanner({ store }: { store: Store }) {
             </div>
           </div>
 
-          <div className="flex shrink-0 flex-wrap items-center gap-2">
+          <div className="grid shrink-0 grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
             <Link
               href={storePath(store, "/tires")}
               data-cta-roll
               className={cn(
                 buttonVariants({ variant: "default", size: "default" }),
-                "font-mono text-[11px] font-bold uppercase tracking-[0.12em]",
+                "col-span-2 w-full justify-center font-mono text-[11px] font-bold uppercase tracking-[0.12em] sm:col-span-1 sm:w-auto",
               )}
             >
               <span>{c.ctaTires}</span>
@@ -72,10 +81,10 @@ export function BlackFridayBanner({ store }: { store: Store }) {
               data-cta-roll
               className={cn(
                 buttonVariants({ variant: "outline", size: "default" }),
-                "font-mono text-[11px] font-semibold uppercase tracking-[0.12em]",
+                "w-full justify-center px-2 font-mono text-[10px] font-semibold uppercase tracking-[0.1em] sm:w-auto sm:px-2.5 sm:text-[11px] sm:tracking-[0.12em]",
               )}
             >
-              <span>{c.ctaWheels}</span>
+              <span className="truncate">{c.ctaWheels}</span>
               <ArrowRight data-icon="inline-end" aria-hidden="true" />
             </Link>
             <Link
@@ -83,10 +92,10 @@ export function BlackFridayBanner({ store }: { store: Store }) {
               data-cta-roll
               className={cn(
                 buttonVariants({ variant: "outline", size: "default" }),
-                "font-mono text-[11px] font-semibold uppercase tracking-[0.12em]",
+                "w-full justify-center px-2 font-mono text-[10px] font-semibold uppercase tracking-[0.1em] sm:w-auto sm:px-2.5 sm:text-[11px] sm:tracking-[0.12em]",
               )}
             >
-              <span>{c.ctaBrakes}</span>
+              <span className="truncate">{c.ctaBrakes}</span>
               <ArrowRight data-icon="inline-end" aria-hidden="true" />
             </Link>
           </div>
