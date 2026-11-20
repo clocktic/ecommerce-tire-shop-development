@@ -1,6 +1,7 @@
 import { buildGoogleFeed, FeedValidationError } from "@/lib/feeds/google"
 import { buildUsTop500Feed } from "@/lib/feeds/us-top500"
 import { renderTop500Preview } from "@/lib/feeds/us-top500-preview"
+import { US_MASTER_FEED_LIMIT } from "@/lib/feeds/us-top500-selection"
 import { localeMeta, parseStore } from "@/lib/i18n/config"
 
 export const dynamic = "force-dynamic"
@@ -20,22 +21,35 @@ function unavailable(error: unknown) {
   })
 }
 
-// US Top-N and Daily Batches:
-// - /feeds/google-us-<lang>-top500.(xml|txt|html) -> Batch 2 (500 items uploaded yesterday)
+// US Master Cumulative, Top-N, and Daily Batches:
+// - /feeds/google-us-<lang>-master.(xml|txt|html) -> Single cumulative master feed (default US_MASTER_FEED_LIMIT)
+// - /feeds/google-us-<lang>-cumulative-<N>.(xml|txt|html) -> Cumulative feed of N unique items (preserves all prior batches)
+// - /feeds/google-us-<lang>-top500.(xml|txt|html) -> Batch 2 (500 items)
 // - /feeds/google-us-<lang>-top600.(xml|txt|html) -> Batch 3 (+600 brand-new items, 0 overlap with starter 100 & top500)
 // - /feeds/google-us-<lang>-batch<B>-<N>.(xml|txt|html) -> Batch B (+N brand-new items, 0 overlap with Batches 1..B-1)
-async function topFeed(file: string, lang: string, requestedTotal: number, ext: keyof typeof CONTENT_TYPES, batch?: number) {
+async function topFeed(
+  file: string,
+  lang: string,
+  requestedTotal: number,
+  ext: keyof typeof CONTENT_TYPES,
+  batch?: number,
+  options?: { cumulative?: boolean; isMaster?: boolean },
+) {
   const store = parseStore("us", lang)
   if (!store || !Number.isFinite(requestedTotal) || requestedTotal < 100 || requestedTotal > 10000) {
     return new Response("Not found", { status: 404 })
   }
   try {
-    const effectiveBatch = batch ?? (requestedTotal === 500 ? 2 : 3)
-    const feed = await buildUsTop500Feed(store, requestedTotal, effectiveBatch)
-    const base =
-      batch && batch >= 4
-        ? `/feeds/google-us-${lang}-batch${batch}-${requestedTotal}`
-        : `/feeds/google-us-${lang}-top${requestedTotal}`
+    const isCumulative = Boolean(options?.cumulative)
+    const effectiveBatch = isCumulative ? 0 : (batch ?? (requestedTotal === 500 ? 2 : 3))
+    const feed = await buildUsTop500Feed(store, requestedTotal, effectiveBatch, { cumulative: isCumulative })
+    const base = options?.isMaster
+      ? `/feeds/google-us-${lang}-master`
+      : isCumulative
+        ? `/feeds/google-us-${lang}-cumulative-${requestedTotal}`
+        : batch && batch >= 4
+          ? `/feeds/google-us-${lang}-batch${batch}-${requestedTotal}`
+          : `/feeds/google-us-${lang}-top${requestedTotal}`
     const body =
       ext === "xml"
         ? feed.xml
@@ -47,8 +61,13 @@ async function topFeed(file: string, lang: string, requestedTotal: number, ext: 
       "Content-Language": localeMeta(store).hreflang,
       "Cache-Control": "no-store",
       "X-Content-Type-Options": "nosniff",
-      "X-Feed-Version": `top${feed.items.length}-b${effectiveBatch}`,
+      "X-Feed-Version": options?.isMaster
+        ? `master-${feed.items.length}`
+        : isCumulative
+          ? `cumulative-${feed.items.length}`
+          : `top${feed.items.length}-b${effectiveBatch}`,
       "X-Feed-Items": String(feed.items.length),
+      "X-Feed-Mode": isCumulative ? "cumulative" : "batch",
       "X-Feed-Batch": String(effectiveBatch),
     }
     if (ext === "html") headers["X-Robots-Tag"] = "noindex, nofollow"
@@ -62,6 +81,25 @@ async function topFeed(file: string, lang: string, requestedTotal: number, ext: 
 // XML remains available for every store; US stores also offer tab-delimited TXT.
 export async function GET(request: Request, { params }: { params: Promise<{ file: string }> }) {
   const { file } = await params
+  const masterMatch = file.match(/^google-us-([a-z]{2})-master\.(xml|txt|html)$/)
+  if (masterMatch) {
+    const url = new URL(request.url)
+    const limitOverride = Number(url.searchParams.get("limit"))
+    const total = Number.isFinite(limitOverride) && limitOverride >= 100 ? limitOverride : US_MASTER_FEED_LIMIT
+    return topFeed(file, masterMatch[1], total, masterMatch[2] as keyof typeof CONTENT_TYPES, undefined, {
+      cumulative: true,
+      isMaster: true,
+    })
+  }
+
+  const cumulativeMatch = file.match(/^google-us-([a-z]{2})-cumulative-(\d{3,5})\.(xml|txt|html)$/)
+  if (cumulativeMatch) {
+    const total = Number(cumulativeMatch[2])
+    return topFeed(file, cumulativeMatch[1], total, cumulativeMatch[3] as keyof typeof CONTENT_TYPES, undefined, {
+      cumulative: true,
+    })
+  }
+
   const batchMatch = file.match(/^google-us-([a-z]{2})-batch(\d{1,2})-(\d{3,4})\.(xml|txt|html)$/)
   if (batchMatch) {
     const batchNum = Number(batchMatch[2])

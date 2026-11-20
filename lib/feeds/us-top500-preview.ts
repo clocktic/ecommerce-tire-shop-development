@@ -17,21 +17,26 @@ export function renderTop500Preview(feed: Top500Feed, files: { xml: string; txt:
     ["With GTIN", count((i) => Boolean(i.product.gtin))],
   ] as const
 
+  const isCumulative = feed.mode === "cumulative"
   const batch = feed.batch ?? (items.length === 500 ? 2 : 3)
   const batches = [
+    { b: 0, label: "Master (Cumulative)", href: `/feeds/google-us-${esc(lang)}-master.html` },
     { b: 2, label: "Batch 2 · 500", href: `/feeds/google-us-${esc(lang)}-top500.html` },
     { b: 3, label: "Batch 3 · +600", href: `/feeds/google-us-${esc(lang)}-top600.html` },
     { b: 4, label: "Batch 4 · +600 (+Commercial)", href: `/feeds/google-us-${esc(lang)}-batch4-600.html` },
     { b: 5, label: "Batch 5 · +600", href: `/feeds/google-us-${esc(lang)}-batch5-600.html` },
-    { b: 6, label: "Batch 6 · +600", href: `/feeds/google-us-${esc(lang)}-batch6-600.html` },
   ]
   const stepLinks = batches
     .map((entry) => {
-      const active = entry.b === batch
+      const active = isCumulative ? entry.b === 0 : entry.b === batch
       return `<a class="${active ? "" : "alt"}" href="${entry.href}">${entry.label}</a>`
     })
     .join("")
-  const heading = batch <= 2 ? `US Top ${items.length} (Batch 2)` : `US Batch ${batch} · +${items.length} New Products (0% Overlap)`
+  const heading = isCumulative
+    ? `US Master Cumulative · ${items.length} Products (Single GMC Source)`
+    : batch <= 2
+      ? `US Top ${items.length} (Batch 2)`
+      : `US Batch ${batch} · +${items.length} New Products (0% Overlap)`
 
   const rows = items
     .map((item, index) => {

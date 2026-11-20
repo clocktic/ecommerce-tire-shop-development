@@ -8,7 +8,7 @@ import { db } from "@/lib/db"
 import { orderItems, orders } from "@/lib/db/schema"
 import { feedExclusion, FeedValidationError, type FeedSkip } from "@/lib/feeds/google"
 import { enrichedDescription, escapeFeedXml, feedText } from "@/lib/feeds/us-feed-format"
-import { selectUsTop500, US_TOP500_PINNED, type DemandSignals, type ScoredProduct } from "@/lib/feeds/us-top500-selection"
+import { selectUsCumulative, selectUsTop500, US_TOP500_PINNED, type DemandSignals, type ScoredProduct } from "@/lib/feeds/us-top500-selection"
 import { storePath, type Store } from "@/lib/i18n/config"
 import { POLICIES } from "@/lib/policies"
 import { absoluteUrl, publicImageUrl } from "@/lib/seo"
@@ -446,9 +446,15 @@ export type Top500Feed = {
   generatedAt: string
   total: number
   batch: number
+  mode?: "batch" | "cumulative"
 }
 
-export async function buildUsTop500Feed(store: Store, requestedTotal = 500, batch?: number): Promise<Top500Feed> {
+export async function buildUsTop500Feed(
+  store: Store,
+  requestedTotal = 500,
+  batch?: number,
+  options?: { cumulative?: boolean },
+): Promise<Top500Feed> {
   if (store.market !== "us") throw new Error("The US Top feed is US only")
   const [catalog, signals] = await Promise.all([getProducts("us"), demandSignals()])
   const skipped: FeedSkip[] = []
@@ -479,9 +485,12 @@ export async function buildUsTop500Feed(store: Store, requestedTotal = 500, batc
     console.warn("US top feed skipped unavailable pinned products", skipped)
   }
 
-  const effectiveBatch = batch ?? (requestedTotal === 500 ? 2 : 3)
+  const isCumulative = Boolean(options?.cumulative)
+  const effectiveBatch = isCumulative ? 0 : (batch ?? (requestedTotal === 500 ? 2 : 3))
   const total = Math.min(Math.max(100, Math.trunc(requestedTotal)), eligible.length)
-  const selection = selectUsTop500(eligible, signals, new Date(), total, effectiveBatch)
+  const selection = isCumulative
+    ? selectUsCumulative(eligible, signals, new Date(), total)
+    : selectUsTop500(eligible, signals, new Date(), total, effectiveBatch)
   if (!selection.length) {
     throw new FeedValidationError([{ slug: "feed", reason: `no eligible products available for batch ${effectiveBatch}` }])
   }
@@ -491,7 +500,11 @@ export async function buildUsTop500Feed(store: Store, requestedTotal = 500, batc
   const counts = { tires: 0, wheels: 0, brakes: 0 }
   for (const item of items) counts[item.product.category] += 1
   const brands = new Set(items.map((i) => i.product.brand)).size
-  const label = effectiveBatch <= 2 ? `Top ${items.length}` : `Batch ${effectiveBatch} (+${items.length} New)`
+  const label = isCumulative
+    ? `Master Cumulative (${items.length})`
+    : effectiveBatch <= 2
+      ? `Top ${items.length}`
+      : `Batch ${effectiveBatch} (+${items.length} New)`
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <!--
@@ -499,7 +512,7 @@ export async function buildUsTop500Feed(store: Store, requestedTotal = 500, batc
   Generated ${generatedAt}
   ${items.length} items: ${counts.tires} tires · ${counts.wheels} wheels · ${counts.brakes} brakes · ${brands} brands
   Selection: US bestseller model lines, USTMA top replacement sizes, seasonal demand, store orders and reviews.
-  Zero-overlap batching: excludes all products from earlier GMC batches.
+  ${isCumulative ? "Cumulative single-source feed: preserves all prior batches and commercial truck SKUs with zero duplicates." : "Zero-overlap batching: excludes all products from earlier GMC batches."}
   custom_label_0 category · 1 segment · 2 price band · 3 popularity tier · 4 rim size / axle
 -->
 <rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
@@ -515,5 +528,14 @@ ${items.map((item) => `    <item>\n${item.nodes.map((node) => renderNode(node, "
   const text =
     [TEXT_COLUMNS.join("\t"), ...items.map((item) => TEXT_COLUMNS.map((c) => feedText(item.flat[c] ?? "").replaceAll("\t", " ")).join("\t"))].join("\n") + "\n"
 
-  return { xml, text, items, skipped, generatedAt, total: items.length, batch: effectiveBatch }
+  return {
+    xml,
+    text,
+    items,
+    skipped,
+    generatedAt,
+    total: items.length,
+    batch: effectiveBatch,
+    mode: isCumulative ? "cumulative" : "batch",
+  }
 }
