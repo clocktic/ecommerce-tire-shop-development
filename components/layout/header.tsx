@@ -10,6 +10,7 @@ import { SearchModal } from "@/components/search/search-modal"
 import { CATEGORIES } from "@/lib/catalog"
 import { getDictionary, storePath, type Store } from "@/lib/i18n"
 import { getExtras } from "@/lib/i18n/extras"
+import { getCommercialCopy } from "@/lib/i18n/commercial"
 import { tireReferenceCopy } from "@/lib/i18n/tire-reference"
 
 export function Header({ store }: { store: Store }) {
@@ -17,6 +18,7 @@ export function Header({ store }: { store: Store }) {
   const x = getExtras(store)
   const nav = [
     ...CATEGORIES.map((c) => ({ href: storePath(store, `/${c.slug}`), label: t.categories[c.slug].name })),
+    { href: storePath(store, "/commercial"), label: getCommercialCopy(store).nav },
     { href: storePath(store, "/tire-catalog"), label: tireReferenceCopy(store.lang, store.market).nav },
     { href: storePath(store, "/track"), label: x.track.nav },
     { href: storePath(store, "/faq"), label: t.common.faq },
