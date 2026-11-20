@@ -195,22 +195,50 @@ export default async function CategoryPage({ params, searchParams }: { params: P
         <CategoryFilters category={category} products={all} filters={filters} store={store} t={t} />
       </MobileCatalogToolbar>
 
-      <form method="get" className="hidden flex-col gap-4 border-b border-border py-6 md:flex md:flex-row md:items-end">
+      <form method="get" className="hidden flex-col gap-3 border-b border-border py-5 md:flex">
         {filters.vehicle && <input type="hidden" name="vehicle" value={filters.vehicle} />}
-        <fieldset className="grid flex-1 grid-cols-2 gap-3 lg:grid-cols-4">
-          <legend className="sr-only">{fmt(t.catalog.filter, { category: copy.name })}</legend>
-          <CategoryFilters category={category} products={all} filters={filters} store={store} t={t} />
-        </fieldset>
-        <div className="flex items-center gap-3">
-          <Button type="submit" size="lg" className="flex-1 md:flex-initial">
-            {t.catalog.apply}
-          </Button>
-          {active && (
-            <Link href={storePath(store, `/${category}`)} className="text-sm underline underline-offset-4">
-              {t.catalog.clear}
-            </Link>
-          )}
+        <div className="flex items-end gap-3">
+          <fieldset className="grid flex-1 grid-cols-4 gap-3">
+            <legend className="sr-only">{fmt(t.catalog.filter, { category: copy.name })}</legend>
+            <CategoryFilters category={category} products={all} filters={filters} store={store} t={t} tier="primary" />
+          </fieldset>
+          <div className="flex shrink-0 items-center gap-3">
+            <Button type="submit" size="lg">
+              {t.catalog.apply}
+            </Button>
+            {active && (
+              <Link href={storePath(store, `/${category}`)} className="text-sm underline underline-offset-4">
+                {t.catalog.clear}
+              </Link>
+            )}
+          </div>
         </div>
+        <details
+          open={Boolean(
+            filters.speed ||
+              filters.load ||
+              filters.runFlat ||
+              filters.extraLoad ||
+              filters.offset ||
+              filters.bore ||
+              filters.construction ||
+              filters.pistons ||
+              filters.disc ||
+              filters.price ||
+              filters.stock ||
+              filters.sort ||
+              (category !== "brakes" && filters.brand) ||
+              (category === "brakes" && filters.segment),
+          )}
+          className="group"
+        >
+          <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground">
+            <span>+ {fmt(t.catalog.filter, { category: copy.name })} / {t.catalog.sort}</span>
+          </summary>
+          <fieldset className="mt-3 grid grid-cols-4 gap-3">
+            <CategoryFilters category={category} products={all} filters={filters} store={store} t={t} tier="secondary" />
+          </fieldset>
+        </details>
       </form>
 
       {activeEntries.length > 0 && (
@@ -301,20 +329,26 @@ function CategoryFilters({
   filters,
   store,
   t,
+  tier = "all",
 }: {
   category: Category
   products: Product[]
   filters: Record<string, string | undefined>
   store: Store
   t: Dictionary
+  tier?: "primary" | "secondary" | "all"
 }) {
+  const showPrimary = tier === "all" || tier === "primary"
+  const showSecondary = tier === "all" || tier === "secondary"
   const c = t.catalog
   const any = c.any
   const brands = unique(products.map((p) => p.brand))
   const yesNo = { yes: c.yes, no: c.no }
   const shared = (
     <>
-      {brands.length > 0 && <FilterSelect name="brand" label={c.brand} any={any} value={filters.brand} options={brands} />}
+      {brands.length > 0 && category !== "brakes" && (
+        <FilterSelect name="brand" label={c.brand} any={any} value={filters.brand} options={brands} />
+      )}
       <FilterSelect
         name="price"
         label={c.price}
@@ -353,22 +387,30 @@ function CategoryFilters({
     const rims = options('rim')
     return (
       <>
-        <FilterSelect name="width" label={c.width} any={any} value={filters.width} options={options('width')} />
-        <FilterSelect name="aspect" label={c.profile} any={any} value={filters.aspect} options={options('aspect')} />
-        <FilterSelect
-          name="rim"
-          label={c.rim}
-          any={any}
-          value={filters.rim}
-          options={rims}
-          labels={Object.fromEntries(rims.map((rim) => [rim, `R${rim}`]))}
-        />
-        <FilterSelect name="season" label={c.season} any={any} value={filters.season} options={Object.keys(t.labels.season)} labels={t.labels.season} />
-        <FilterSelect name="speed" label={c.speed} any={any} value={filters.speed} options={options('speedRating')} />
-        {loads.length > 0 && <FilterSelect name="load" label={c.load} any={any} value={filters.load} options={loads} />}
-        <FilterSelect name="runFlat" label={c.runFlat} any={any} value={filters.runFlat} options={["yes", "no"]} labels={yesNo} />
-        <FilterSelect name="extraLoad" label={c.extraLoad} any={any} value={filters.extraLoad} options={["yes", "no"]} labels={yesNo} />
-        {shared}
+        {showPrimary && (
+          <>
+            <FilterSelect name="width" label={c.width} any={any} value={filters.width} options={options('width')} />
+            <FilterSelect name="aspect" label={c.profile} any={any} value={filters.aspect} options={options('aspect')} />
+            <FilterSelect
+              name="rim"
+              label={c.rim}
+              any={any}
+              value={filters.rim}
+              options={rims}
+              labels={Object.fromEntries(rims.map((rim) => [rim, `R${rim}`]))}
+            />
+            <FilterSelect name="season" label={c.season} any={any} value={filters.season} options={Object.keys(t.labels.season)} labels={t.labels.season} />
+          </>
+        )}
+        {showSecondary && (
+          <>
+            <FilterSelect name="speed" label={c.speed} any={any} value={filters.speed} options={options('speedRating')} />
+            {loads.length > 0 && <FilterSelect name="load" label={c.load} any={any} value={filters.load} options={loads} />}
+            <FilterSelect name="runFlat" label={c.runFlat} any={any} value={filters.runFlat} options={["yes", "no"]} labels={yesNo} />
+            <FilterSelect name="extraLoad" label={c.extraLoad} any={any} value={filters.extraLoad} options={["yes", "no"]} labels={yesNo} />
+            {shared}
+          </>
+        )}
       </>
     )
   }
@@ -384,14 +426,22 @@ function CategoryFilters({
     const constructions = unique(wheels.map((p) => p.wheel.construction))
     return (
       <>
-        <FilterSelect name="diameter" label={c.diameter} any={any} value={filters.diameter} options={diameters} labels={Object.fromEntries(diameters.map((d) => [d, `${d}"`]))} />
-        <FilterSelect name="width" label={c.width} any={any} value={filters.width} options={widths} labels={Object.fromEntries(widths.map((w) => [w, `${w}"`]))} />
-        <FilterSelect name="bolt" label={c.bolt} any={any} value={filters.bolt} options={bolts} labels={Object.fromEntries(bolts.map((b) => [b, b.replace("x", "×")]))} />
-        <FilterSelect name="offset" label={c.offset} any={any} value={filters.offset} options={[...offsets]} labels={c.offsetBand} />
-        <FilterSelect name="bore" label={c.bore} any={any} value={filters.bore} options={bores} labels={Object.fromEntries(bores.map((b) => [b, `${b} mm`]))} />
-        <FilterSelect name="finish" label={c.finish} any={any} value={filters.finish} options={[...finishes]} labels={c.finishFamily} />
-        <FilterSelect name="construction" label={c.construction} any={any} value={filters.construction} options={constructions} labels={c.constructionLabels} />
-        {shared}
+        {showPrimary && (
+          <>
+            <FilterSelect name="diameter" label={c.diameter} any={any} value={filters.diameter} options={diameters} labels={Object.fromEntries(diameters.map((d) => [d, `${d}"`]))} />
+            <FilterSelect name="width" label={c.width} any={any} value={filters.width} options={widths} labels={Object.fromEntries(widths.map((w) => [w, `${w}"`]))} />
+            <FilterSelect name="bolt" label={c.bolt} any={any} value={filters.bolt} options={bolts} labels={Object.fromEntries(bolts.map((b) => [b, b.replace("x", "×")]))} />
+            <FilterSelect name="finish" label={c.finish} any={any} value={filters.finish} options={[...finishes]} labels={c.finishFamily} />
+          </>
+        )}
+        {showSecondary && (
+          <>
+            <FilterSelect name="offset" label={c.offset} any={any} value={filters.offset} options={[...offsets]} labels={c.offsetBand} />
+            <FilterSelect name="bore" label={c.bore} any={any} value={filters.bore} options={bores} labels={Object.fromEntries(bores.map((b) => [b, `${b} mm`]))} />
+            <FilterSelect name="construction" label={c.construction} any={any} value={filters.construction} options={constructions} labels={c.constructionLabels} />
+            {shared}
+          </>
+        )}
       </>
     )
   }
@@ -402,19 +452,28 @@ function CategoryFilters({
   ])
   return (
     <>
-      <FilterSelect
-        name="segment"
-        label={c.segment}
-        any={any}
-        value={filters.segment}
-        options={["premium", "mid"]}
-        labels={c.segmentLabels}
-      />
-      <FilterSelect name="kind" label={c.type} any={any} value={filters.kind} options={[...BRAKE_KINDS]} labels={t.labels.brakeKind} />
-      <FilterSelect name="axle" label={c.axle} any={any} value={filters.axle} options={["front", "rear"]} labels={t.labels.axleShort} />
-      <FilterSelect name="pistons" label={c.pistons} any={any} value={filters.pistons} options={[...PISTON_OPTIONS]} />
-      <FilterSelect name="disc" label={c.disc} any={any} value={filters.disc} options={discs} labels={Object.fromEntries(discs.map((d) => [d, `${d} mm`]))} />
-      {shared}
+      {showPrimary && (
+        <>
+          <FilterSelect name="kind" label={c.type} any={any} value={filters.kind} options={[...BRAKE_KINDS]} labels={t.labels.brakeKind} />
+          <FilterSelect name="axle" label={c.axle} any={any} value={filters.axle} options={["front", "rear"]} labels={t.labels.axleShort} />
+          {brands.length > 0 && <FilterSelect name="brand" label={c.brand} any={any} value={filters.brand} options={brands} />}
+          <FilterSelect name="pistons" label={c.pistons} any={any} value={filters.pistons} options={[...PISTON_OPTIONS]} />
+        </>
+      )}
+      {showSecondary && (
+        <>
+          <FilterSelect
+            name="segment"
+            label={c.segment}
+            any={any}
+            value={filters.segment}
+            options={["premium", "mid"]}
+            labels={c.segmentLabels}
+          />
+          <FilterSelect name="disc" label={c.disc} any={any} value={filters.disc} options={discs} labels={Object.fromEntries(discs.map((d) => [d, `${d} mm`]))} />
+          {shared}
+        </>
+      )}
     </>
   )
 }

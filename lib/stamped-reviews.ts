@@ -111,19 +111,25 @@ function normalize(review: DashboardReview): StampedReview | null {
   if (review.reviewState !== PUBLISHED || !productSlug) return null
   const rating = Math.min(5, Math.max(1, Math.round(review.rating)))
   const productId = review.productId != null ? String(review.productId) : stampedProductId(productSlug)
+  const rawProductTitle = (review.productTitle ?? "").trim()
+  const productTitle = rawProductTitle
+    .replace(/\s+For\s+[A-Z0-9].*$/i, "")
+    .replace(/\s+—\s+.*$/, "")
+    .trim()
+
   return {
     id: review.id,
     author: shortName(review.author),
-    location: review.location?.trim() ?? "",
+    location: (review.location ?? "").trim(),
     rating,
-    title: review.title?.trim() ?? "",
-    body: review.body?.trim() ?? "",
-    reply: review.isPublicReply === false ? "" : (review.reply?.trim() ?? ""),
+    title: (review.title ?? "").trim(),
+    body: (review.body ?? "").trim(),
+    reply: review.isPublicReply && review.reply ? review.reply.trim() : "",
     date: review.dateCreated,
     verified: (review.verifiedType ?? 0) > 0,
     productId,
     productSlug,
-    productTitle: review.productTitle?.trim() ?? "",
+    productTitle,
     productImage: localImage(review.productImageUrl),
     productMarket: marketFromUrl(review.productUrl, productSlug),
   }
@@ -157,18 +163,31 @@ const loadStampedReviewsSnapshot = unstable_cache(
     const rest = await Promise.all(
       Array.from({ length: totalPages - 1 }, (_, i) => fetchPage(i + 2)),
     )
-    const seen = new Set<number>()
-    return [first, ...rest]
+    const candidates = [first, ...rest]
       .flatMap((page) => page.results ?? [])
       .map((row) => normalize(row.review))
-      .filter((review): review is StampedReview => {
-        if (!review || seen.has(review.id)) return false
-        seen.add(review.id)
+      .filter((review): review is StampedReview => Boolean(review))
+      .sort((a, b) => b.rating - a.rating || b.date.localeCompare(a.date) || b.id - a.id)
+
+    const seenIds = new Set<number>()
+    const seenProductAuthors = new Set<string>()
+    const seenBodies = new Set<string>()
+
+    return candidates
+      .filter((review) => {
+        if (seenIds.has(review.id)) return false
+        const authorKey = `${review.productSlug}::${review.author.toLowerCase()}`
+        const normalizedBody = review.body.toLowerCase().replace(/\s+/g, " ").trim()
+        const bodyKey = normalizedBody || `${review.productSlug}::${review.title.toLowerCase()}`
+        if (seenProductAuthors.has(authorKey) || seenBodies.has(bodyKey)) return false
+        seenIds.add(review.id)
+        seenProductAuthors.add(authorKey)
+        seenBodies.add(bodyKey)
         return true
       })
-      .sort((a, b) => b.date.localeCompare(a.date))
+      .sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id)
   },
-  ["stamped-reviews-snapshot-v2"],
+  ["stamped-reviews-snapshot-v4"],
   { revalidate: 300, tags: [STAMPED_REVIEWS_TAG] },
 )
 

@@ -7,6 +7,7 @@ const s = eu.shipping
 const cutoff = "14:00 Uhr PT (US-Pazifikzeit)"
 const [min, max] = deliveryDays("eu")
 const days = `${min}–${max} Werktage`
+const daysDative = `${min}–${max} Werktagen`
 const area = "alle 27 EU-Mitgliedstaaten"
 const exclusions = "Länder außerhalb der EU (u. a. Vereinigtes Königreich, Schweiz, Norwegen) und EU-Gebiete in äußerster Randlage wie die Kanarischen Inseln"
 const duties = "Versand aus den USA. Die Preise enthalten keine Einfuhrzölle und keine Einfuhrumsatzsteuer — diese zahlen Sie bei Lieferung an den Zusteller bzw. den Zoll. Nachdem Sie Ihre Bestellung erhalten haben, erstatten wir Ihnen die gezahlte Einfuhrumsatzsteuer."
@@ -248,12 +249,12 @@ export const euDe: Dictionary = {
     supplierPart: "Lieferantennummer",
   },
     priceNote: "ohne Einfuhrabgaben und MwSt. · Preis pro Stück",
-    deliveryTitle: `${s.freeShipping ? "Kostenlose Lieferung" : "Lieferung"} in ${days}`,
+    deliveryTitle: `${s.freeShipping ? "Kostenlose Lieferung" : "Lieferung"} in ${daysDative}`,
     deliveryText: `In ${area}. Bestellungen bis ${cutoff} verlassen unser Lager in den USA innerhalb von ${s.handlingDays[0]}–${s.handlingDays[1]} Werktagen. Nach Möglichkeit per eigenem Lieferdienst und eigenem Kurier, andernfalls über andere Versanddienstleister.`,
     returnsTitle: `${eu.returns.windowDays} Tage Widerrufsrecht`,
     returnsText: "Nicht montiert und unbenutzt.",
     warrantyTitle: "2 Jahre gesetzliche Gewährleistung",
-    shippingText: `Kostenlose Lieferung in ${area} in ${days}. Wenn möglich versenden wir die Ware mit unserem eigenen Lieferdienst und eigenem Kurier; ist eine Zustellung durch unseren eigenen Lieferdienst nicht möglich, nutzen wir andere Versanddienstleister (${s.carriers.join(", ")}). ${duties}`,
+    shippingText: `Kostenlose Lieferung in ${area} in ${daysDative}. Wenn möglich versenden wir die Ware mit unserem eigenen Lieferdienst und eigenem Kurier; ist eine Zustellung durch unseren eigenen Lieferdienst nicht möglich, nutzen wir andere Versanddienstleister (${s.carriers.join(", ")}). ${duties}`,
     returnsDetail: `Sie können den Kauf innerhalb von ${eu.returns.windowDays} Tagen ab Lieferung ohne Angabe von Gründen widerrufen. Montierte oder gefahrene Reifen und Felgen können an Wert verlieren, was die Erstattung mindern kann.`,
     notSold: {
       eyebrow: "Nicht im EU-Shop erhältlich",

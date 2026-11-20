@@ -47,7 +47,6 @@ export function BrandFilterStrip({
         )}
       >
         <span>{allLabel}</span>
-        <span className="opacity-75">({brands.length})</span>
       </Link>
 
       {brands.map(({ name, count }) => {

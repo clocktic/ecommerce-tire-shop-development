@@ -9,6 +9,7 @@ import { PayButton } from "@/components/checkout/pay-button"
 import {
   getPaymentMethodCopy,
   PaymentMethodSelector,
+  type PaymentChoice,
 } from "@/components/checkout/payment-method-selector"
 import { PayPalOrderButtons } from "@/components/checkout/paypal-buttons"
 import { useCart } from "@/components/cart/cart-provider"
@@ -31,6 +32,7 @@ export function CheckoutForm() {
   const router = useRouter()
   const { data: session } = useSession()
   const [accepted, setAccepted] = useState(false)
+  const [paymentChoice, setPaymentChoice] = useState<PaymentChoice>("paypal")
   const [failed, setFailed] = useState(false)
   const [placed, setPlaced] = useState(false)
   const [pending, startTransition] = useTransition()
@@ -220,6 +222,8 @@ export function CheckoutForm() {
         <PaymentMethodSelector
           lang={store.lang}
           market={market}
+          choice={paymentChoice}
+          onChoiceChange={setPaymentChoice}
           cardAction={
             <PayButton pending={pending}>
               {pending
@@ -231,6 +235,7 @@ export function CheckoutForm() {
             <PayPalOrderButtons
               currency={MARKETS[market].currency}
               disabled={pending}
+              onFallbackToCard={() => setPaymentChoice("card")}
               getOrderNumber={async () => {
                 if (createdPayPalOrderRef.current) {
                   return createdPayPalOrderRef.current

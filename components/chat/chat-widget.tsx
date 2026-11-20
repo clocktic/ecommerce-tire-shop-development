@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import { usePathname } from "next/navigation"
 import useSWR from "swr"
 import { MessageCircle, Send, X } from "lucide-react"
 import { useI18n } from "@/components/i18n/i18n-provider"
@@ -13,6 +14,7 @@ type ChatState = { messages: ChatMessage[]; visitor: ChatVisitor | null }
 const fetcher = (url: string) => fetch(url, { cache: "no-store" }).then((r) => r.json() as Promise<ChatState>)
 
 export function ChatWidget() {
+  const pathname = usePathname()
   const { store, x, intl } = useI18n()
   const [open, setOpen] = useState(false)
   const [nameInput, setNameInput] = useState("")
@@ -83,6 +85,8 @@ export function ChatWidget() {
       setSending(false)
     }
   }
+
+  if (pathname?.endsWith("/checkout")) return null
 
   return (
     <div data-open={open || undefined} className="chat-launcher fixed bottom-[calc(4.15rem+env(safe-area-inset-bottom))] right-3 transition-[bottom,translate,opacity] duration-300 z-40 flex flex-col items-end gap-2.5 md:bottom-4 md:right-4">

@@ -55,6 +55,9 @@ export const CATALOG_SIZE_MAP: Record<number, Record<number, number[]>> = {
   305: { 25: [21], 30: [19, 20, 21, 22], 35: [19, 20, 21, 22, 23, 24], 40: [20, 21, 22], 45: [22], 50: [20] },
   315: { 30: [18, 19, 20, 21, 22], 35: [20, 21, 22, 24], 40: [21], 45: [21] },
   325: { 25: [20, 21], 30: [19, 20, 21, 23], 35: [20, 22, 23], 40: [21, 22] },
+  335: { 25: [22], 30: [20, 21, 23], 35: [17] },
+  345: { 30: [20] },
+  355: { 25: [21], 30: [19] },
 }
 
 export const POPULAR_TIRE_SIZES: Record<Market, { width: number; aspect: number; rim: number; tag: string }[]> = {
@@ -284,8 +287,8 @@ const SPECS: VehicleSpec[] = [
   ["land-rover-evoque", "Land Rover", "Range Rover Evoque", 2019, 2026, both, "5x108", 63.4, [["18", "S 18\"", 235, 60, 18], ["19", "Dynamic SE 19\"", 235, 55, 19], ["20", "Autobiography 20\"", 235, 50, 20]]],
   ["land-rover-velar", "Land Rover", "Range Rover Velar", 2018, 2026, both, "5x108", 63.4, [["19", "S 19\"", 255, 55, 19], ["20", "Dynamic SE 20\"", 255, 50, 20], ["21", "HSE 21\"", 265, 45, 21]]],
   ["land-rover-defender", "Land Rover", "Defender 90 / 110 / 130", 2020, 2026, both, "5x120", 72.6, [["19", "S 19\"", 255, 65, 19], ["20", "X-Dynamic / SE 20\"", 255, 60, 20], ["22", "V8 / Carpathian 22\"", 275, 45, 22]]],
-  ["land-rover-rr-sport", "Land Rover", "Range Rover Sport", 2019, 2026, both, "5x120", 72.6, [["21", "SE / Dynamic 21\"", 275, 50, 21], ["22", "Autobiography 22\"", 285, 45, 22], ["23", "SV 23\"", 285, 40, 23]]],
-  ["land-rover-rr", "Land Rover", "Range Rover", 2022, 2026, both, "5x120", 72.6, [["21", "SE 21\"", 275, 50, 21], ["22", "Autobiography 22\"", 285, 45, 22], ["23", "SV 23\"", 285, 40, 23]]],
+  ["land-rover-rr-sport", "Land Rover", "Range Rover Sport", 2019, 2026, both, "5x120", 72.6, [["20", "S / SE 20\"", 255, 55, 20], ["21", "SE / Dynamic 21\"", 275, 50, 21], ["22", "Autobiography 22\"", 285, 45, 22], ["23", "SV 23\"", 285, 40, 23]]],
+  ["land-rover-rr", "Land Rover", "Range Rover", 2022, 2026, both, "5x120", 72.6, [["20", "Base 20\"", 275, 50, 20], ["21", "SE 21\"", 275, 50, 21], ["22", "Autobiography 22\"", 285, 45, 22], ["23", "SV 23\"", 285, 40, 23]]],
 
   // Lexus
   ["lexus-is", "Lexus", "IS 300 / IS 350 / IS 500", 2021, 2026, us, "5x114.3", 60.1, [["18", "IS 300 18\"", 235, 45, 18], ["19", "F SPORT Front 19\"", 235, 40, 19], ["19-rear", "F SPORT Rear 19\"", 265, 35, 19]]],
@@ -485,16 +488,10 @@ export function matchesBrakeVehicle(fitment: string[], vehicle: VehicleModel): b
     .map((s) => s.trim().toLowerCase())
     .filter((s) => s.length >= 2)
 
-  const exactMatch = fitment.some((entry) => {
+  return fitment.some((entry) => {
     const text = entry.toLowerCase()
     if (!text.includes(needleMake)) return false
     return modelParts.some((part) => text.includes(part))
-  })
-  if (exactMatch) return true
-
-  return fitment.some((entry) => {
-    const text = entry.toLowerCase()
-    return text.includes(needleMake) && !text.includes("(")
   })
 }
 

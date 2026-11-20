@@ -146,7 +146,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
             list: [
               `Email ${COMPANY.email} with your order number (or send the completed Model Withdrawal Form).`,
               "We confirm receipt of your withdrawal by email within 1 working day and issue a Return Merchandise Authorisation (RMA) number along with customs re-export documentation and, on request, a prepaid return label.",
-              `Pack the items securely in their original packaging and ship them to: ${EU_PRESENCE.returnsAddress}, marking the RMA number clearly on the outside of each parcel.`,
+              `Pack the items securely in their original packaging and ship them to: ${EU_PRESENCE.returnsAddress} (or to the regional EU returns consolidation facility printed on your prepaid RMA label), marking the RMA number clearly on the outside of each parcel.`,
             ],
           },
         ],

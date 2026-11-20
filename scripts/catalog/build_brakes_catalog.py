@@ -415,7 +415,7 @@ def main():
         ean13 = normalize_to_ean13(item.get("gtin"), "8020584", mpn, used_eans)
 
         specs = [
-            {"label": "Segment", "value": "Premium Performance (65% Tier)"},
+            {"label": "Segment", "value": "Premium Performance"},
             {"label": "Brand", "value": "Brembo S.p.A."},
             {"label": "Product Line", "value": "Brembo GT / High Performance Systems"},
             {"label": "Component Type", "value": "Big Brake System Kit" if kind == "kit" else ("2-Piece Floating Brake Disc Assembly" if kind == "discs" else "High-Performance Sport/GT Brake Pad Set")},
@@ -534,7 +534,7 @@ def main():
         eur_price = round(usd_price * 0.92, 2)
 
         specs = [
-            {"label": "Segment", "value": "Premium Performance (65% Tier)"},
+            {"label": "Segment", "value": "Premium Performance"},
             {"label": "Brand", "value": "Baer Brakes (Phoenix, AZ, USA)"},
             {"label": "Product Line", "value": sp_map.get("Product Line", "Baer Extreme+ / Pro+ Series")},
             {"label": "Component Type", "value": "Complete Big Brake System Kit" if kind == "kit" else "EradiSpeed+ 2-Piece Performance Rotor"},
@@ -647,7 +647,7 @@ def main():
         ean13 = normalize_to_ean13(item.get("gtin"), "0889545", mpn, used_eans)
 
         specs = [
-            {"label": "Segment", "value": "Premium Performance (65% Tier)"},
+            {"label": "Segment", "value": "Premium Performance"},
             {"label": "Brand", "value": "Wilwood Engineering (Camarillo, CA, USA)"},
             {"label": "Component Type", "value": "Forged Billet Big Brake Kit"},
             {"label": "Axle Position", "value": "Front Axle" if axle == "front" else "Rear Axle"},
@@ -742,7 +742,7 @@ def main():
         ean13 = normalize_to_ean13(item.get("gtin"), "0850031", mpn, used_eans)
 
         specs = [
-            {"label": "Segment", "value": "Premium Performance (65% Tier)"},
+            {"label": "Segment", "value": "Premium Performance"},
             {"label": "Brand", "value": "TBM Brakes (Newbury Park, CA, USA)"},
             {"label": "Component Type", "value": "Complete Billet Brake System Kit" if kind == "kit" else ("CNC Billet Racing Caliper" if kind == "caliper" else "Convoluted Revolution Steel Rotor")},
             {"label": "Axle Position", "value": "Front Axle" if axle == "front" else "Rear Axle"},
@@ -831,7 +831,7 @@ def main():
         ean13 = normalize_to_ean13(item.get("gtin"), "5050953", mpn, used_eans)
 
         specs = [
-            {"label": "Segment", "value": "Premium Performance (65% Tier)"},
+            {"label": "Segment", "value": "Premium Performance"},
             {"label": "Brand", "value": "EBC Brakes Racing (Northampton, UK)"},
             {"label": "Product Line", "value": "EBC Racing Apollo Balanced Series"},
             {"label": "Component Type", "value": "Balanced Big Brake System Kit" if kind == "kit" else "Apollo 2-Piece Bolted Billet Caliper"},
@@ -918,7 +918,7 @@ def main():
         ean13 = normalize_to_ean13(item.get("gtin"), "4044197", mpn, used_eans)
 
         specs = [
-            {"label": "Segment", "value": "Premium Performance (65% Tier)"},
+            {"label": "Segment", "value": "Premium Performance"},
             {"label": "Brand", "value": "Ferodo Racing (Mondovì, Italy)"},
             {"label": "Product Line", "value": "Ferodo DS2500 / DS3000 Track & Fast-Road Series"},
             {"label": "Component Type", "value": "Motorsport & High-Performance Brake Pad Set (4 Pads)"},
@@ -1006,7 +1006,7 @@ def main():
         ean13 = normalize_to_ean13(item.get("gtin"), "5050953", mpn, used_eans)
 
         specs = [
-            {"label": "Segment", "value": "Mid-Range OE+ Street (35% Tier)"},
+            {"label": "Segment", "value": "OE+ Street Performance"},
             {"label": "Brand", "value": "EBC Brakes (Northampton, UK)"},
             {"label": "Product Line", "value": "EBC Street OE-Replacement & Upgrade Line"},
             {"label": "Component Type", "value": {"pads-and-discs": "Matched Brake Pad & Rotor Kit", "discs": "OE-Spec Coated Vented Brake Disc Pair", "drum": "Precision Balanced Cast-Iron Brake Drum", "shoes": "Asbestos-Free Radius-Ground Brake Shoe Set"}[kind]},
@@ -1105,7 +1105,7 @@ def main():
         usd_price = round(eur_price * 1.09, 2)
 
         specs = [
-            {"label": "Segment", "value": "Mid-Range OE+ Street (35% Tier)"},
+            {"label": "Segment", "value": "OE+ Street Performance"},
             {"label": "Brand", "value": "Robert Bosch GmbH (Karlsruhe, Germany)"},
             {"label": "Component Type", "value": "High-Carbon Coated Brake Disc" if kind == "discs" else "QuietCast Low-Dust Disc Brake Pad Set"},
             {"label": "Axle Position", "value": "Front Axle" if axle == "front" else "Rear Axle"},
@@ -1210,7 +1210,7 @@ def main():
         ean13 = normalize_to_ean13(item.get("gtin"), "4044197", mpn, used_eans)
 
         specs = [
-            {"label": "Segment", "value": "Mid-Range OE+ Street (35% Tier)"},
+            {"label": "Segment", "value": "OE+ Street Performance"},
             {"label": "Brand", "value": "Ferodo (Chapel-en-le-Frith, UK / Italy)"},
             {"label": "Product Line", "value": "Ferodo DS Performance / Premier Eco-Friction Street"},
             {"label": "Component Type", "value": "Road-Approved Performance Brake Pad Set (4 Pads)"},
@@ -1349,7 +1349,7 @@ def main():
         ean13 = normalize_to_ean13(None, "0792088", mpn, used_eans)
 
         specs = [
-            {"label": "Segment", "value": "Mid-Range OE+ Street & Truck (35% Tier)"},
+            {"label": "Segment", "value": "OE+ Street & Truck Performance"},
             {"label": "Brand", "value": "PowerStop LLC (Bedford Park, IL, USA)"},
             {"label": "Product Line", "value": "Z23 Evolution Sport / Z26 Street Warrior / Z36 Truck & Tow"},
             {"label": "Component Type", "value": "Complete Bolt-On Brake Upgrade Kit" if kind in ("kit", "pads-and-discs") else ("Drilled & Slotted / Coated Rotor Pair" if kind == "discs" else "Carbon-Fiber Ceramic Brake Pad Set")},

@@ -10,12 +10,45 @@ import { StarRating } from "@/components/reviews/star-rating"
 
 const SHOWN = 12
 
-// Strongest recent reviews from this market first, then the rest, so the carousel reads local.
+// Strongest recent reviews from this market first, then the rest, so the carousel reads local
+// while ensuring every card in the carousel has a distinct author, distinct review text, and distinct product.
 function pickReviews(reviews: StampedReview[], store: Store) {
   const good = reviews.filter((r) => r.rating >= 4 && r.body.length >= 40).sort((a, b) => b.rating - a.rating)
   const local = good.filter((r) => r.productMarket === store.market)
   const other = good.filter((r) => r.productMarket !== store.market)
-  return [...local, ...other].slice(0, SHOWN)
+  const pool = [...local, ...other]
+
+  const picked: StampedReview[] = []
+  const usedIds = new Set<number>()
+  const usedAuthors = new Set<string>()
+  const usedBodies = new Set<string>()
+  const usedProducts = new Set<string>()
+
+  // Pass 1: unique author + unique body + unique product
+  for (const r of pool) {
+    if (picked.length >= SHOWN) break
+    const authorKey = r.author.trim().toLowerCase()
+    const bodyKey = `${r.title.trim().toLowerCase()}::${r.body.trim().toLowerCase()}`
+    if (usedAuthors.has(authorKey) || usedBodies.has(bodyKey) || usedProducts.has(r.productSlug)) continue
+    usedIds.add(r.id)
+    usedAuthors.add(authorKey)
+    usedBodies.add(bodyKey)
+    usedProducts.add(r.productSlug)
+    picked.push(r)
+  }
+
+  // Pass 2 fallback: unique body if fewer than SHOWN distinct authors/products exist
+  for (const r of pool) {
+    if (picked.length >= SHOWN) break
+    if (usedIds.has(r.id)) continue
+    const bodyKey = `${r.title.trim().toLowerCase()}::${r.body.trim().toLowerCase()}`
+    if (usedBodies.has(bodyKey)) continue
+    usedIds.add(r.id)
+    usedBodies.add(bodyKey)
+    picked.push(r)
+  }
+
+  return picked
 }
 
 export function ReviewsShowcase({ reviews, store }: { reviews: StampedReview[]; store: Store }) {

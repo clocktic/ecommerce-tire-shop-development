@@ -886,6 +886,86 @@ const SPEC_LABEL_MAP: Record<string, Record<NonEnLang, string>> = {
     nl: "Incl. parkeerrem",
     "es-419": "Incluye freno de estacionamiento",
   },
+  "oe reference numbers": {
+    de: "OE-Vergleichsnummern",
+    fr: "Références OE",
+    it: "Codici di riferimento OE",
+    es: "Referencias OE",
+    nl: "OE-referentienummers",
+    "es-419": "Números de referencia OE",
+  },
+  "corrosion finish": {
+    de: "Korrosionsschutz",
+    fr: "Traitement anticorrosion",
+    it: "Trattamento anticorrosione",
+    es: "Protección anticorrosión",
+    nl: "Corrosiebescherming",
+    "es-419": "Protección anticorrosión",
+  },
+  "hardware included": {
+    de: "Befestigungssatz enthalten",
+    fr: "Kit de montage inclus",
+    it: "Hardware di montaggio incluso",
+    es: "Herrajes incluidos",
+    nl: "Montagemateriaal inbegrepen",
+    "es-419": "Herrajes incluidos",
+  },
+  "noise suppression": {
+    de: "Geräuschdämpfung",
+    fr: "Réduction du bruit",
+    it: "Riduzione rumorosità",
+    es: "Supresión de ruido",
+    nl: "Geluidsdemping",
+    "es-419": "Supresión de ruido",
+  },
+  "pad formulation": {
+    de: "Belagmischung",
+    fr: "Formulation des plaquettes",
+    it: "Mescola pastiglie",
+    es: "Formulación de pastillas",
+    nl: "Remblokformule",
+    "es-419": "Formulación de balatas",
+  },
+  "rotor metallurgy": {
+    de: "Scheibenmetallurgie",
+    fr: "Métallurgie du disque",
+    it: "Metallurgia del disco",
+    es: "Metalurgia del disco",
+    nl: "Schijfmetallurgie",
+    "es-419": "Metalurgia del disco",
+  },
+  "test mark": {
+    de: "Prüfzeichen",
+    fr: "Marque d’homologation",
+    it: "Marchio di omologazione",
+    es: "Marca de ensayo",
+    nl: "Keurmerk",
+    "es-419": "Marca de certificación",
+  },
+  "wva number": {
+    de: "WVA-Nummer",
+    fr: "Numéro WVA",
+    it: "Numero WVA",
+    es: "Número WVA",
+    nl: "WVA-nummer",
+    "es-419": "Número WVA",
+  },
+  "zero-drag technology": {
+    de: "Zero-Drag-Technologie",
+    fr: "Technologie Zero-Drag",
+    it: "Tecnologia Zero-Drag",
+    es: "Tecnología Zero-Drag",
+    nl: "Zero-Drag-technologie",
+    "es-419": "Tecnología Zero-Drag",
+  },
+  "disc brake pad fmsi number": {
+    de: "FMSI-Belagnummer",
+    fr: "Numéro FMSI des plaquettes",
+    it: "Codice FMSI pastiglie",
+    es: "Número FMSI de pastillas",
+    nl: "FMSI-bloknummer",
+    "es-419": "Número FMSI de balatas",
+  },
 }
 
 const SPEC_VALUE_EXACT: Record<string, Record<NonEnLang, string>> = {
@@ -1003,21 +1083,109 @@ const SPEC_VALUE_EXACT: Record<string, Record<NonEnLang, string>> = {
     nl: "Vooras",
     "es-419": "Eje delantero",
   },
+  "premium performance": {
+    de: "Premium-Performance",
+    fr: "Haute Performance Premium",
+    it: "Premium ad Alte Prestazioni",
+    es: "Premium de Alto Rendimiento",
+    nl: "Premium High-Performance",
+    "es-419": "Premium de Alto Desempeño",
+  },
+  "oe+ street performance": {
+    de: "OE+ Straßen-Performance",
+    fr: "Performance Route OE+",
+    it: "Prestazioni Stradali OE+",
+    es: "Rendimiento OE+ Calle",
+    nl: "OE+ Straat-Performance",
+    "es-419": "Desempeño OE+ Calle",
+  },
+  "mid-range oe+ street": {
+    de: "Mittelklasse OE+",
+    fr: "Gamme Moyenne OE+",
+    it: "Fascia Media OE+",
+    es: "Gama Media OE+",
+    nl: "Middenklasse OE+",
+    "es-419": "Gama Media OE+",
+  },
   "premium performance (65% tier)": {
-    de: "Premium-Performance (65 %)",
-    fr: "Haute Performance Premium (65 %)",
-    it: "Premium ad Alte Prestazioni (65%)",
-    es: "Premium de Alto Rendimiento (65 %)",
-    nl: "Premium High-Performance (65%)",
-    "es-419": "Premium de Alto Desempeño (65%)",
+    de: "Premium-Performance",
+    fr: "Haute Performance Premium",
+    it: "Premium ad Alte Prestazioni",
+    es: "Premium de Alto Rendimiento",
+    nl: "Premium High-Performance",
+    "es-419": "Premium de Alto Desempeño",
   },
   "mid-range oe+ (35% tier)": {
-    de: "Mittelklasse OE+ (35 %)",
-    fr: "Gamme Moyenne OE+ (35 %)",
-    it: "Fascia Media OE+ (35%)",
-    es: "Gama Media OE+ (35 %)",
-    nl: "Middenklasse OE+ (35%)",
-    "es-419": "Gama Media OE+ (35%)",
+    de: "Mittelklasse OE+",
+    fr: "Gamme Moyenne OE+",
+    it: "Fascia Media OE+",
+    es: "Gama Media OE+",
+    nl: "Middenklasse OE+",
+    "es-419": "Gama Media OE+",
+  },
+  "mid-range oe+ street (35% tier)": {
+    de: "Mittelklasse OE+",
+    fr: "Gamme Moyenne OE+",
+    it: "Fascia Media OE+",
+    es: "Gama Media OE+",
+    nl: "Middenklasse OE+",
+    "es-419": "Gama Media OE+",
+  },
+  malaysia: {
+    de: "Malaysia",
+    fr: "Malaisie",
+    it: "Malesia",
+    es: "Malasia",
+    nl: "Maleisië",
+    "es-419": "Malasia",
+  },
+  thailand: {
+    de: "Thailand",
+    fr: "Thaïlande",
+    it: "Thailandia",
+    es: "Tailandia",
+    nl: "Thailand",
+    "es-419": "Tailandia",
+  },
+  mexico: {
+    de: "Mexiko",
+    fr: "Mexique",
+    it: "Messico",
+    es: "México",
+    nl: "Mexico",
+    "es-419": "México",
+  },
+  taiwan: {
+    de: "Taiwan",
+    fr: "Taïwan",
+    it: "Taiwan",
+    es: "Taiwán",
+    nl: "Taiwan",
+    "es-419": "Taiwán",
+  },
+  china: {
+    de: "China",
+    fr: "Chine",
+    it: "Cina",
+    es: "China",
+    nl: "China",
+    "es-419": "China",
+  },
+  turkey: {
+    de: "Türkei",
+    fr: "Turquie",
+    it: "Turchia",
+    es: "Turquía",
+    nl: "Turkije",
+    "es-419": "Turquía",
+  },
+  poland: {
+    de: "Polen",
+    fr: "Pologne",
+    it: "Polonia",
+    es: "Polonia",
+    nl: "Polen",
+    "es-419": "Polonia",
   },
   "big brake system kit": {
     de: "Big-Brake-Komplettanlage",
@@ -1155,17 +1323,136 @@ const SPEC_VALUE_EXACT: Record<string, Record<NonEnLang, string>> = {
     nl: "Geventileerde high-carbon remschijf",
     "es-419": "Disco ventilado de alto carbono",
   },
+  "high-carbon coated brake disc": {
+    de: "High-Carbon-Bremsscheibe (beschichtet)",
+    fr: "Disque de frein High-Carbon revêtu",
+    it: "Disco freno High-Carbon rivestito",
+    es: "Disco de freno High-Carbon recubierto",
+    nl: "Gecoate High-Carbon remschijf",
+    "es-419": "Disco de freno High-Carbon recubierto",
+  },
+  "complete big brake system kit": {
+    de: "Big-Brake-Komplettanlage",
+    fr: "Kit gros freins complet",
+    it: "Kit impianto frenante maggiorato",
+    es: "Kit completo de frenos sobredimensionados",
+    nl: "Complete Big-Brake-systeemkit",
+    "es-419": "Kit completo de frenos de alto desempeño",
+  },
+  "eradispeed+ 2-piece performance rotor": {
+    de: "EradiSpeed+ zweiteilige Performance-Bremsscheibe",
+    fr: "Disque Performance 2 pièces EradiSpeed+",
+    it: "Disco Performance 2 pezzi EradiSpeed+",
+    es: "Disco Performance de 2 piezas EradiSpeed+",
+    nl: "EradiSpeed+ 2-delige Performance-remschijf",
+    "es-419": "Disco Performance de 2 piezas EradiSpeed+",
+  },
+  oiled: {
+    de: "Geölt (Korrosionsschutz)",
+    fr: "Huilé (protection anticorrosion)",
+    it: "Oliato (protezione anticorrosione)",
+    es: "Aceitado (protección anticorrosión)",
+    nl: "Geolied (corrosiebescherming)",
+    "es-419": "Aceitado (protección anticorrosión)",
+  },
+  "slotted & drilled": {
+    de: "Geschlitzt & gelocht",
+    fr: "Rainuré et percé",
+    it: "Baffato e forato",
+    es: "Ranurado y perforado",
+    nl: "Gegroefd & geboord",
+    "es-419": "Ranurado y perforado",
+  },
+  "slotted x drilled": {
+    de: "Geschlitzt & gelocht",
+    fr: "Rainuré et percé",
+    it: "Baffato e forato",
+    es: "Ranurado y perforado",
+    nl: "Gegroefd & geboord",
+    "es-419": "Ranurado y perforado",
+  },
+  "slotted, drilled & zinc plated": {
+    de: "Geschlitzt, gelocht & verzinkt",
+    fr: "Rainuré, percé et zingué",
+    it: "Baffato, forato e zincato",
+    es: "Ranurado, perforado y zincado",
+    nl: "Gegroefd, geboord & verzinkt",
+    "es-419": "Ranurado, perforado y zincado",
+  },
+  "stainless steel": {
+    de: "Edelstahl",
+    fr: "Acier inoxydable",
+    it: "Acciaio inossidabile",
+    es: "Acero inoxidable",
+    nl: "Roestvrij staal",
+    "es-419": "Acero inoxidable",
+  },
+  "re-uses oe hoses": {
+    de: "Verwendet serienmäßige Bremsschläuche",
+    fr: "Réutilise les flexibles d’origine (OE)",
+    it: "Riutilizza i tubi freno originali (OE)",
+    es: "Reutiliza los latiguillos originales (OE)",
+    nl: "Gebruikt originele remslangen (OE)",
+    "es-419": "Reutiliza mangueras originales (OE)",
+  },
+  red: {
+    de: "Rot",
+    fr: "Rouge",
+    it: "Rosso",
+    es: "Rojo",
+    nl: "Rood",
+    "es-419": "Rojo",
+  },
+  "fire red": {
+    de: "Feuerrot",
+    fr: "Rouge vif",
+    it: "Rosso fuoco",
+    es: "Rojo fuego",
+    nl: "Vuurrood",
+    "es-419": "Rojo fuego",
+  },
+  black: {
+    de: "Schwarz",
+    fr: "Noir",
+    it: "Nero",
+    es: "Negro",
+    nl: "Zwart",
+    "es-419": "Negro",
+  },
+  silver: {
+    de: "Silber",
+    fr: "Argent",
+    it: "Argento",
+    es: "Plata",
+    nl: "Zilver",
+    "es-419": "Plata",
+  },
+  performance: {
+    de: "Performance",
+    fr: "Performance",
+    it: "Performance",
+    es: "Alto rendimiento",
+    nl: "Performance",
+    "es-419": "Alto desempeño",
+  },
 }
 
 function localizeSpec(spec: Spec, lang: NonEnLang): Spec {
   const key = spec.label.trim().toLowerCase()
   const label = SPEC_LABEL_MAP[key]?.[lang] ?? spec.label
-  const valKey = spec.value.trim().toLowerCase()
-  const value =
+  const rawVal = spec.value.trim()
+  const valKey = rawVal.toLowerCase()
+  let value =
     SPEC_VALUE_EXACT[valKey]?.[lang] ??
     TIRE_SEGMENT_VALUE[valKey]?.[lang] ??
     VEHICLE_TYPE_VALUE[valKey]?.[lang] ??
-    spec.value
+    rawVal
+  if (value === rawVal && /\(([^,]+),\s*(Germany|Italy|United States|United Kingdom|USA)\)$/i.test(rawVal)) {
+    value = rawVal.replace(/\b(Germany|Italy|United States|United Kingdom|USA)\b/gi, (m) => {
+      const k = m.toLowerCase() === "usa" ? "united states" : m.toLowerCase()
+      return SPEC_VALUE_EXACT[k]?.[lang] ?? m
+    })
+  }
   return { label, value }
 }
 
@@ -1254,6 +1541,49 @@ function localizeHighlight(h: string, lang: NonEnLang): string {
       "es-419": "Gama Media OE+",
     }[lang]
     return `${prefix} · ${rest}`
+  }
+
+  if (trimmed.startsWith("Mid-Range Segment · ")) {
+    const rest = trimmed.slice("Mid-Range Segment · ".length)
+    const prefix = {
+      de: "Mittelklasse-Segment",
+      fr: "Segment Milieu de Gamme",
+      it: "Segmento Fascia Media",
+      es: "Segmento Gama Media",
+      nl: "Middenklasse-segment",
+      "es-419": "Segmento Gama Media",
+    }[lang]
+    return `${prefix} · ${rest}`
+  }
+
+  if (/^(Front|Rear) Axle\s*·\s*/i.test(trimmed)) {
+    const isFront = /^Front/i.test(trimmed)
+    const rest = trimmed.replace(/^(Front|Rear) Axle\s*·\s*/i, "")
+    const axleLabel = SPEC_VALUE_EXACT[isFront ? "front axle" : "rear axle"][lang]
+    return `${axleLabel} · ${rest}`
+  }
+
+  if (/^Homologation:\s*/i.test(trimmed)) {
+    const rest = trimmed.replace(/^Homologation:\s*/i, "")
+    const label = SPEC_LABEL_MAP.approval[lang]
+    return `${label}: ${rest}`
+  }
+
+  if (/^OE Replacements:\s*/i.test(trimmed)) {
+    const rest = trimmed.replace(/^OE Replacements:\s*/i, "")
+    const label = SPEC_LABEL_MAP["oe reference numbers"][lang]
+    return `${label}: ${rest}`
+  }
+
+  if (lower === "geomet anti-corrosion coated") {
+    return {
+      de: "Geomet-Korrosionsschutzbeschichtung",
+      fr: "Revêtement anticorrosion Geomet",
+      it: "Rivestimento anticorrosione Geomet",
+      es: "Recubrimiento anticorrosión Geomet",
+      nl: "Geomet-corrosiebeschermende coating",
+      "es-419": "Recubrimiento anticorrosión Geomet",
+    }[lang]
   }
 
   return trimmed
@@ -1462,6 +1792,193 @@ const BRAKE_NAME_PATTERNS: Array<{
     },
   },
   {
+    pattern: /\bFront Big Brake Kit\b/gi,
+    replace: {
+      de: "Big-Brake-Kit vorne",
+      fr: "Kit gros freins avant",
+      it: "Kit freni maggiorato anteriore",
+      es: "Kit de frenos sobredimensionados delantero",
+      nl: "Big-brake-kit voor",
+      "es-419": "Kit de frenos sobredimensionados delantero",
+    },
+  },
+  {
+    pattern: /\bRear Big Brake Kit\b/gi,
+    replace: {
+      de: "Big-Brake-Kit hinten",
+      fr: "Kit gros freins arrière",
+      it: "Kit freni maggiorato posteriore",
+      es: "Kit de frenos sobredimensionados trasero",
+      nl: "Big-brake-kit achter",
+      "es-419": "Kit de frenos sobredimensionados trasero",
+    },
+  },
+  {
+    pattern: /\bFront Drag Brake Kit\b/gi,
+    replace: {
+      de: "Drag-Bremsen-Kit vorne",
+      fr: "Kit de frein Drag avant",
+      it: "Kit freni Drag anteriore",
+      es: "Kit de frenos Drag delantero",
+      nl: "Drag-remkit voor",
+      "es-419": "Kit de frenos Drag delantero",
+    },
+  },
+  {
+    pattern: /\bRear Drag Brake Kit\b/gi,
+    replace: {
+      de: "Drag-Bremsen-Kit hinten",
+      fr: "Kit de frein Drag arrière",
+      it: "Kit freni Drag posteriore",
+      es: "Kit de frenos Drag trasero",
+      nl: "Drag-remkit achter",
+      "es-419": "Kit de frenos Drag trasero",
+    },
+  },
+  {
+    pattern: /\bFront Disc Assembly Kit\b/gi,
+    replace: {
+      de: "Bremsscheiben-Baugruppensatz vorne",
+      fr: "Kit disques assemblés avant",
+      it: "Kit dischi freno assemblati anteriori",
+      es: "Kit de discos ensamblados delanteros",
+      nl: "Remschijvenset compleet voor",
+      "es-419": "Kit de discos ensamblados delanteros",
+    },
+  },
+  {
+    pattern: /\bRear Disc Assembly Kit\b/gi,
+    replace: {
+      de: "Bremsscheiben-Baugruppensatz hinten",
+      fr: "Kit disques assemblés arrière",
+      it: "Kit dischi freno assemblati posteriori",
+      es: "Kit de discos ensamblados traseros",
+      nl: "Remschijvenset compleet achter",
+      "es-419": "Kit de discos ensamblados traseros",
+    },
+  },
+  {
+    pattern: /\bFront Brake Pad & Rotor Kit\b/gi,
+    replace: {
+      de: "Bremsscheiben- & Belagsatz vorne",
+      fr: "Kit disques et plaquettes avant",
+      it: "Kit dischi e pastiglie anteriore",
+      es: "Kit de discos y pastillas delantero",
+      nl: "Remschijven- & blokkenset voor",
+      "es-419": "Kit de discos y balatas delantero",
+    },
+  },
+  {
+    pattern: /\bRear Brake Pad & Rotor Kit\b/gi,
+    replace: {
+      de: "Bremsscheiben- & Belagsatz hinten",
+      fr: "Kit disques et plaquettes arrière",
+      it: "Kit dischi e pastiglie posteriore",
+      es: "Kit de discos y pastillas trasero",
+      nl: "Remschijven- & blokkenset achter",
+      "es-419": "Kit de discos y balatas trasero",
+    },
+  },
+  {
+    pattern: /\bFront Brake Pad Set\b/gi,
+    replace: {
+      de: "Bremsbelagsatz vorne",
+      fr: "Jeu de plaquettes de frein avant",
+      it: "Kit pastiglie freno anteriori",
+      es: "Juego de pastillas de freno delanteras",
+      nl: "Remblokkenset voor",
+      "es-419": "Juego de balatas delanteras",
+    },
+  },
+  {
+    pattern: /\bRear Brake Pad Set\b/gi,
+    replace: {
+      de: "Bremsbelagsatz hinten",
+      fr: "Jeu de plaquettes de frein arrière",
+      it: "Kit pastiglie freno posteriori",
+      es: "Juego de pastillas de freno traseras",
+      nl: "Remblokkenset achter",
+      "es-419": "Juego de balatas traseras",
+    },
+  },
+  {
+    pattern: /\bFront Brake Disc Pair\b/gi,
+    replace: {
+      de: "Bremsscheiben-Paar vorne",
+      fr: "Paire de disques de frein avant",
+      it: "Coppia dischi freno anteriori",
+      es: "Par de discos de freno delanteros",
+      nl: "Remschijvenpaar voor",
+      "es-419": "Par de discos de freno delanteros",
+    },
+  },
+  {
+    pattern: /\bRear Brake Rotor Pair\b/gi,
+    replace: {
+      de: "Bremsscheiben-Paar hinten",
+      fr: "Paire de disques de frein arrière",
+      it: "Coppia dischi freno posteriori",
+      es: "Par de discos de freno traseros",
+      nl: "Remschijvenpaar achter",
+      "es-419": "Par de discos de freno traseros",
+    },
+  },
+  {
+    pattern: /\bFront Rotor Pair\b/gi,
+    replace: {
+      de: "Bremsscheiben-Paar vorne",
+      fr: "Paire de disques avant",
+      it: "Coppia dischi anteriori",
+      es: "Par de discos delanteros",
+      nl: "Remschijvenpaar voor",
+      "es-419": "Par de discos delanteros",
+    },
+  },
+  {
+    pattern: /\bFront Brake Caliper\b/gi,
+    replace: {
+      de: "Bremssattel vorne",
+      fr: "Étrier de frein avant",
+      it: "Pinza freno anteriore",
+      es: "Pinza de freno delantera",
+      nl: "Remklauw voor",
+      "es-419": "Cáliper de freno delantero",
+    },
+  },
+  {
+    pattern: /\bBillet Racing Caliper\b/gi,
+    replace: {
+      de: "Billet-Rennbremssattel",
+      fr: "Étrier de course usiné",
+      it: "Pinza freno racing dal pieno",
+      es: "Pinza de competición mecanizada",
+      nl: "Billet race-remklauw",
+      "es-419": "Cáliper de competencia maquinado",
+    },
+  },
+  {
+    pattern: /\bRear Brake Drum\b/gi,
+    replace: {
+      de: "Bremstrommel hinten",
+      fr: "Tambour de frein arrière",
+      it: "Tamburo freno posteriore",
+      es: "Tambor de freno trasero",
+      nl: "Remtrommel achter",
+      "es-419": "Tambor de freno trasero",
+    },
+  },
+  {
+    pattern: /\bRear Drum Brake Shoe Set\b/gi,
+    replace: {
+      de: "Bremsbackensatz hinten",
+      fr: "Jeu de mâchoires de frein arrière",
+      it: "Kit ganasce freno posteriori",
+      es: "Juego de zapatas de freno traseras",
+      nl: "Remschoenenset achter",
+      "es-419": "Juego de zapatas de freno traseras",
+    },
+  },
+  {
     pattern: /\bFront Brake Kit\b/gi,
     replace: {
       de: "Bremsen-Kit vorne",
@@ -1527,6 +2044,72 @@ const BRAKE_NAME_PATTERNS: Array<{
       "es-419": "Disco de freno",
     },
   },
+  {
+    pattern: /\bReplacement Rotor\b/gi,
+    replace: {
+      de: "Ersatz-Bremsscheibe",
+      fr: "Disque de rechange",
+      it: "Disco freno di ricambio",
+      es: "Disco de repuesto",
+      nl: "Vervangende remschijf",
+      "es-419": "Disco de reemplazo",
+    },
+  },
+  {
+    pattern: /\bSolid Rear\b/gi,
+    replace: {
+      de: "Massiv Hinten",
+      fr: "Plein Arrière",
+      it: "Pieno Posteriore",
+      es: "Macizo Trasero",
+      nl: "Massief Achter",
+      "es-419": "Sólido Trasero",
+    },
+  },
+  {
+    pattern: /\bVented Rear\b/gi,
+    replace: {
+      de: "Innenbelüftet Hinten",
+      fr: "Ventilé Arrière",
+      it: "Ventilato Posteriore",
+      es: "Ventilado Trasero",
+      nl: "Geventileerd Achter",
+      "es-419": "Ventilado Trasero",
+    },
+  },
+  {
+    pattern: /\bSolid Front\b/gi,
+    replace: {
+      de: "Massiv Vorne",
+      fr: "Plein Avant",
+      it: "Pieno Anteriore",
+      es: "Macizo Delantero",
+      nl: "Massief Voor",
+      "es-419": "Sólido Delantero",
+    },
+  },
+  {
+    pattern: /\bVented Front\b/gi,
+    replace: {
+      de: "Innenbelüftet Vorne",
+      fr: "Ventilé Avant",
+      it: "Ventilato Anteriore",
+      es: "Ventilado Delantero",
+      nl: "Geventileerd Voor",
+      "es-419": "Ventilado Delantero",
+    },
+  },
+  {
+    pattern: /\b(\d+)-Piston\b/gi,
+    replace: {
+      de: "$1-Kolben",
+      fr: "$1 pistons",
+      it: "$1 pistoni",
+      es: "$1 pistones",
+      nl: "$1-zuiger",
+      "es-419": "$1 pistones",
+    },
+  },
 ]
 
 function localizeBrakeName(name: string, lang: NonEnLang): string {
@@ -1545,38 +2128,24 @@ function wordCount(text: string): number {
     .filter(Boolean).length
 }
 
-function formatSpecWithUnit(s: Spec): string {
-  const val = s.value.trim()
-  const key = s.label.toLowerCase()
-  if (key === "section width" && /^\d+(\.\d+)?$/.test(val)) return `${s.label}: ${val} mm`
-  if (key === "aspect ratio" && /^\d+(\.\d+)?$/.test(val)) return `${s.label}: ${val}%`
-  if ((key === "rim diameter" || key === "overall diameter" || key === "approved rim width") && /^[\d.-]+$/.test(val)) {
-    return `${s.label}: ${val} in`
-  }
-  if (key === "tread depth" && /^\d+\/\d+$/.test(val)) return `${s.label}: ${val} in`
-  return `${s.label}: ${val}`
-}
+function ensureDetailedDescription(product: Product, baseDescription: string, lang: ContentLang): string {
+  const clean = baseDescription
+    .replace(/\s*\(Size:\s*[^)]+\([^)]*\);\s*Tyre Code\s*\/\s*Tire Code:\s*[^)]+\([^)]*\)\)/gi, "")
+    .replace(/\btruck\/suv\b/g, "SUV and light-truck")
+    .trim()
 
-function ensureDetailedDescription(product: Product, baseDescription: string, lang: ContentLang, specs: Spec[]): string {
-  const clean = baseDescription.trim()
-  if (wordCount(clean) >= 140) return clean
+  if (lang === "en" || wordCount(clean) >= 75) return clean
 
   const mpn = product.mpn || product.supplierSku || product.id
-  const gtinText = product.gtin ? ` (${product.gtin.length === 12 ? "UPC" : "EAN/GTIN"}: ${product.gtin})` : ""
-  const specSummary = specs
-    .slice(0, 16)
-    .map(formatSpecWithUnit)
-    .join("; ")
+  const gtinText = product.gtin ? ` (${product.gtin.length === 12 ? "UPC" : "EAN"}: ${product.gtin})` : ""
 
   if (product.category === "tires") {
     const t = product.tire
     const size = tireSize(t)
     const svc = tireServiceDescription(t)
-    const codes = tireCodeNotations(t)
     const model = t.model || product.name
     const euPart = t.euLabel
       ? {
-          en: `Under EU Regulation 2020/740, this tyre is rated class ${t.euLabel.fuelEfficiency} for rolling-resistance fuel efficiency, class ${t.euLabel.wetGrip} for wet braking grip, and ${t.euLabel.noiseDb} dB (class ${t.euLabel.noiseClass}) for external pass-by noise${t.euLabel.eprelId ? ` (EPREL registration ${t.euLabel.eprelId})` : ""}.`,
           de: `Gemäß EU-Verordnung 2020/740 erreicht dieser Reifen die Kraftstoffeffizienzklasse ${t.euLabel.fuelEfficiency}, die Nasshaftungsklasse ${t.euLabel.wetGrip} sowie ein externes Rollgeräusch von ${t.euLabel.noiseDb} dB in Klasse ${t.euLabel.noiseClass}${t.euLabel.eprelId ? ` (EPREL-Registrierung ${t.euLabel.eprelId})` : ""}.`,
           fr: `Conformément au règlement UE 2020/740, ce pneumatique obtient la classe ${t.euLabel.fuelEfficiency} en efficacité énergétique, la classe ${t.euLabel.wetGrip} en adhérence sur sol mouillé et un niveau sonore externe de ${t.euLabel.noiseDb} dB en classe ${t.euLabel.noiseClass}${t.euLabel.eprelId ? ` (enregistrement EPREL ${t.euLabel.eprelId})` : ""}.`,
           it: `Secondo il regolamento UE 2020/740, questo pneumatico è classificato in classe ${t.euLabel.fuelEfficiency} per l'efficienza energetica, in classe ${t.euLabel.wetGrip} per l'aderenza sul bagnato e misura ${t.euLabel.noiseDb} dB (classe ${t.euLabel.noiseClass}) di rumorosità esterna${t.euLabel.eprelId ? ` (registrazione EPREL ${t.euLabel.eprelId})` : ""}.`,
@@ -1586,44 +2155,30 @@ function ensureDetailedDescription(product: Product, baseDescription: string, la
         }[lang]
       : ""
     const extra = {
-      en: `Engineered by ${product.brand} for the ${model} product line, this ${codes.compact} ${svc} (${size} ${codes.svcWithLoadRange}, ${codes.compactLoadRangeSvc}) tire (manufacturer reference ${mpn}${gtinText}) features a ${t.width} mm section width, ${t.aspect}% aspect ratio, and ${t.rim}-inch (${t.rim} in / R${t.rim}) rim diameter with load index ${t.loadIndex} and speed symbol ${t.speedRating}.${t.extraLoad ? " Reinforced Extra Load (XL) casing construction supports higher inflation pressures and axle loads." : " Standard load (SL) casing construction delivers balanced ride compliance and predictable handling response."}${t.runFlat ? " Self-supporting run-flat sidewalls allow continued mobility after a pressure loss." : ""} Technical specifications: ${ codes.specBlock}; ${specSummary}.${euPart ? ` ${euPart}` : ""} Supplied as a brand-new, factory-first quality tire; always verify the exact sidewall dimension, load index, and speed rating against your vehicle placard before installation.`,
-      de: `Gefertigt von ${product.brand} innerhalb der Modellreihe ${model}, verfügt dieser Reifen in der Dimension ${size} ${svc} (Herstellernummer ${mpn}${gtinText}) über ${t.width} mm Reifenbreite, ${t.aspect} % Querschnittsverhältnis und ${t.rim} Zoll Felgendurchmesser bei Tragfähigkeitsindex ${t.loadIndex} und Geschwindigkeitsindex ${t.speedRating}.${t.extraLoad ? " Die verstärkte Extra-Load-Karkasse (XL) ist für höhere Radlasten und Fülldrücke ausgelegt." : " Die präzise abgestimmte Karkassenkonstruktion sorgt für ausgewogenen Fahrkomfort und direktes Lenkverhalten."} Technische Eckdaten: ${specSummary}. Lieferung als fabrikneuer Originalreifen; bitte vergleichen Sie Reifengröße, Last- und Geschwindigkeitsindex vor der Montage mit Ihren Fahrzeugpapieren.`,
-      fr: `Conçu par ${product.brand} au sein de la gamme ${model}, ce pneumatique en dimension ${size} ${svc} (référence ${mpn}${gtinText}) présente une largeur de section de ${t.width} mm, un rapport de flanc de ${t.aspect} % et un diamètre de jante de ${t.rim} pouces avec indice de charge ${t.loadIndex} et code de vitesse ${t.speedRating}.${t.extraLoad ? " La carcasse renforcée Extra Load (XL) supporte des charges par essieu supérieures." : " L'architecture radiale assure une empreinte au sol homogène, une usure régulière et une tenue de cap précise."} Caractéristiques techniques : ${specSummary}. Livré neuf d'origine ; vérifiez systématiquement les dimensions homologuées par le constructeur de votre véhicule avant le montage.`,
-      it: `Progettato da ${product.brand} nella gamma ${model}, questo pneumatico nella misura ${size} ${svc} (codice ${mpn}${gtinText}) presenta una larghezza di sezione di ${t.width} mm, rapporto d'aspetto del ${t.aspect}% e calettamento da ${t.rim} pollici con indice di carico ${t.loadIndex} e codice di velocità ${t.speedRating}.${t.extraLoad ? " La struttura rinforzata Extra Load (XL) supporta carichi e pressioni di gonfiaggio superiori." : " La carcassa radiale garantisce impronta a terra uniforme, stabilità direzionale e comfort acustico."} Specifiche tecniche: ${specSummary}. Fornito nuovo di fabbrica; controllare sempre misura, indice di carico e codice di velocità riportati sulla carta di circolazione prima del montaggio.`,
-      es: `Desarrollado por ${product.brand} dentro de la familia ${model}, este neumático en medida ${size} ${svc} (referencia ${mpn}${gtinText}) cuenta con ${t.width} mm de ancho de sección, perfil del ${t.aspect} % y llanta de ${t.rim} pulgadas con índice de carga ${t.loadIndex} y código de velocidad ${t.speedRating}.${t.extraLoad ? " Su carcasa reforzada Extra Load (XL) admite mayores cargas por eje y presiones de inflado." : " Su estructura radial proporciona un contacto uniforme con el asfalto, desgaste regular y respuesta precisa."} Especificaciones técnicas: ${specSummary}. Se suministra nuevo de fábrica; verifique siempre la medida y los índices homologados en la ficha técnica del vehículo antes de montaje.`,
-      nl: `Ontwikkeld door ${product.brand} binnen de ${model}-serie: deze band in de maat ${size} ${svc} (onderdeelnummer ${mpn}${gtinText}) heeft een loopvlakbreedte van ${t.width} mm, een hoogte-breedteverhouding van ${t.aspect}% en een velgdiameter van ${t.rim} inch met draagvermogen-index ${t.loadIndex} en snelheidscodering ${t.speedRating}.${t.extraLoad ? " De versterkte Extra Load (XL) karkasconstructie is berekend op hogere aslasten en bandenspanningen." : " De radiale karkasopbouw biedt een gelijkmatige drukverdeling, koersvastheid en rijcomfort."} Technische gegevens: ${specSummary}. Geleverd als fabrieksnieuwe band; controleer altijd de voorgeschreven bandenmaat en draagvermogen-index van uw voertuig vóór montage.`,
-      "es-419": `Fabricada por ${product.brand} dentro de la línea ${model}, esta llanta en medida ${size} ${svc} (número de parte ${mpn}${gtinText}) combina ${t.width} mm de ancho de sección, relación de aspecto de ${t.aspect}% y diámetro de rin de ${t.rim} pulgadas con índice de carga ${t.loadIndex} y rango de velocidad ${t.speedRating}.${t.extraLoad ? " La carcasa reforzada Extra Load (XL) soporta mayor capacidad de carga y presión de inflado." : " Su construcción radial ofrece desgaste uniforme, tracción confiable y estabilidad en carretera."} Especificaciones técnicas: ${specSummary}. Producto nuevo de fábrica; confirme siempre la medida y especificaciones en la etiqueta de la puerta de su vehículo antes de la instalación.`,
+      de: `Gefertigt von ${product.brand} innerhalb der Modellreihe ${model}, kombiniert die Dimension ${size} ${svc} (${t.width} mm Reifenbreite, ${t.aspect} % Querschnitt, ${t.rim} Zoll Felgendurchmesser) präzises Lenkverhalten mit gleichmäßigem Verschleiß.${t.extraLoad ? " Die verstärkte Extra-Load-Karkasse (XL) ist für höhere Radlasten ausgelegt." : ""}`,
+      fr: `Conçu par ${product.brand} au sein de la gamme ${model}, ce pneumatique ${size} ${svc} (${t.width} mm de largeur, flanc ${t.aspect} %, jante ${t.rim} pouces) assure une empreinte au sol homogène, une usure régulière et une tenue de cap précise.${t.extraLoad ? " La carcasse renforcée Extra Load (XL) supporte des charges supérieures." : ""}`,
+      it: `Progettato da ${product.brand} nella gamma ${model}, questo pneumatico ${size} ${svc} (${t.width} mm di larghezza, spalla ${t.aspect}%, cerchio da ${t.rim} pollici) garantisce impronta a terra uniforme, stabilità direzionale e comfort acustico.${t.extraLoad ? " La struttura rinforzata Extra Load (XL) supporta carichi superiori." : ""}`,
+      es: `Desarrollado por ${product.brand} dentro de la familia ${model}, este neumático ${size} ${svc} (${t.width} mm de ancho, perfil ${t.aspect} %, llanta de ${t.rim} pulgadas) proporciona un contacto uniforme con el asfalto y frenada segura.${t.extraLoad ? " Su carcasa reforzada Extra Load (XL) admite mayores cargas por eje." : ""}`,
+      nl: `Ontwikkeld door ${product.brand} binnen de ${model}-serie: deze band in ${size} ${svc} (${t.width} mm breedte, ${t.aspect}% verhouding, ${t.rim} inch velg) biedt een gelijkmatige drukverdeling, koersvastheid en rijcomfort.${t.extraLoad ? " De versterkte Extra Load (XL) karkasconstructie is berekend op hogere aslasten." : ""}`,
+      "es-419": `Fabricada por ${product.brand} dentro de la línea ${model}, esta llanta ${size} ${svc} (${t.width} mm de ancho, perfil ${t.aspect}%, rin de ${t.rim} pulgadas) ofrece desgaste uniforme, tracción confiable y estabilidad en carretera.${t.extraLoad ? " La carcasa reforzada Extra Load (XL) soporta mayor capacidad de carga." : ""}`,
     }[lang]
-    return `${clean} ${lang !== "en" && euPart ? `${euPart} ` : ""}${extra}`.replace(/\s+/g, " ").trim()
+    return `${clean} ${euPart ? `${euPart} ` : ""}${extra}`.replace(/\s+/g, " ").trim()
   }
 
   if (product.category === "wheels") {
     const w = product.wheel
-    const pcd = w.boltPattern.replace("x", "×")
     const extra = {
-      en: `Precision-manufactured by ${product.brand}, this ${w.construction.toLowerCase()} alloy wheel in ${w.diameter}×${w.width} inches (reference ${mpn}${gtinText}) is machined for a ${pcd} bolt pattern (PCD), ET${w.offset} mm offset, and ${w.centerBore} mm hub center bore with a durable ${w.finish} finish.${w.loadRatingKg ? ` Certified for a maximum wheel load rating of ${w.loadRatingKg} kg per corner.` : ""} Technical specifications: ${specSummary}. Each wheel is supplied brand-new and inspected for radial and lateral runout; verify brake caliper clearance, lug seat geometry, center bore hub-ring requirements, and fender clearance for your specific vehicle platform prior to mounting tires.`,
-      de: `Präzisionsgefertigt von ${product.brand}, bietet diese Leichtmetallfelge in ${w.diameter}×${w.width} Zoll (Referenz ${mpn}${gtinText}) einen Lochkreis von ${pcd}, eine Einpresstiefe von ET${w.offset} mm sowie eine Mittenbohrung von ${w.centerBore} mm in der Ausführung ${w.finish}.${w.loadRatingKg ? ` Geprüfte Radtraglast bis ${w.loadRatingKg} kg pro Rad.` : ""} Technische Daten: ${specSummary}. Jede Felge wird fabrikneu geliefert; bitte prüfen Sie vor der Reifenmontage Freigängigkeit zur Bremsanlage, Zentrierring-Anforderungen, Radschrauben-Sitzform sowie die Fahrzeugzulassung.`,
-      fr: `Fabriquée avec précision par ${product.brand}, cette jante en alliage ${w.diameter}×${w.width} pouces (référence ${mpn}${gtinText}) est usinée avec un entraxe ${pcd}, un déport ET${w.offset} mm et un alésage central de ${w.centerBore} mm en finition ${w.finish}.${w.loadRatingKg ? ` Charge maximale homologuée de ${w.loadRatingKg} kg par roue.` : ""} Spécifications techniques : ${specSummary}. Livrée neuve à l'unité ; vérifiez le dégagement des étriers de frein, la boulonnerie adaptée, le besoin éventuel de bagues de centrage et la compatibilité véhicule avant le montage des pneumatiques.`,
-      it: `Realizzato con precisione da ${product.brand}, questo cerchio in lega da ${w.diameter}×${w.width} pollici (riferimento ${mpn}${gtinText}) presenta foratura ${pcd}, offset ET${w.offset} mm e foro centrale da ${w.centerBore} mm con finitura ${w.finish}.${w.loadRatingKg ? ` Portata strutturale certificata fino a ${w.loadRatingKg} kg per ruota.` : ""} Dati tecnici: ${specSummary}. Fornito nuovo di fabbrica; verificare sempre ingombro pinze freno, bulloneria, eventuali anelli di centraggio e compatibilità con il proprio veicolo prima del montaggio dello pneumatico.`,
-      es: `Fabricada con precisión por ${product.brand}, esta llanta de aleación de ${w.diameter}×${w.width} pulgadas (referencia ${mpn}${gtinText}) presenta anclaje ${pcd}, desplazamiento ET${w.offset} mm y buje central de ${w.centerBore} mm con acabado ${w.finish}.${w.loadRatingKg ? ` Capacidad de carga certificada de ${w.loadRatingKg} kg por rueda.` : ""} Especificaciones técnicas: ${specSummary}. Se entrega nueva por unidad; compruebe siempre la holgura con la pinza de freno, el asiento de la tornillería, los anillos centradores y la compatibilidad con su vehículo antes de montar el neumático.`,
-      nl: `Nauwkeurig vervaardigd door ${product.brand}: deze lichtmetalen velg in ${w.diameter}×${w.width} inch (referentie ${mpn}${gtinText}) is uitgevoerd met steekcirkel ${pcd}, ET-waarde ET${w.offset} mm en naafgat ${w.centerBore} mm in de afwerking ${w.finish}.${w.loadRatingKg ? ` Gecertificeerd draagvermogen tot ${w.loadRatingKg} kg per wiel.` : ""} Technische specificaties: ${specSummary}. Nieuw geleverd per stuk; controleer vóór bandenmontage altijd remklauwvrijloop, wielboutzitting, eventuele centreerringen en voertuiggeschiktheid.`,
-      "es-419": `Fabricado con precisión por ${product.brand}, este rin de aleación de ${w.diameter}×${w.width} pulgadas (referencia ${mpn}${gtinText}) cuenta con barrenación ${pcd}, offset ET${w.offset} mm y centro de maza de ${w.centerBore} mm en acabado ${w.finish}.${w.loadRatingKg ? ` Capacidad de carga estructural de ${w.loadRatingKg} kg por rin.` : ""} Especificaciones técnicas: ${specSummary}. Se suministra nuevo por pieza; confirme el espacio libre del cáliper de freno, el tipo de tuerca o birlo y los anillos centradores antes de montar la llanta.`,
+      de: `${w.loadRatingKg ? `Geprüfte Radtraglast bis ${w.loadRatingKg} kg pro Rad. ` : ""}Jede Felge (Referenz ${mpn}${gtinText}) wird fabrikneu inkl. Nabendeckel geliefert; bitte prüfen Sie vor der Reifenmontage Freigängigkeit zur Bremsanlage sowie Radschrauben- und Zentrierring-Anforderungen.`,
+      fr: `${w.loadRatingKg ? `Charge maximale homologuée de ${w.loadRatingKg} kg par roue. ` : ""}Chaque jante (référence ${mpn}${gtinText}) est livrée neuve avec cache-moyeu ; vérifiez le dégagement des étriers de frein, la boulonnerie adaptée et le besoin éventuel de bagues de centrage avant montage.`,
+      it: `${w.loadRatingKg ? `Portata strutturale certificata fino a ${w.loadRatingKg} kg per ruota. ` : ""}Ogni cerchio (riferimento ${mpn}${gtinText}) è fornito nuovo di fabbrica; verificare sempre ingombro pinze freno, bulloneria ed eventuali anelli di centraggio prima del montaggio dello pneumatico.`,
+      es: `${w.loadRatingKg ? `Capacidad de carga certificada de ${w.loadRatingKg} kg por rueda. ` : ""}Cada llanta (referencia ${mpn}${gtinText}) se entrega nueva de fábrica; compruebe siempre la holgura con la pinza de freno, el asiento de la tornillería y los anillos centradores antes de montar el neumático.`,
+      nl: `${w.loadRatingKg ? `Gecertificeerd draagvermogen tot ${w.loadRatingKg} kg per wiel. ` : ""}Elke velg (referentie ${mpn}${gtinText}) wordt fabrieksnieuw geleverd; controleer vóór bandenmontage altijd remklauwvrijloop, wielboutzitting en eventuele centreerringen.`,
+      "es-419": `${w.loadRatingKg ? `Capacidad de carga estructural de ${w.loadRatingKg} kg por rin. ` : ""}Cada rin (referencia ${mpn}${gtinText}) se suministra nuevo de fábrica; confirme el espacio libre del cáliper de freno, el tipo de tuerca o birlo y los anillos centradores antes de montar la llanta.`,
     }[lang]
     return `${clean} ${extra}`.replace(/\s+/g, " ").trim()
   }
 
-  const b = product.brake
-  const fitList = b.fitment.slice(0, 5).join(", ")
-  const extra = {
-    en: `Manufactured by ${product.brand} (part number ${mpn}${gtinText}) for ${b.axle} axle braking systems${b.discDiameterMm ? ` with ${b.discDiameterMm} mm rotor geometry` : ""}. Engineered to maintain consistent friction stability, thermal capacity, and pedal modulation under repeated stops. Compatible vehicle applications include: ${fitList || "see vehicle fitment table"}. Technical specifications: ${specSummary}. Supplied brand-new in sealed manufacturer packaging; always confirm rotor diameter, caliper code, and axle PR/OE numbers against your vehicle VIN before installation.`,
-    de: `Hergestellt von ${product.brand} (Teilenummer ${mpn}${gtinText}) für die Bremsanlage der ${b.axle === "front" ? "Vorderachse" : b.axle === "rear" ? "Hinterachse" : "Vorder- und Hinterachse"}${b.discDiameterMm ? ` mit ${b.discDiameterMm} mm Scheibendurchmesser` : ""}. Ausgelegt für konstante Reibwerte, hohe thermische Belastbarkeit und präzises Pedalgefühl. Passend unter anderem für: ${fitList || "siehe Fahrzeugliste"}. Technische Daten: ${specSummary}. Fabrikneu in Originalverpackung; bitte prüfen Sie vor dem Einbau Scheibendurchmesser, Bremssystem und OE-Referenznummern anhand Ihrer Fahrgestellnummer.`,
-    fr: `Fabriqué par ${product.brand} (référence ${mpn}${gtinText}) pour le système de freinage d'essieu ${b.axle === "front" ? "avant" : b.axle === "rear" ? "arrière" : "avant et arrière"}${b.discDiameterMm ? ` avec diamètre de ${b.discDiameterMm} mm` : ""}. Conçu pour offrir une stabilité thermique élevée, un coefficient de friction constant et un freinage progressif. Applications compatibles : ${fitList || "voir tableau de compatibilité"}. Caractéristiques techniques : ${specSummary}. Livré neuf dans son emballage d'origine ; vérifiez le diamètre, le montage d'étrier et les numéros OE de votre véhicule avant l'installation.`,
-    it: `Prodotto da ${product.brand} (codice ${mpn}${gtinText}) per l'impianto frenante dell'asse ${b.axle === "front" ? "anteriore" : b.axle === "rear" ? "posteriore" : "anteriore e posteriore"}${b.discDiameterMm ? ` con diametro ${b.discDiameterMm} mm` : ""}. Progettato per garantire stabilità termica, coefficiente d'attrito costante e modulabilità in frenata. Principali applicazioni: ${fitList || "vedi tabella compatibilità"}. Specifiche tecniche: ${specSummary}. Fornito nuovo nella confezione originale; verificare sempre diametro disco, impianto frenante e codici OE tramite telaio prima del montaggio.`,
-    es: `Fabricado por ${product.brand} (referencia ${mpn}${gtinText}) para el sistema de frenos del eje ${b.axle === "front" ? "delantero" : b.axle === "rear" ? "trasero" : "delantero y trasero"}${b.discDiameterMm ? ` con diámetro de ${b.discDiameterMm} mm` : ""}. Diseñado para ofrecer estabilidad térmica, fricción uniforme y respuesta precisa del pedal. Aplicaciones compatibles: ${fitList || "consultar tabla de vehículos"}. Especificaciones técnicas: ${specSummary}. Se suministra nuevo en embalaje original; compruebe el diámetro de disco, el código de pinza y las referencias OE de su vehículo antes de la instalación.`,
-    nl: `Vervaardigd door ${product.brand} (onderdeelnummer ${mpn}${gtinText}) voor het remsysteem van de ${b.axle === "front" ? "vooras" : b.axle === "rear" ? "achteras" : "voor- en achteras"}${b.discDiameterMm ? ` met een diameter van ${b.discDiameterMm} mm` : ""}. Ontwikkeld voor constante wrijving, hoge thermische stabiliteit en een nauwkeurig pedaalgevoel. Geschikt voor onder meer: ${fitList || "zie voertuiglijst"}. Technische specificaties: ${specSummary}. Nieuw geleverd in originele verpakking; controleer vóór montage altijd schijfdiameter, remsysteemcode en OE-nummers aan de hand van uw chassisnummer.`,
-    "es-419": `Fabricado por ${product.brand} (número de parte ${mpn}${gtinText}) para el sistema de frenado del eje ${b.axle === "front" ? "delantero" : b.axle === "rear" ? "trasero" : "delantero y trasero"}${b.discDiameterMm ? ` con diámetro de ${b.discDiameterMm} mm` : ""}. Diseñado para mantener estabilidad térmica, coeficiente de fricción constante y respuesta firme en el pedal. Aplicaciones principales: ${fitList || "consultar tabla de compatibilidad"}. Especificaciones técnicas: ${specSummary}. Producto nuevo en empaque original; verifique siempre el diámetro del rotor, el tipo de cáliper y los números OE de su vehículo antes de instalar.`,
-  }[lang]
-  return `${clean} ${extra}`.replace(/\s+/g, " ").trim()
+  return clean
 }
 
 export function localizeProduct<P extends Product>(product: P, store: Store): P {
@@ -1631,7 +2186,7 @@ export function localizeProduct<P extends Product>(product: P, store: Store): P 
   if (contentLang === "en") {
     return {
       ...product,
-      description: ensureDetailedDescription(product, product.description, "en", product.specs),
+      description: ensureDetailedDescription(product, product.description, "en"),
     }
   }
 
@@ -1656,7 +2211,7 @@ export function localizeProduct<P extends Product>(product: P, store: Store): P 
     ...product,
     name: localizedName,
     shortDescription: copy?.shortDescription ?? fallbackCopy?.shortDescription ?? product.shortDescription,
-    description: ensureDetailedDescription(product, baseDesc, contentLang, localizedSpecs),
+    description: ensureDetailedDescription(product, baseDesc, contentLang),
     highlights: rawHighlights.map((h) => localizeHighlight(h, contentLang)),
     specs: localizedSpecs,
   }
