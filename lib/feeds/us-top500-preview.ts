@@ -26,6 +26,7 @@ export function renderTop500Preview(feed: Top500Feed, files: { xml: string; txt:
     { b: 4, label: "Batch 4 · +600 (+Commercial)", href: `/feeds/google-us-${esc(lang)}-batch4-600.html` },
     { b: 5, label: "Batch 5 · +600", href: `/feeds/google-us-${esc(lang)}-batch5-600.html` },
     { b: 6, label: "Batch 6 · +600", href: `/feeds/google-us-${esc(lang)}-batch6-600.html` },
+    { b: 7, label: "Batch 7 · +1000", href: `/feeds/google-us-${esc(lang)}-batch7-1000.html` },
   ]
   const stepLinks = batches
     .map((entry) => {
