@@ -14,7 +14,7 @@ const r = p.returns
 const t = euEs.policy
 const contactLine = `${COMPANY.email} · ${COMPANY.phoneDisplay} (${euEs.company.hours})`
 const seller = `${COMPANY.legalName}, ${companyAddressLine}, correo electrónico ${COMPANY.email}, teléfono ${COMPANY.phoneDisplay}`
-const bulky = "como máximo unos 90 € por neumático o llanta y 45 € por bulto de frenos para la devolución a Estados Unidos"
+const bulky = "como máximo unos 25 € por neumático o llanta y 15 € por bulto de frenos para la devolución dentro de la UE"
 const payments = p.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "Transferencia SEPA" : m))
 
 const SNIP = EU_SNIPPETS.es
@@ -33,9 +33,9 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Costes, aranceles e IVA de importación",
+        heading: "Entrega gratuita en la UE, IVA incluido y cero aranceles",
         blocks: [
-          s.freeShipping ? "La entrega es gratuita en todos los pedidos, sin importe mínimo." : "Los gastos de entrega se muestran antes de confirmar el pedido.",
+          s.freeShipping ? "La entrega desde nuestro centro logístico UE en Polonia es gratuita en todos los pedidos a los 27 Estados miembros de la UE, sin importe mínimo." : "Los gastos de entrega se muestran antes de confirmar el pedido.",
           t.duties,
           SNIP.paymentsVat.blocks[1],
         ],
@@ -45,12 +45,12 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
         blocks: [
           {
             rows: [
-              ["Hora límite de pedido", "14:00 PT (hora del Pacífico de EE. UU.), de lunes a viernes"],
+              ["Hora límite de pedido", "14:00 CET (hora central europea), de lunes a viernes"],
               ["Tiempo de preparación", `${s.handlingDays[0]}–${s.handlingDays[1]} días laborables`],
               ["Tiempo de tránsito", `${s.transitDays[0]}–${s.transitDays[1]} días laborables`],
               ["Plazo total de entrega", t.days],
               ["Transportistas", `Servicio de entrega y mensajero propios (TiresShop Courier) cuando esté disponible; en caso contrario, ${s.carriers.join(", ")}`],
-              ["Enviado desde", "Estados Unidos (California)"],
+              ["Enviado desde", "Unión Europea (centro logístico en Polonia)"],
             ],
           },
           `Siempre que sea posible enviar el pedido con nuestro propio servicio de entrega y nuestro propio mensajero, lo enviaremos así. Si no es posible enviarlo mediante nuestra propia entrega para tu dirección o ruta, utilizamos otros transportistas (${s.carriers.join(", ")}).`,
@@ -408,6 +408,7 @@ export const EU_POLICIES_ES: Record<string, PolicyDoc> = {
               ["Representada por", `${COMPANY.representative}, ${COMPANY.representativeRole}`],
               ["Correo electrónico", COMPANY.email],
               ["Teléfono", `${COMPANY.phoneDisplay} (${COMPANY.hours})`],
+              ["NIF-IVA UE (Representante UE)", EU_PRESENCE.vatEntity],
               ["Seller's permit (CDTFA)", `${COMPANY.sellerPermit} (${COMPANY.sellerPermitAuthority})`],
             ],
           },

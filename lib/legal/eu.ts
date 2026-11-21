@@ -21,15 +21,15 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
       {
         heading: "Delivery area",
         blocks: [
-          `We currently deliver to ${s.area}. We do not deliver to ${s.exclusions} — tyres, alloy wheels and brake kits are heavy parcels that require a physical street address for carrier delivery and customs clearance. We are continually considering expanding our delivery areas.`,
+          `We currently deliver to ${s.area}. We do not deliver to ${s.exclusions} — tyres, alloy wheels and brake kits are heavy parcels that require a physical street address for carrier delivery. We are continually considering expanding our delivery areas.`,
           "You may have tyres, wheels and brake components delivered directly to a local fitting centre or workshop. Enter the workshop's name in the Company field at checkout and let them know the shipment is arriving.",
         ],
       },
       {
-        heading: "Cost, duties and import VAT",
+        heading: "Free EU delivery, VAT & zero customs duties",
         blocks: [
           s.freeShipping
-            ? "Standard international delivery is free (€0.00) on every order across all 27 EU Member States, with no minimum order value."
+            ? "Standard EU delivery from our European Union logistics hub in Poland is free (€0.00) on every order across all 27 EU Member States, with no minimum order value."
             : "Delivery costs are shown at checkout before you place the order.",
           s.duties,
           SNIP.paymentsVat.blocks[1],
@@ -42,7 +42,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
             rows: [
               ["Order cut-off time", `${s.cutoff}, Monday–Friday`],
               ["Handling / warehouse processing time", `${s.handlingDays[0]}–${s.handlingDays[1]} working days`],
-              ["International transit time", `${s.transitDays[0]}–${s.transitDays[1]} working days`],
+              ["EU transit time", `${s.transitDays[0]}–${s.transitDays[1]} working days`],
               ["Total estimated delivery time", deliveryLabel("eu").replace("business", "working")],
               ["Carriers", `Own delivery service & courier (TiresShop Courier) where available; otherwise ${s.carriers.join(", ")}`],
               ["Dispatched from", EU_PRESENCE.dispatchCountry],
@@ -145,7 +145,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
           {
             list: [
               `Email ${COMPANY.email} with your order number (or send the completed Model Withdrawal Form).`,
-              "We confirm receipt of your withdrawal by email within 1 working day and issue a Return Merchandise Authorisation (RMA) number along with customs re-export documentation and, on request, a prepaid return label.",
+              "We confirm receipt of your withdrawal by email within 1 working day and issue a Return Merchandise Authorisation (RMA) number and, on request, a prepaid EU return label.",
               `Pack the items securely in their original packaging and ship them to: ${EU_PRESENCE.returnsAddress} (or to the regional EU returns consolidation facility printed on your prepaid RMA label), marking the RMA number clearly on the outside of each parcel.`,
             ],
           },
@@ -315,6 +315,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
               ["Trading name", COMPANY.tradingName],
               ["Company", `${COMPANY.legalName} (${COMPANY.entityType}, ${COMPANY.stateOfFormation}, USA)`],
               ["Registration", `${COMPANY.stateOfFormation} Secretary of State, file no. ${COMPANY.registrationNumber}`],
+              ["EU VAT ID (EU Representative)", EU_PRESENCE.vatEntity],
               ["Seller's permit", `${COMPANY.sellerPermit} (${COMPANY.sellerPermitAuthority})`],
               ["Represented by", `${COMPANY.representative}, ${COMPANY.representativeRole}`],
               ["Principal address", companyAddressLine],
@@ -396,9 +397,9 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
         blocks: [
           {
             rows: [
-              ["Order, payment & delivery data (name, address, email, phone, items ordered, RMA/warranty claims, import VAT refund receipts)", "Performance of a contract — Art. 6(1)(b) GDPR"],
+              ["Order, payment & delivery data (name, address, email, phone, items ordered, RMA/warranty claims)", "Performance of a contract — Art. 6(1)(b) GDPR"],
               ["Customer account & garage fitment data (saved vehicles, tyre sizes, 7% Member Club status)", "Performance of a contract / pre-contractual measures — Art. 6(1)(b) GDPR"],
-              ["Sales invoices, customs declarations & accounting records", "Compliance with a legal obligation — Art. 6(1)(c) GDPR"],
+              ["VAT sales invoices & accounting records", "Compliance with a legal obligation — Art. 6(1)(c) GDPR"],
               ["IT security, server logs, CAPTCHA verification & payment fraud prevention", "Legitimate interests in store security and fraud prevention — Art. 6(1)(f) GDPR"],
               ["Customer service inquiries (email, contact form, live chat)", "Performance of a contract or legitimate interests in answering inquiries — Art. 6(1)(b)/(f) GDPR"],
               ["Analytics & advertising cookies (Google Analytics, Google Ads / Shopping conversions)", "Your explicit prior consent — Art. 6(1)(a) GDPR & Art. 5(3) ePrivacy Directive"],
@@ -409,19 +410,19 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
       {
         heading: "Recipients and processors",
         blocks: [
-          "We share personal data only to the extent necessary with: (1) our PCI-DSS Level 1 payment service providers (PayPal and Shopify Payments) to process payments; (2) international shipping carriers (DHL Express, UPS, FedEx) and our US warehouse to fulfil and clear your order through customs; (3) cloud hosting, database and transactional email providers (Vercel, Neon); and (4) — strictly only if you grant prior consent in the cookie banner — Google Ireland Limited / Google LLC for Google Analytics and Google Ads / Google Merchant Center conversion measurement. All processors are bound by data processing agreements under Art. 28 GDPR.",
+          "We share personal data only to the extent necessary with: (1) our PCI-DSS Level 1 payment service providers (PayPal and Shopify Payments) to process payments; (2) our European Union logistics hub in Poland and EU shipping carriers (DHL, UPS, DPD, GLS) to fulfil and deliver your order; (3) cloud hosting, database and transactional email providers (Vercel, Neon); and (4) — strictly only if you grant prior consent in the cookie banner — Google Ireland Limited / Google LLC for Google Analytics and Google Ads / Google Merchant Center conversion measurement. All processors are bound by data processing agreements under Art. 28 GDPR.",
         ],
       },
       {
         heading: "International data transfers (Chapter V GDPR)",
         blocks: [
-          "Because we are established in the United States and dispatch orders from the United States, personal data required to process and ship your order is transferred to the United States (Art. 49(1)(b) GDPR — necessary for the performance of the contract between you and us). Transfers to US service providers and cloud infrastructure are additionally safeguarded by certification under the EU–US Data Privacy Framework (Art. 45 GDPR adequacy decision) where the provider is certified, or by the European Commission's Standard Contractual Clauses (SCCs, Art. 46(2)(c) GDPR). You may request a copy of the applicable safeguards by emailing us.",
+          "While EU orders are fulfilled and dispatched from our logistics hub in Poland inside the European Union, the store operator is established in the United States, so order administration and customer support data may be accessed from the United States (Art. 49(1)(b) GDPR — necessary for the performance of the contract between you and us). Transfers to US service providers and cloud infrastructure are additionally safeguarded by certification under the EU–US Data Privacy Framework (Art. 45 GDPR adequacy decision) where the provider is certified, or by the European Commission's Standard Contractual Clauses (SCCs, Art. 46(2)(c) GDPR). You may request a copy of the applicable safeguards by emailing us.",
         ],
       },
       {
         heading: "Data retention periods",
         blocks: [
-          "Order, customs and accounting records are retained for the statutory tax and commercial retention period (up to 10 years). Customer service correspondence is deleted 3 years after the inquiry is resolved. Consent logs are retained for the validity of your consent plus the statutory limitation period.",
+          "Order, VAT invoice and accounting records are retained for the statutory tax and commercial retention period (up to 10 years). Customer service correspondence is deleted 3 years after the inquiry is resolved. Consent logs are retained for the validity of your consent plus the statutory limitation period.",
         ],
       },
       {
@@ -517,6 +518,7 @@ export const EU_POLICIES: Record<string, PolicyDoc> = {
               ["Trading name", COMPANY.tradingName],
               ["Legal form", `${COMPANY.entityType}, organised under the laws of the State of ${COMPANY.stateOfFormation}, United States`],
               ["Company register & number", `${COMPANY.stateOfFormation} Secretary of State, Entity File No. ${COMPANY.registrationNumber}`],
+              ["EU VAT ID (EU Representative)", EU_PRESENCE.vatEntity],
               ["Seller's permit / Tax ID", `${COMPANY.sellerPermit} (${COMPANY.sellerPermitAuthority})`],
               ["Principal business address", companyAddressLine],
               ["Address for legal notices", COMPANY.mailingAddress],

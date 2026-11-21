@@ -13,7 +13,7 @@ const r = p.returns
 const t = euNl.policy
 const contactLine = `${COMPANY.email} · ${COMPANY.phoneDisplay} (${euNl.company.hours})`
 const seller = `${COMPANY.legalName}, ${companyAddressLine}, e-mail ${COMPANY.email}, telefoon ${COMPANY.phoneDisplay}`
-const bulky = "maximaal ongeveer € 90 per band of velg en € 45 per remmenpakket voor de retourzending naar de Verenigde Staten"
+const bulky = "maximaal ongeveer € 25 per band of velg en € 15 per remmenpakket voor de retourzending binnen de EU"
 const payments = p.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "SEPA-overschrijving" : m))
 
 const SNIP = EU_SNIPPETS.nl
@@ -32,9 +32,9 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Kosten, invoerrechten en invoer-btw",
+        heading: "Gratis EU-levering, btw inbegrepen & geen douane",
         blocks: [
-          s.freeShipping ? "Levering is gratis voor alle bestellingen, zonder minimumbedrag." : "Verzendkosten worden getoond voordat u de bestelling bevestigt.",
+          s.freeShipping ? "Levering vanuit onze EU-logistieke hub in Polen is gratis voor alle bestellingen naar alle 27 EU-lidstaten, zonder minimumbedrag." : "Verzendkosten worden getoond voordat u de bestelling bevestigt.",
           t.duties,
           SNIP.paymentsVat.blocks[1],
         ],
@@ -44,12 +44,12 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
         blocks: [
           {
             rows: [
-              ["Uiterste besteltijd", "14.00 uur PT (Amerikaanse westkusttijd), maandag t/m vrijdag"],
+              ["Uiterste besteltijd", "14.00 uur CET (Midden-Europese tijd), maandag t/m vrijdag"],
               ["Verwerkingstijd", `${s.handlingDays[0]}–${s.handlingDays[1]} werkdagen`],
               ["Transittijd", `${s.transitDays[0]}–${s.transitDays[1]} werkdagen`],
               ["Totale levertijd", t.days],
               ["Vervoerders", `Eigen bezorgdienst en eigen koerier (TiresShop Courier) waar beschikbaar; anders ${s.carriers.join(", ")}`],
-              ["Verzonden vanuit", "Verenigde Staten (Californië)"],
+              ["Verzonden vanuit", "Europese Unie (logistieke hub in Polen)"],
             ],
           },
           `Wanneer het mogelijk is om uw bestelling met onze eigen bezorgdienst en onze eigen koerier te versturen, verzenden wij deze op die manier. Als levering via onze eigen bezorgdienst voor uw adres of route niet mogelijk is, maken wij gebruik van andere vervoerders (${s.carriers.join(", ")}).`,
@@ -407,6 +407,7 @@ export const EU_POLICIES_NL: Record<string, PolicyDoc> = {
               ["Vertegenwoordigd door", `${COMPANY.representative}, ${COMPANY.representativeRole}`],
               ["E-mail", COMPANY.email],
               ["Telefoon", `${COMPANY.phoneDisplay} (${COMPANY.hours})`],
+              ["EU-btw-nummer (EU-vertegenwoordiger)", EU_PRESENCE.vatEntity],
               ["Seller's permit (CDTFA)", `${COMPANY.sellerPermit} (${COMPANY.sellerPermitAuthority})`],
             ],
           },

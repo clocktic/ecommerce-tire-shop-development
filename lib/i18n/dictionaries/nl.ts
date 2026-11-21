@@ -4,21 +4,21 @@ import type { Dictionary } from "@/lib/i18n/dictionaries/en"
 
 const eu = POLICIES.eu
 const s = eu.shipping
-const cutoff = "14.00 uur PT (Amerikaanse westkusttijd)"
+const cutoff = "14.00 uur CET (Midden-Europese tijd)"
 const [min, max] = deliveryDays("eu")
 const days = `${min}–${max} werkdagen`
 const area = "alle 27 EU-lidstaten"
 const exclusions = "landen buiten de EU (waaronder het Verenigd Koninkrijk, Zwitserland en Noorwegen) en ultraperifere EU-gebieden zoals de Canarische Eilanden"
-const duties = "Verzonden vanuit de Verenigde Staten. De prijzen zijn exclusief invoerrechten en invoer-btw, die u bij levering aan de vervoerder of de douane betaalt. Nadat u uw bestelling heeft ontvangen, betalen wij de betaalde invoer-btw aan u terug."
-const warranty = "Wettelijke conformiteitsgarantie in de EU van 2 jaar na levering, naast een eventuele fabrieksgarantie."
-const bulky = "maximaal ongeveer € 90 per band of velg en € 45 per remmenpakket voor de retourzending naar de Verenigde Staten"
+const duties = "Gratis levering vanuit onze EU-logistieke hub in Polen naar alle 27 EU-lidstaten — zonder douaneafhandeling of invoerrechten. Alle prijzen zijn al inclusief de geldende EU-btw (btw-nummer: BE0794.652.803 — BBC TYRES BV)."
+const warranty = "Wettelijke EU-conformiteitsgarantie van 2 jaar vanaf levering, naast eventuele fabrieksgaranties."
+const bulky = "maximaal ongeveer € 25 per band of velg en € 15 per remmenpakket voor de retourzending binnen de EU"
 const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "SEPA-overschrijving" : m)).join(", ")
 
 export const euNl: Dictionary = {
   meta: {
-    title: `${COMPANY.tradingName} — Banden, velgen & remmen | EU-winkel`,
+    title: `${COMPANY.tradingName} — Banden, Velgen & Remmen | EU-winkel`,
     template: `%s | ${COMPANY.tradingName} EU`,
-    description: "Banden, lichtmetalen velgen en remsystemen vanuit de Verenigde Staten geleverd in de hele EU. EU-bandenlabel bij elke band.",
+    description: "Banden, lichtmetalen velgen en remsystemen met gratis levering in de hele EU vanuit onze logistieke hub in Polen. Alle prijzen inclusief EU-btw (BE0794.652.803).",
   },
   common: {
     skip: "Naar de inhoud",
@@ -62,10 +62,10 @@ export const euNl: Dictionary = {
     policies: "Juridisch EU",
     store: "Winkel",
     language: "Taal",
-    bottom: "Prijzen in EUR · exclusief invoerrechten en btw, te betalen bij levering",
+    bottom: "Prijzen in EUR · incl. EU-btw (BE0794.652.803) · Gratis EU-levering vanuit Polen",
     payments: `Geaccepteerde betaalmethoden: ${payments}`,
     privacyLink: "Cookie-instellingen",
-    vat: "",
+    vat: "EU-btw-nummer: BE0794.652.803 (BBC TYRES BV, EU-vertegenwoordiger)",
   },
   categories: {
     tires: { name: "Banden", blurb: "Zomer-, winter- en all-seasonbanden. Zoek op de maat op de zijkant van uw band." },
@@ -92,7 +92,7 @@ export const euNl: Dictionary = {
   home: {
     eyebrow: "EU-winkel · Banden · Velgen · Remmen",
     title: "Alles tussen uw auto en de weg.",
-    lead: "Banden met EU-bandenlabel, velgen en remmen met ECE-goedkeuring — verzonden vanuit de Verenigde Staten.",
+    lead: "Banden met EU-bandenlabel, velgen en remmen met ECE-goedkeuring — gratis EU-levering vanuit onze hub in Polen, incl. btw.",
     heroAlt: "Lichtmetalen velg met sportband en rode remklauw",
     finder: {
       title: "Bandenmaat zoeken",
@@ -247,7 +247,7 @@ export const euNl: Dictionary = {
     upc: "UPC",
     supplierPart: "Leveranciersnummer",
   },
-    priceNote: "exclusief invoerrechten en btw · prijs per stuk",
+    priceNote: "incl. EU-btw · gratis EU-levering · prijs per stuk",
     deliveryTitle: `${s.freeShipping ? "Gratis levering" : "Levering"} in ${days}`,
     deliveryText: `Naar ${area}. Bestellingen vóór ${cutoff} verlaten ons magazijn in de VS binnen ${s.handlingDays[0]}–${s.handlingDays[1]} werkdagen. Waar mogelijk verzonden met onze eigen bezorgdienst en eigen koerier, anders via andere vervoerders.`,
     returnsTitle: `${eu.returns.windowDays} dagen herroepingsrecht`,
@@ -290,7 +290,7 @@ export const euNl: Dictionary = {
     quantityFor: "Aantal voor {name}",
     aria: "Winkelwagen, artikelen: {n}",
     tax: null,
-    priceNote: "Exclusief invoerrechten en btw.",
+    priceNote: "Alle prijzen inclusief EU-btw (BE0794.652.803) · Gratis EU-levering vanuit Polen.",
   },
   checkout: {
     title: "Afrekenen",
@@ -435,6 +435,6 @@ export const euNl: Dictionary = {
     phone: "Telefoon",
     hours: "Bereikbaarheid",
     eyebrow: "EU-winkel",
-    vat: "",
+    vat: "EU-btw-nummer: BE0794.652.803 (BBC TYRES BV, EU-vertegenwoordiger)",
   },
 }

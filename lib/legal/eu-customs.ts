@@ -1,17 +1,20 @@
-import { COMPANY } from "@/lib/company"
+import { COMPANY, EU_REPRESENTATIVE, euRepresentativeAddress } from "@/lib/company"
 import { POLICIES } from "@/lib/policies"
 import type { Lang } from "@/lib/i18n/config"
 import type { PolicyDoc, PolicySection } from "@/lib/legal/types"
 
-// EU orders are shipped from the United States on a DAP basis (Delivered at
-// Place): the customer pays import VAT and any customs duty to the carrier or
-// customs on delivery, and we refund the import VAT after delivery, on proof of payment. This file holds
-// the full "Duties, Import VAT & Customs" page and the short fragments the other
-// EU policy pages reuse, so the wording stays identical everywhere.
+// EU orders are dispatched free of charge from our EU logistics hub in Poland
+// across all 27 EU Member States. All prices in EUR already include applicable
+// EU VAT under our EU representative BBC TYRES BV (VAT ID: BE0794.652.803).
+// Because goods move strictly within the European Union customs union, there
+// are no import duties, no border customs clearance, and no surprise fees on
+// delivery.
 
-const r = POLICIES.eu.returns
 const s = POLICIES.eu.shipping
 const carriers = s.carriers.join(", ")
+const vatId = EU_REPRESENTATIVE.vatNumber
+const repName = EU_REPRESENTATIVE.legalName
+const repFull = `${repName} (${EU_REPRESENTATIVE.legalForm}, KBO/BCE ${EU_REPRESENTATIVE.enterpriseNumber}, VAT ${vatId}, ${euRepresentativeAddress})`
 
 type Snippets = {
   linkLabel: string
@@ -28,564 +31,518 @@ type Snippets = {
 const href = "/policies/customs"
 
 const EN: Snippets = {
-  linkLabel: "Duties, Import VAT & Customs",
-  shippingDescription: `Free delivery to ${s.area} from the United States. Import duties and VAT are paid on delivery.`,
-  shippingIntro: `This policy applies to orders placed in the ${COMPANY.tradingName} EU store (prices in EUR, excluding import duties and import VAT).`,
+  linkLabel: "EU VAT & Intra-EU Shipping",
+  shippingDescription: `Free delivery to ${s.area} from our EU logistics hub in Poland. Prices include EU VAT (${vatId}) with no customs duties.`,
+  shippingIntro: `This policy applies to orders placed in the ${COMPANY.tradingName} EU store (prices in EUR, including EU VAT — dispatched free of charge from our EU logistics hub in Poland).`,
   paymentsDescription:
-    "Pay securely with Visa, Mastercard, American Express, Discover, PayPal, PayPal Pay Later, Apple Pay, Google Pay, Shop Pay, or SEPA bank transfer. Prices in EUR, excluding import duties and import VAT.",
-  paymentsIntro: "All prices in the EU store are in euro (EUR). They do not include import VAT or customs duty, which you pay on delivery.",
+    `Pay securely with Visa, Mastercard, American Express, Discover, PayPal, PayPal Pay Later, Apple Pay, Google Pay, Shop Pay, or SEPA bank transfer. All prices in EUR include EU VAT (${vatId}).`,
+  paymentsIntro: `All prices in the EU store are in euro (EUR) and already include applicable EU VAT (EU VAT ID: ${vatId} — ${repName}). Delivery across all 27 EU Member States is free.`,
   paymentsVat: {
-    heading: "Import VAT and duties",
+    heading: "EU VAT & no customs duties",
     blocks: [
-      "We do not charge VAT at checkout. Import VAT and any customs duty are charged by the customs authority of the country of delivery and collected by the carrier. You pay them on delivery. After you receive your order, we refund the import VAT to you.",
-      { link: { href, label: "Duties, Import VAT & Customs" } },
+      `All prices shown in the EU store are final prices in EUR and already include applicable EU VAT (EU VAT ID: ${vatId}, EU Representative: ${repName}, ${euRepresentativeAddress}). Because orders are dispatched from our European Union logistics hub in Poland, no customs duties, import VAT, or carrier clearance fees apply on delivery.`,
+      { link: { href, label: "EU VAT & Intra-EU Shipping" } },
     ],
   },
-  pricesText: "All prices are in EUR and exclude import VAT and customs duty, which you pay to the carrier or customs on delivery. Delivery is free. We will not charge you any other amount without telling you first.",
+  pricesText: `All prices are in EUR and already include applicable EU VAT (EU VAT ID: ${vatId} — ${repName}). Delivery across all 27 EU Member States from our Poland hub is free (€0.00). No customs duties or hidden fees apply on delivery.`,
   returnsSection: {
-    heading: "Import VAT and customs charges",
+    heading: "VAT refunds on returns",
     blocks: [
-      "We refund import VAT after delivery, whether or not you return the goods, so no further VAT refund is due on a return. Customs duty is paid to the customs authority, which may refund it when the goods are re-exported; we provide the return documents it asks for.",
-      { link: { href, label: "Duties, Import VAT & Customs" } },
+      `All EU store prices already include EU VAT (VAT ID: ${vatId} — ${repName}). When you exercise your right of withdrawal or return an eligible item, we refund the full VAT-inclusive purchase price paid to your original payment method. Because shipments move within the EU, no customs re-export formalities are required.`,
+      { link: { href, label: "EU VAT & Intra-EU Shipping" } },
     ],
   },
   termsSection: {
-    heading: "Customs, import VAT and duties",
+    heading: "Intra-EU dispatch, VAT & zero customs duties",
     blocks: [
-      "Goods are shipped from the United States on a Delivered at Place (DAP) basis. You are the importer of record and pay import VAT, customs duty and any carrier clearance fee on delivery. After you receive your order, we refund the import VAT as described on the Duties, Import VAT & Customs page. Mandatory consumer rights are not affected.",
-      { link: { href, label: "Duties, Import VAT & Customs" } },
+      `All EU orders are dispatched free of charge from our European Union logistics hub in Poland across all 27 EU Member States. All prices already include applicable EU VAT under our EU Representative ${repName} (EU VAT ID: ${vatId}). No customs duties, import taxes, or carrier clearance fees are payable on delivery. Mandatory consumer rights are not affected.`,
+      { link: { href, label: "EU VAT & Intra-EU Shipping" } },
     ],
   },
 }
 
 const DE: Snippets = {
-  linkLabel: "Zölle, Einfuhrumsatzsteuer & Zollabwicklung",
-  shippingDescription: "Kostenlose Lieferung in alle 27 EU-Mitgliedstaaten aus den USA. Einfuhrzölle und Einfuhrumsatzsteuer zahlen Sie bei Lieferung.",
-  shippingIntro: `Diese Bedingungen gelten für Bestellungen im EU-Shop von ${COMPANY.tradingName} (Preise in EUR, ohne Einfuhrzölle und Einfuhrumsatzsteuer).`,
+  linkLabel: "EU-MwSt. & Versand aus Polen",
+  shippingDescription: `Kostenlose Lieferung in alle 27 EU-Mitgliedstaaten aus unserem EU-Logistikhub in Polen. Alle Preise inkl. MwSt. (${vatId}), ohne Zollgebühren.`,
+  shippingIntro: `Diese Bedingungen gelten für Bestellungen im EU-Shop von ${COMPANY.tradingName} (Preise in EUR inkl. gesetzlicher EU-Mehrwertsteuer, kostenloser Versand aus unserem EU-Logistikhub in Polen).`,
   paymentsDescription:
-    "Sichere Zahlung per Visa, Mastercard, American Express, Discover, PayPal, PayPal Später Bezahlen, Apple Pay, Google Pay, Shop Pay oder SEPA-Überweisung. Preise in EUR, ohne Einfuhrzölle und Einfuhrumsatzsteuer.",
-  paymentsIntro: "Alle Preise im EU-Shop sind in Euro (EUR) angegeben. Sie enthalten weder Einfuhrumsatzsteuer noch Zoll; diese zahlen Sie bei Lieferung.",
+    `Sichere Zahlung per Visa, Mastercard, American Express, Discover, PayPal, PayPal Später Bezahlen, Apple Pay, Google Pay, Shop Pay oder SEPA-Überweisung. Alle Preise in EUR inkl. EU-MwSt. (${vatId}).`,
+  paymentsIntro: `Alle Preise im EU-Shop sind in Euro (EUR) angegeben und enthalten bereits die gesetzliche EU-Mehrwertsteuer (USt-IdNr.: ${vatId} — ${repName}). Die Lieferung in alle 27 EU-Mitgliedstaaten ist kostenlos.`,
   paymentsVat: {
-    heading: "Einfuhrumsatzsteuer und Zölle",
+    heading: "EU-Mehrwertsteuer & keine Zollgebühren",
     blocks: [
-      "Wir berechnen an der Kasse keine Mehrwertsteuer. Einfuhrumsatzsteuer und etwaige Zölle werden von der Zollbehörde des Lieferlandes erhoben und vom Zusteller eingezogen. Sie zahlen sie bei Lieferung; nachdem Sie Ihre Bestellung erhalten haben, erstatten wir Ihnen die Einfuhrumsatzsteuer.",
-      { link: { href, label: "Zölle, Einfuhrumsatzsteuer & Zollabwicklung" } },
+      `Alle im EU-Shop angezeigten Preise sind Endpreise in EUR und enthalten bereits die geltende EU-Mehrwertsteuer (USt-IdNr.: ${vatId}, EU-Vertreter: ${repName}, ${euRepresentativeAddress}). Da alle Bestellungen aus unserem EU-Logistikhub in Polen versandt werden, fallen bei der Lieferung weder Zölle noch Einfuhrumsatzsteuer oder Abfertigungsgebühren an.`,
+      { link: { href, label: "EU-MwSt. & Versand aus Polen" } },
     ],
   },
-  pricesText: "Alle Preise sind in EUR angegeben und enthalten weder Einfuhrumsatzsteuer noch Zoll, die Sie bei Lieferung an den Zusteller oder den Zoll zahlen. Die Lieferung ist kostenlos. Weitere Beträge berechnen wir Ihnen nicht, ohne Sie vorher zu informieren.",
+  pricesText: `Alle Preise sind Endpreise in EUR und enthalten bereits die geltende EU-Mehrwertsteuer (USt-IdNr.: ${vatId} — ${repName}). Die Lieferung aus unserem Logistikhub in Polen in alle 27 EU-Mitgliedstaaten ist kostenlos (0,00 €). Bei Lieferung fallen keine Zoll- oder Importabgaben an.`,
   returnsSection: {
-    heading: "Einfuhrumsatzsteuer und Zollgebühren",
+    heading: "Mehrwertsteuer bei Rücksendungen",
     blocks: [
-      "Die Einfuhrumsatzsteuer erstatten wir nach der Lieferung, unabhängig von einer Rücksendung; bei einer Rücksendung ist daher keine weitere Steuererstattung fällig. Zoll wird an die Zollbehörde gezahlt, die ihn bei einer Wiederausfuhr der Waren erstatten kann; die dafür verlangten Rücksendeunterlagen stellen wir Ihnen bereit.",
-      { link: { href, label: "Zölle, Einfuhrumsatzsteuer & Zollabwicklung" } },
+      `Alle Preise im EU-Shop enthalten bereits die gesetzliche EU-Mehrwertsteuer (USt-IdNr.: ${vatId} — ${repName}). Bei einem Widerruf oder einer Rücksendung erstatten wir den vollen gezahlten Bruttopreis inklusive Mehrwertsteuer. Da der Versand innerhalb der EU erfolgt, sind keine Zollformalitäten für eine Wiederausfuhr erforderlich.`,
+      { link: { href, label: "EU-MwSt. & Versand aus Polen" } },
     ],
   },
   termsSection: {
-    heading: "Zoll, Einfuhrumsatzsteuer und Abgaben",
+    heading: "Inner­gemeinschaftlicher Versand, MwSt. & kein Zoll",
     blocks: [
-      "Die Ware wird aus den USA „geliefert benannter Ort“ (DAP) versandt. Sie sind Importeur und zahlen Einfuhrumsatzsteuer, Zoll und etwaige Abfertigungsgebühren des Zustellers bei Lieferung. Nach Erhalt Ihrer Bestellung erstatten wir Ihnen die Einfuhrumsatzsteuer, wie auf der Seite „Zölle, Einfuhrumsatzsteuer & Zollabwicklung“ beschrieben. Zwingende Verbraucherrechte bleiben unberührt.",
-      { link: { href, label: "Zölle, Einfuhrumsatzsteuer & Zollabwicklung" } },
+      `Alle EU-Bestellungen werden kostenlos aus unserem EU-Logistikhub in Polen in alle 27 EU-Mitgliedstaaten geliefert. Alle Preise enthalten bereits die gesetzliche EU-Mehrwertsteuer über unseren EU-Vertreter ${repName} (USt-IdNr.: ${vatId}). Bei Lieferung fallen weder Zölle noch Einfuhrabgaben an. Zwingende Verbraucherrechte bleiben unberührt.`,
+      { link: { href, label: "EU-MwSt. & Versand aus Polen" } },
     ],
   },
 }
 
 const FR: Snippets = {
-  linkLabel: "Droits de douane, TVA à l’importation et dédouanement",
-  shippingDescription: "Livraison gratuite dans les 27 États membres de l’UE depuis les États-Unis. Droits de douane et TVA à l’importation payés à la livraison.",
-  shippingIntro: `Ces conditions s’appliquent aux commandes passées sur la boutique UE de ${COMPANY.tradingName} (prix en EUR, hors droits de douane et TVA à l’importation).`,
+  linkLabel: "TVA UE & Livraison depuis la Pologne",
+  shippingDescription: `Livraison gratuite dans les 27 États membres de l’UE depuis notre hub logistique en Pologne. Prix TTC incluant la TVA UE (${vatId}), sans droits de douane.`,
+  shippingIntro: `Ces conditions s’appliquent aux commandes passées sur la boutique UE de ${COMPANY.tradingName} (prix en EUR TTC incluant la TVA UE, expédition gratuite depuis notre hub logistique en Pologne).`,
   paymentsDescription:
-    "Paiement sécurisé par Visa, Mastercard, American Express, Discover, PayPal, PayPal Paiement en 4x, Apple Pay, Google Pay, Shop Pay ou virement SEPA. Prix en EUR, hors droits de douane et TVA à l’importation.",
-  paymentsIntro: "Tous les prix de la boutique UE sont en euros (EUR). Ils n’incluent ni la TVA à l’importation ni les droits de douane, que vous réglez à la livraison.",
+    `Paiement sécurisé par Visa, Mastercard, American Express, Discover, PayPal, PayPal Paiement en 4x, Apple Pay, Google Pay, Shop Pay ou virement SEPA. Tous les prix en EUR incluent la TVA UE (${vatId}).`,
+  paymentsIntro: `Tous les prix de la boutique UE sont en euros (EUR) et incluent déjà la TVA UE applicable (n° de TVA intracommunautaire : ${vatId} — ${repName}). La livraison dans les 27 États membres de l’UE est gratuite.`,
   paymentsVat: {
-    heading: "TVA à l’importation et droits de douane",
+    heading: "TVA UE incluse et aucun droit de douane",
     blocks: [
-      "Nous ne facturons pas de TVA au paiement. La TVA à l’importation et les éventuels droits de douane sont prélevés par l’administration douanière du pays de livraison et encaissés par le transporteur. Vous les réglez à la livraison ; une fois votre commande reçue, nous vous remboursons la TVA à l’importation.",
-      { link: { href, label: "Droits de douane, TVA à l’importation et dédouanement" } },
+      `Tous les prix affichés sur la boutique UE sont des prix TTC en EUR incluant déjà la TVA UE applicable (n° de TVA : ${vatId}, représentant UE : ${repName}, ${euRepresentativeAddress}). Les commandes étant expédiées depuis notre hub logistique de l’Union européenne en Pologne, aucun droit de douane, aucune TVA à l’importation ni aucun frais de dédouanement ne vous est demandé à la livraison.`,
+      { link: { href, label: "TVA UE & Livraison depuis la Pologne" } },
     ],
   },
-  pricesText: "Tous les prix sont en EUR et excluent la TVA à l’importation et les droits de douane, que vous réglez au transporteur ou à la douane à la livraison. La livraison est gratuite. Nous ne vous facturerons aucun autre montant sans vous en informer au préalable.",
+  pricesText: `Tous les prix sont en EUR TTC et incluent déjà la TVA UE applicable (n° de TVA : ${vatId} — ${repName}). La livraison depuis notre hub en Pologne vers les 27 États membres de l’UE est gratuite (0,00 €). Aucun droit de douane ni frais cachés ne s’appliquent à la livraison.`,
   returnsSection: {
-    heading: "TVA à l’importation et frais de douane",
+    heading: "TVA en cas de retour",
     blocks: [
-      "Nous remboursons la TVA à l’importation après la livraison, que vous retourniez ou non les biens ; aucun autre remboursement de TVA n’est donc dû lors d’un retour. Les droits de douane sont versés à l’administration douanière, qui peut les rembourser lors de la réexportation des biens ; nous fournissons les documents de retour qu’elle demande.",
-      { link: { href, label: "Droits de douane, TVA à l’importation et dédouanement" } },
+      `Tous les prix de la boutique UE incluent déjà la TVA UE (n° de TVA : ${vatId} — ${repName}). En cas de rétractation ou de retour conforme, nous vous remboursons l’intégralité du prix TTC payé sur votre moyen de paiement initial. Les envois circulant au sein de l’UE, aucune formalité douanière de réexportation n’est nécessaire.`,
+      { link: { href, label: "TVA UE & Livraison depuis la Pologne" } },
     ],
   },
   termsSection: {
-    heading: "Douane, TVA à l’importation et droits",
+    heading: "Expédition intra-UE, TVA incluse et zéro douane",
     blocks: [
-      "Les biens sont expédiés depuis les États-Unis en « rendu au lieu de destination » (DAP). Vous êtes l’importateur et réglez à la livraison la TVA à l’importation, les droits de douane et les éventuels frais de dédouanement du transporteur. Une fois votre commande reçue, nous vous remboursons la TVA à l’importation comme décrit sur la page « Droits de douane, TVA à l’importation et dédouanement ». Les droits impératifs des consommateurs ne sont pas affectés.",
-      { link: { href, label: "Droits de douane, TVA à l’importation et dédouanement" } },
+      `Toutes les commandes UE sont expédiées gratuitement depuis notre hub logistique en Pologne vers les 27 États membres de l’UE. Tous les prix incluent déjà la TVA UE applicable via notre représentant UE ${repName} (n° de TVA : ${vatId}). Aucun droit de douane ni taxe d’importation n’est dû à la livraison. Les droits impératifs des consommateurs ne sont pas affectés.`,
+      { link: { href, label: "TVA UE & Livraison depuis la Pologne" } },
     ],
   },
 }
 
 const IT: Snippets = {
-  linkLabel: "Dazi, IVA all’importazione e sdoganamento",
-  shippingDescription: "Consegna gratuita in tutti i 27 Stati membri dell’UE dagli Stati Uniti. Dazi e IVA all’importazione si pagano alla consegna.",
-  shippingIntro: `Queste condizioni si applicano agli ordini effettuati nel negozio UE di ${COMPANY.tradingName} (prezzi in EUR, esclusi dazi e IVA all’importazione).`,
+  linkLabel: "IVA UE e spedizione dalla Polonia",
+  shippingDescription: `Consegna gratuita in tutti i 27 Stati membri dell’UE dal nostro hub logistico in Polonia. Prezzi IVA UE inclusa (${vatId}), senza dazi doganali.`,
+  shippingIntro: `Queste condizioni si applicano agli ordini effettuati nel negozio UE di ${COMPANY.tradingName} (prezzi in EUR IVA UE inclusa, spedizione gratuita dal nostro hub logistico in Polonia).`,
   paymentsDescription:
-    "Pagamento sicuro con Visa, Mastercard, American Express, Discover, PayPal, PayPal Paga in 3 rate, Apple Pay, Google Pay, Shop Pay o bonifico SEPA. Prezzi in EUR, esclusi dazi e IVA all’importazione.",
-  paymentsIntro: "Tutti i prezzi del negozio UE sono in euro (EUR). Non comprendono l’IVA all’importazione né i dazi, che paghi alla consegna.",
+    `Pagamento sicuro con Visa, Mastercard, American Express, Discover, PayPal, PayPal Paga in 3 rate, Apple Pay, Google Pay, Shop Pay o bonifico SEPA. Tutti i prezzi in EUR includono l’IVA UE (${vatId}).`,
+  paymentsIntro: `Tutti i prezzi del negozio UE sono in euro (EUR) e includono già l’IVA UE applicabile (Partita IVA UE: ${vatId} — ${repName}). La consegna in tutti i 27 Stati membri dell’UE è gratuita.`,
   paymentsVat: {
-    heading: "IVA all’importazione e dazi",
+    heading: "IVA UE inclusa e nessun dazio doganale",
     blocks: [
-      "Non addebitiamo l’IVA al checkout. L’IVA all’importazione e gli eventuali dazi sono applicati dall’autorità doganale del paese di consegna e riscossi dal corriere. Li paghi alla consegna; dopo che hai ricevuto l’ordine, ti rimborsiamo l’IVA all’importazione.",
-      { link: { href, label: "Dazi, IVA all’importazione e sdoganamento" } },
+      `Tutti i prezzi mostrati nel negozio UE sono prezzi finali in EUR e includono già l’IVA UE applicabile (Partita IVA UE: ${vatId}, rappresentante UE: ${repName}, ${euRepresentativeAddress}). Poiché gli ordini partono dal nostro hub logistico dell’Unione europea in Polonia, alla consegna non si applicano dazi doganali, IVA all’importazione né spese di sdoganamento.`,
+      { link: { href, label: "IVA UE e spedizione dalla Polonia" } },
     ],
   },
-  pricesText: "Tutti i prezzi sono in EUR e non comprendono l’IVA all’importazione né i dazi, che paghi al corriere o alla dogana alla consegna. La consegna è gratuita. Non ti addebiteremo altri importi senza avvisarti prima.",
+  pricesText: `Tutti i prezzi sono in EUR e includono già l’IVA UE applicabile (Partita IVA UE: ${vatId} — ${repName}). La consegna dal nostro hub in Polonia in tutti i 27 Stati membri dell’UE è gratuita (0,00 €). Nessun dazio doganale o costo nascosto alla consegna.`,
   returnsSection: {
-    heading: "IVA all’importazione e oneri doganali",
+    heading: "IVA in caso di reso",
     blocks: [
-      "Rimborsiamo l’IVA all’importazione dopo la consegna, che tu restituisca o meno i beni; in caso di reso non è quindi dovuto un ulteriore rimborso dell’IVA. I dazi sono versati all’autorità doganale, che può rimborsarli in caso di riesportazione dei beni; ti forniamo i documenti di reso che richiede.",
-      { link: { href, label: "Dazi, IVA all’importazione e sdoganamento" } },
+      `Tutti i prezzi del negozio UE includono già l’IVA UE (Partita IVA UE: ${vatId} — ${repName}). In caso di recesso o reso idoneo, rimborsiamo l’intero importo pagato comprensivo di IVA sul metodo di pagamento originale. Trattandosi di spedizioni intra-UE, non è richiesta alcuna pratica doganale di riesportazione.`,
+      { link: { href, label: "IVA UE e spedizione dalla Polonia" } },
     ],
   },
   termsSection: {
-    heading: "Dogana, IVA all’importazione e dazi",
+    heading: "Spedizione intra-UE, IVA inclusa e zero dazi",
     blocks: [
-      "I beni sono spediti dagli Stati Uniti con resa «reso al luogo di destinazione» (DAP). Sei tu l’importatore e paghi alla consegna IVA all’importazione, dazi ed eventuali spese di sdoganamento del corriere. Dopo che hai ricevuto l’ordine, ti rimborsiamo l’IVA all’importazione come descritto nella pagina «Dazi, IVA all’importazione e sdoganamento». I diritti inderogabili dei consumatori non sono pregiudicati.",
-      { link: { href, label: "Dazi, IVA all’importazione e sdoganamento" } },
+      `Tutti gli ordini UE sono spediti gratuitamente dal nostro hub logistico in Polonia verso tutti i 27 Stati membri dell’UE. Tutti i prezzi includono già l’IVA UE tramite il nostro rappresentante UE ${repName} (Partita IVA UE: ${vatId}). Alla consegna non sono dovuti dazi doganali né imposte di importazione. I diritti inderogabili dei consumatori non sono pregiudicati.`,
+      { link: { href, label: "IVA UE e spedizione dalla Polonia" } },
     ],
   },
 }
 
 const ES: Snippets = {
-  linkLabel: "Aranceles, IVA de importación y trámite aduanero",
-  shippingDescription: "Entrega gratuita en los 27 Estados miembros de la UE desde Estados Unidos. Aranceles e IVA de importación se pagan en la entrega.",
-  shippingIntro: `Estas condiciones se aplican a los pedidos realizados en la tienda UE de ${COMPANY.tradingName} (precios en EUR, sin aranceles ni IVA de importación).`,
+  linkLabel: "IVA de la UE y envío desde Polonia",
+  shippingDescription: `Entrega gratuita en los 27 Estados miembros de la UE desde nuestro centro logístico en Polonia. Precios con IVA de la UE incluido (${vatId}), sin aranceles.`,
+  shippingIntro: `Estas condiciones se aplican a los pedidos realizados en la tienda UE de ${COMPANY.tradingName} (precios en EUR con IVA de la UE incluido y envío gratuito desde nuestro centro logístico en Polonia).`,
   paymentsDescription:
-    "Pago seguro con Visa, Mastercard, American Express, Discover, PayPal, PayPal Paga después, Apple Pay, Google Pay, Shop Pay o transferencia SEPA. Precios en EUR, sin aranceles ni IVA de importación.",
-  paymentsIntro: "Todos los precios de la tienda UE están en euros (EUR). No incluyen el IVA de importación ni los aranceles, que pagas en la entrega.",
+    `Pago seguro con Visa, Mastercard, American Express, Discover, PayPal, PayPal Paga después, Apple Pay, Google Pay, Shop Pay o transferencia SEPA. Todos los precios en EUR incluyen el IVA de la UE (${vatId}).`,
+  paymentsIntro: `Todos los precios de la tienda UE están en euros (EUR) y ya incluyen el IVA de la UE aplicable (NIF-IVA UE: ${vatId} — ${repName}). La entrega en los 27 Estados miembros de la UE es gratuita.`,
   paymentsVat: {
-    heading: "IVA de importación y aranceles",
+    heading: "IVA de la UE incluido y sin aranceles",
     blocks: [
-      "No cobramos IVA al pagar. El IVA de importación y los aranceles que correspondan los fija la aduana del país de entrega y los cobra el transportista. Los pagas en la entrega; una vez recibido tu pedido, te reembolsamos el IVA de importación.",
-      { link: { href, label: "Aranceles, IVA de importación y trámite aduanero" } },
+      `Todos los precios mostrados en la tienda UE son precios finales en EUR y ya incluyen el IVA de la UE aplicable (NIF-IVA UE: ${vatId}, representante en la UE: ${repName}, ${euRepresentativeAddress}). Como los pedidos salen desde nuestro centro logístico de la Unión Europea en Polonia, no se aplican aranceles, IVA de importación ni tasas de despacho en la entrega.`,
+      { link: { href, label: "IVA de la UE y envío desde Polonia" } },
     ],
   },
-  pricesText: "Todos los precios están en EUR y no incluyen el IVA de importación ni los aranceles, que pagas al transportista o a la aduana en la entrega. La entrega es gratuita. No te cobraremos ningún otro importe sin avisarte antes.",
+  pricesText: `Todos los precios están en EUR y ya incluyen el IVA de la UE aplicable (NIF-IVA UE: ${vatId} — ${repName}). La entrega desde nuestro centro logístico en Polonia a los 27 Estados miembros de la UE es gratuita (0,00 €). Sin aranceles ni costes ocultos en la entrega.`,
   returnsSection: {
-    heading: "IVA de importación y gastos de aduana",
+    heading: "IVA en devoluciones",
     blocks: [
-      "Reembolsamos el IVA de importación tras la entrega, devuelvas o no los bienes; por tanto, no se debe otro reembolso de IVA en una devolución. Los aranceles se pagan a la aduana, que puede reembolsarlos si los bienes se reexportan; te facilitamos los documentos de devolución que solicita.",
-      { link: { href, label: "Aranceles, IVA de importación y trámite aduanero" } },
+      `Todos los precios de la tienda UE ya incluyen el IVA de la UE (NIF-IVA UE: ${vatId} — ${repName}). Cuando ejerces tu derecho de desistimiento o devuelves un artículo válido, reembolsamos el precio total pagado con IVA incluido a tu método de pago original. Al tratarse de envíos dentro de la UE, no se requieren trámites aduaneros de reexportación.`,
+      { link: { href, label: "IVA de la UE y envío desde Polonia" } },
     ],
   },
   termsSection: {
-    heading: "Aduana, IVA de importación y aranceles",
+    heading: "Envío intra-UE, IVA incluido y cero aranceles",
     blocks: [
-      "Los bienes se envían desde Estados Unidos en condiciones de «entregado en lugar convenido» (DAP). Tú eres el importador y pagas en la entrega el IVA de importación, los aranceles y las tasas de despacho del transportista. Una vez recibido tu pedido, te reembolsamos el IVA de importación según se describe en la página «Aranceles, IVA de importación y trámite aduanero». Los derechos imperativos de los consumidores no se ven afectados.",
-      { link: { href, label: "Aranceles, IVA de importación y trámite aduanero" } },
+      `Todos los pedidos de la UE se envían gratuitamente desde nuestro centro logístico en Polonia a los 27 Estados miembros de la UE. Todos los precios ya incluyen el IVA de la UE aplicable a través de nuestro representante en la UE ${repName} (NIF-IVA UE: ${vatId}). No hay aranceles ni impuestos de importación en la entrega. Los derechos imperativos de los consumidores no se ven afectados.`,
+      { link: { href, label: "IVA de la UE y envío desde Polonia" } },
     ],
   },
 }
 
 const NL: Snippets = {
-  linkLabel: "Invoerrechten, invoer-btw & douane",
-  shippingDescription: "Gratis levering in alle 27 EU-lidstaten vanuit de Verenigde Staten. Invoerrechten en invoer-btw betaalt u bij levering.",
-  shippingIntro: `Deze voorwaarden gelden voor bestellingen in de EU-winkel van ${COMPANY.tradingName} (prijzen in EUR, exclusief invoerrechten en invoer-btw).`,
+  linkLabel: "EU-btw & verzending vanuit Polen",
+  shippingDescription: `Gratis levering in alle 27 EU-lidstaten vanuit onze EU-logistieke hub in Polen. Prijzen zijn inclusief EU-btw (${vatId}), zonder douanekosten.`,
+  shippingIntro: `Deze voorwaarden gelden voor bestellingen in de EU-winkel van ${COMPANY.tradingName} (prijzen in EUR inclusief EU-btw, gratis verzonden vanuit onze EU-logistieke hub in Polen).`,
   paymentsDescription:
-    "Veilig betalen met Visa, Mastercard, American Express, Discover, PayPal, PayPal Betaal later, Apple Pay, Google Pay, Shop Pay of SEPA-overschrijving. Prijzen in EUR, exclusief invoerrechten en invoer-btw.",
-  paymentsIntro: "Alle prijzen in de EU-winkel zijn in euro (EUR). Ze bevatten geen invoer-btw en geen invoerrechten; die betaalt u bij levering.",
+    `Veilig betalen met Visa, Mastercard, American Express, Discover, PayPal, PayPal Betaal later, Apple Pay, Google Pay, Shop Pay of SEPA-overschrijving. Alle prijzen in EUR zijn inclusief EU-btw (${vatId}).`,
+  paymentsIntro: `Alle prijzen in de EU-winkel zijn in euro (EUR) en bevatten al de geldende EU-btw (btw-nummer: ${vatId} — ${repName}). Levering in alle 27 EU-lidstaten is gratis.`,
   paymentsVat: {
-    heading: "Invoer-btw en invoerrechten",
+    heading: "EU-btw inbegrepen & geen invoerrechten",
     blocks: [
-      "Wij berekenen bij het afrekenen geen btw. Invoer-btw en eventuele invoerrechten worden geheven door de douane van het land van levering en geïnd door de vervoerder. U betaalt ze bij levering; nadat u uw bestelling heeft ontvangen, betalen wij u de invoer-btw terug.",
-      { link: { href, label: "Invoerrechten, invoer-btw & douane" } },
+      `Alle getoonde prijzen in de EU-winkel zijn totaalprijzen in EUR en zijn al inclusief de geldende EU-btw (btw-nummer: ${vatId}, EU-vertegenwoordiger: ${repName}, ${euRepresentativeAddress}). Omdat bestellingen worden verzonden vanuit onze logistieke hub in de Europese Unie in Polen, betaalt u bij levering geen invoerrechten, invoer-btw of inklaringskosten.`,
+      { link: { href, label: "EU-btw & verzending vanuit Polen" } },
     ],
   },
-  pricesText: "Alle prijzen zijn in EUR en exclusief invoer-btw en invoerrechten, die u bij levering aan de vervoerder of de douane betaalt. Levering is gratis. Wij brengen u geen andere bedragen in rekening zonder u dat vooraf te melden.",
+  pricesText: `Alle prijzen zijn in EUR en zijn al inclusief de geldende EU-btw (btw-nummer: ${vatId} — ${repName}). Levering vanuit onze hub in Polen naar alle 27 EU-lidstaten is gratis (€ 0,00). Er gelden geen douanekosten of verborgen toeslagen bij levering.`,
   returnsSection: {
-    heading: "Invoer-btw en douanekosten",
+    heading: "Btw bij retourzendingen",
     blocks: [
-      "Wij betalen de invoer-btw terug na levering, ongeacht of u de goederen terugstuurt; bij een retour is dus geen verdere btw-terugbetaling verschuldigd. Invoerrechten worden aan de douane betaald, die ze kan terugbetalen bij wederuitvoer van de goederen; wij leveren de retourdocumenten die zij vraagt.",
-      { link: { href, label: "Invoerrechten, invoer-btw & douane" } },
+      `Alle prijzen in de EU-winkel zijn al inclusief EU-btw (btw-nummer: ${vatId} — ${repName}). Wanneer u gebruikmaakt van uw herroepingsrecht of een artikel retourneert, betalen wij het volledige betaalde bedrag inclusief btw terug op uw oorspronkelijke betaalmethode. Omdat zendingen binnen de EU plaatsvinden, zijn er geen douaneformaliteiten voor wederuitvoer nodig.`,
+      { link: { href, label: "EU-btw & verzending vanuit Polen" } },
     ],
   },
   termsSection: {
-    heading: "Douane, invoer-btw en invoerrechten",
+    heading: "Intra-EU verzending, btw inbegrepen & geen douane",
     blocks: [
-      "De goederen worden vanuit de Verenigde Staten verzonden op basis van «geleverd op bestemming» (DAP). U bent de importeur en betaalt bij levering invoer-btw, invoerrechten en eventuele afhandelingskosten van de vervoerder. Nadat u uw bestelling heeft ontvangen, betalen wij u de invoer-btw terug zoals beschreven op de pagina «Invoerrechten, invoer-btw & douane». Dwingende consumentenrechten blijven onverlet.",
-      { link: { href, label: "Invoerrechten, invoer-btw & douane" } },
+      `Alle EU-bestellingen worden gratis verzonden vanuit onze EU-logistieke hub in Polen naar alle 27 EU-lidstaten. Alle prijzen zijn al inclusief EU-btw via onze EU-vertegenwoordiger ${repName} (btw-nummer: ${vatId}). Bij levering zijn geen invoerrechten of inklaringskosten verschuldigd. Dwingende consumentenrechten blijven onverlet.`,
+      { link: { href, label: "EU-btw & verzending vanuit Polen" } },
     ],
   },
 }
 
 export const EU_SNIPPETS: Record<string, Snippets> = { en: EN, de: DE, fr: FR, it: IT, es: ES, nl: NL }
 
-type CustomsCopy = {
+type VatHubCopy = {
   title: string
   description: string
   intro: string
   how: { heading: string; text: string; rows: [string, string][] }
-  pay: { heading: string; items: string[]; note: string }
-  declaration: { heading: string; blocks: string[] }
-  refund: { heading: string; intro: string; steps: string[]; duty: string }
-  refusal: { heading: string; text: string }
-  delays: { heading: string; text: string }
-  invoices: { heading: string; text: string }
+  vatEntity: { heading: string; text: string; rows: [string, string][] }
+  benefits: { heading: string; items: string[]; note: string }
+  invoices: { heading: string; blocks: string[] }
+  returns: { heading: string; text: string }
   contact: string
 }
 
 const hours = COMPANY.hours
 const contactLine = `${COMPANY.email} · ${COMPANY.phoneDisplay} (${hours})`
 
-const COPY: Record<string, CustomsCopy> = {
+const COPY: Record<string, VatHubCopy> = {
   en: {
     title: EN.linkLabel,
-    description: "Orders to the EU ship from the United States. You pay import VAT and any duty on delivery, and we refund the import VAT to you after you receive your order.",
-    intro: `${COMPANY.tradingName} EU orders are dispatched from the United States by ${COMPANY.legalName}. Because the goods enter the EU from outside, the customs authority of your country charges import VAT and, where applicable, customs duty. This page explains who pays what and how we refund import VAT.`,
+    description: `Free delivery across all 27 EU Member States from our Poland logistics hub. All prices include EU VAT (${vatId} — ${repName}) with zero customs duties.`,
+    intro: `All ${COMPANY.tradingName} EU store orders are dispatched free of charge from our European Union logistics hub in Poland. Every price displayed in EUR already includes applicable EU VAT under our EU Representative ${repName} (VAT ID: ${vatId}), so you never pay customs duties or surprise fees on delivery.`,
     how: {
-      heading: "How it works",
-      text: "We sell on a Delivered at Place (DAP) basis. The price you see in EUR is the price of the goods, and delivery is free. It does not include import VAT or customs duty. These charges are set by the authorities of the country of delivery; we do not receive them and cannot change them.",
+      heading: "Transparent EU pricing — what you see is what you pay",
+      text: "Because your order is stocked and dispatched inside the European Union customs union (Poland), there is no border customs clearance and no import duty.",
       rows: [
-        ["Price of the goods", "Paid to us at checkout, in EUR"],
-        ["Delivery", "Free"],
-        ["Import VAT", "Paid by you on delivery, at the rate of your country"],
-        ["Customs duty", "Paid by you on delivery, where applicable"],
-        ["Carrier fee", "Some carriers charge a small fee for advancing the charges"],
+        ["Product price", "Shown in EUR — EU VAT already included"],
+        ["Delivery to all 27 EU countries", "Free (€0.00), no minimum order value"],
+        ["Dispatch hub", "European Union logistics hub in Poland"],
+        ["Customs duties & import fees", "€0.00 (intra-EU free circulation)"],
+        ["EU VAT ID", `${vatId} (${repName})`],
       ],
     },
-    pay: {
-      heading: "What you pay on delivery",
+    vatEntity: {
+      heading: "EU VAT & EU Representative details",
+      text: `EU VAT is accounted for under our appointed European Union representative:`,
+      rows: [
+        ["EU Representative", repName],
+        ["Legal form", EU_REPRESENTATIVE.legalForm],
+        ["EU VAT ID", vatId],
+        ["Enterprise number (KBO/BCE)", EU_REPRESENTATIVE.enterpriseNumber],
+        ["Registered address", euRepresentativeAddress],
+        ["Store operator", `${COMPANY.legalName} (${COMPANY.stateOfFormation}, United States)`],
+      ],
+    },
+    benefits: {
+      heading: "What this means for your delivery",
       items: [
-        "Import VAT at the standard rate of the EU country of delivery (between 17% and 27%), calculated on the value of the goods plus delivery and duty.",
-        "Customs duty at the rate for the product's tariff classification (for example tyres, wheels or brake parts) and country of origin.",
-        "The carrier's disbursement or clearance fee, if any.",
+        "No customs clearance delays — parcels move directly within the EU single market.",
+        "No import VAT or customs duty bills from the carrier at your door.",
+        "Free standard delivery (€0.00) across all 27 EU Member States.",
       ],
-      note: `The exact amount is calculated by customs and the carrier at clearance, so we cannot quote it in advance. The carrier (${carriers}) contacts you by email, SMS or at the door to collect payment before or at delivery.`,
-    },
-    declaration: {
-      heading: "Customs declaration",
-      blocks: [
-        "We declare the true value and description of every shipment on the commercial invoice that travels with the parcel, as the law requires. We never mark shipments as gifts or declare a lower value.",
-        "Please make sure your name, address, phone number and email are correct and reachable — the carrier needs them to clear the parcel. If you buy as a business, send us your VAT number and EORI number after ordering and before dispatch so they appear on the customs documents.",
-      ],
-    },
-    refund: {
-      heading: "Refund of import VAT",
-      intro: "After you receive your order, we refund the import VAT you paid on it, whether or not you return the goods. The refund is separate from any return refund. To receive it:",
-      steps: [
-        "After delivery, email us the customs receipt or the carrier invoice showing the import VAT you paid. A clear photo is enough.",
-        "The refund covers the import VAT only, up to the amount shown on that document. It does not cover customs duty or carrier fees.",
-        "You must not have reclaimed or deducted the same VAT elsewhere, for example from customs or as input VAT in a business account.",
-        `We refund the VAT to your original payment method within ${r.refundDays} days after we receive the document. If you later return the goods, we refund the price of the goods under the return rules and do not refund the VAT a second time.`,
-      ],
-      duty: "Customs duty is paid to the customs authority, not to us. When returned goods are re-exported, your customs office may refund the duty and VAT it collected. We give you, free of charge, the return documents it asks for: a statement and shipping papers showing that the goods were returned to the United States.",
-    },
-    refusal: {
-      heading: "If you refuse or do not collect the parcel",
-      text: "Refusing a parcel, not paying the charges or not collecting it within the carrier's holding period is not a withdrawal. The parcel is sent back to us or treated as abandoned. We then refund the price of the goods, less the return shipping and the charges we incur. To avoid this, tell us that you wish to withdraw instead. Your statutory rights are not affected.",
-    },
-    delays: {
-      heading: "Customs delays",
-      text: "Customs clearance can add one to three working days, and the delivery times in our Delivery Policy already allow for normal clearance. A customs inspection is outside our control, but the statutory 30-day delivery limit still applies and you may cancel and be refunded in full if we cannot meet it.",
+      note: `Orders ship via our own delivery service where available, or via our EU carrier partners (${carriers}).`,
     },
     invoices: {
-      heading: "Invoices and receipts",
-      text: "Each parcel carries a commercial invoice for customs, and we email you a sales invoice for the goods. These are not VAT invoices. Proof of the import VAT you paid is the customs receipt or carrier invoice, so please keep it — you need it for a VAT refund and, if you are a business, to deduct the VAT.",
+      heading: "VAT invoices & EU business customers (B2B)",
+      blocks: [
+        `You receive an order invoice by email showing the total EUR amount including EU VAT and the EU VAT ID ${vatId} (${repName}).`,
+        "If you are ordering as a VAT-registered EU business and require a formal B2B invoice with your company name and valid VIES EU VAT number, email us with your order number and VAT details right after placing your order.",
+      ],
     },
-    contact: contactLine,
+    returns: {
+      heading: "Returns & refunds",
+      text: "If you exercise your 14-day EU right of withdrawal or return a faulty item, we refund the full VAT-inclusive price you paid. Because all EU orders circulate inside the EU, no customs re-export documentation is needed.",
+    },
+    contact: `${repFull} · ${contactLine}`,
   },
   de: {
     title: DE.linkLabel,
-    description: "Bestellungen in die EU werden aus den USA versandt. Einfuhrumsatzsteuer und Zoll zahlen Sie bei Lieferung; die Einfuhrumsatzsteuer erstatten wir Ihnen, nachdem Sie Ihre Bestellung erhalten haben.",
-    intro: `Bestellungen im EU-Shop von ${COMPANY.tradingName} werden von ${COMPANY.legalName} aus den USA versandt. Da die Ware von außerhalb in die EU eingeführt wird, erhebt die Zollbehörde Ihres Landes Einfuhrumsatzsteuer und gegebenenfalls Zoll. Diese Seite erklärt, wer was zahlt und wie wir die Einfuhrumsatzsteuer erstatten.`,
+    description: `Kostenlose Lieferung in alle 27 EU-Mitgliedstaaten aus unserem Logistikhub in Polen. Alle Preise inkl. EU-MwSt. (${vatId} — ${repName}), ohne Zollgebühren.`,
+    intro: `Alle Bestellungen im EU-Shop von ${COMPANY.tradingName} werden kostenlos aus unserem EU-Logistikhub in Polen versandt. Jeder in EUR angezeigte Preis enthält bereits die geltende EU-Mehrwertsteuer über unseren EU-Vertreter ${repName} (USt-IdNr.: ${vatId}) — Sie zahlen bei Lieferung weder Zoll noch versteckte Gebühren.`,
     how: {
-      heading: "So funktioniert es",
-      text: "Wir verkaufen „geliefert benannter Ort“ (DAP). Der angezeigte Preis in EUR ist der Warenpreis, die Lieferung ist kostenlos. Einfuhrumsatzsteuer und Zoll sind darin nicht enthalten. Diese Abgaben setzen die Behörden des Lieferlandes fest; wir erhalten sie nicht und können sie nicht beeinflussen.",
+      heading: "Transparente EU-Preise — Endpreis inklusive MwSt.",
+      text: "Da Ihre Bestellung innerhalb der Zollunion der Europäischen Union (Polen) lagert und versandt wird, entfällt jede Zollabfertigung und es fallen keine Einfuhrabgaben an.",
       rows: [
-        ["Warenpreis", "Zahlung an uns an der Kasse, in EUR"],
-        ["Lieferung", "Kostenlos"],
-        ["Einfuhrumsatzsteuer", "Zahlung durch Sie bei Lieferung, zum Satz Ihres Landes"],
-        ["Zoll", "Zahlung durch Sie bei Lieferung, sofern anfallend"],
-        ["Gebühr des Zustellers", "Manche Zusteller berechnen eine kleine Gebühr für die Vorauszahlung der Abgaben"],
+        ["Warenpreis", "In EUR angegeben — EU-MwSt. bereits enthalten"],
+        ["Lieferung in alle 27 EU-Staaten", "Kostenlos (0,00 €), ohne Mindestbestellwert"],
+        ["Versandhub", "EU-Logistikhub in Polen"],
+        ["Zoll & Einfuhrabgaben", "0,00 € (innergemeinschaftlicher Warenverkehr)"],
+        ["EU-USt-IdNr.", `${vatId} (${repName})`],
       ],
     },
-    pay: {
-      heading: "Was Sie bei Lieferung zahlen",
+    vatEntity: {
+      heading: "Angaben zur EU-Mehrwertsteuer & EU-Vertreter",
+      text: "Die EU-Umsatzsteuer wird über unseren benannten EU-Vertreter ausgewiesen:",
+      rows: [
+        ["EU-Vertreter", repName],
+        ["Rechtsform", EU_REPRESENTATIVE.legalForm],
+        ["EU-USt-IdNr.", vatId],
+        ["Unternehmensnummer (KBO/BCE)", EU_REPRESENTATIVE.enterpriseNumber],
+        ["Geschäftsanschrift", euRepresentativeAddress],
+        ["Shop-Betreiber", `${COMPANY.legalName} (${COMPANY.stateOfFormation}, USA)`],
+      ],
+    },
+    benefits: {
+      heading: "Ihre Vorteile bei der Lieferung",
       items: [
-        "Einfuhrumsatzsteuer zum Normalsatz des Lieferlandes (zwischen 17 % und 27 %), berechnet auf Warenwert zuzüglich Lieferkosten und Zoll.",
-        "Zoll nach dem Satz für die Zolltarifnummer des Produkts (z. B. Reifen, Felgen oder Bremsteile) und das Ursprungsland.",
-        "Gegebenenfalls die Auslage- oder Abfertigungsgebühr des Zustellers.",
+        "Keine Verzögerungen beim Zoll — Pakete werden direkt im EU-Binnenmarkt transportiert.",
+        "Keine Nachforderungen für Einfuhrumsatzsteuer oder Zoll durch den Zusteller.",
+        "Kostenloser Standardversand (0,00 €) in alle 27 EU-Mitgliedstaaten.",
       ],
-      note: `Den genauen Betrag berechnen Zoll und Zusteller bei der Abfertigung; wir können ihn vorab nicht nennen. Der Zusteller (${carriers}) kontaktiert Sie per E-Mail, SMS oder an der Haustür, um die Zahlung vor oder bei Lieferung einzuziehen.`,
-    },
-    declaration: {
-      heading: "Zollanmeldung",
-      blocks: [
-        "Wir geben den tatsächlichen Wert und die Beschreibung jeder Sendung in der Handelsrechnung an, die dem Paket beiliegt, wie es das Gesetz verlangt. Wir deklarieren Sendungen nie als Geschenk und geben nie einen niedrigeren Wert an.",
-        "Bitte achten Sie darauf, dass Name, Anschrift, Telefonnummer und E-Mail korrekt und erreichbar sind — der Zusteller benötigt sie zur Abfertigung. Bestellen Sie als Unternehmen, senden Sie uns nach der Bestellung und vor dem Versand Ihre USt-IdNr. und EORI-Nummer, damit sie auf den Zollpapieren erscheinen.",
-      ],
-    },
-    refund: {
-      heading: "Erstattung der Einfuhrumsatzsteuer",
-      intro: "Nachdem Sie Ihre Bestellung erhalten haben, erstatten wir Ihnen die darauf gezahlte Einfuhrumsatzsteuer, unabhängig davon, ob Sie die Ware zurücksenden. Die Erstattung erfolgt getrennt von einer Rückerstattung bei Rücksendung. So erhalten Sie sie:",
-      steps: [
-        "Senden Sie uns nach der Lieferung den Zollbeleg oder die Rechnung des Zustellers, aus dem die gezahlte Einfuhrumsatzsteuer hervorgeht. Ein gut lesbares Foto genügt.",
-        "Erstattet wird nur die Einfuhrumsatzsteuer, höchstens bis zu dem auf dem Beleg ausgewiesenen Betrag. Zoll und Gebühren des Zustellers sind nicht erfasst.",
-        "Sie dürfen dieselbe Steuer nicht anderweitig zurückgefordert oder abgezogen haben, etwa beim Zoll oder als Vorsteuer in der Buchhaltung Ihres Unternehmens.",
-        `Wir erstatten die Steuer innerhalb von ${r.refundDays} Tagen nach Eingang des Belegs auf Ihr ursprüngliches Zahlungsmittel. Senden Sie die Ware später zurück, erstatten wir den Warenpreis nach den Rückgaberegeln und die Steuer nicht ein zweites Mal.`,
-      ],
-      duty: "Zoll wird an die Zollbehörde gezahlt, nicht an uns. Werden zurückgesandte Waren wieder ausgeführt, kann Ihr Zollamt Zoll und Einfuhrumsatzsteuer erstatten. Die dafür verlangten Rücksendeunterlagen stellen wir Ihnen kostenlos bereit: eine Bestätigung und Versandpapiere, die die Rücksendung in die USA belegen.",
-    },
-    refusal: {
-      heading: "Wenn Sie das Paket verweigern oder nicht abholen",
-      text: "Die Verweigerung der Annahme, die Nichtzahlung der Abgaben oder die Nichtabholung innerhalb der Lagerfrist des Zustellers ist kein Widerruf. Das Paket geht an uns zurück oder gilt als aufgegeben. Wir erstatten dann den Warenpreis abzüglich der Rücksendekosten und der uns entstandenen Abgaben. Um das zu vermeiden, teilen Sie uns stattdessen Ihren Widerruf mit. Ihre gesetzlichen Rechte bleiben unberührt.",
-    },
-    delays: {
-      heading: "Verzögerungen beim Zoll",
-      text: "Die Zollabfertigung kann ein bis drei Werktage zusätzlich dauern; die Lieferzeiten in unseren Lieferbedingungen berücksichtigen eine normale Abfertigung bereits. Eine Zollkontrolle liegt außerhalb unseres Einflusses, doch die gesetzliche Lieferfrist von 30 Tagen gilt weiter, und Sie können bei Überschreitung stornieren und erhalten den vollen Betrag zurück.",
+      note: `Der Versand erfolgt nach Möglichkeit über unseren eigenen Lieferdienst oder über unsere EU-Versandpartner (${carriers}).`,
     },
     invoices: {
-      heading: "Rechnungen und Belege",
-      text: "Jedem Paket liegt eine Handelsrechnung für den Zoll bei, und wir senden Ihnen eine Rechnung über die Ware per E-Mail. Dies sind keine Rechnungen mit ausgewiesener Mehrwertsteuer. Der Nachweis der gezahlten Einfuhrumsatzsteuer ist der Zollbeleg oder die Rechnung des Zustellers; bitte bewahren Sie ihn auf — Sie brauchen ihn für die Erstattung und, als Unternehmen, für den Vorsteuerabzug.",
+      heading: "Rechnungen mit MwSt. & Geschäftskunden (B2B)",
+      blocks: [
+        `Sie erhalten per E-Mail eine Rechnung über den Gesamtbetrag in EUR inklusive EU-Mehrwertsteuer mit Angabe der USt-IdNr. ${vatId} (${repName}).`,
+        "Wenn Sie als vorsteuerabzugsberechtigtes EU-Unternehmen bestellen und eine B2B-Rechnung mit Firmenname und gültiger USt-IdNr. (VIES) benötigen, senden Sie uns nach der Bestellung einfach Ihre Bestellnummer und Ihre Unternehmensdaten per E-Mail.",
+      ],
     },
-    contact: contactLine,
+    returns: {
+      heading: "Rücksendungen & Erstattungen",
+      text: "Bei Ausübung Ihres 14-tägigen EU-Widerrufsrechts oder bei Reklamation erstatten wir den vollen gezahlten Preis inklusive Mehrwertsteuer. Da alle Sendungen innerhalb der EU erfolgen, sind keine Zollpapiere für die Rücksendung erforderlich.",
+    },
+    contact: `${repFull} · ${contactLine}`,
   },
   fr: {
     title: FR.linkLabel,
-    description: "Les commandes vers l’UE sont expédiées depuis les États-Unis. Vous réglez la TVA à l’importation et les droits à la livraison ; nous vous remboursons la TVA à l’importation une fois votre commande reçue.",
-    intro: `Les commandes de la boutique UE de ${COMPANY.tradingName} sont expédiées depuis les États-Unis par ${COMPANY.legalName}. Les biens entrant dans l’UE depuis l’extérieur, l’administration douanière de votre pays perçoit la TVA à l’importation et, le cas échéant, des droits de douane. Cette page explique qui paie quoi et comment nous remboursons la TVA à l’importation.`,
+    description: `Livraison gratuite dans les 27 États membres de l’UE depuis notre hub logistique en Pologne. Prix TTC incluant la TVA UE (${vatId} — ${repName}), sans droits de douane.`,
+    intro: `Toutes les commandes de la boutique UE de ${COMPANY.tradingName} sont expédiées gratuitement depuis notre hub logistique de l’Union européenne en Pologne. Chaque prix affiché en EUR inclut déjà la TVA UE applicable via notre représentant UE ${repName} (n° de TVA : ${vatId}), sans droits de douane ni frais imprévus à la livraison.`,
     how: {
-      heading: "Comment ça marche",
-      text: "Nous vendons en « rendu au lieu de destination » (DAP). Le prix affiché en EUR est celui des biens, et la livraison est gratuite. Il n’inclut ni la TVA à l’importation ni les droits de douane. Ces montants sont fixés par les autorités du pays de livraison ; nous ne les percevons pas et ne pouvons pas les modifier.",
+      heading: "Prix transparents TTC — aucun frais caché",
+      text: "Votre commande étant stockée et expédiée au sein de l’union douanière européenne (Pologne), il n’y a ni dédouanement ni droits d’importation.",
       rows: [
-        ["Prix des biens", "Payé à nous au paiement, en EUR"],
-        ["Livraison", "Gratuite"],
-        ["TVA à l’importation", "Payée par vous à la livraison, au taux de votre pays"],
-        ["Droits de douane", "Payés par vous à la livraison, le cas échéant"],
-        ["Frais du transporteur", "Certains transporteurs facturent de petits frais pour avancer les montants"],
+        ["Prix des produits", "Affiché en EUR — TVA UE déjà incluse"],
+        ["Livraison dans les 27 pays de l’UE", "Gratuite (0,00 €), sans minimum d’achat"],
+        ["Hub d’expédition", "Hub logistique UE en Pologne"],
+        ["Droits de douane & taxes d’importation", "0,00 € (libre circulation intra-UE)"],
+        ["N° de TVA intracommunautaire", `${vatId} (${repName})`],
       ],
     },
-    pay: {
-      heading: "Ce que vous payez à la livraison",
+    vatEntity: {
+      heading: "TVA UE & Représentant dans l’Union européenne",
+      text: "La TVA UE est déclarée via notre représentant désigné dans l’Union européenne :",
+      rows: [
+        ["Représentant UE", repName],
+        ["Forme juridique", EU_REPRESENTATIVE.legalForm],
+        ["N° de TVA UE", vatId],
+        ["Numéro d’entreprise (KBO/BCE)", EU_REPRESENTATIVE.enterpriseNumber],
+        ["Adresse enregistrée", euRepresentativeAddress],
+        ["Exploitant de la boutique", `${COMPANY.legalName} (${COMPANY.stateOfFormation}, États-Unis)`],
+      ],
+    },
+    benefits: {
+      heading: "Ce que cela change pour votre livraison",
       items: [
-        "La TVA à l’importation au taux normal du pays de livraison (entre 17 % et 27 %), calculée sur la valeur des biens majorée de la livraison et des droits.",
-        "Les droits de douane au taux de la classification tarifaire du produit (par exemple pneus, jantes ou pièces de freinage) et du pays d’origine.",
-        "Les frais de débours ou de dédouanement du transporteur, le cas échéant.",
+        "Aucun blocage ni retard en douane : vos colis circulent directement dans le marché unique européen.",
+        "Aucune facture de TVA à l’importation ni frais de dédouanement à payer au livreur.",
+        "Livraison standard gratuite (0,00 €) dans les 27 États membres de l’UE.",
       ],
-      note: `Le montant exact est calculé par la douane et le transporteur lors du dédouanement ; nous ne pouvons donc pas l’indiquer à l’avance. Le transporteur (${carriers}) vous contacte par e-mail, SMS ou à la porte pour encaisser le paiement avant ou à la livraison.`,
-    },
-    declaration: {
-      heading: "Déclaration en douane",
-      blocks: [
-        "Nous déclarons la valeur réelle et la description de chaque envoi sur la facture commerciale qui accompagne le colis, comme la loi l’exige. Nous ne marquons jamais un envoi comme cadeau et ne déclarons jamais une valeur inférieure.",
-        "Veillez à ce que vos nom, adresse, téléphone et e-mail soient exacts et joignables : le transporteur en a besoin pour dédouaner le colis. Si vous achetez en tant qu’entreprise, envoyez-nous votre numéro de TVA et votre numéro EORI après la commande et avant l’expédition afin qu’ils figurent sur les documents douaniers.",
-      ],
-    },
-    refund: {
-      heading: "Remboursement de la TVA à l’importation",
-      intro: "Une fois votre commande reçue, nous vous remboursons la TVA à l’importation que vous avez payée, que vous retourniez ou non les biens. Ce remboursement est distinct de celui d’un retour. Pour le recevoir :",
-      steps: [
-        "Après la livraison, envoyez-nous par e-mail le reçu de douane ou la facture du transporteur indiquant la TVA à l’importation payée. Une photo lisible suffit.",
-        "Le remboursement porte uniquement sur la TVA à l’importation, dans la limite du montant figurant sur ce document. Il ne couvre ni les droits de douane ni les frais du transporteur.",
-        "Vous ne devez pas avoir réclamé ni déduit la même TVA ailleurs, par exemple auprès de la douane ou comme TVA déductible dans la comptabilité de votre entreprise.",
-        `Nous remboursons la TVA sur votre moyen de paiement initial dans un délai de ${r.refundDays} jours après réception du document. Si vous retournez ensuite les biens, nous remboursons leur prix selon les règles de retour, sans rembourser la TVA une seconde fois.`,
-      ],
-      duty: "Les droits de douane sont versés à l’administration douanière, pas à nous. Lorsque les biens retournés sont réexportés, votre bureau de douane peut rembourser les droits et la TVA perçus. Nous vous remettons gratuitement les documents de retour qu’il demande : une attestation et les documents d’expédition prouvant le retour des biens aux États-Unis.",
-    },
-    refusal: {
-      heading: "Si vous refusez ou ne retirez pas le colis",
-      text: "Refuser un colis, ne pas payer les frais ou ne pas le retirer dans le délai de garde du transporteur ne constitue pas une rétractation. Le colis nous est renvoyé ou considéré comme abandonné. Nous remboursons alors le prix des biens, déduction faite des frais de retour et des frais que nous supportons. Pour l’éviter, informez-nous plutôt de votre rétractation. Vos droits légaux ne sont pas affectés.",
-    },
-    delays: {
-      heading: "Retards en douane",
-      text: "Le dédouanement peut ajouter un à trois jours ouvrés, et les délais de notre politique de livraison tiennent déjà compte d’un dédouanement normal. Un contrôle douanier échappe à notre contrôle, mais le délai légal de livraison de 30 jours continue de s’appliquer et vous pouvez annuler et être remboursé intégralement si nous ne le respectons pas.",
+      note: `Les commandes sont acheminées par notre propre service de livraison lorsque disponible, ou par nos transporteurs partenaires européens (${carriers}).`,
     },
     invoices: {
-      heading: "Factures et reçus",
-      text: "Chaque colis contient une facture commerciale pour la douane, et nous vous envoyons par e-mail une facture de vente des biens. Il ne s’agit pas de factures de TVA. La preuve de la TVA à l’importation payée est le reçu de douane ou la facture du transporteur ; conservez-le, il vous faut pour le remboursement et, si vous êtes une entreprise, pour déduire la TVA.",
+      heading: "Factures avec TVA & clients professionnels (B2B)",
+      blocks: [
+        `Vous recevez par e-mail une facture indiquant le montant total en EUR TTC incluant la TVA UE ainsi que le n° de TVA ${vatId} (${repName}).`,
+        "Si vous achetez en tant qu’entreprise assujettie à la TVA dans l’UE et souhaitez une facture B2B mentionnant votre raison sociale et votre numéro de TVA intracommunautaire (VIES), envoyez-nous vos coordonnées par e-mail juste après votre commande.",
+      ],
     },
-    contact: contactLine,
+    returns: {
+      heading: "Retours & remboursements",
+      text: "Si vous exercez votre droit de rétractation de 14 jours ou retournez un article défectueux, nous vous remboursons l’intégralité du prix TTC payé. Les envois restant au sein de l’UE, aucune formalité douanière de réexportation n’est nécessaire.",
+    },
+    contact: `${repFull} · ${contactLine}`,
   },
   it: {
     title: IT.linkLabel,
-    description: "Gli ordini per l’UE partono dagli Stati Uniti. Paghi IVA all’importazione e dazi alla consegna; ti rimborsiamo l’IVA all’importazione dopo che hai ricevuto l’ordine.",
-    intro: `Gli ordini del negozio UE di ${COMPANY.tradingName} sono spediti dagli Stati Uniti da ${COMPANY.legalName}. Poiché i beni entrano nell’UE dall’esterno, l’autorità doganale del tuo paese applica l’IVA all’importazione e, se dovuti, i dazi. Questa pagina spiega chi paga cosa e come rimborsiamo l’IVA all’importazione.`,
+    description: `Consegna gratuita in tutti i 27 Stati membri dell’UE dal nostro hub logistico in Polonia. Prezzi IVA UE inclusa (${vatId} — ${repName}), zero dazi doganali.`,
+    intro: `Tutti gli ordini del negozio UE di ${COMPANY.tradingName} vengono spediti gratuitamente dal nostro hub logistico dell’Unione europea in Polonia. Ogni prezzo esposto in EUR include già l’IVA UE applicabile tramite il nostro rappresentante UE ${repName} (Partita IVA UE: ${vatId}), senza dazi doganali né spese impreviste alla consegna.`,
     how: {
-      heading: "Come funziona",
-      text: "Vendiamo con resa «reso al luogo di destinazione» (DAP). Il prezzo mostrato in EUR è quello dei beni e la consegna è gratuita. Non comprende l’IVA all’importazione né i dazi. Questi importi sono stabiliti dalle autorità del paese di consegna; non li riceviamo e non possiamo modificarli.",
+      heading: "Prezzi trasparenti IVA inclusa",
+      text: "Poiché il tuo ordine viene stoccato e spedito all’interno dell’unione doganale europea (Polonia), non vi è alcuno sdoganamento né alcun dazio di importazione.",
       rows: [
-        ["Prezzo dei beni", "Pagato a noi al checkout, in EUR"],
-        ["Consegna", "Gratuita"],
-        ["IVA all’importazione", "Pagata da te alla consegna, con l’aliquota del tuo paese"],
-        ["Dazi", "Pagati da te alla consegna, se dovuti"],
-        ["Commissione del corriere", "Alcuni corrieri applicano una piccola commissione per anticipare gli importi"],
+        ["Prezzo dei prodotti", "Esposto in EUR — IVA UE già inclusa"],
+        ["Consegna nei 27 paesi UE", "Gratuita (0,00 €), senza ordine minimo"],
+        ["Hub di spedizione", "Hub logistico UE in Polonia"],
+        ["Dazi doganali e oneri di importazione", "0,00 € (libera circolazione intra-UE)"],
+        ["Partita IVA UE", `${vatId} (${repName})`],
       ],
     },
-    pay: {
-      heading: "Cosa paghi alla consegna",
+    vatEntity: {
+      heading: "Dati IVA UE e Rappresentante nell’UE",
+      text: "L’IVA UE è gestita tramite il nostro rappresentante designato nell’Unione europea:",
+      rows: [
+        ["Rappresentante UE", repName],
+        ["Forma giuridica", EU_REPRESENTATIVE.legalForm],
+        ["Partita IVA UE", vatId],
+        ["Numero impresa (KBO/BCE)", EU_REPRESENTATIVE.enterpriseNumber],
+        ["Sede legale", euRepresentativeAddress],
+        ["Gestore del negozio", `${COMPANY.legalName} (${COMPANY.stateOfFormation}, Stati Uniti)`],
+      ],
+    },
+    benefits: {
+      heading: "Vantaggi per la tua consegna",
       items: [
-        "IVA all’importazione con l’aliquota ordinaria del paese di consegna (tra il 17% e il 27%), calcolata sul valore dei beni più consegna e dazi.",
-        "Dazi secondo l’aliquota della classificazione tariffaria del prodotto (ad esempio pneumatici, cerchi o parti dei freni) e del paese di origine.",
-        "L’eventuale commissione di anticipo o sdoganamento del corriere.",
+        "Nessun ritardo doganale: i pacchi viaggiano direttamente nel mercato unico europeo.",
+        "Nessuna richiesta di IVA all’importazione o commissioni doganali da parte del corriere.",
+        "Spedizione standard gratuita (0,00 €) in tutti i 27 Stati membri dell’UE.",
       ],
-      note: `L’importo esatto è calcolato da dogana e corriere allo sdoganamento, quindi non possiamo indicarlo in anticipo. Il corriere (${carriers}) ti contatta via e-mail, SMS o alla porta per incassare il pagamento prima o alla consegna.`,
-    },
-    declaration: {
-      heading: "Dichiarazione doganale",
-      blocks: [
-        "Dichiariamo il valore reale e la descrizione di ogni spedizione nella fattura commerciale che accompagna il pacco, come richiede la legge. Non contrassegniamo mai le spedizioni come regalo né dichiariamo un valore inferiore.",
-        "Assicurati che nome, indirizzo, telefono ed e-mail siano corretti e raggiungibili: il corriere ne ha bisogno per sdoganare il pacco. Se acquisti come azienda, inviaci partita IVA e numero EORI dopo l’ordine e prima della spedizione, così compaiono nei documenti doganali.",
-      ],
-    },
-    refund: {
-      heading: "Rimborso dell’IVA all’importazione",
-      intro: "Dopo che hai ricevuto l’ordine, ti rimborsiamo l’IVA all’importazione che hai pagato, che tu restituisca o meno i beni. Il rimborso è separato da quello di un eventuale reso. Per riceverlo:",
-      steps: [
-        "Dopo la consegna, inviaci via e-mail la bolletta doganale o la fattura del corriere con l’IVA all’importazione pagata. Una foto leggibile è sufficiente.",
-        "Il rimborso copre solo l’IVA all’importazione, fino all’importo indicato nel documento. Non copre i dazi né le spese del corriere.",
-        "Non devi aver richiesto o dedotto la stessa IVA altrove, ad esempio alla dogana o come IVA a credito nella contabilità della tua impresa.",
-        `Rimborsiamo l’IVA sul metodo di pagamento originale entro ${r.refundDays} giorni dal ricevimento del documento. Se in seguito restituisci i beni, rimborsiamo il prezzo dei beni secondo le regole sul reso e non rimborsiamo l’IVA una seconda volta.`,
-      ],
-      duty: "I dazi sono versati all’autorità doganale, non a noi. Quando i beni restituiti vengono riesportati, il tuo ufficio doganale può rimborsare dazi e IVA riscossi. Ti forniamo gratuitamente i documenti di reso che richiede: una dichiarazione e i documenti di spedizione che provano il ritorno dei beni negli Stati Uniti.",
-    },
-    refusal: {
-      heading: "Se rifiuti o non ritiri il pacco",
-      text: "Rifiutare un pacco, non pagare gli oneri o non ritirarlo entro il periodo di giacenza del corriere non è un recesso. Il pacco ci viene rispedito o considerato abbandonato. Rimborsiamo allora il prezzo dei beni, meno le spese di rispedizione e gli oneri che sosteniamo. Per evitarlo, comunicaci invece il tuo recesso. I tuoi diritti legali non sono pregiudicati.",
-    },
-    delays: {
-      heading: "Ritardi doganali",
-      text: "Lo sdoganamento può aggiungere da uno a tre giorni lavorativi e i tempi della nostra politica di consegna considerano già uno sdoganamento normale. Un controllo doganale è fuori dal nostro controllo, ma il termine legale di consegna di 30 giorni continua ad applicarsi e, se non lo rispettiamo, puoi annullare e ottenere il rimborso integrale.",
+      note: `Gli ordini vengono spediti tramite il nostro servizio di consegna ove disponibile oppure tramite i nostri corrieri partner europei (${carriers}).`,
     },
     invoices: {
-      heading: "Fatture e ricevute",
-      text: "Ogni pacco contiene una fattura commerciale per la dogana e ti inviamo via e-mail una fattura di vendita dei beni. Non sono fatture con IVA. La prova dell’IVA all’importazione pagata è la bolletta doganale o la fattura del corriere: conservala, serve per il rimborso e, se sei un’azienda, per detrarre l’IVA.",
+      heading: "Fatture con IVA e clienti aziendali (B2B)",
+      blocks: [
+        `Ricevi via e-mail una fattura con l’importo totale in EUR comprensivo di IVA UE e l’indicazione della Partita IVA UE ${vatId} (${repName}).`,
+        "Se acquisti come azienda UE iscritta al VIES e desideri una fattura B2B intestata alla tua società con Partita IVA, inviaci il numero d’ordine e i dati aziendali via e-mail subito dopo l’acquisto.",
+      ],
     },
-    contact: contactLine,
+    returns: {
+      heading: "Resi e rimborsi",
+      text: "Se eserciti il diritto di recesso entro 14 giorni o restituisci un articolo difettoso, rimborsiamo l’intero importo pagato comprensivo di IVA. Poiché le spedizioni avvengono all’interno dell’UE, non occorrono pratiche doganali di riesportazione.",
+    },
+    contact: `${repFull} · ${contactLine}`,
   },
   es: {
     title: ES.linkLabel,
-    description: "Los pedidos a la UE salen de Estados Unidos. Pagas el IVA de importación y los aranceles en la entrega; te reembolsamos el IVA de importación una vez recibido tu pedido.",
-    intro: `Los pedidos de la tienda UE de ${COMPANY.tradingName} se envían desde Estados Unidos por ${COMPANY.legalName}. Como los bienes entran en la UE desde fuera, la aduana de tu país cobra el IVA de importación y, en su caso, aranceles. Esta página explica quién paga qué y cómo reembolsamos el IVA de importación.`,
+    description: `Entrega gratuita en los 27 Estados miembros de la UE desde nuestro centro logístico en Polonia. Precios con IVA de la UE incluido (${vatId} — ${repName}), sin aranceles.`,
+    intro: `Todos los pedidos de la tienda UE de ${COMPANY.tradingName} se envían de forma gratuita desde nuestro centro logístico de la Unión Europea en Polonia. Cada precio mostrado en EUR ya incluye el IVA de la UE aplicable a través de nuestro representante en la UE ${repName} (NIF-IVA UE: ${vatId}), sin aranceles ni cargos sorpresa en la entrega.`,
     how: {
-      heading: "Cómo funciona",
-      text: "Vendemos en condiciones de «entregado en lugar convenido» (DAP). El precio que ves en EUR es el de los bienes y la entrega es gratuita. No incluye el IVA de importación ni los aranceles. Estos importes los fijan las autoridades del país de entrega; no los recibimos y no podemos modificarlos.",
+      heading: "Precios transparentes con IVA incluido",
+      text: "Al almacenarse y expedirse tu pedido dentro de la unión aduanera de la Unión Europea (Polonia), no hay despacho de aduanas ni aranceles de importación.",
       rows: [
-        ["Precio de los bienes", "Pagado a nosotros al finalizar la compra, en EUR"],
-        ["Entrega", "Gratuita"],
-        ["IVA de importación", "Lo pagas tú en la entrega, al tipo de tu país"],
-        ["Aranceles", "Los pagas tú en la entrega, si corresponden"],
-        ["Tarifa del transportista", "Algunos transportistas cobran una pequeña tarifa por adelantar los importes"],
+        ["Precio de los productos", "Mostrado en EUR — IVA de la UE ya incluido"],
+        ["Entrega en los 27 países de la UE", "Gratuita (0,00 €), sin pedido mínimo"],
+        ["Centro de envío", "Centro logístico UE en Polonia"],
+        ["Aranceles y tasas de importación", "0,00 € (libre circulación intra-UE)"],
+        ["NIF-IVA UE", `${vatId} (${repName})`],
       ],
     },
-    pay: {
-      heading: "Qué pagas en la entrega",
+    vatEntity: {
+      heading: "Datos de IVA UE y Representante en la UE",
+      text: "El IVA de la UE corresponde a nuestro representante designado en la Unión Europea:",
+      rows: [
+        ["Representante en la UE", repName],
+        ["Forma jurídica", EU_REPRESENTATIVE.legalForm],
+        ["NIF-IVA UE", vatId],
+        ["Número de empresa (KBO/BCE)", EU_REPRESENTATIVE.enterpriseNumber],
+        ["Domicilio social", euRepresentativeAddress],
+        ["Operador de la tienda", `${COMPANY.legalName} (${COMPANY.stateOfFormation}, Estados Unidos)`],
+      ],
+    },
+    benefits: {
+      heading: "Qué significa esto para tu entrega",
       items: [
-        "IVA de importación al tipo general del país de entrega (entre el 17 % y el 27 %), calculado sobre el valor de los bienes más la entrega y los aranceles.",
-        "Aranceles según el tipo de la clasificación arancelaria del producto (por ejemplo neumáticos, llantas o piezas de freno) y del país de origen.",
-        "La tarifa de desembolso o despacho del transportista, si la hay.",
+        "Sin retrasos en aduanas: los paquetes circulan directamente dentro del mercado único europeo.",
+        "Sin cobros de IVA de importación ni tasas de despacho por parte del transportista.",
+        "Envío estándar gratuito (0,00 €) a los 27 Estados miembros de la UE.",
       ],
-      note: `El importe exacto lo calculan la aduana y el transportista en el despacho, por lo que no podemos indicarlo de antemano. El transportista (${carriers}) te contacta por correo, SMS o en la puerta para cobrar antes o en la entrega.`,
-    },
-    declaration: {
-      heading: "Declaración aduanera",
-      blocks: [
-        "Declaramos el valor real y la descripción de cada envío en la factura comercial que acompaña al paquete, como exige la ley. Nunca marcamos los envíos como regalo ni declaramos un valor inferior.",
-        "Comprueba que tu nombre, dirección, teléfono y correo sean correctos y estén disponibles: el transportista los necesita para despachar el paquete. Si compras como empresa, envíanos tu número de IVA y tu número EORI tras el pedido y antes del envío para que figuren en los documentos aduaneros.",
-      ],
-    },
-    refund: {
-      heading: "Reembolso del IVA de importación",
-      intro: "Una vez recibido tu pedido, te reembolsamos el IVA de importación que pagaste, devuelvas o no los bienes. Este reembolso es independiente del de una devolución. Para recibirlo:",
-      steps: [
-        "Tras la entrega, envíanos por correo el recibo de aduana o la factura del transportista con el IVA de importación pagado. Una foto legible es suficiente.",
-        "El reembolso cubre solo el IVA de importación, hasta el importe que figura en ese documento. No cubre los aranceles ni las tarifas del transportista.",
-        "No debes haber reclamado ni deducido el mismo IVA en otro lugar, por ejemplo ante la aduana o como IVA soportado en la contabilidad de tu empresa.",
-        `Reembolsamos el IVA a tu método de pago original en un plazo de ${r.refundDays} días desde que recibimos el documento. Si después devuelves los bienes, reembolsamos su precio según las reglas de devolución y no reembolsamos el IVA por segunda vez.`,
-      ],
-      duty: "Los aranceles se pagan a la aduana, no a nosotros. Cuando los bienes devueltos se reexportan, tu oficina de aduanas puede reembolsar los aranceles y el IVA cobrados. Te facilitamos gratis los documentos de devolución que solicita: una declaración y los documentos de envío que acreditan que los bienes volvieron a Estados Unidos.",
-    },
-    refusal: {
-      heading: "Si rechazas o no recoges el paquete",
-      text: "Rechazar un paquete, no pagar los cargos o no recogerlo en el plazo de custodia del transportista no es un desistimiento. El paquete se nos devuelve o se considera abandonado. Entonces reembolsamos el precio de los bienes, menos los gastos de devolución y los cargos que asumamos. Para evitarlo, comunícanos tu desistimiento. Tus derechos legales no se ven afectados.",
-    },
-    delays: {
-      heading: "Retrasos en aduana",
-      text: "El despacho aduanero puede añadir de uno a tres días laborables, y los plazos de nuestra política de entrega ya contemplan un despacho normal. Una inspección aduanera escapa a nuestro control, pero el plazo legal de entrega de 30 días sigue vigente y, si no lo cumplimos, puedes cancelar y recibir el reembolso íntegro.",
+      note: `Enviamos con nuestro propio servicio de entrega cuando está disponible o mediante nuestros transportistas europeos asociados (${carriers}).`,
     },
     invoices: {
-      heading: "Facturas y recibos",
-      text: "Cada paquete lleva una factura comercial para la aduana y te enviamos por correo una factura de venta de los bienes. No son facturas con IVA. La prueba del IVA de importación pagado es el recibo de aduana o la factura del transportista; consérvalo, lo necesitas para el reembolso y, si eres empresa, para deducir el IVA.",
+      heading: "Facturas con IVA y clientes profesionales (B2B)",
+      blocks: [
+        `Recibes por correo electrónico una factura con el importe total en EUR con IVA de la UE incluido y el NIF-IVA UE ${vatId} (${repName}).`,
+        "Si compras como empresa de la UE registrada en el VIES y necesitas una factura B2B con tu razón social y NIF-IVA intracomunitario, escríbenos con tu número de pedido y datos fiscales justo después de comprar.",
+      ],
     },
-    contact: contactLine,
+    returns: {
+      heading: "Devoluciones y reembolsos",
+      text: "Si ejerces tu derecho de desistimiento de 14 días o devuelves un artículo defectuoso, reembolsamos el importe total pagado con IVA incluido. Al ser envíos dentro de la UE, no se necesitan trámites aduaneros de reexportación.",
+    },
+    contact: `${repFull} · ${contactLine}`,
   },
   nl: {
     title: NL.linkLabel,
-    description: "Bestellingen naar de EU worden vanuit de Verenigde Staten verzonden. U betaalt invoer-btw en invoerrechten bij levering; wij betalen de invoer-btw aan u terug nadat u uw bestelling heeft ontvangen.",
-    intro: `Bestellingen in de EU-winkel van ${COMPANY.tradingName} worden door ${COMPANY.legalName} vanuit de Verenigde Staten verzonden. Omdat de goederen van buiten de EU binnenkomen, heft de douane van uw land invoer-btw en, indien van toepassing, invoerrechten. Deze pagina legt uit wie wat betaalt en hoe wij de invoer-btw terugbetalen.`,
+    description: `Gratis levering in alle 27 EU-lidstaten vanuit onze logistieke hub in Polen. Alle prijzen zijn inclusief EU-btw (${vatId} — ${repName}), zonder douanekosten.`,
+    intro: `Alle bestellingen in de EU-winkel van ${COMPANY.tradingName} worden gratis verzonden vanuit onze logistieke hub in de Europese Unie in Polen. Elke weergegeven prijs in EUR is al inclusief de geldende EU-btw via onze EU-vertegenwoordiger ${repName} (btw-nummer: ${vatId}), zonder invoerrechten of verrassingskosten bij levering.`,
     how: {
-      heading: "Zo werkt het",
-      text: "Wij verkopen op basis van «geleverd op bestemming» (DAP). De getoonde prijs in EUR is de prijs van de goederen en levering is gratis. Invoer-btw en invoerrechten zijn niet inbegrepen. Deze bedragen worden vastgesteld door de autoriteiten van het land van levering; wij ontvangen ze niet en kunnen ze niet wijzigen.",
+      heading: "Transparante EU-prijzen inclusief btw",
+      text: "Omdat uw bestelling wordt opgeslagen en verzonden binnen de Europese douane-unie (Polen), is er geen douaneafhandeling en betaalt u geen invoerrechten.",
       rows: [
-        ["Prijs van de goederen", "Aan ons betaald bij het afrekenen, in EUR"],
-        ["Levering", "Gratis"],
-        ["Invoer-btw", "Door u betaald bij levering, tegen het tarief van uw land"],
-        ["Invoerrechten", "Door u betaald bij levering, indien van toepassing"],
-        ["Kosten van de vervoerder", "Sommige vervoerders rekenen een kleine vergoeding voor het voorschieten van de bedragen"],
+        ["Productprijs", "Weergegeven in EUR — EU-btw al inbegrepen"],
+        ["Levering in alle 27 EU-landen", "Gratis (€ 0,00), geen minimumbestelbedrag"],
+        ["Verzendhub", "EU-logistieke hub in Polen"],
+        ["Invoerrechten & douanekosten", "€ 0,00 (vrij verkeer binnen de EU)"],
+        ["EU-btw-nummer", `${vatId} (${repName})`],
       ],
     },
-    pay: {
-      heading: "Wat u bij levering betaalt",
+    vatEntity: {
+      heading: "EU-btw-gegevens & EU-vertegenwoordiger",
+      text: "De EU-btw wordt vermeld onder onze aangewezen vertegenwoordiger in de Europese Unie:",
+      rows: [
+        ["EU-vertegenwoordiger", repName],
+        ["Rechtsvorm", EU_REPRESENTATIVE.legalForm],
+        ["EU-btw-nummer", vatId],
+        ["Ondernemingsnummer (KBO/BCE)", EU_REPRESENTATIVE.enterpriseNumber],
+        ["Geregistreerd adres", euRepresentativeAddress],
+        ["Winkelbeheerder", `${COMPANY.legalName} (${COMPANY.stateOfFormation}, Verenigde Staten)`],
+      ],
+    },
+    benefits: {
+      heading: "Wat dit betekent voor uw levering",
       items: [
-        "Invoer-btw tegen het algemene tarief van het land van levering (tussen 17% en 27%), berekend over de waarde van de goederen plus levering en invoerrechten.",
-        "Invoerrechten volgens het tarief van de tariefindeling van het product (bijvoorbeeld banden, velgen of remonderdelen) en het land van oorsprong.",
-        "Eventuele voorschot- of afhandelingskosten van de vervoerder.",
+        "Geen douanevertragingen — pakketten reizen rechtstreeks binnen de Europese interne markt.",
+        "Geen rekeningen voor invoer-btw of inklaringskosten van de vervoerder aan uw deur.",
+        "Gratis standaardlevering (€ 0,00) naar alle 27 EU-lidstaten.",
       ],
-      note: `Het exacte bedrag wordt bij de afhandeling berekend door de douane en de vervoerder, dus wij kunnen het vooraf niet noemen. De vervoerder (${carriers}) neemt per e-mail, sms of aan de deur contact met u op om de betaling vóór of bij levering te innen.`,
-    },
-    declaration: {
-      heading: "Douaneaangifte",
-      blocks: [
-        "Wij vermelden de werkelijke waarde en omschrijving van elke zending op de handelsfactuur die bij het pakket zit, zoals de wet vereist. Wij markeren zendingen nooit als cadeau en geven nooit een lagere waarde aan.",
-        "Zorg dat uw naam, adres, telefoonnummer en e-mailadres juist en bereikbaar zijn — de vervoerder heeft ze nodig om het pakket te verwerken. Koopt u als bedrijf, stuur ons dan na de bestelling en vóór verzending uw btw-nummer en EORI-nummer, zodat ze op de douanedocumenten komen.",
-      ],
-    },
-    refund: {
-      heading: "Terugbetaling van invoer-btw",
-      intro: "Nadat u uw bestelling heeft ontvangen, betalen wij u de invoer-btw terug die u heeft betaald, ongeacht of u de goederen terugstuurt. Deze terugbetaling staat los van een eventuele terugbetaling bij retour. Om die te ontvangen:",
-      steps: [
-        "Stuur ons na levering het douanebewijs of de factuur van de vervoerder waarop de betaalde invoer-btw staat. Een duidelijke foto volstaat.",
-        "De terugbetaling betreft alleen de invoer-btw, tot het bedrag op dat document. Invoerrechten en kosten van de vervoerder vallen hier niet onder.",
-        "U mag dezelfde btw niet elders hebben teruggevraagd of afgetrokken, bijvoorbeeld bij de douane of als voorbelasting in de boekhouding van uw bedrijf.",
-        `Wij betalen de btw terug op uw oorspronkelijke betaalmethode binnen ${r.refundDays} dagen nadat wij het document hebben ontvangen. Stuurt u de goederen later terug, dan betalen wij de prijs van de goederen terug volgens de retourregels en betalen wij de btw niet een tweede keer terug.`,
-      ],
-      duty: "Invoerrechten worden aan de douane betaald, niet aan ons. Worden geretourneerde goederen opnieuw uitgevoerd, dan kan uw douanekantoor de geheven rechten en btw terugbetalen. De retourdocumenten die het daarvoor vraagt leveren wij gratis: een verklaring en verzenddocumenten die aantonen dat de goederen naar de Verenigde Staten zijn teruggestuurd.",
-    },
-    refusal: {
-      heading: "Als u het pakket weigert of niet ophaalt",
-      text: "Het weigeren van een pakket, het niet betalen van de kosten of het niet ophalen binnen de bewaartermijn van de vervoerder is geen herroeping. Het pakket gaat terug naar ons of geldt als achtergelaten. Wij betalen dan de prijs van de goederen terug, min de retourkosten en de kosten die wij maken. Om dit te voorkomen, meldt u ons liever uw herroeping. Uw wettelijke rechten blijven onverlet.",
-    },
-    delays: {
-      heading: "Vertraging bij de douane",
-      text: "Douaneafhandeling kan één tot drie werkdagen extra duren; de levertijden in ons leveringsbeleid houden al rekening met een normale afhandeling. Een douanecontrole valt buiten onze invloed, maar de wettelijke leveringstermijn van 30 dagen blijft gelden en u kunt annuleren en het volledige bedrag terugkrijgen als wij die niet halen.",
+      note: `Bestellingen worden verzonden via onze eigen bezorgdienst waar beschikbaar, of via onze Europese vervoerders (${carriers}).`,
     },
     invoices: {
-      heading: "Facturen en bewijzen",
-      text: "Elk pakket bevat een handelsfactuur voor de douane en wij mailen u een verkoopfactuur voor de goederen. Dit zijn geen btw-facturen. Het bewijs van de betaalde invoer-btw is het douanebewijs of de factuur van de vervoerder; bewaar het goed — u hebt het nodig voor de terugbetaling en, als bedrijf, om de btw af te trekken.",
+      heading: "Btw-facturen & zakelijke klanten (B2B)",
+      blocks: [
+        `U ontvangt per e-mail een factuur met het totaalbedrag in EUR inclusief EU-btw en het EU-btw-nummer ${vatId} (${repName}).`,
+        "Bestelt u als btw-geregistreerde EU-onderneming (VIES) en wenst u een zakelijke factuur met uw bedrijfsnaam en btw-nummer, mail ons dan direct na uw bestelling uw ordernummer en bedrijfsgegevens.",
+      ],
     },
-    contact: contactLine,
+    returns: {
+      heading: "Retouren & terugbetalingen",
+      text: "Wanneer u gebruikmaakt van uw 14 dagen EU-herroepingsrecht of een defect artikel retourneert, betalen wij het volledige betaalde bedrag inclusief btw terug. Omdat zendingen binnen de EU blijven, zijn er geen douaneformaliteiten voor wederuitvoer nodig.",
+    },
+    contact: `${repFull} · ${contactLine}`,
   },
 }
 
 const CONTACT_HEADING: Record<string, string> = { en: "Contact", de: "Kontakt", fr: "Contact", it: "Contatti", es: "Contacto", nl: "Contact" }
 
-function build(lang: string, c: CustomsCopy): PolicyDoc {
+function build(lang: string, c: VatHubCopy): PolicyDoc {
   return {
     title: c.title,
     description: c.description,
     intro: c.intro,
     sections: [
       { heading: c.how.heading, blocks: [c.how.text, { rows: c.how.rows }] },
-      { heading: c.pay.heading, blocks: [{ list: c.pay.items }, c.pay.note] },
-      { heading: c.declaration.heading, blocks: c.declaration.blocks },
-      { heading: c.refund.heading, blocks: [c.refund.intro, { list: c.refund.steps }, c.refund.duty] },
-      { heading: c.refusal.heading, blocks: [c.refusal.text] },
-      { heading: c.delays.heading, blocks: [c.delays.text] },
-      { heading: c.invoices.heading, blocks: [c.invoices.text] },
+      { heading: c.vatEntity.heading, blocks: [c.vatEntity.text, { rows: c.vatEntity.rows }] },
+      { heading: c.benefits.heading, blocks: [{ list: c.benefits.items }, c.benefits.note] },
+      { heading: c.invoices.heading, blocks: c.invoices.blocks },
+      { heading: c.returns.heading, blocks: [c.returns.text] },
       { heading: CONTACT_HEADING[lang], blocks: [c.contact] },
     ],
   }

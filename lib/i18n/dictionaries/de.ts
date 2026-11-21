@@ -4,22 +4,22 @@ import type { Dictionary } from "@/lib/i18n/dictionaries/en"
 
 const eu = POLICIES.eu
 const s = eu.shipping
-const cutoff = "14:00 Uhr PT (US-Pazifikzeit)"
+const cutoff = "14:00 Uhr MEZ (CET)"
 const [min, max] = deliveryDays("eu")
 const days = `${min}–${max} Werktage`
 const daysDative = `${min}–${max} Werktagen`
 const area = "alle 27 EU-Mitgliedstaaten"
 const exclusions = "Länder außerhalb der EU (u. a. Vereinigtes Königreich, Schweiz, Norwegen) und EU-Gebiete in äußerster Randlage wie die Kanarischen Inseln"
-const duties = "Versand aus den USA. Die Preise enthalten keine Einfuhrzölle und keine Einfuhrumsatzsteuer — diese zahlen Sie bei Lieferung an den Zusteller bzw. den Zoll. Nachdem Sie Ihre Bestellung erhalten haben, erstatten wir Ihnen die gezahlte Einfuhrumsatzsteuer."
-const warranty = "Gesetzliche Gewährleistung in der EU: 2 Jahre ab Lieferung, zusätzlich zu einer etwaigen Herstellergarantie."
-const bulky = "höchstens ca. 90 € pro Reifen oder Felge und 45 € pro Bremsenpaket für den Rückversand in die USA"
+const duties = "Kostenlose Lieferung aus unserem EU-Logistikhub in Polen in alle 27 EU-Mitgliedstaaten — ohne Zollabfertigung und ohne Einfuhrabgaben. Alle Preise enthalten bereits die gesetzliche EU-Mehrwertsteuer (USt-IdNr.: BE0794.652.803 — BBC TYRES BV)."
+const warranty = "Gesetzliche EU-Gewährleistung von 2 Jahren ab Lieferung, zusätzlich zu eventuellen Herstellergarantien."
+const bulky = "höchstens ca. 25 € pro Reifen oder Felge und 15 € pro Bremsenpaket für den Rückversand innerhalb der EU"
 const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "SEPA-Überweisung" : m)).join(", ")
 
 export const euDe: Dictionary = {
   meta: {
     title: `${COMPANY.tradingName} — Reifen, Felgen & Bremsen | EU-Shop`,
     template: `%s | ${COMPANY.tradingName} EU`,
-    description: "Reifen, Alufelgen und Bremsanlagen mit Lieferung aus den USA in die gesamte EU. EU-Reifenlabel bei jedem Reifen.",
+    description: "Reifen, Alufelgen und Bremsanlagen mit kostenloser Lieferung aus unserem EU-Logistikhub in Polen. Alle Preise inkl. EU-MwSt. (BE0794.652.803).",
   },
   common: {
     skip: "Zum Inhalt springen",
@@ -63,10 +63,10 @@ export const euDe: Dictionary = {
     policies: "Rechtliches EU",
     store: "Shop",
     language: "Sprache",
-    bottom: "Preise in EUR · ohne Einfuhrabgaben und MwSt., zahlbar bei Lieferung",
+    bottom: "Preise in EUR · inkl. EU-MwSt. (BE0794.652.803) · Kostenlose EU-Lieferung aus Polen",
     payments: `Akzeptierte Zahlungsarten: ${payments}`,
     privacyLink: "Cookie-Einstellungen",
-    vat: "",
+    vat: "EU-USt-IdNr.: BE0794.652.803 (BBC TYRES BV, EU-Vertreter)",
   },
   categories: {
     tires: { name: "Reifen", blurb: "Sommer-, Winter- und Ganzjahresreifen. Suche nach der Größe auf Ihrer Reifenflanke." },
@@ -93,7 +93,7 @@ export const euDe: Dictionary = {
   home: {
     eyebrow: "EU-Shop · Reifen · Felgen · Bremsen",
     title: "Alles zwischen Ihrem Auto und der Straße.",
-    lead: "Reifen mit EU-Reifenlabel, Felgen und Bremsen mit ECE-Zulassung — Versand aus den USA.",
+    lead: "Reifen mit EU-Reifenlabel, Felgen und Bremsen mit ECE-Zulassung — kostenloser Versand aus unserem EU-Hub in Polen, inkl. MwSt.",
     heroAlt: "Alufelge mit Sportreifen und rotem Bremssattel",
     finder: {
       title: "Reifengröße finden",
@@ -248,7 +248,7 @@ export const euDe: Dictionary = {
     upc: "UPC",
     supplierPart: "Lieferantennummer",
   },
-    priceNote: "ohne Einfuhrabgaben und MwSt. · Preis pro Stück",
+    priceNote: "inkl. EU-MwSt. · kostenloser EU-Versand · Preis pro Stück",
     deliveryTitle: `${s.freeShipping ? "Kostenlose Lieferung" : "Lieferung"} in ${daysDative}`,
     deliveryText: `In ${area}. Bestellungen bis ${cutoff} verlassen unser Lager in den USA innerhalb von ${s.handlingDays[0]}–${s.handlingDays[1]} Werktagen. Nach Möglichkeit per eigenem Lieferdienst und eigenem Kurier, andernfalls über andere Versanddienstleister.`,
     returnsTitle: `${eu.returns.windowDays} Tage Widerrufsrecht`,
@@ -291,7 +291,7 @@ export const euDe: Dictionary = {
     quantityFor: "Menge für {name}",
     aria: "Warenkorb, Artikel: {n}",
     tax: null,
-    priceNote: "ohne Einfuhrabgaben und MwSt.",
+    priceNote: "Alle Preise inkl. EU-MwSt. (BE0794.652.803) · Kostenlose EU-Lieferung aus Polen.",
   },
   checkout: {
     title: "Kasse",
@@ -436,6 +436,6 @@ export const euDe: Dictionary = {
     phone: "Telefon",
     hours: "Erreichbarkeit",
     eyebrow: "EU-Shop",
-    vat: "",
+    vat: "EU-USt-IdNr.: BE0794.652.803 (BBC TYRES BV, EU-Vertreter)",
   },
 }

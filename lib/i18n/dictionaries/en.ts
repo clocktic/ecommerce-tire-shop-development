@@ -481,7 +481,7 @@ export const euEn: Dictionary = {
     title: `${COMPANY.tradingName} — Tyres, Wheels & Brakes | EU Store`,
     template: `%s | ${COMPANY.tradingName} EU`,
     description:
-      "Tyres, alloy wheels and brake systems delivered across the EU from the United States. EU tyre label on every tyre.",
+      "Tyres, alloy wheels and brake systems delivered free across the EU from our Poland logistics hub. All prices include EU VAT (BE0794.652.803).",
   },
   common,
   company: { hours: "Mon–Fri, 9:00–18:00 PT (US Pacific Time)" },
@@ -510,10 +510,10 @@ export const euEn: Dictionary = {
     policies: "EU policies",
     store: "Store",
     language: "Language",
-    bottom: "Prices in EUR · excl. import duties and VAT, payable on delivery",
+    bottom: "Prices in EUR · EU VAT included (BE0794.652.803) · Free EU delivery from Poland",
     payments: `Accepted payment methods: ${eu.paymentMethods.join(", ")}`,
     privacyLink: "Cookie settings",
-    vat: "",
+    vat: "EU VAT ID: BE0794.652.803 (BBC TYRES BV, EU Representative)",
   },
   categories: {
     tires: { name: "Tyres", blurb: "Summer, winter and all-season. Search by the size on your sidewall." },
@@ -524,7 +524,7 @@ export const euEn: Dictionary = {
   home: {
     eyebrow: "EU store · Tyres · Wheels · Brakes",
     title: "Everything between your car and the road.",
-    lead: "Tyres with the EU tyre label, ECE-approved wheels and brakes — shipped from the United States.",
+    lead: "Tyres with the EU tyre label, ECE-approved wheels and brakes — free EU delivery from our Poland hub, VAT included.",
     heroAlt: "Alloy wheel with a performance tyre and a red brake caliper",
     finder: {
       title: "Tyre size finder",
@@ -645,7 +645,7 @@ export const euEn: Dictionary = {
   },
   product: {
     ...product,
-    priceNote: "Excl. import duties and VAT · price per unit",
+    priceNote: "EU VAT included · free EU delivery · price per unit",
     deliveryTitle: `${eu.shipping.freeShipping ? "Free delivery" : "Delivery"} in ${euDays}`,
     deliveryText: `To ${eu.shipping.area}. Orders before ${eu.shipping.cutoff} leave within ${eu.shipping.handlingDays[0]}–${eu.shipping.handlingDays[1]} working days. Sent via our own delivery service and courier whenever possible, or via partner carriers if our own delivery is unavailable.`,
     returnsTitle: `${eu.returns.windowDays}-day right of withdrawal`,
@@ -688,7 +688,7 @@ export const euEn: Dictionary = {
     quantityFor: "Quantity for {name}",
     aria: "Cart, items: {n}",
     tax: null,
-    priceNote: "Excl. import duties and VAT.",
+    priceNote: "Prices include EU VAT (BE0794.652.803) · Free EU delivery from Poland.",
   },
   checkout: {
     ...checkoutFields,
@@ -779,5 +779,5 @@ export const euEn: Dictionary = {
     eyebrow: "European Union store",
     euRep: "EU representative (GDPR)",
   },
-  about: { ...aboutShared, eyebrow: "European Union store", vat: "" },
+  about: { ...aboutShared, eyebrow: "European Union store", vat: "EU VAT ID: BE0794.652.803 (BBC TYRES BV, EU Representative)" },
 }

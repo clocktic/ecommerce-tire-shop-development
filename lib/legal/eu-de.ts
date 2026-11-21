@@ -14,7 +14,7 @@ const r = p.returns
 const t = euDe.policy
 const contactLine = `${COMPANY.email} · ${COMPANY.phoneDisplay} (${euDe.company.hours})`
 const seller = `${COMPANY.legalName}, ${companyAddressLine}, E-Mail ${COMPANY.email}, Telefon ${COMPANY.phoneDisplay}`
-const bulky = "höchstens etwa 90 € pro Reifen oder Felge und 45 € pro Bremsenpaket für den Rückversand in die USA"
+const bulky = "höchstens etwa 25 € pro Reifen oder Felge und 15 € pro Bremsenpaket für den Rückversand innerhalb der EU"
 const payments = p.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "SEPA-Überweisung" : m))
 
 const SNIP = EU_SNIPPETS.de
@@ -33,9 +33,9 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Kosten, Zölle und Einfuhrumsatzsteuer",
+        heading: "Kostenlose EU-Lieferung, MwSt. & kein Zoll",
         blocks: [
-          s.freeShipping ? "Die Lieferung ist bei jeder Bestellung kostenlos, ohne Mindestbestellwert." : "Die Lieferkosten werden vor Abschluss der Bestellung angezeigt.",
+          s.freeShipping ? "Die Lieferung aus unserem EU-Logistikhub in Polen ist bei jeder Bestellung in alle 27 EU-Mitgliedstaaten kostenlos, ohne Mindestbestellwert." : "Die Lieferkosten werden vor Abschluss der Bestellung angezeigt.",
           t.duties,
           SNIP.paymentsVat.blocks[1],
         ],
@@ -45,12 +45,12 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
         blocks: [
           {
             rows: [
-              ["Bestellschluss", "14:00 Uhr PT (US-Pazifikzeit), Montag–Freitag"],
+              ["Bestellschluss", "14:00 Uhr MEZ (CET), Montag–Freitag"],
               ["Bearbeitungszeit", `${s.handlingDays[0]}–${s.handlingDays[1]} Werktage`],
               ["Versandlaufzeit", `${s.transitDays[0]}–${s.transitDays[1]} Werktage`],
               ["Gesamte Lieferzeit", t.days],
               ["Versanddienstleister", `Eigener Lieferdienst & eigener Kurier (TiresShop Courier), sofern verfügbar; andernfalls ${s.carriers.join(", ")}`],
-              ["Versand aus", "Vereinigte Staaten (Kalifornien)"],
+              ["Versand aus", "Europäische Union (Logistikhub Polen)"],
             ],
           },
           `Wenn es möglich ist, Ihre Bestellung mit unserem eigenen Lieferdienst und unserem eigenen Kurier zu versenden, liefern wir auf diesem Weg. Besteht für Ihre Adresse oder Route keine Möglichkeit einer Zustellung durch unseren eigenen Lieferdienst, nutzen wir andere Versanddienstleister (${s.carriers.join(", ")}).`,
@@ -408,6 +408,7 @@ export const EU_POLICIES_DE: Record<string, PolicyDoc> = {
               ["Vertreten durch", `${COMPANY.representative}, ${COMPANY.representativeRole}`],
               ["E-Mail", COMPANY.email],
               ["Telefon", `${COMPANY.phoneDisplay} (${COMPANY.hours})`],
+              ["EU-USt-IdNr. (EU-Vertreter)", EU_PRESENCE.vatEntity],
               ["Seller's permit (CDTFA)", `${COMPANY.sellerPermit} (${COMPANY.sellerPermitAuthority})`],
             ],
           },

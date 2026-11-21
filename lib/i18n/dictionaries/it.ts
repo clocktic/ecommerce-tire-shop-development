@@ -4,21 +4,21 @@ import type { Dictionary } from "@/lib/i18n/dictionaries/en"
 
 const eu = POLICIES.eu
 const s = eu.shipping
-const cutoff = "14:00 PT (ora del Pacifico USA)"
+const cutoff = "14:00 CET (ora dell’Europa centrale)"
 const [min, max] = deliveryDays("eu")
 const days = `${min}–${max} giorni lavorativi`
 const area = "tutti i 27 Stati membri dell’UE"
 const exclusions = "i paesi extra UE (tra cui Regno Unito, Svizzera e Norvegia) e le regioni ultraperiferiche dell’UE come le Isole Canarie"
-const duties = "Spedito dagli Stati Uniti. I prezzi non includono dazi e IVA all’importazione, che paghi al corriere o alla dogana alla consegna. Dopo che hai ricevuto l’ordine, ti rimborsiamo l’IVA all’importazione pagata."
-const warranty = "Garanzia legale di conformità UE di 2 anni dalla consegna, in aggiunta all’eventuale garanzia del produttore."
-const bulky = "al massimo circa 90 € per pneumatico o cerchio e 45 € per collo di freni per la rispedizione negli Stati Uniti"
-const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "bonifico SEPA" : m)).join(", ")
+const duties = "Consegna gratuita dal nostro hub logistico UE in Polonia in tutti i 27 Stati membri dell’UE — nessuno sdoganamento e nessun dazio. Tutti i prezzi includono già l’IVA UE applicabile (Partita IVA UE: BE0794.652.803 — BBC TYRES BV)."
+const warranty = "Garanzia legale UE di conformità di 2 anni dalla consegna, in aggiunta a eventuali garanzie del produttore."
+const bulky = "al massimo circa 25 € per pneumatico o cerchio e 15 € per collo di freni per la rispedizione all’interno dell’UE"
+const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "Bonifico SEPA" : m)).join(", ")
 
 export const euIt: Dictionary = {
   meta: {
-    title: `${COMPANY.tradingName} — Pneumatici, cerchi e freni | Negozio UE`,
+    title: `${COMPANY.tradingName} — Pneumatici, Cerchi e Freni | Negozio UE`,
     template: `%s | ${COMPANY.tradingName} UE`,
-    description: "Pneumatici, cerchi in lega e impianti frenanti con consegna dagli Stati Uniti in tutta l’UE. Etichetta UE su ogni pneumatico.",
+    description: "Pneumatici, cerchi in lega e impianti frenanti con consegna gratuita in tutta l’UE dal nostro hub logistico in Polonia. Prezzi IVA UE inclusa (BE0794.652.803).",
   },
   common: {
     skip: "Vai al contenuto",
@@ -62,10 +62,10 @@ export const euIt: Dictionary = {
     policies: "Note legali UE",
     store: "Negozio",
     language: "Lingua",
-    bottom: "Prezzi in EUR · esclusi dazi e IVA all’importazione, da pagare alla consegna",
+    bottom: "Prezzi in EUR · IVA UE inclusa (BE0794.652.803) · Consegna UE gratuita dalla Polonia",
     payments: `Metodi di pagamento accettati: ${payments}`,
     privacyLink: "Impostazioni cookie",
-    vat: "",
+    vat: "Partita IVA UE: BE0794.652.803 (BBC TYRES BV, rappresentante UE)",
   },
   categories: {
     tires: { name: "Pneumatici", blurb: "Estivi, invernali e quattro stagioni. Cerca con la misura riportata sul fianco." },
@@ -92,7 +92,7 @@ export const euIt: Dictionary = {
   home: {
     eyebrow: "Negozio UE · Pneumatici · Cerchi · Freni",
     title: "Tutto ciò che sta tra la tua auto e la strada.",
-    lead: "Pneumatici con etichetta UE, cerchi e freni omologati ECE — spediti dagli Stati Uniti.",
+    lead: "Pneumatici con etichetta UE, cerchi e freni omologati ECE — consegna UE gratuita dal nostro hub in Polonia, IVA inclusa.",
     heroAlt: "Cerchio in lega con pneumatico sportivo e pinza freno rossa",
     finder: {
       title: "Trova la misura",
@@ -247,7 +247,7 @@ export const euIt: Dictionary = {
     upc: "UPC",
     supplierPart: "Codice fornitore",
   },
-    priceNote: "Esclusi dazi e IVA all’importazione · prezzo cadauno",
+    priceNote: "IVA UE inclusa · consegna UE gratuita · prezzo cadauno",
     deliveryTitle: `${s.freeShipping ? "Consegna gratuita" : "Consegna"} in ${days}`,
     deliveryText: `In ${area}. Gli ordini effettuati entro le ${cutoff} partono entro ${s.handlingDays[0]}–${s.handlingDays[1]} giorni lavorativi. Spedizione tramite il nostro servizio di consegna e il nostro corriere quando possibile, oppure tramite altri corrieri.`,
     returnsTitle: `Diritto di recesso di ${eu.returns.windowDays} giorni`,
@@ -290,7 +290,7 @@ export const euIt: Dictionary = {
     quantityFor: "Quantità per {name}",
     aria: "Carrello, articoli: {n}",
     tax: null,
-    priceNote: "Esclusi dazi e IVA all’importazione.",
+    priceNote: "Prezzi IVA UE inclusa (BE0794.652.803) · Consegna UE gratuita dalla Polonia.",
   },
   checkout: {
     title: "Cassa",
@@ -435,6 +435,6 @@ export const euIt: Dictionary = {
     phone: "Telefono",
     hours: "Orari",
     eyebrow: "Negozio Unione europea",
-    vat: "",
+    vat: "Partita IVA UE: BE0794.652.803 (BBC TYRES BV, rappresentante UE)",
   },
 }

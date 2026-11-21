@@ -5,21 +5,21 @@ import type { Dictionary } from "@/lib/i18n/dictionaries/en"
 // Spanish from Spain for the EU store: neumáticos = tyres, llantas = wheels.
 const eu = POLICIES.eu
 const s = eu.shipping
-const cutoff = "14:00 PT (hora del Pacífico de EE. UU.)"
+const cutoff = "14:00 CET (hora central europea)"
 const [min, max] = deliveryDays("eu")
 const days = `${min}–${max} días laborables`
 const area = "los 27 Estados miembros de la UE"
 const exclusions = "países de fuera de la UE (incluidos Reino Unido, Suiza y Noruega) y regiones ultraperiféricas de la UE como las Islas Canarias"
-const duties = "Enviado desde Estados Unidos. Los precios no incluyen aranceles ni IVA de importación, que pagas al transportista o a la aduana en la entrega. Una vez recibido tu pedido, te reembolsamos el IVA de importación abonado."
-const warranty = "Garantía legal de conformidad de la UE durante 2 años desde la entrega, además de cualquier garantía del fabricante."
-const bulky = "como máximo unos 90 € por neumático o llanta y 45 € por bulto de frenos para la devolución a Estados Unidos"
-const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "transferencia SEPA" : m)).join(", ")
+const duties = "Entrega gratuita desde nuestro centro logístico UE en Polonia en los 27 Estados miembros de la UE — sin despacho aduanero ni aranceles. Todos los precios ya incluyen el IVA de la UE aplicable (NIF-IVA UE: BE0794.652.803 — BBC TYRES BV)."
+const warranty = "Garantía legal de conformidad en la UE de 2 años desde la entrega, adicional a cualquier garantía del fabricante."
+const bulky = "como máximo unos 25 € por neumático o llanta y 15 € por bulto de frenos para la devolución dentro de la UE"
+const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "Transferencia SEPA" : m)).join(", ")
 
 export const euEs: Dictionary = {
   meta: {
-    title: `${COMPANY.tradingName} — Neumáticos, llantas y frenos | Tienda UE`,
+    title: `${COMPANY.tradingName} — Neumáticos, Llantas y Frenos | Tienda UE`,
     template: `%s | ${COMPANY.tradingName} UE`,
-    description: "Neumáticos, llantas de aleación y sistemas de frenos con entrega en toda la UE desde Estados Unidos. Etiqueta europea en cada neumático.",
+    description: "Neumáticos, llantas de aleación y sistemas de frenos con entrega gratuita en toda la UE desde nuestro centro logístico en Polonia. Precios con IVA UE incluido (BE0794.652.803).",
   },
   common: {
     skip: "Saltar al contenido",
@@ -63,10 +63,10 @@ export const euEs: Dictionary = {
     policies: "Información legal UE",
     store: "Tienda",
     language: "Idioma",
-    bottom: "Precios en EUR · sin aranceles ni IVA de importación, a pagar en la entrega",
+    bottom: "Precios en EUR · IVA UE incluido (BE0794.652.803) · Entrega UE gratuita desde Polonia",
     payments: `Métodos de pago aceptados: ${payments}`,
     privacyLink: "Configuración de cookies",
-    vat: "",
+    vat: "NIF-IVA UE: BE0794.652.803 (BBC TYRES BV, representante UE)",
   },
   categories: {
     tires: { name: "Neumáticos", blurb: "De verano, de invierno y todo tiempo. Busca por la medida que aparece en el flanco." },
@@ -93,7 +93,7 @@ export const euEs: Dictionary = {
   home: {
     eyebrow: "Tienda UE · Neumáticos · Llantas · Frenos",
     title: "Todo lo que hay entre tu coche y la carretera.",
-    lead: "Neumáticos con etiqueta europea, llantas y frenos homologados ECE: enviados desde Estados Unidos.",
+    lead: "Neumáticos con etiqueta europea, llantas y frenos homologados ECE: entrega UE gratuita desde nuestro centro en Polonia, IVA incluido.",
     heroAlt: "Llanta de aleación con neumático deportivo y pinza de freno roja",
     finder: {
       title: "Buscador de medida",
@@ -248,7 +248,7 @@ export const euEs: Dictionary = {
     upc: "UPC",
     supplierPart: "Ref. proveedor",
   },
-    priceNote: "Sin aranceles ni IVA de importación · precio por unidad",
+    priceNote: "IVA UE incluido · entrega UE gratuita · precio por unidad",
     deliveryTitle: `${s.freeShipping ? "Entrega gratuita" : "Entrega"} en ${days}`,
     deliveryText: `A ${area}. Los pedidos realizados antes de las ${cutoff} salen en ${s.handlingDays[0]}–${s.handlingDays[1]} días laborables. Enviamos con nuestro propio servicio de entrega y nuestro propio mensajero siempre que sea posible, o con otros transportistas si no está disponible.`,
     returnsTitle: `Desistimiento en ${eu.returns.windowDays} días`,
@@ -291,7 +291,7 @@ export const euEs: Dictionary = {
     quantityFor: "Cantidad de {name}",
     aria: "Cesta, artículos: {n}",
     tax: null,
-    priceNote: "Sin aranceles ni IVA de importación.",
+    priceNote: "Precios con IVA UE incluido (BE0794.652.803) · Entrega UE gratuita desde Polonia.",
   },
   checkout: {
     title: "Finalizar compra",
@@ -436,6 +436,6 @@ export const euEs: Dictionary = {
     phone: "Teléfono",
     hours: "Horario",
     eyebrow: "Tienda Unión Europea",
-    vat: "",
+    vat: "NIF-IVA UE: BE0794.652.803 (BBC TYRES BV, representante UE)",
   },
 }
