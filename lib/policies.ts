@@ -88,7 +88,7 @@ export const POLICIES: Record<Market, MarketPolicy> = {
       rateCents: 0,
       freeShipping: true,
       handlingDays: [1, 2],
-      transitDays: [3, 6],
+      transitDays: [4, 8],
       cutoff: "2:00 PM CET",
       carriers: ["DHL", "UPS", "DPD", "GLS"],
       area: "all 27 EU member states",
