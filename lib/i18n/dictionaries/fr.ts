@@ -4,21 +4,21 @@ import type { Dictionary } from "@/lib/i18n/dictionaries/en"
 
 const eu = POLICIES.eu
 const s = eu.shipping
-const cutoff = "14 h 00 PT (heure du Pacifique É.-U.)"
+const cutoff = "14 h 00 CET (heure d’Europe centrale)"
 const [min, max] = deliveryDays("eu")
 const days = `${min} à ${max} jours ouvrés`
 const area = "les 27 États membres de l’UE"
 const exclusions = "les pays hors UE (dont le Royaume-Uni, la Suisse et la Norvège) et les régions ultrapériphériques de l’UE comme les îles Canaries"
-const duties = "Expédié depuis les États-Unis. Les prix excluent les droits de douane et la TVA à l’importation, que vous réglez au transporteur ou à la douane à la livraison. Une fois votre commande reçue, nous vous remboursons la TVA à l’importation payée."
-const warranty = "Garantie légale de conformité de l’UE pendant 2 ans à compter de la livraison, en plus de toute garantie du fabricant."
-const bulky = "au maximum environ 90 € par pneu ou jante et 45 € par colis de freinage pour le renvoi vers les États-Unis"
-const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "virement SEPA" : m)).join(", ")
+const duties = "Livraison gratuite depuis notre hub logistique UE en Pologne vers les 27 États membres de l’UE — sans dédouanement ni droits de douane. Tous les prix incluent déjà la TVA UE applicable (n° de TVA : BE0794.652.803 — BBC TYRES BV)."
+const warranty = "Garantie légale de conformité de 2 ans à compter de la livraison, en plus des éventuelles garanties fabricant."
+const bulky = "au maximum environ 25 € par pneu ou jante et 15 € par colis de freinage pour le renvoi au sein de l’UE"
+const payments = eu.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "Virement SEPA" : m)).join(", ")
 
 export const euFr: Dictionary = {
   meta: {
-    title: `${COMPANY.tradingName} — Pneus, jantes et freins | Boutique UE`,
+    title: `${COMPANY.tradingName} — Pneus, Jantes & Freins | Boutique UE`,
     template: `%s | ${COMPANY.tradingName} UE`,
-    description: "Pneus, jantes alliage et systèmes de freinage livrés dans toute l’UE depuis les États-Unis. Étiquette pneumatique UE sur chaque pneu.",
+    description: "Pneus, jantes alliage et systèmes de freinage livrés gratuitement dans toute l’UE depuis notre hub logistique en Pologne. Prix TTC incluant la TVA UE (BE0794.652.803).",
   },
   common: {
     skip: "Aller au contenu",
@@ -62,10 +62,10 @@ export const euFr: Dictionary = {
     policies: "Informations légales UE",
     store: "Boutique",
     language: "Langue",
-    bottom: "Prix en EUR · hors droits d’importation et TVA, à payer à la livraison",
+    bottom: "Prix en EUR · TVA UE incluse (BE0794.652.803) · Livraison UE gratuite depuis la Pologne",
     payments: `Moyens de paiement acceptés : ${payments}`,
     privacyLink: "Paramètres des cookies",
-    vat: "",
+    vat: "N° de TVA UE : BE0794.652.803 (BBC TYRES BV, représentant UE)",
   },
   categories: {
     tires: { name: "Pneus", blurb: "Été, hiver et toutes saisons. Recherchez par la dimension inscrite sur le flanc." },
@@ -92,7 +92,7 @@ export const euFr: Dictionary = {
   home: {
     eyebrow: "Boutique UE · Pneus · Jantes · Freins",
     title: "Tout ce qui se trouve entre votre voiture et la route.",
-    lead: "Pneus avec étiquette UE, jantes et freins homologués ECE — expédiés depuis les États-Unis.",
+    lead: "Pneus avec étiquette UE, jantes et freins homologués ECE — livraison UE gratuite depuis notre hub en Pologne, TVA incluse.",
     heroAlt: "Jante alliage avec pneu sport et étrier de frein rouge",
     finder: {
       title: "Trouver la dimension",
@@ -247,7 +247,7 @@ export const euFr: Dictionary = {
     upc: "UPC",
     supplierPart: "Réf. fournisseur",
   },
-    priceNote: "Hors droits d’importation et TVA · prix à l’unité",
+    priceNote: "TVA UE incluse · livraison UE gratuite · prix à l’unité",
     deliveryTitle: `${s.freeShipping ? "Livraison gratuite" : "Livraison"} en ${days}`,
     deliveryText: `Vers ${area}. Les commandes passées avant ${cutoff} partent sous ${s.handlingDays[0]} à ${s.handlingDays[1]} jours ouvrés. Expédition par notre propre service de livraison et notre propre coursier lorsque c’est possible, sinon via d’autres transporteurs.`,
     returnsTitle: `Droit de rétractation de ${eu.returns.windowDays} jours`,
@@ -290,7 +290,7 @@ export const euFr: Dictionary = {
     quantityFor: "Quantité pour {name}",
     aria: "Panier, articles : {n}",
     tax: null,
-    priceNote: "Hors droits d’importation et TVA.",
+    priceNote: "Prix TTC incluant la TVA UE (BE0794.652.803) · Livraison UE gratuite depuis la Pologne.",
   },
   checkout: {
     title: "Commande",
@@ -435,6 +435,6 @@ export const euFr: Dictionary = {
     phone: "Téléphone",
     hours: "Horaires",
     eyebrow: "Boutique Union européenne",
-    vat: "",
+    vat: "N° de TVA UE : BE0794.652.803 (BBC TYRES BV, représentant UE)",
   },
 }

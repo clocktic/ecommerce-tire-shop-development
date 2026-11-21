@@ -41,15 +41,16 @@ export const companyAddressLine = `${COMPANY.street}, ${COMPANY.city}, ${COMPANY
 export const physicalReturnsAddress = `${COMPANY.legalName} — Returns Department, ${companyAddressLine}`
 
 // What EU consumers need to see in addition to the US entity details.
-// Orders for the EU are shipped from the United States and sold DAP: the
-// customer pays import duties and import VAT to the carrier / customs on
-// delivery, and we refund the import VAT upon proof of payment.
+// Orders for the EU are dispatched free of charge from our EU logistics hub in
+// Poland across all 27 EU Member States. Prices in the EU store already include
+// applicable EU VAT under our EU representative BBC TYRES BV (VAT BE0794.652.803).
 // EU representative (Art. 27 GDPR) — source: deed of incorporation published in
 // the Belgian Official Gazette (Belgisch Staatsblad) on 14/12/2022, ref. 22381428.
 export const EU_REPRESENTATIVE = {
   legalName: "BBC TYRES BV",
   legalForm: "Besloten vennootschap (BV), Belgium",
   enterpriseNumber: "0794.652.803",
+  vatNumber: "BE0794.652.803",
   register: "Crossroads Bank for Enterprises (KBO/BCE), Belgium",
   street: "Luitenant Graffplein 15",
   postalCode: "1780",
@@ -66,14 +67,15 @@ export const euRepresentativeAddress = `${EU_REPRESENTATIVE.street}, ${EU_REPRES
 
 export const EU_PRESENCE = {
   gdprRepresentative: {
-    name: `${EU_REPRESENTATIVE.legalName} (KBO/BCE ${EU_REPRESENTATIVE.enterpriseNumber})`,
+    name: `${EU_REPRESENTATIVE.legalName} (KBO/BCE ${EU_REPRESENTATIVE.enterpriseNumber} · VAT ${EU_REPRESENTATIVE.vatNumber})`,
     address: euRepresentativeAddress,
     email: EU_REPRESENTATIVE.email,
     mandatePdf: EU_REPRESENTATIVE.mandatePdf,
   },
-  // Goods are dispatched from California; returns go back to the US facility with an RMA number.
+  vatNumber: EU_REPRESENTATIVE.vatNumber,
+  vatEntity: `${EU_REPRESENTATIVE.legalName} (VAT ${EU_REPRESENTATIVE.vatNumber})`,
   returnsAddress: physicalReturnsAddress,
-  dispatchCountry: "United States (California)",
+  dispatchCountry: "European Union (Poland logistics hub)",
 } as const
 
 export const US_PRESENCE = {

@@ -14,7 +14,7 @@ const r = p.returns
 const t = euFr.policy
 const contactLine = `${COMPANY.email} · ${COMPANY.phoneDisplay} (${euFr.company.hours})`
 const seller = `${COMPANY.legalName}, ${companyAddressLine}, e-mail ${COMPANY.email}, téléphone ${COMPANY.phoneDisplay}`
-const bulky = "au maximum environ 90 € par pneu ou jante et 45 € par colis de freinage pour le renvoi vers les États-Unis"
+const bulky = "au maximum environ 25 € par pneu ou jante et 15 € par colis de freinage pour le renvoi au sein de l’UE"
 const payments = p.paymentMethods.map((m) => (m === "SEPA bank transfer" ? "Virement SEPA" : m))
 
 const SNIP = EU_SNIPPETS.fr
@@ -33,9 +33,9 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
         ],
       },
       {
-        heading: "Coûts, droits de douane et TVA à l’importation",
+        heading: "Livraison gratuite dans l’UE, TVA incluse et zéro douane",
         blocks: [
-          s.freeShipping ? "La livraison est gratuite pour toutes les commandes, sans minimum d’achat." : "Les frais de livraison sont indiqués avant la validation de la commande.",
+          s.freeShipping ? "La livraison depuis notre hub logistique UE en Pologne est gratuite pour toutes les commandes dans les 27 États membres de l’UE, sans minimum d’achat." : "Les frais de livraison sont indiqués avant la validation de la commande.",
           t.duties,
           SNIP.paymentsVat.blocks[1],
         ],
@@ -45,12 +45,12 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
         blocks: [
           {
             rows: [
-              ["Heure limite de commande", "14 h 00 PT (heure du Pacifique É.-U.), du lundi au vendredi"],
+              ["Heure limite de commande", "14 h 00 CET (heure d’Europe centrale), du lundi au vendredi"],
               ["Délai de préparation", `${s.handlingDays[0]} à ${s.handlingDays[1]} jours ouvrés`],
               ["Délai d’acheminement", `${s.transitDays[0]} à ${s.transitDays[1]} jours ouvrés`],
               ["Délai total de livraison", t.days],
               ["Transporteurs", `Service de livraison et coursier propres (TiresShop Courier) lorsque disponible ; sinon ${s.carriers.join(", ")}`],
-              ["Expédié depuis", "États-Unis (Californie)"],
+              ["Expédié depuis", "Union européenne (hub logistique en Pologne)"],
             ],
           },
           `Lorsqu’il est possible d’expédier votre commande via notre propre service de livraison et notre propre coursier, nous l’envoyons de cette manière. S’il n’est pas possible d’assurer la livraison par notre propre service pour votre adresse ou itinéraire, nous faisons appel à d’autres transporteurs (${s.carriers.join(", ")}).`,
@@ -408,6 +408,7 @@ export const EU_POLICIES_FR: Record<string, PolicyDoc> = {
               ["Représentée par", `${COMPANY.representative}, ${COMPANY.representativeRole}`],
               ["E-mail", COMPANY.email],
               ["Téléphone", `${COMPANY.phoneDisplay} (${COMPANY.hours})`],
+              ["N° de TVA UE (Représentant UE)", EU_PRESENCE.vatEntity],
               ["Seller's permit (CDTFA)", `${COMPANY.sellerPermit} (${COMPANY.sellerPermitAuthority})`],
             ],
           },
