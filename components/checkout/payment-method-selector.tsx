@@ -3,6 +3,7 @@
 import { useState } from "react"
 import type { ContentLang } from "@/lib/i18n/config"
 import type { Market } from "@/lib/markets"
+import { PAYPAL_CHECKOUT_ENABLED } from "@/lib/payments/paypal-config"
 import { cn } from "@/lib/utils"
 
 export type PaymentChoice = "card" | "paypal"
@@ -10,6 +11,7 @@ export type PaymentChoice = "card" | "paypal"
 interface Copy {
   heading: string
   cardTitle: string
+  cardOnlyTitle: string
   cardSub: string
   cardCta: string
   cardRedirectNote: string
@@ -23,7 +25,8 @@ const COPY: Record<ContentLang, Copy> = {
     paypalTitle: "Debit / Credit Card, PayPal, Venmo & Pay Later",
     paypalSub: "Pay with Visa, Mastercard, Amex, Discover, PayPal, Venmo, or Pay in 4",
     cardTitle: "Express Wallets & Alternative Checkout",
-    cardSub: "Apple Pay, Google Pay, Shop Pay & encrypted card checkout",
+    cardOnlyTitle: "Credit / Debit Card & Express Wallets",
+    cardSub: "Visa, Mastercard, Amex, Discover, Apple Pay, Google Pay & Shop Pay",
     cardCta: "Proceed to payment",
     cardRedirectNote: "Opens the encrypted payment page to complete your order.",
   },
@@ -32,7 +35,8 @@ const COPY: Record<ContentLang, Copy> = {
     paypalTitle: "Kredit-/Debitkarte, PayPal & Später bezahlen",
     paypalSub: "Mit Visa, Mastercard, Amex, PayPal oder Ratenzahlung bezahlen",
     cardTitle: "Express-Wallets & Alternativer Checkout",
-    cardSub: "Apple Pay, Google Pay, Shop Pay & Kartenzahlung",
+    cardOnlyTitle: "Kredit-/Debitkarte & Express-Wallets",
+    cardSub: "Visa, Mastercard, Amex, Apple Pay, Google Pay & Shop Pay",
     cardCta: "Weiter zur Zahlung",
     cardRedirectNote: "Öffnet die verschlüsselte Bezahlseite, um Ihre Bestellung abzuschließen.",
   },
@@ -41,7 +45,8 @@ const COPY: Record<ContentLang, Copy> = {
     paypalTitle: "Carte bancaire, PayPal & Paiement en 4x",
     paypalSub: "Payez par Visa, Mastercard, Amex ou PayPal",
     cardTitle: "Portefeuilles express & Paiement alternatif",
-    cardSub: "Apple Pay, Google Pay, Shop Pay & Carte",
+    cardOnlyTitle: "Carte bancaire & Portefeuilles express",
+    cardSub: "Visa, Mastercard, Amex, Apple Pay, Google Pay & Shop Pay",
     cardCta: "Passer au paiement",
     cardRedirectNote: "Ouvre la page de paiement sécurisée pour finaliser votre commande.",
   },
@@ -50,7 +55,8 @@ const COPY: Record<ContentLang, Copy> = {
     paypalTitle: "Carta di credito/debito, PayPal & Paga in 3 rate",
     paypalSub: "Paga con Visa, Mastercard, Amex o PayPal",
     cardTitle: "Wallet rapidi & Checkout alternativo",
-    cardSub: "Apple Pay, Google Pay, Shop Pay & Carta",
+    cardOnlyTitle: "Carta di credito/debito & Wallet rapidi",
+    cardSub: "Visa, Mastercard, Amex, Apple Pay, Google Pay & Shop Pay",
     cardCta: "Procedi al pagamento",
     cardRedirectNote: "Apre la pagina di pagamento crittografata per completare l'ordine.",
   },
@@ -59,7 +65,8 @@ const COPY: Record<ContentLang, Copy> = {
     paypalTitle: "Tarjeta de débito/crédito, PayPal y Paga después",
     paypalSub: "Paga con Visa, Mastercard, Amex o PayPal",
     cardTitle: "Billeteras rápidas y Pago alternativo",
-    cardSub: "Apple Pay, Google Pay, Shop Pay y Tarjeta",
+    cardOnlyTitle: "Tarjeta de débito/crédito y Billeteras rápidas",
+    cardSub: "Visa, Mastercard, Amex, Apple Pay, Google Pay y Shop Pay",
     cardCta: "Continuar al pago",
     cardRedirectNote: "Abre la pasarela de pago segura para completar tu pedido.",
   },
@@ -68,7 +75,8 @@ const COPY: Record<ContentLang, Copy> = {
     paypalTitle: "Tarjeta de débito/crédito, PayPal, Venmo y Paga después",
     paypalSub: "Paga con Visa, Mastercard, Amex, PayPal o Venmo",
     cardTitle: "Billeteras rápidas y Pago alternativo",
-    cardSub: "Apple Pay, Google Pay, Shop Pay y Tarjeta",
+    cardOnlyTitle: "Tarjeta de débito/crédito y Billeteras rápidas",
+    cardSub: "Visa, Mastercard, Amex, Discover, Apple Pay, Google Pay y Shop Pay",
     cardCta: "Continuar al pago",
     cardRedirectNote: "Abre la pasarela de pago segura para completar tu pedido.",
   },
@@ -77,7 +85,8 @@ const COPY: Record<ContentLang, Copy> = {
     paypalTitle: "Betaalkaart / Creditcard, PayPal & Betaal later",
     paypalSub: "Betaal met Visa, Mastercard, Amex of PayPal",
     cardTitle: "Express-wallets & Alternatieve checkout",
-    cardSub: "Apple Pay, Google Pay, Shop Pay & Kaart",
+    cardOnlyTitle: "Betaalkaart / Creditcard & Express-wallets",
+    cardSub: "Visa, Mastercard, Amex, Apple Pay, Google Pay & Shop Pay",
     cardCta: "Doorgaan naar betaling",
     cardRedirectNote: "Opent de beveiligde betaalpagina om je bestelling af te ronden.",
   },
@@ -102,8 +111,12 @@ export function PaymentMethodSelector({
   cardAction: React.ReactNode
   paypalAction: React.ReactNode
 }) {
-  const [internalChoice, setInternalChoice] = useState<PaymentChoice>("paypal")
-  const choice = controlledChoice ?? internalChoice
+  const [internalChoice, setInternalChoice] = useState<PaymentChoice>(
+    PAYPAL_CHECKOUT_ENABLED ? "paypal" : "card",
+  )
+  const choice: PaymentChoice = PAYPAL_CHECKOUT_ENABLED
+    ? (controlledChoice ?? internalChoice)
+    : "card"
   const setChoice = (next: PaymentChoice) => {
     setInternalChoice(next)
     onChoiceChange?.(next)
@@ -119,69 +132,70 @@ export function PaymentMethodSelector({
       </div>
 
       <div className="flex flex-col gap-2.5">
-        {/* Option 1: PayPal / Debit & Credit Card / Venmo / Pay Later (Primary, Top) */}
-        <div
-          className={cn(
-            "rounded-lg border transition-colors",
-            choice === "paypal"
-              ? "border-primary/80 bg-secondary/45 shadow-[0_0_0_1px_rgba(220,38,38,0.25)]"
-              : "border-border bg-secondary/20 hover:border-border/80",
-          )}
-        >
-          <button
-            type="button"
-            onClick={() => setChoice("paypal")}
-            className="flex w-full items-start gap-2.5 p-3 text-left sm:gap-3 sm:p-3.5"
+        {PAYPAL_CHECKOUT_ENABLED && (
+          <div
+            className={cn(
+              "rounded-lg border transition-colors",
+              choice === "paypal"
+                ? "border-primary/80 bg-secondary/45 shadow-[0_0_0_1px_rgba(220,38,38,0.25)]"
+                : "border-border bg-secondary/20 hover:border-border/80",
+            )}
           >
-            <span
-              className={cn(
-                "mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border",
-                choice === "paypal"
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-muted-foreground/50",
-              )}
-              aria-hidden="true"
+            <button
+              type="button"
+              onClick={() => setChoice("paypal")}
+              className="flex w-full items-start gap-2.5 p-3 text-left sm:gap-3 sm:p-3.5"
             >
-              {choice === "paypal" && <span className="size-1.5 rounded-full bg-white" />}
-            </span>
-            <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-              <span className="text-sm font-semibold leading-snug text-foreground">
-                {c.paypalTitle}
-              </span>
-              <div className="flex flex-wrap items-center gap-1">
-                <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
-                  VISA
-                </span>
-                <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
-                  MC
-                </span>
-                <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
-                  AMEX
-                </span>
-                <span className="rounded bg-[#FFC439] px-1.5 py-0.5 font-mono text-[10px] font-extrabold tracking-tight text-[#003087]">
-                  PayPal
-                </span>
-                {market === "us" && (
-                  <span className="rounded bg-[#008CFF] px-1.5 py-0.5 font-mono text-[10px] font-extrabold tracking-tight text-white">
-                    venmo
-                  </span>
+              <span
+                className={cn(
+                  "mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border",
+                  choice === "paypal"
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-muted-foreground/50",
                 )}
-                <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-semibold tracking-tight text-foreground">
-                  Pay Later
+                aria-hidden="true"
+              >
+                {choice === "paypal" && <span className="size-1.5 rounded-full bg-white" />}
+              </span>
+              <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                <span className="text-sm font-semibold leading-snug text-foreground">
+                  {c.paypalTitle}
                 </span>
+                <div className="flex flex-wrap items-center gap-1">
+                  <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
+                    VISA
+                  </span>
+                  <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
+                    MC
+                  </span>
+                  <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
+                    AMEX
+                  </span>
+                  <span className="rounded bg-[#FFC439] px-1.5 py-0.5 font-mono text-[10px] font-extrabold tracking-tight text-[#003087]">
+                    PayPal
+                  </span>
+                  {market === "us" && (
+                    <span className="rounded bg-[#008CFF] px-1.5 py-0.5 font-mono text-[10px] font-extrabold tracking-tight text-white">
+                      venmo
+                    </span>
+                  )}
+                  <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-semibold tracking-tight text-foreground">
+                    Pay Later
+                  </span>
+                </div>
+                <p className="text-xs leading-snug text-muted-foreground">{c.paypalSub}</p>
               </div>
-              <p className="text-xs leading-snug text-muted-foreground">{c.paypalSub}</p>
-            </div>
-          </button>
+            </button>
 
-          {choice === "paypal" && (
-            <div className="border-t border-border/60 px-2.5 pt-2.5 pb-2.5 sm:px-3.5 sm:pt-3 sm:pb-3.5">
-              {paypalAction}
-            </div>
-          )}
-        </div>
+            {choice === "paypal" && (
+              <div className="border-t border-border/60 px-2.5 pt-2.5 pb-2.5 sm:px-3.5 sm:pt-3 sm:pb-3.5">
+                {paypalAction}
+              </div>
+            )}
+          </div>
+        )}
 
-        {/* Option 2: Shopify / Express Wallets (Secondary, Bottom) */}
+        {/* Shopify Checkout / Express Wallets & Cards */}
         <div
           className={cn(
             "rounded-lg border transition-colors",
@@ -208,7 +222,7 @@ export function PaymentMethodSelector({
             </span>
             <div className="flex min-w-0 flex-1 flex-col gap-1.5">
               <span className="text-sm font-semibold leading-snug text-foreground">
-                {c.cardTitle}
+                {PAYPAL_CHECKOUT_ENABLED ? c.cardTitle : c.cardOnlyTitle}
               </span>
               <div className="flex flex-wrap items-center gap-1">
                 <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-semibold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
@@ -225,6 +239,9 @@ export function PaymentMethodSelector({
                 </span>
                 <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-bold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
                   MC
+                </span>
+                <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-bold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
+                  AMEX
                 </span>
               </div>
               <p className="text-xs leading-snug text-muted-foreground">{c.cardSub}</p>

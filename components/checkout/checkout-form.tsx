@@ -12,6 +12,7 @@ import {
   type PaymentChoice,
 } from "@/components/checkout/payment-method-selector"
 import { PayPalOrderButtons } from "@/components/checkout/paypal-buttons"
+import { PAYPAL_CHECKOUT_ENABLED } from "@/lib/payments/paypal-config"
 import { useCart } from "@/components/cart/cart-provider"
 import { SummaryRows } from "@/components/cart/cart-view"
 import { useI18n } from "@/components/i18n/i18n-provider"
@@ -32,7 +33,9 @@ export function CheckoutForm() {
   const router = useRouter()
   const { data: session } = useSession()
   const [accepted, setAccepted] = useState(false)
-  const [paymentChoice, setPaymentChoice] = useState<PaymentChoice>("paypal")
+  const [paymentChoice, setPaymentChoice] = useState<PaymentChoice>(
+    PAYPAL_CHECKOUT_ENABLED ? "paypal" : "card",
+  )
   const [failed, setFailed] = useState(false)
   const [placed, setPlaced] = useState(false)
   const [pending, startTransition] = useTransition()
