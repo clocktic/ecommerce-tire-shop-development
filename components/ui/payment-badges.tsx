@@ -1,3 +1,4 @@
+import { PAYPAL_CHECKOUT_ENABLED } from "@/lib/payments/paypal-config"
 import { cn } from "@/lib/utils"
 
 type BadgeSize = "sm" | "md"
@@ -172,50 +173,54 @@ export function PaymentBadges({
         </svg>
       ),
     },
-    {
-      id: "paypal",
-      name: "PayPal",
-      svg: (
-        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="PayPal">
-          <rect width="42" height="26" rx="2" fill="#FFC439" stroke="rgba(0,0,0,0.12)" />
-          <text
-            x="21"
-            y="16.2"
-            textAnchor="middle"
-            fill="#003087"
-            fontFamily="ui-sans-serif, system-ui, sans-serif"
-            fontStyle="italic"
-            fontWeight="900"
-            fontSize="9"
-            letterSpacing="-0.2"
-          >
-            Pay<tspan fill="#0079C1">Pal</tspan>
-          </text>
-        </svg>
-      ),
-    },
-    {
-      id: "venmo",
-      name: "Venmo",
-      svg: (
-        <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="Venmo">
-          <rect width="42" height="26" rx="2" fill="#008CFF" stroke="rgba(255,255,255,0.2)" />
-          <text
-            x="21"
-            y="15.8"
-            textAnchor="middle"
-            fill="#FFFFFF"
-            fontFamily="ui-sans-serif, system-ui, sans-serif"
-            fontStyle="italic"
-            fontWeight="900"
-            fontSize="8.2"
-            letterSpacing="-0.2"
-          >
-            venmo
-          </text>
-        </svg>
-      ),
-    },
+    ...(PAYPAL_CHECKOUT_ENABLED
+      ? [
+          {
+            id: "paypal",
+            name: "PayPal",
+            svg: (
+              <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="PayPal">
+                <rect width="42" height="26" rx="2" fill="#FFC439" stroke="rgba(0,0,0,0.12)" />
+                <text
+                  x="21"
+                  y="16.2"
+                  textAnchor="middle"
+                  fill="#003087"
+                  fontFamily="ui-sans-serif, system-ui, sans-serif"
+                  fontStyle="italic"
+                  fontWeight="900"
+                  fontSize="9"
+                  letterSpacing="-0.2"
+                >
+                  Pay<tspan fill="#0079C1">Pal</tspan>
+                </text>
+              </svg>
+            ),
+          },
+          {
+            id: "venmo",
+            name: "Venmo",
+            svg: (
+              <svg viewBox="0 0 42 26" className={cn(dim, "shrink-0")} role="img" aria-label="Venmo">
+                <rect width="42" height="26" rx="2" fill="#008CFF" stroke="rgba(255,255,255,0.2)" />
+                <text
+                  x="21"
+                  y="15.8"
+                  textAnchor="middle"
+                  fill="#FFFFFF"
+                  fontFamily="ui-sans-serif, system-ui, sans-serif"
+                  fontStyle="italic"
+                  fontWeight="900"
+                  fontSize="8.2"
+                  letterSpacing="-0.2"
+                >
+                  venmo
+                </text>
+              </svg>
+            ),
+          },
+        ]
+      : []),
     {
       id: "sepa",
       name: "SEPA",

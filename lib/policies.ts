@@ -1,4 +1,5 @@
 import type { Market } from "@/lib/markets"
+import { PAYPAL_CHECKOUT_ENABLED } from "@/lib/payments/paypal-config"
 
 // Single source for every number a customer, Google Merchant Center or a feed
 // can see: shipping cost, handling/transit days, return window, guarantee.
@@ -75,9 +76,7 @@ export const POLICIES: Record<Market, MarketPolicy> = {
       "Mastercard",
       "American Express",
       "Discover",
-      "PayPal",
-      "Venmo",
-      "PayPal Pay Later",
+      ...(PAYPAL_CHECKOUT_ENABLED ? ["PayPal", "Venmo", "PayPal Pay Later"] : []),
       "Apple Pay",
       "Google Pay",
       "Shop Pay",
@@ -115,8 +114,7 @@ export const POLICIES: Record<Market, MarketPolicy> = {
       "Mastercard",
       "American Express",
       "Discover",
-      "PayPal",
-      "PayPal Pay Later",
+      ...(PAYPAL_CHECKOUT_ENABLED ? ["PayPal", "PayPal Pay Later"] : []),
       "Apple Pay",
       "Google Pay",
       "Shop Pay",
