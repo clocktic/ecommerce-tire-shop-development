@@ -25,7 +25,7 @@ const catalog = {
   offerFor: (product, market) => product.offers[market],
   localizeProduct: (product) => product,
 }
-const policies = { POLICIES: { us: { shipping: { rateCents: 0, handlingDays: [1, 2], transitDays: [3, 6] } } } }
+const policies = { POLICIES: { us: { shipping: { rateCents: 0, handlingDays: [1, 2], transitDays: [4, 8] } } } }
 const formatter = load("lib/feeds/us-feed-format.ts", {
   "@/lib/catalog": catalog, "@/lib/i18n/config": config, "@/lib/policies": policies, "@/lib/seo": seo,
 })
@@ -63,7 +63,7 @@ for (const line of lines) {
   assert.ok(!line.endsWith("\t"))
 }
 assert.ok(lines[1].includes("123.45 USD"))
-assert.ok(lines[1].includes("US:0.00 USD:1:2:3:6"))
+assert.ok(lines[1].includes("US:0.00 USD:1:2:4:8"))
 assert.ok(!result.text.includes("tiresshop.net/https:"))
 
 for (const mutation of [
