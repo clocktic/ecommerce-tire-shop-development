@@ -50,7 +50,7 @@ export const POLICIES: Record<Market, MarketPolicy> = {
       rateCents: 0,
       freeShipping: true,
       handlingDays: [1, 2],
-      transitDays: [4, 8],
+      transitDays: [3, 6],
       cutoff: "2:00 PM PT",
       carriers: ["UPS", "FedEx", "USPS"],
       area: "the 48 contiguous United States",
