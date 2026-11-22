@@ -26,6 +26,7 @@ import { getProductReviews, getRatingsBySlug, reviewStats } from "@/lib/stamped-
 import { getStampedProductRating } from "@/lib/stamped-rating"
 import { Utqg } from "@/components/product/utqg"
 import { TireVariants } from "@/components/product/tire-variants"
+import { BrakeFitmentList } from "@/components/product/brake-fitment-list"
 import { ProductFitmentBadge } from "@/components/garage/product-fitment-badge"
 import { tireVariants } from "@/lib/catalog/tire-variants"
 
@@ -164,21 +165,7 @@ export default async function ProductPage({ params }: { params: Params }) {
           />
 
           {product.category === "brakes" && product.brake.fitment.length > 0 && (
-            <div className="rounded-lg border border-border bg-muted/25 p-3.5">
-              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                {t.product.fitment}
-              </p>
-              <ul className="mt-2 flex flex-wrap gap-1.5">
-                {product.brake.fitment.map((vehicle) => (
-                  <li
-                    key={vehicle}
-                    className="rounded-md border border-border bg-card px-2.5 py-1 text-xs font-medium text-foreground shadow-chip"
-                  >
-                    {vehicle}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <BrakeFitmentList fitment={product.brake.fitment} store={store} />
           )}
 
           {product.category === "tires" && t.product.euLabel && product.tire.euLabel && (
@@ -217,6 +204,7 @@ export default async function ProductPage({ params }: { params: Params }) {
                 <span className="font-semibold">{t.product.returnsTitle}</span>
                 <span className="block text-muted-foreground">
                   {t.product.returnsText}{" "}
+                  {returnFeeHint(store, product.category)}{" "}
                   <Link href={policyHref(store, "returns")} className="underline underline-offset-4">
                     {t.product.returnsLink}
                   </Link>
@@ -285,6 +273,26 @@ function Identifiers({ product, labels }: { product: Product; labels: Dictionary
       ))}
     </dl>
   )
+}
+
+function returnFeeHint(store: Store, category: Product["category"]): string {
+  const sym = store.market === "eu" ? "€" : "$"
+  const fee = category === "brakes" ? `${sym}15` : `${sym}25`
+  const restock = `${sym}0`
+  switch (store.lang) {
+    case "de":
+      return `Rücksendeetikett ca. ${fee}/Stück (${restock} Wiedereinlagerungsgebühr).`
+    case "fr":
+      return `Étiquette retour env. ${fee}/article (${restock} de frais de restockage).`
+    case "it":
+      return `Etichetta reso circa ${fee}/articolo (${restock} commissione di rientro).`
+    case "es":
+      return `Guía de devolución aprox. ${fee}/unidad (${restock} por reposición).`
+    case "nl":
+      return `Retourlabel ca. ${fee}/stuk (${restock} herbevoorradingskosten).`
+    default:
+      return `Prepaid return label approx. ${fee}/item (${restock} restocking fee).`
+  }
 }
 
 function NotInMarket({ store, name, slug }: { store: Store; name: string; slug: string }) {

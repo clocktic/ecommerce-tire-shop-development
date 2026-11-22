@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
 import { ReviewCard } from "@/components/reviews/review-card"
 import { ReviewSummary } from "@/components/reviews/review-summary"
+import { EuReviewsLogisticsNote } from "@/components/reviews/eu-logistics-note"
 
 type Params = Promise<{ market: string; lang: string }>
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
@@ -75,6 +76,8 @@ export default async function ReviewsPage({ params, searchParams }: { params: Pa
         <h1 className="font-expanded text-3xl font-extrabold uppercase sm:text-4xl md:text-5xl">{copy.pageTitle}</h1>
         <p className="max-w-2xl text-pretty leading-relaxed text-muted-foreground">{copy.pageLead}</p>
       </header>
+
+      <EuReviewsLogisticsNote store={store} className="mt-6" />
 
       {reviews.length > 0 && (
         <ReviewSummary

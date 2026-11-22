@@ -6,6 +6,7 @@ import { getDictionary, storePath, type Dictionary, type Store } from "@/lib/i18
 import { Price } from "@/components/product/price"
 import { EuTyreLabel } from "@/components/product/eu-tyre-label"
 import { BrandMark } from "@/components/product/brand-mark"
+import { BrakeCardFitment } from "@/components/product/brake-card-fitment"
 import { RatingInline } from "@/components/reviews/rating-inline"
 import type { RatingSummary } from "@/lib/stamped-reviews"
 
@@ -67,11 +68,12 @@ export function ProductCard({ product, store, rating }: { product: Product; stor
           <p className="truncate font-mono text-xs font-semibold sm:text-sm">{code}</p>
           <p className="truncate font-mono text-[11px] text-muted-foreground sm:text-xs">{meta}</p>
           {product.category === "brakes" && product.brake.fitment.length > 0 && (
-            <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground sm:text-xs">
-              <span className="font-semibold text-foreground/85">{t.product.fitment}:</span>{" "}
-              {product.brake.fitment.slice(0, 2).join(" · ")}
-              {product.brake.fitment.length > 2 ? ` +${product.brake.fitment.length - 2}` : ""}
-            </p>
+            <BrakeCardFitment
+              fitment={product.brake.fitment}
+              label={t.product.fitment}
+              market={store.market}
+              lang={store.lang}
+            />
           )}
           {(product.mpn || product.gtin) && (
             <p className="mt-0.5 hidden truncate font-mono text-[11px] text-muted-foreground/85 sm:block">
