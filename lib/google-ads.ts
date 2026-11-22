@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm"
 import { db } from "@/lib/db"
 import { googleAdsConfig } from "@/lib/db/schema"
 
-const GOOGLE_ADS_API_VERSION = "v19"
+const GOOGLE_ADS_API_VERSION = "v23"
 const GOOGLE_ADS_BASE_URL = `https://googleads.googleapis.com/${GOOGLE_ADS_API_VERSION}`
 
 export type GoogleAdsSettings = {
