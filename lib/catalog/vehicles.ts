@@ -160,7 +160,9 @@ const SPECS: VehicleSpec[] = [
 
   // Chevrolet
   ["chevy-camaro", "Chevrolet", "Camaro", 2016, 2024, us, "5x120", 67.1, [["18", "LS / LT 18\"", 245, 50, 18], ["20", "RS / SS 20\"", 245, 40, 20], ["20-rear", "SS Rear / ZL1 20\"", 275, 35, 20]]],
+  ["chevy-camaro-classic", "Chevrolet", "Camaro Classic 1st–3rd Gen", 1967, 1992, us, "5x120.65", 70.3, [["15", "Classic 15\"", 235, 60, 15], ["17", "Restomod 17\"", 245, 45, 17], ["18", "Pro-Touring 18\"", 255, 40, 18]]],
   ["chevy-corvette", "Chevrolet", "Corvette C8", 2020, 2026, us, "5x120", 66.9, [["19", "Stingray Front 19\"", 245, 35, 19], ["20", "Stingray Rear 20\"", 305, 30, 20]]],
+  ["chevy-corvette-c6", "Chevrolet", "Corvette C6 / Z06", 2005, 2013, us, "5x120.65", 70.3, [["18", "Front 18\"", 245, 40, 18], ["19", "Rear 19\"", 285, 35, 19]]],
   ["chevy-trax", "Chevrolet", "Trax", 2024, 2026, us, "5x114.3", 70.3, [["17", "LS / 1RS 17\"", 225, 60, 17], ["18", "LT / ACTIV 18\"", 225, 55, 18], ["19", "2RS 19\"", 245, 45, 19]]],
   ["chevy-trailblazer", "Chevrolet", "Trailblazer", 2021, 2026, us, "5x114.3", 70.3, [["17", "LS / LT 17\"", 225, 60, 17], ["18", "RS 18\"", 225, 55, 18]]],
   ["chevy-equinox", "Chevrolet", "Equinox / Equinox EV", 2018, 2026, us, "5x114.3", 70.3, [["17", "LS / LT 17\"", 225, 65, 17], ["18", "Premier 18\"", 225, 60, 18], ["19", "RS 19\"", 235, 50, 19], ["20", "EV RS 20\"", 245, 50, 20]]],
@@ -210,6 +212,8 @@ const SPECS: VehicleSpec[] = [
   ["ford-bronco", "Ford", "Bronco", 2021, 2026, us, "6x139.7", 93.1, [["17", "Big Bend 17\"", 255, 75, 17], ["17-badlands", "Badlands 17\"", 285, 70, 17], ["18", "Outer Banks 18\"", 255, 70, 18]]],
   ["ford-maverick", "Ford", "Maverick", 2022, 2026, us, "5x108", 63.4, [["17", "XL / XLT 17\"", 225, 65, 17], ["18", "Lariat 18\"", 225, 60, 18], ["19", "Lobo 19\"", 225, 55, 19]]],
   ["ford-mustang", "Ford", "Mustang", 2015, 2026, both, "5x114.3", 70.5, [["18", "EcoBoost 18\"", 235, 50, 18], ["19", "GT / Dark Horse 19\"", 255, 40, 19], ["20", "Performance 20\"", 265, 35, 20]]],
+  ["ford-mustang-classic", "Ford", "Mustang Classic", 1965, 1970, us, "5x114.3", 70.5, [["15", "Classic 15\"", 215, 65, 15], ["17", "Restomod 17\"", 245, 45, 17]]],
+  ["ford-mustang-sn95", "Ford", "Mustang Fox Body / SN95", 1979, 2004, us, "5x114.3", 70.5, [["17", "GT / Cobra 17\"", 245, 45, 17], ["18", "Performance 18\"", 265, 35, 18]]],
   ["ford-mach-e", "Ford", "Mustang Mach-E", 2021, 2026, both, "5x108", 63.4, [["18", "Select 18\"", 225, 60, 18], ["19", "Premium 19\"", 225, 55, 19], ["20", "GT 20\"", 245, 45, 20]]],
   ["ford-explorer", "Ford", "Explorer", 2020, 2026, both, "5x114.3", 70.5, [["18", "Active 18\"", 255, 65, 18], ["20", "ST-Line / Platinum 20\"", 255, 55, 20], ["21", "Explorer ST 21\"", 275, 45, 21]]],
   ["ford-ranger-us", "Ford", "Ranger", 2019, 2026, both, "6x139.7", 93.1, [["17", "XL / XLT 17\"", 255, 70, 17], ["18", "Lariat / Wildtrak 18\"", 255, 65, 18], ["17-raptor", "Ranger Raptor 17\"", 285, 70, 17]]],
@@ -480,19 +484,141 @@ export function findVehicleById(id: string | undefined | null): VehicleModel | u
   return VEHICLES.find((item) => item.id === id)
 }
 
-export function matchesBrakeVehicle(fitment: string[], vehicle: VehicleModel): boolean {
-  if (!fitment || fitment.length === 0) return true
-  const needleMake = vehicle.make.toLowerCase()
+function normalizeFitmentText(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+}
+
+function containsModelToken(haystack: string, needle: string): boolean {
+  const re = new RegExp(`(^|[^a-z0-9])${escapeRegExp(needle)}($|[^a-z0-9])`, "i")
+  return re.test(haystack)
+}
+
+function parseYearRange(entry: string): [number, number] | null {
+  const match = entry.match(/\((\d{4})\s*[–-]\s*(\d{4})\)/)
+  if (!match) return null
+  return [Number(match[1]), Number(match[2])]
+}
+
+const KNOWN_MULTI_WORD_MAKES = [
+  "Alfa Romeo",
+  "Aston Martin",
+  "Land Rover",
+  "Mercedes-Benz",
+  "Chevrolet / GMC",
+]
+
+export function matchesBrakeFitmentEntry(entry: string, vehicle: VehicleModel): boolean {
+  const text = normalizeFitmentText(entry)
+  const needleMake = normalizeFitmentText(vehicle.make)
+  const makeMatch =
+    containsModelToken(text, needleMake) ||
+    (needleMake === "mercedes-benz" && containsModelToken(text, "mercedes"))
+  if (!makeMatch) return false
+
+  // Enforce year-range overlap when the fitment string specifies production years
+  const years = parseYearRange(entry)
+  if (years) {
+    const [fitFrom, fitTo] = years
+    if (fitFrom > vehicle.yearTo || fitTo < vehicle.yearFrom) return false
+  }
+
+  // Prevent distinct sub-model cross-matches (e.g. Mustang vs Mustang Mach-E, Bronco vs Bronco Sport)
+  const normModel = normalizeFitmentText(vehicle.model)
+  if (normModel === "mustang" && text.includes("mach-e")) return false
+  if (normModel === "bronco" && text.includes("bronco sport")) return false
+  if (normModel === "corvette c8" && !text.includes("c8")) return false
+
+  // Classic heritage models match by base model name once year range already overlapped
+  if (vehicle.id === "chevy-camaro-classic") return containsModelToken(text, "camaro")
+  if (vehicle.id === "chevy-corvette-c6") return containsModelToken(text, "corvette") && (text.includes("c6") || Boolean(years))
+  if (vehicle.id === "ford-mustang-classic" || vehicle.id === "ford-mustang-sn95") {
+    return containsModelToken(text, "mustang") && !text.includes("mach-e")
+  }
+
   const modelParts = vehicle.model
     .split("/")
-    .map((s) => s.trim().toLowerCase())
+    .map((s) => normalizeFitmentText(s))
     .filter((s) => s.length >= 2)
 
-  return fitment.some((entry) => {
-    const text = entry.toLowerCase()
-    if (!text.includes(needleMake)) return false
-    return modelParts.some((part) => text.includes(part))
-  })
+  return modelParts.some((part) => containsModelToken(text, part))
+}
+
+export function matchesBrakeVehicle(fitment: string[], vehicle: VehicleModel): boolean {
+  if (!fitment || fitment.length === 0) return true
+  return fitment.some((entry) => matchesBrakeFitmentEntry(entry, vehicle))
+}
+
+export type BrakeFitmentEntry = {
+  raw: string
+  make: string
+  model: string
+  years: string | null
+  vehicleId: string | null
+}
+
+export type BrakeFitmentGroup = {
+  make: string
+  entries: BrakeFitmentEntry[]
+}
+
+export function parseBrakeFitmentEntry(entry: string, market?: Market): BrakeFitmentEntry {
+  const trimmed = entry.trim()
+  const yearMatch = trimmed.match(/\s*\((\d{4}\s*[–-]\s*\d{4})\)\s*$/)
+  const years = yearMatch ? yearMatch[1].replace(/\s*-\s*/, "–") : null
+  const withoutYears = yearMatch ? trimmed.slice(0, yearMatch.index).trim() : trimmed
+
+  let make = ""
+  let model = withoutYears
+  const multiMake = KNOWN_MULTI_WORD_MAKES.find((m) =>
+    withoutYears.toLowerCase().startsWith(m.toLowerCase() + " "),
+  )
+  if (multiMake) {
+    make = multiMake
+    model = withoutYears.slice(multiMake.length).trim()
+  } else {
+    const spaceIdx = withoutYears.indexOf(" ")
+    if (spaceIdx > 0) {
+      make = withoutYears.slice(0, spaceIdx)
+      model = withoutYears.slice(spaceIdx + 1).trim()
+    } else {
+      make = withoutYears
+      model = ""
+    }
+  }
+
+  const pool = market ? vehiclesFor(market) : VEHICLES
+  const matched =
+    pool.find((v) => matchesBrakeFitmentEntry(trimmed, v)) ??
+    VEHICLES.find((v) => matchesBrakeFitmentEntry(trimmed, v))
+
+  return {
+    raw: trimmed,
+    make,
+    model: model || trimmed,
+    years,
+    vehicleId: matched?.id ?? null,
+  }
+}
+
+export function groupBrakeFitment(fitment: string[], market?: Market): BrakeFitmentGroup[] {
+  const map = new Map<string, BrakeFitmentEntry[]>()
+  for (const raw of fitment) {
+    const parsed = parseBrakeFitmentEntry(raw, market)
+    const list = map.get(parsed.make)
+    if (list) list.push(parsed)
+    else map.set(parsed.make, [parsed])
+  }
+  return [...map.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([make, entries]) => ({ make, entries }))
 }
 
 export function sizeKey(width: number, aspect: number, rim: number): string {
