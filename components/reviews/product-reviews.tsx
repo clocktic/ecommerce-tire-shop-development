@@ -5,6 +5,7 @@ import { getReviewsCopy } from "@/lib/i18n/reviews"
 import { reviewStats, type StampedReview } from "@/lib/stamped-reviews"
 import { ReviewCard } from "@/components/reviews/review-card"
 import { ReviewSummary } from "@/components/reviews/review-summary"
+import { EuReviewsLogisticsNote } from "@/components/reviews/eu-logistics-note"
 
 export function ProductReviews({ reviews, store }: { reviews: StampedReview[]; store: Store }) {
   const copy = getReviewsCopy(store)
@@ -24,6 +25,8 @@ export function ProductReviews({ reviews, store }: { reviews: StampedReview[]; s
           <ArrowRight aria-hidden="true" className="size-3.5" />
         </Link>
       </div>
+
+      {reviews.length > 0 && <EuReviewsLogisticsNote store={store} className="mb-5" />}
 
       {reviews.length > 0 ? (
         <div className="grid gap-4 lg:grid-cols-[minmax(0,20rem)_1fr] lg:gap-6">

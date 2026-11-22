@@ -83,23 +83,18 @@ export function AddToCart({ slug, name, image, priceCents, defaultQuantity, show
           </button>
         </div>
         {showSetPreset && (
-          <div className="flex items-stretch border border-border bg-card font-mono text-xs font-semibold">
-            <button
-              type="button"
-              onClick={() => setQuantity(1)}
-              aria-pressed={quantity === 1}
-              className={`px-2.5 transition-colors ${quantity === 1 ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
-            >
-              1×
-            </button>
-            <button
-              type="button"
-              onClick={() => setQuantity(4)}
-              aria-pressed={quantity === 4}
-              className={`border-l border-border px-2.5 transition-colors ${quantity === 4 ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
-            >
-              4×
-            </button>
+          <div className="flex items-stretch border border-border bg-card font-mono text-xs font-semibold" role="group" aria-label={t.product.quantity}>
+            {[1, 2, 4].map((preset, idx) => (
+              <button
+                key={preset}
+                type="button"
+                onClick={() => setQuantity(preset)}
+                aria-pressed={quantity === preset}
+                className={`px-2.5 transition-colors ${idx > 0 ? "border-l border-border" : ""} ${quantity === preset ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
+              >
+                {preset}×
+              </button>
+            ))}
           </div>
         )}
         <Button size="lg" className="flex-1" disabled={disabled} onClick={handleAdd}>
@@ -109,6 +104,20 @@ export function AddToCart({ slug, name, image, priceCents, defaultQuantity, show
             : `${t.product.add} · ${formatPrice(priceCents * quantity, store.market, intl)}`}
         </Button>
       </div>
+      {showSetPreset && (
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-muted-foreground tabular-nums">
+          {[1, 2, 4].map((preset) => (
+            <button
+              key={preset}
+              type="button"
+              onClick={() => setQuantity(preset)}
+              className={`transition-colors hover:text-foreground ${quantity === preset ? "font-semibold text-foreground underline underline-offset-4" : ""}`}
+            >
+              {preset}× {formatPrice(priceCents * preset, store.market, intl)}
+            </button>
+          ))}
+        </div>
+      )}
       {added && (
         <Link href={storePath(store, "/cart")} className="text-sm underline underline-offset-4">
           {t.product.viewCart}

@@ -217,6 +217,7 @@ export default async function ProductPage({ params }: { params: Params }) {
                 <span className="font-semibold">{t.product.returnsTitle}</span>
                 <span className="block text-muted-foreground">
                   {t.product.returnsText}{" "}
+                  {returnFeeHint(store, product.category)}{" "}
                   <Link href={policyHref(store, "returns")} className="underline underline-offset-4">
                     {t.product.returnsLink}
                   </Link>
@@ -285,6 +286,26 @@ function Identifiers({ product, labels }: { product: Product; labels: Dictionary
       ))}
     </dl>
   )
+}
+
+function returnFeeHint(store: Store, category: Product["category"]): string {
+  const sym = store.market === "eu" ? "€" : "$"
+  const fee = category === "brakes" ? `${sym}15` : `${sym}25`
+  const restock = `${sym}0`
+  switch (store.lang) {
+    case "de":
+      return `Rücksendeetikett ca. ${fee}/Stück (${restock} Wiedereinlagerungsgebühr).`
+    case "fr":
+      return `Étiquette retour env. ${fee}/article (${restock} de frais de restockage).`
+    case "it":
+      return `Etichetta reso circa ${fee}/articolo (${restock} commissione di rientro).`
+    case "es":
+      return `Guía de devolución aprox. ${fee}/unidad (${restock} por reposición).`
+    case "nl":
+      return `Retourlabel ca. ${fee}/stuk (${restock} herbevoorradingskosten).`
+    default:
+      return `Prepaid return label approx. ${fee}/item (${restock} restocking fee).`
+  }
 }
 
 function NotInMarket({ store, name, slug }: { store: Store; name: string; slug: string }) {
