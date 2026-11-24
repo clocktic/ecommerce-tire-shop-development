@@ -17,7 +17,11 @@ function isAuthorized(request: Request): boolean {
   if (cronSecret) {
     return authHeader === `Bearer ${cronSecret}`
   }
-  return request.headers.get("x-vercel-cron") === "1"
+  const userAgent = request.headers.get("user-agent") ?? ""
+  return (
+    request.headers.get("x-vercel-cron") === "1" ||
+    userAgent.startsWith("vercel-cron/")
+  )
 }
 
 export async function GET(request: Request) {
