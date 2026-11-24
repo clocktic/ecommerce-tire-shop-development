@@ -520,10 +520,27 @@
   }
 }
 
+@keyframes brand-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-brand-marquee {
+  animation: brand-marquee 44s linear infinite;
+  will-change: transform;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .btn-sheen::after,
   .pay-wheel {
     transition: none;
+  }
+  .animate-brand-marquee {
+    animation: none;
   }
   .pay-button[data-pending] .pay-fill,
   .pay-button[data-pending] .pay-wheel {
