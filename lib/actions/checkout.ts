@@ -13,6 +13,7 @@ import { extrasFor } from "@/lib/i18n/extras"
 import { fmt } from "@/lib/i18n/fmt"
 import { MARKETS, formatPrice } from "@/lib/markets"
 import { computeMemberDiscountCents } from "@/lib/member-discount"
+import { createNgeniusHostedOrder } from "@/lib/payments/ngenius"
 import { createShopifyCheckoutSession } from "@/lib/payments/shopify"
 import { POLICIES } from "@/lib/policies"
 import { notifyTelegramNewOrder } from "@/lib/telegram"
@@ -35,7 +36,7 @@ export type PlaceOrderInput = {
   state?: string
   country: string
   accepted: boolean
-  paymentProvider?: "shopify" | "paypal" | "stripe"
+  paymentProvider?: "ngenius" | "shopify" | "paypal" | "stripe"
 }
 
 export type PlaceOrderResult =
@@ -130,9 +131,18 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
   await db.insert(orderItems).values(items)
 
   const isPayPal = input.paymentProvider === "paypal"
-  const shopifySession = isPayPal
-    ? ({ ok: false as const, error: "Skipped for PayPal" })
-    : await createShopifyCheckoutSession(orderNumber)
+  const isNgenius =
+    store.market === "eu" &&
+    (input.paymentProvider === "ngenius" || input.paymentProvider === undefined)
+
+  const ngeniusSession = isNgenius
+    ? await createNgeniusHostedOrder(orderNumber)
+    : ({ ok: false as const, error: "Skipped" })
+
+  const shopifySession =
+    isPayPal || isNgenius
+      ? ({ ok: false as const, error: "Skipped" })
+      : await createShopifyCheckoutSession(orderNumber)
 
   const meta = localeMeta(store)
   const x = extrasFor(meta.content)
@@ -183,16 +193,24 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
       })),
       paymentMethod: isPayPal
         ? "PayPal Checkout"
-        : shopifySession.ok
-          ? "Shopify Checkout"
-          : "Ожидает оплаты",
+        : ngeniusSession.ok
+          ? "Card (N-Genius)"
+          : shopifySession.ok
+            ? "Shopify Checkout"
+            : "Ожидает оплаты",
       paymentStatusLabel: isPayPal
         ? "Открыто окно оплаты (PayPal)"
-        : shopifySession.ok
-          ? "Перенаправлен на оплату (Shopify Checkout)"
-          : "Ожидает оплаты",
+        : ngeniusSession.ok
+          ? "Перенаправлен на оплату картой (N-Genius)"
+          : shopifySession.ok
+            ? "Перенаправлен на оплату (Shopify Checkout)"
+            : "Ожидает оплаты",
     }),
   ])
+
+  if (ngeniusSession.ok) {
+    return { ok: true, orderNumber, forwardUrl: ngeniusSession.forwardUrl }
+  }
 
   if (shopifySession.ok) {
     return { ok: true, orderNumber, forwardUrl: shopifySession.forwardUrl }
