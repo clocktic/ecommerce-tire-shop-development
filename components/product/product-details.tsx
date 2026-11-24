@@ -1,6 +1,8 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
+import { Search } from "lucide-react"
 import {
   Accordion,
   AccordionContent,
@@ -131,17 +133,15 @@ export function ProductDetails({ product, store }: { product: Product; store: St
       {product.category === "brakes" && (
         <AccordionItem value="fitment" className="border-b border-border">
           <AccordionTrigger className="rounded-none py-4 text-sm font-semibold uppercase tracking-wide hover:no-underline">
-            {t.product.fitment}
+            <span className="flex items-center gap-2">
+              <span>{t.product.fitment}</span>
+              <span className="font-mono text-xs font-normal text-muted-foreground">
+                ({product.brake.fitment.length})
+              </span>
+            </span>
           </AccordionTrigger>
           <AccordionContent className="pb-5">
-            <div className="flex flex-col gap-4 text-sm">
-              <ul className="flex flex-col gap-1">
-                {product.brake.fitment.map((f) => (
-                  <li key={f}>{f}</li>
-                ))}
-              </ul>
-              <p className="text-sm text-muted-foreground">{t.product.fitmentNote}</p>
-            </div>
+            <BrakeFitmentList fitment={product.brake.fitment} note={t.product.fitmentNote} />
           </AccordionContent>
         </AccordionItem>
       )}
@@ -188,6 +188,69 @@ export function ProductDetails({ product, store }: { product: Product; store: St
         </AccordionContent>
       </AccordionItem>
     </Accordion>
+  )
+}
+
+const INITIAL_VISIBLE_FITMENTS = 12
+
+function BrakeFitmentList({ fitment, note }: { fitment: string[]; note: string }) {
+  const [query, setQuery] = useState("")
+  const [expanded, setExpanded] = useState(false)
+
+  const trimmed = query.trim().toLowerCase()
+  const filtered = trimmed
+    ? fitment.filter((item) => item.toLowerCase().includes(trimmed))
+    : fitment
+
+  const showAll = expanded || Boolean(trimmed) || filtered.length <= INITIAL_VISIBLE_FITMENTS
+  const visible = showAll ? filtered : filtered.slice(0, INITIAL_VISIBLE_FITMENTS)
+  const hiddenCount = filtered.length - visible.length
+
+  return (
+    <div className="flex flex-col gap-3 text-sm">
+      {fitment.length > 8 && (
+        <div className="relative">
+          <Search
+            className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
+            aria-hidden="true"
+          />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Filter by make, model, chassis, or year..."
+            aria-label="Filter compatible vehicles"
+            className="h-9 w-full rounded-sm border border-border bg-background pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none sm:text-sm"
+          />
+        </div>
+      )}
+
+      {visible.length > 0 ? (
+        <ul className="flex flex-col gap-1.5">
+          {visible.map((f) => (
+            <li key={f} className="leading-snug text-foreground">
+              {f}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-xs text-muted-foreground">
+          No matching vehicle found for &ldquo;{query.trim()}&rdquo;. Check your VIN or rotor dimensions below.
+        </p>
+      )}
+
+      {!trimmed && fitment.length > INITIAL_VISIBLE_FITMENTS && (
+        <button
+          type="button"
+          onClick={() => setExpanded((prev) => !prev)}
+          className="self-start text-xs font-semibold uppercase tracking-wide underline underline-offset-4 hover:text-muted-foreground"
+        >
+          {expanded ? "Show fewer vehicles" : `Show all ${fitment.length} compatible vehicles (+${hiddenCount} more)`}
+        </button>
+      )}
+
+      <p className="text-sm text-muted-foreground">{note}</p>
+    </div>
   )
 }
 
