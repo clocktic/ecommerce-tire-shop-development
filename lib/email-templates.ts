@@ -104,27 +104,33 @@ export function renderEmail(input: EmailContent, imageMode: "cid" | "data" = "ci
   const money = (cents: number) => new Intl.NumberFormat(meta.intlLocale, {
     style: "currency", currency: store.market === "eu" ? "EUR" : "USD",
   }).format(cents / 100)
-  const row = (label: string, value: string, total = false) => {
+  const row = (label: string, value: string, options?: { total?: boolean; wrapValue?: boolean }) => {
+    const total = Boolean(options?.total)
+    const wrapValue = Boolean(options?.wrapValue)
     plainDetails.push(`${label}: ${value}`)
-    return `<tr><td style="padding:10px 0;vertical-align:top;${total ? `border-top:1px solid ${theme.border};font-weight:700;` : ""}">${e(label)}</td><td align="right" style="padding:10px 0 10px;vertical-align:top;word-break:break-word;font-weight:700;${total ? `border-top:1px solid ${theme.border};font-size:20px;` : ""}">${e(value)}</td></tr>`
+    return `<tr><td style="padding:10px 14px 10px 0;vertical-align:top;word-break:break-word;${total ? `border-top:1px solid ${theme.border};font-weight:700;` : ""}">${e(label)}</td><td align="right" style="padding:10px 0;vertical-align:top;${wrapValue ? "word-break:break-word;" : "white-space:nowrap;"}font-weight:700;${total ? `border-top:1px solid ${theme.border};font-size:18px;line-height:1.2;` : ""}">${e(value)}</td></tr>`
   }
   let rows = ""
   if (detail.orderNumber) rows += row(c.order, detail.orderNumber)
   if (detail.trackingNumber) rows += row(c.tracking, detail.trackingNumber)
   if (detail.status) rows += row(c.status, detail.status)
-  if (detail.location) rows += row(c.address, detail.location)
+  if (detail.location) rows += row(c.address, detail.location, { wrapValue: true })
   for (const item of detail.items ?? []) {
     if (!Number.isSafeInteger(item.quantity) || item.quantity <= 0 || !Number.isSafeInteger(item.lineTotalCents) || item.lineTotalCents < 0) continue
-    const name = [item.brandName, item.productName].filter(Boolean).join(" ")
+    const brand = item.brandName?.trim()
+    const prod = item.productName.trim()
+    const name = brand && !prod.toLowerCase().startsWith(brand.toLowerCase()) ? `${brand} ${prod}` : prod
     rows += row(`${item.quantity} × ${name}`, money(item.lineTotalCents))
   }
   for (const [label, cents, negative] of [
     [c.items, detail.subtotalCents, false], [c.discount, detail.discountCents, true], [c.shipping, detail.shippingCents, false],
   ] as const) {
-    if (cents !== undefined && Number.isSafeInteger(cents) && cents >= 0) rows += row(label, money(negative ? -cents : cents))
+    if (cents === undefined || !Number.isSafeInteger(cents) || cents < 0) continue
+    if (negative && cents === 0) continue
+    rows += row(label, money(negative ? -cents : cents))
   }
   if (detail.totalCents !== undefined && Number.isSafeInteger(detail.totalCents) && detail.totalCents >= 0) {
-    rows += row(c.total, money(detail.totalCents), true)
+    rows += row(c.total, money(detail.totalCents), { total: true })
   }
   let extra = ""
   if (id === "welcome" || id === "loyalty") {
@@ -142,11 +148,11 @@ export function renderEmail(input: EmailContent, imageMode: "cid" | "data" = "ci
   } : undefined)
   const href = action ? safeLink(action.href) : undefined
   const signoff = input.signoff || c.footer
-  const html = `<!doctype html><html lang="${meta.htmlLang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>${e(subject)}</title><style>@media only screen and (max-width:620px){.email-pad{padding:28px 22px!important}.email-title{font-size:28px!important}.outer-pad{padding:12px 0!important}}a{color:inherit}</style></head><body style="margin:0;padding:0;background:#eef0f3;font-family:Arial,Helvetica,sans-serif;color:#17212d"><div style="display:none;max-height:0;overflow:hidden;mso-hide:all">${e(introduction || subject)}</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#eef0f3"><tr><td class="outer-pad" align="center" style="padding:32px 12px"><!--[if mso]><table role="presentation" width="600"><tr><td><![endif]--><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#ffffff;border:1px solid #e1e5ea">
+  const html = `<!doctype html><html lang="${meta.htmlLang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>${e(subject)}</title><style>@media only screen and (max-width:620px){.email-pad{padding:24px 18px!important}.email-card-pad{padding:14px 16px!important}.email-title{font-size:28px!important}.outer-pad{padding:12px 0!important}}a{color:inherit}</style></head><body style="margin:0;padding:0;background:#eef0f3;font-family:Arial,Helvetica,sans-serif;color:#17212d"><div style="display:none;max-height:0;overflow:hidden;mso-hide:all">${e(introduction || subject)}</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#eef0f3"><tr><td class="outer-pad" align="center" style="padding:32px 12px"><!--[if mso]><table role="presentation" width="600"><tr><td><![endif]--><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#ffffff;border:1px solid #e1e5ea">
 <tr><td align="center" bgcolor="#11171f" style="padding:25px 20px"><table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right:13px"><img src="${image("brand")}" alt="" width="48" height="48" style="display:block;border:0"></td><td><div style="font-family:Archivo,'Arial Black',Arial,sans-serif;font-size:28px;font-weight:900;font-style:italic;letter-spacing:-1.6px;line-height:1;color:#f1f3f5">TIRES<span style="color:#e54c42">SHOP</span></div><div style="margin-top:6px;font-size:9px;font-weight:600;letter-spacing:2.5px;color:#a1a7b1">TIRESSHOP.NET</div></td></tr></table></td></tr>
 ${id ? `<tr><td><img src="${image(id)}" alt="" width="600" height="235" style="display:block;width:100%;max-width:600px;height:auto;border:0"></td></tr>` : ""}
 <tr><td class="email-pad" style="padding:36px 42px"><p style="margin:0 0 14px;color:${theme.accent};font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.3px">${e(c.copy[index]?.[0] || COMPANY.tradingName)}</p><h1 class="email-title" style="margin:0 0 22px;font-size:34px;font-weight:800;line-height:1.15;letter-spacing:-1px;color:#11171f">${e(heading).replace(/\n/g, "<br>")}</h1>${introduction ? p(introduction) : ""}${paragraphs.map(p).join("")}
-${rows || extra ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;background:${theme.soft};border:1px solid ${theme.border};border-radius:8px"><tr><td style="padding:18px 22px">${extra}${rows ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:13px;line-height:1.5">${rows}</table>` : ""}</td></tr></table>` : ""}
+${rows || extra ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;background:${theme.soft};border:1px solid ${theme.border};border-radius:8px"><tr><td class="email-card-pad" style="padding:18px 22px">${extra}${rows ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:13px;line-height:1.5">${rows}</table>` : ""}</td></tr></table>` : ""}
 ${href && action ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:24px"><tr><td align="center" bgcolor="${theme.accent}" style="border-radius:6px;mso-padding-alt:16px 20px"><a href="${e(href)}" style="display:block;padding:16px 20px;border:1px solid ${theme.accent};border-radius:6px;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;text-align:center">${e(action.label)}</a></td></tr></table>` : ""}
 ${notes ? `<p style="margin:18px 0 0;color:#596575;font-size:12px;line-height:1.6">${e(notes)}</p>` : ""}<p style="margin:24px 0 0;font-size:13px;line-height:1.6;color:#596575">${e(signoff)}</p></td></tr>
 <tr><td align="center" style="padding:24px 30px;border-top:1px solid #e8ebef;background:#f8f9fb;color:#657080;font-size:11px;line-height:1.8">${e(c.help)} <a href="mailto:${COMPANY.email}" style="color:#455365">${COMPANY.email}</a><br>${e(COMPANY.legalName)}<br>${e(companyAddressLine)}<br>${campaign ? `<a href="${e(unsubscribe!)}">${e(c.unsubscribe)}</a>` : e(c.service)}</td></tr></table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></body></html>`
