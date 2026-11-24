@@ -65,7 +65,7 @@ export function BrandFilterStrip({
                 : "border-border bg-card text-foreground hover:border-foreground",
             )}
           >
-            {iconUrl && (
+            {iconUrl ? (
               <span className="rounded-md flex h-8 min-w-[72px] shrink-0 items-center justify-center border border-border/70 bg-white px-2.5 py-1">
                 <img
                   src={iconUrl}
@@ -73,6 +73,10 @@ export function BrandFilterStrip({
                   loading="lazy"
                   className="h-5 w-auto max-w-[92px] object-contain"
                 />
+              </span>
+            ) : (
+              <span className="pl-2 font-mono text-xs font-semibold uppercase tracking-wider">
+                {name}
               </span>
             )}
             <span className="font-mono text-[11px] font-semibold text-muted-foreground group-hover:text-foreground">
