@@ -3,6 +3,7 @@ import "server-only"
 import { and, desc, eq, inArray } from "drizzle-orm"
 import { db } from "@/lib/db"
 import { orderItems, orders, type OrderItemRow, type OrderRow } from "@/lib/db/schema"
+import { syncNgeniusOrderStatus } from "@/lib/payments/ngenius"
 import { syncStripeOrderStatus } from "@/lib/payments/stripe"
 
 export type OrderWithItems = OrderRow & { items: OrderItemRow[] }
@@ -31,6 +32,12 @@ export async function getOrderByNumber(orderNumber: string, stripeSessionId?: st
     const synced = await syncStripeOrderStatus(row.orderNumber, stripeSessionId)
     if (synced) {
       row.status = synced
+    }
+  }
+  if (row.status === "pending" && row.market === "eu") {
+    const synced = await syncNgeniusOrderStatus(row)
+    if (synced.status === "paid") {
+      row.status = "paid"
     }
   }
   const [withItems] = await attachItems([row])
