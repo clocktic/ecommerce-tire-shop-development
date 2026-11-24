@@ -102,7 +102,7 @@ export default async function StoreLayout({ children, params }: { children: Reac
       <CtaWheelRoll />
         <ConsentDefaults market={store.market} />
         <I18nProvider store={store} t={t} x={getExtras(store)} intl={meta.intlLocale}>
-          <CartProvider market={store.market}>
+          <CartProvider market={store.market} lang={store.lang}>
             <GarageProvider market={store.market} initialActive={initialActive} initialSaved={savedVehicleRows}>
               <a
                 href="#main"
