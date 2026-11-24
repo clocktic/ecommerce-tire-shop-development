@@ -12,6 +12,7 @@ import { MemberClubShowcase } from "@/components/home/member-club-showcase"
 import { SidewallDecoder } from "@/components/home/sidewall-decoder"
 import { MarketPromise } from "@/components/home/market-promise"
 import { TrustStrip } from "@/components/home/trust-strip"
+import { BrandMarquee } from "@/components/home/brand-marquee"
 import { ReviewsShowcase } from "@/components/home/reviews-showcase"
 import { ProductCard } from "@/components/product/product-card"
 import { getRatingsBySlug, getStampedReviews } from "@/lib/stamped-reviews"
@@ -33,6 +34,7 @@ export default async function HomePage({ params }: { params: Promise<{ market: s
       <Hero store={store} />
       <BlackFridayBanner store={store} />
       <TrustStrip store={store} />
+      <BrandMarquee store={store} />
       <CategoryTiles store={store} />
       <MemberClubShowcase />
       <SidewallDecoder t={t} />
