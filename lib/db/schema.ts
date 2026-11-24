@@ -87,6 +87,7 @@ export const orders = pgTable("orders", {
   trackingUrl: text("tracking_url"),
   carrier: text("carrier"),
   notes: text("notes"),
+  followupSentAt: timestamp("followup_sent_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })

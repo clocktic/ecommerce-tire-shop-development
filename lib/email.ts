@@ -277,6 +277,125 @@ export async function notifyEmailChatMessage(input: {
   })
 }
 
+const PENDING_FOLLOWUP_COPY: Record<
+  string,
+  {
+    subject: (orderNumber: string) => string
+    greeting: (name: string) => string
+    intro: (orderNumber: string, total: string) => string
+    ask: string
+    help: string
+    cta: string
+  }
+> = {
+  en: {
+    subject: (n) => `Need any help with your order ${n}? · ${COMPANY.tradingName}`,
+    greeting: (name) => (name ? `Hi ${name},` : "Hi,"),
+    intro: (n, total) =>
+      `We noticed your order ${n} (${total}) wasn't completed yet, so we wanted to check in.`,
+    ask: "Did you run into any trouble during payment or checkout, or do you have any questions about delivery times, shipping, or tire fitment?",
+    help: "Just reply directly to this email and let us know — we'll be glad to help you sort everything out right away.",
+    cta: "Return to your order",
+  },
+  de: {
+    subject: (n) => `Können wir bei Ihrer Bestellung ${n} helfen? · ${COMPANY.tradingName}`,
+    greeting: (name) => (name ? `Hallo ${name},` : "Hallo,"),
+    intro: (n, total) =>
+      `uns ist aufgefallen, dass Ihre Bestellung ${n} (${total}) noch nicht abgeschlossen wurde.`,
+    ask: "Gab es ein Problem bei der Zahlung oder haben Sie Fragen zu Lieferzeit, Versand oder der passenden Reifengröße?",
+    help: "Antworten Sie einfach direkt auf diese E-Mail — wir helfen Ihnen gerne weiter.",
+    cta: "Zur Bestellung zurückkehren",
+  },
+  fr: {
+    subject: (n) => `Besoin d'aide pour votre commande ${n} ? · ${COMPANY.tradingName}`,
+    greeting: (name) => (name ? `Bonjour ${name},` : "Bonjour,"),
+    intro: (n, total) =>
+      `nous avons remarqué que votre commande ${n} (${total}) n'a pas encore été finalisée.`,
+    ask: "Avez-vous rencontré un souci lors du paiement ou avez-vous des questions sur la livraison ou la compatibilité des pneus ?",
+    help: "Il vous suffit de répondre directement à cet e-mail et nous vous aiderons avec plaisir.",
+    cta: "Reprendre votre commande",
+  },
+  it: {
+    subject: (n) => `Possiamo aiutarti con il tuo ordine ${n}? · ${COMPANY.tradingName}`,
+    greeting: (name) => (name ? `Ciao ${name},` : "Ciao,"),
+    intro: (n, total) =>
+      `abbiamo notato che il tuo ordine ${n} (${total}) non è stato ancora completato.`,
+    ask: "Hai riscontrato qualche difficoltà durante il pagamento o hai domande su spedizione, tempi di consegna o compatibilità degli pneumatici?",
+    help: "Rispondi direttamente a questa email e saremo felici di aiutarti subito.",
+    cta: "Torna al tuo ordine",
+  },
+  es: {
+    subject: (n) => `¿Podemos ayudarte con tu pedido ${n}? · ${COMPANY.tradingName}`,
+    greeting: (name) => (name ? `Hola ${name},` : "Hola,"),
+    intro: (n, total) =>
+      `hemos visto que tu pedido ${n} (${total}) todavía no se ha completado.`,
+    ask: "¿Tuviste algún inconveniente con el pago o tienes dudas sobre el envío, los plazos de entrega o la compatibilidad de los neumáticos?",
+    help: "Responde directamente a este correo y con gusto te ayudaremos enseguida.",
+    cta: "Volver a tu pedido",
+  },
+  "es-419": {
+    subject: (n) => `¿Podemos ayudarte con tu pedido ${n}? · ${COMPANY.tradingName}`,
+    greeting: (name) => (name ? `Hola ${name},` : "Hola,"),
+    intro: (n, total) =>
+      `vimos que tu pedido ${n} (${total}) todavía no se ha completado.`,
+    ask: "¿Tuviste algún problema al pagar o tienes preguntas sobre el envío, los tiempos de entrega o la compatibilidad de las llantas?",
+    help: "Responde directamente a este correo y con gusto te ayudaremos de inmediato.",
+    cta: "Volver a tu pedido",
+  },
+  nl: {
+    subject: (n) => `Kunnen we helpen met je bestelling ${n}? · ${COMPANY.tradingName}`,
+    greeting: (name) => (name ? `Hallo ${name},` : "Hallo,"),
+    intro: (n, total) =>
+      `we zagen dat je bestelling ${n} (${total}) nog niet is afgerond.`,
+    ask: "Liep je tegen een probleem aan bij het betalen of heb je vragen over de levering, verzending of de juiste bandenmaat?",
+    help: "Beantwoord deze e-mail direct en we helpen je graag verder.",
+    cta: "Terug naar je bestelling",
+  },
+}
+
+export async function sendPendingOrderFollowupEmail(input: {
+  orderNumber: string
+  market: Market
+  lang?: string
+  customerName?: string | null
+  email: string
+  totalCents: number
+  items?: { productName: string; brandName?: string | null; quantity: number; lineTotalCents: number }[]
+}): Promise<boolean> {
+  const store = emailStore(input.market, input.lang)
+  const meta = localeMeta(store)
+  const c = emailCopy(store)
+  const copy = PENDING_FOLLOWUP_COPY[meta.content] ?? PENDING_FOLLOWUP_COPY.en
+  const firstName = (input.customerName || "").trim().split(/\s+/)[0] || ""
+  const totalFormatted = formatPrice(input.totalCents, input.market, meta.intlLocale)
+  const orderUrl = `${COMPANY.url}/${store.market}/${store.lang}/order/${encodeURIComponent(input.orderNumber)}`
+
+  return sendMail({
+    to: input.email,
+    replyTo: COMPANY.email,
+    copyStoreInbox: true,
+    template: "reply",
+    store,
+    details: {
+      orderNumber: input.orderNumber,
+      totalCents: input.totalCents,
+      items: input.items,
+    },
+    subject: copy.subject(input.orderNumber),
+    paragraphs: [
+      copy.greeting(firstName),
+      copy.intro(input.orderNumber, totalFormatted),
+      copy.ask,
+      copy.help,
+    ],
+    cta: {
+      label: copy.cta,
+      href: orderUrl,
+    },
+    signoff: c.footer,
+  })
+}
+
 export async function sendTestStoreEmail(): Promise<{ ok: boolean; error?: string }> {
   const mailer = transport()
   const cfg = getSmtpConfig()
