@@ -60,7 +60,7 @@ export async function getNgeniusAccessToken(): Promise<string | null> {
       Accept: "application/vnd.ni-identity.v1+json",
       Authorization: `Basic ${apiKey}`,
     },
-    body: JSON.stringify({}),
+    body: JSON.stringify({ grant_type: "client_credentials" }),
     cache: "no-store",
   })
 
@@ -100,8 +100,8 @@ export async function convertEurCentsViaNgeniusMcp(
     })
     if (!res.ok) return null
     const data = (await res.json()) as {
+      targetCurrencies?: Array<{ currencyCodeTo?: string; conversionRate?: number | string }>
       conversionRate?: number | string
-      targetAmount?: { value?: number }
       rates?: Array<{ currencyCode?: string; conversionRate?: number | string }>
       _embedded?: {
         rates?: Array<{ currencyCode?: string; conversionRate?: number | string }>
@@ -109,12 +109,13 @@ export async function convertEurCentsViaNgeniusMcp(
     }
 
     const rateCandidate =
+      data.targetCurrencies?.find((c) => c.currencyCodeTo === "EUR")?.conversionRate ??
       data.conversionRate ??
       data.rates?.find((r) => r.currencyCode === "EUR")?.conversionRate ??
       data._embedded?.rates?.find((r) => r.currencyCode === "EUR")?.conversionRate
 
     const aedToEurRate = Number(rateCandidate)
-    if (!Number.isFinite(aedToEurRate) || aedToEurRate <= 0.05 || aedToEurRate >= 1) {
+    if (!Number.isFinite(aedToEurRate) || aedToEurRate <= 0.1 || aedToEurRate >= 1) {
       return null
     }
     return Math.max(100, Math.round(eurCents / aedToEurRate))
@@ -174,6 +175,7 @@ function splitName(fullName: string | null | undefined): { firstName: string; la
 
 export type NgeniusOrderPayload = {
   reference?: string
+  state?: string
   merchantOrderReference?: string
   amount?: { currencyCode?: string; value?: number }
   _links?: {
@@ -220,6 +222,12 @@ export async function createNgeniusHostedOrder(
   const lang = order.lang || "en"
   const redirectUrl = `${baseUrl}/eu/${encodeURIComponent(lang)}/order/${encodeURIComponent(order.orderNumber)}`
 
+  const billingAddress: Record<string, string> = {}
+  if (firstName) billingAddress.firstName = firstName.slice(0, 45)
+  if (lastName) billingAddress.lastName = lastName.slice(0, 45)
+  if (order.shippingAddress1) billingAddress.address1 = order.shippingAddress1.slice(0, 100)
+  if (order.shippingCity) billingAddress.city = order.shippingCity.slice(0, 50)
+
   const payload = {
     action: "PURCHASE",
     amount: {
@@ -228,13 +236,7 @@ export async function createNgeniusHostedOrder(
     },
     merchantOrderReference: order.orderNumber,
     emailAddress: order.email,
-    billingAddress: {
-      firstName,
-      lastName,
-      address1: (order.shippingAddress1 || "N/A").slice(0, 120),
-      city: (order.shippingCity || "N/A").slice(0, 80),
-      countryCode: (order.shippingCountry || "DE").slice(0, 2).toUpperCase(),
-    },
+    ...(Object.keys(billingAddress).length > 0 ? { billingAddress } : {}),
     merchantAttributes: {
       redirectUrl,
       skipConfirmationPage: true,
@@ -259,10 +261,10 @@ export async function createNgeniusHostedOrder(
     message?: string
   }
 
-  const paymentUrl = data._links?.payment?.href
-  const orderRef = data.reference
+  const paymentUrl = typeof data._links?.payment?.href === "string" ? data._links.payment.href.trim() : ""
+  const orderRef = typeof data.reference === "string" ? data.reference.trim() : ""
 
-  if (!res.ok || !paymentUrl || !orderRef) {
+  if (!res.ok || !paymentUrl.startsWith("https://") || !orderRef) {
     return {
       ok: false,
       error: data.message || "Failed to create N-Genius payment session",
@@ -320,14 +322,16 @@ export async function applyNgeniusPaymentUpdate(
 ): Promise<{ paid: boolean; state: string | null }> {
   const payments = ngeniusOrder._embedded?.payment ?? []
   const paidPayment = payments.find((p) => p.state && PAID_STATES.has(p.state.toUpperCase()))
-  const latestState = paidPayment?.state || payments[0]?.state || null
+  const topState = ngeniusOrder.state?.toUpperCase() || null
+  const isPaid = Boolean(paidPayment) || Boolean(topState && PAID_STATES.has(topState))
+  const latestState = paidPayment?.state || payments[0]?.state || ngeniusOrder.state || null
 
-  if (!paidPayment) {
+  if (!isPaid) {
     return { paid: false, state: latestState }
   }
 
   // Verify paid currency and amount before confirming.
-  const paidAmount = paidPayment.amount ?? ngeniusOrder.amount
+  const paidAmount = paidPayment?.amount ?? ngeniusOrder.amount
   const paidCurrency = paidAmount?.currencyCode?.toUpperCase()
   const paidValue = Number(paidAmount?.value)
 
@@ -354,7 +358,7 @@ export async function applyNgeniusPaymentUpdate(
   await confirmOrderPayment({
     orderId: order.id,
     paymentMethod: "Card (N-Genius)",
-    transactionId: paidPayment.reference || ngeniusOrder.reference || null,
+    transactionId: paidPayment?.reference || ngeniusOrder.reference || null,
   })
 
   return { paid: true, state: latestState }

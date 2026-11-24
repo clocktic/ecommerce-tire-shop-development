@@ -25,6 +25,38 @@ export function OrderPayPalSection({
 }) {
   const router = useRouter()
   const [loadingShopify, setLoadingShopify] = useState(false)
+  const [loadingNgenius, setLoadingNgenius] = useState(false)
+  const isEu = market === "eu"
+
+  const redirectTo = (url: string) => {
+    if (window.self !== window.top) {
+      window.open(url, "_blank", "noopener,noreferrer")
+    } else {
+      window.location.assign(url)
+    }
+  }
+
+  const handleNgeniusPay = async () => {
+    if (loadingNgenius) return
+    setLoadingNgenius(true)
+    try {
+      const res = await fetch("/api/payments/ngenius/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderNumber }),
+      })
+      const data = (await res.json()) as {
+        ok?: boolean
+        forwardUrl?: string
+      }
+      if (res.ok && data.ok && data.forwardUrl) {
+        redirectTo(data.forwardUrl)
+        return
+      }
+    } finally {
+      setLoadingNgenius(false)
+    }
+  }
 
   const handleShopifyPay = async () => {
     if (loadingShopify) return
@@ -40,11 +72,7 @@ export function OrderPayPalSection({
         forwardUrl?: string
       }
       if (res.ok && data.ok && data.forwardUrl) {
-        if (window.self !== window.top) {
-          window.open(data.forwardUrl, "_blank", "noopener,noreferrer")
-        } else {
-          window.location.assign(data.forwardUrl)
-        }
+        redirectTo(data.forwardUrl)
         return
       }
     } finally {
@@ -57,6 +85,17 @@ export function OrderPayPalSection({
       <PaymentMethodSelector
         lang={lang}
         market={market}
+        ngeniusAction={
+          isEu ? (
+            <PayButton
+              type="button"
+              pending={loadingNgenius}
+              onClick={handleNgeniusPay}
+            >
+              {getPaymentMethodCopy(lang).ngeniusCta}
+            </PayButton>
+          ) : undefined
+        }
         cardAction={
           <PayButton
             type="button"
@@ -69,7 +108,7 @@ export function OrderPayPalSection({
         paypalAction={
           <PayPalOrderButtons
             currency={currency}
-            disabled={loadingShopify}
+            disabled={loadingShopify || loadingNgenius}
             getOrderNumber={async () => orderNumber}
             onSuccess={() => {
               router.refresh()

@@ -6,10 +6,14 @@ import type { Market } from "@/lib/markets"
 import { PAYPAL_CHECKOUT_ENABLED } from "@/lib/payments/paypal-config"
 import { cn } from "@/lib/utils"
 
-export type PaymentChoice = "card" | "paypal"
+export type PaymentChoice = "ngenius" | "card" | "paypal"
 
 interface Copy {
   heading: string
+  ngeniusTitle: string
+  ngeniusSub: string
+  ngeniusCta: string
+  ngeniusRedirectNote: string
   cardTitle: string
   cardOnlyTitle: string
   cardSub: string
@@ -22,6 +26,10 @@ interface Copy {
 const COPY: Record<ContentLang, Copy> = {
   en: {
     heading: "Payment method",
+    ngeniusTitle: "Credit / Debit Card",
+    ngeniusSub: "Pay securely by Visa or Mastercard with 3D Secure protection",
+    ngeniusCta: "Pay by card",
+    ngeniusRedirectNote: "Redirects to the encrypted 3D Secure card payment page.",
     paypalTitle: "Debit / Credit Card, PayPal, Venmo & Pay Later",
     paypalSub: "Pay with Visa, Mastercard, Amex, Discover, PayPal, Venmo, or Pay in 4",
     cardTitle: "Express Wallets & Alternative Checkout",
@@ -32,6 +40,10 @@ const COPY: Record<ContentLang, Copy> = {
   },
   de: {
     heading: "Zahlungsart",
+    ngeniusTitle: "Kredit- / Debitkarte",
+    ngeniusSub: "Sicher mit Visa oder Mastercard und 3D-Secure-Schutz bezahlen",
+    ngeniusCta: "Mit Karte bezahlen",
+    ngeniusRedirectNote: "Leitet zur verschlüsselten 3D-Secure-Kartenzahlung weiter.",
     paypalTitle: "Kredit-/Debitkarte, PayPal & Später bezahlen",
     paypalSub: "Mit Visa, Mastercard, Amex, PayPal oder Ratenzahlung bezahlen",
     cardTitle: "Express-Wallets & Alternativer Checkout",
@@ -42,6 +54,10 @@ const COPY: Record<ContentLang, Copy> = {
   },
   fr: {
     heading: "Mode de paiement",
+    ngeniusTitle: "Carte bancaire",
+    ngeniusSub: "Payez en toute sécurité par Visa ou Mastercard avec protection 3D Secure",
+    ngeniusCta: "Payer par carte",
+    ngeniusRedirectNote: "Redirige vers la page sécurisée de paiement par carte 3D Secure.",
     paypalTitle: "Carte bancaire, PayPal & Paiement en 4x",
     paypalSub: "Payez par Visa, Mastercard, Amex ou PayPal",
     cardTitle: "Portefeuilles express & Paiement alternatif",
@@ -52,6 +68,10 @@ const COPY: Record<ContentLang, Copy> = {
   },
   it: {
     heading: "Metodo di pagamento",
+    ngeniusTitle: "Carta di credito / debito",
+    ngeniusSub: "Paga in sicurezza con Visa o Mastercard con protezione 3D Secure",
+    ngeniusCta: "Paga con carta",
+    ngeniusRedirectNote: "Reindirizza alla pagina crittografata di pagamento con carta 3D Secure.",
     paypalTitle: "Carta di credito/debito, PayPal & Paga in 3 rate",
     paypalSub: "Paga con Visa, Mastercard, Amex o PayPal",
     cardTitle: "Wallet rapidi & Checkout alternativo",
@@ -62,6 +82,10 @@ const COPY: Record<ContentLang, Copy> = {
   },
   es: {
     heading: "Método de pago",
+    ngeniusTitle: "Tarjeta de crédito / débito",
+    ngeniusSub: "Paga de forma segura con Visa o Mastercard con protección 3D Secure",
+    ngeniusCta: "Pagar con tarjeta",
+    ngeniusRedirectNote: "Redirige a la pasarela cifrada de pago con tarjeta 3D Secure.",
     paypalTitle: "Tarjeta de débito/crédito, PayPal y Paga después",
     paypalSub: "Paga con Visa, Mastercard, Amex o PayPal",
     cardTitle: "Billeteras rápidas y Pago alternativo",
@@ -72,6 +96,10 @@ const COPY: Record<ContentLang, Copy> = {
   },
   "es-419": {
     heading: "Método de pago",
+    ngeniusTitle: "Tarjeta de crédito / débito",
+    ngeniusSub: "Paga de forma segura con Visa o Mastercard con protección 3D Secure",
+    ngeniusCta: "Pagar con tarjeta",
+    ngeniusRedirectNote: "Redirige a la pasarela cifrada de pago con tarjeta 3D Secure.",
     paypalTitle: "Tarjeta de débito/crédito, PayPal, Venmo y Paga después",
     paypalSub: "Paga con Visa, Mastercard, Amex, PayPal o Venmo",
     cardTitle: "Billeteras rápidas y Pago alternativo",
@@ -82,6 +110,10 @@ const COPY: Record<ContentLang, Copy> = {
   },
   nl: {
     heading: "Betaalmethode",
+    ngeniusTitle: "Creditcard / Betaalkaart",
+    ngeniusSub: "Betaal veilig met Visa of Mastercard met 3D Secure-beveiliging",
+    ngeniusCta: "Betalen met kaart",
+    ngeniusRedirectNote: "Leidt door naar de versleutelde 3D Secure-kaartbetaalpagina.",
     paypalTitle: "Betaalkaart / Creditcard, PayPal & Betaal later",
     paypalSub: "Betaal met Visa, Mastercard, Amex of PayPal",
     cardTitle: "Express-wallets & Alternatieve checkout",
@@ -101,6 +133,7 @@ export function PaymentMethodSelector({
   market = "us",
   choice: controlledChoice,
   onChoiceChange,
+  ngeniusAction,
   cardAction,
   paypalAction,
 }: {
@@ -108,15 +141,28 @@ export function PaymentMethodSelector({
   market?: Market
   choice?: PaymentChoice
   onChoiceChange?: (choice: PaymentChoice) => void
+  ngeniusAction?: React.ReactNode
   cardAction: React.ReactNode
   paypalAction: React.ReactNode
 }) {
-  const [internalChoice, setInternalChoice] = useState<PaymentChoice>(
-    PAYPAL_CHECKOUT_ENABLED ? "paypal" : "card",
-  )
-  const choice: PaymentChoice = PAYPAL_CHECKOUT_ENABLED
-    ? (controlledChoice ?? internalChoice)
-    : "card"
+  const showNgenius = market === "eu" && Boolean(ngeniusAction)
+  const defaultChoice: PaymentChoice = showNgenius
+    ? "ngenius"
+    : PAYPAL_CHECKOUT_ENABLED
+      ? "paypal"
+      : "card"
+  const [internalChoice, setInternalChoice] = useState<PaymentChoice>(defaultChoice)
+  const rawChoice = controlledChoice ?? internalChoice
+  const choice: PaymentChoice =
+    rawChoice === "ngenius" && !showNgenius
+      ? PAYPAL_CHECKOUT_ENABLED
+        ? "paypal"
+        : "card"
+      : rawChoice === "paypal" && !PAYPAL_CHECKOUT_ENABLED
+        ? showNgenius
+          ? "ngenius"
+          : "card"
+        : rawChoice
   const setChoice = (next: PaymentChoice) => {
     setInternalChoice(next)
     onChoiceChange?.(next)
@@ -132,6 +178,60 @@ export function PaymentMethodSelector({
       </div>
 
       <div className="flex flex-col gap-2.5">
+        {showNgenius && (
+          <div
+            className={cn(
+              "rounded-lg border transition-colors",
+              choice === "ngenius"
+                ? "border-primary/80 bg-secondary/45 shadow-[0_0_0_1px_rgba(220,38,38,0.25)]"
+                : "border-border bg-secondary/20 hover:border-border/80",
+            )}
+          >
+            <button
+              type="button"
+              onClick={() => setChoice("ngenius")}
+              className="flex w-full items-start gap-2.5 p-3 text-left sm:gap-3 sm:p-3.5"
+            >
+              <span
+                className={cn(
+                  "mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border",
+                  choice === "ngenius"
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-muted-foreground/50",
+                )}
+                aria-hidden="true"
+              >
+                {choice === "ngenius" && <span className="size-1.5 rounded-full bg-white" />}
+              </span>
+              <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                <span className="text-sm font-semibold leading-snug text-foreground">
+                  {c.ngeniusTitle}
+                </span>
+                <div className="flex flex-wrap items-center gap-1">
+                  <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
+                    VISA
+                  </span>
+                  <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
+                    Mastercard
+                  </span>
+                  <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-semibold tracking-tight text-muted-foreground">
+                    3D Secure
+                  </span>
+                </div>
+                <p className="text-xs leading-snug text-muted-foreground">{c.ngeniusSub}</p>
+              </div>
+            </button>
+
+            {choice === "ngenius" && (
+              <div className="flex flex-col gap-2 border-t border-border/60 px-3 pt-3 pb-3 sm:px-3.5 sm:pb-3.5">
+                {ngeniusAction}
+                <p className="text-center text-[11px] leading-snug text-muted-foreground">
+                  {c.ngeniusRedirectNote}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
         {PAYPAL_CHECKOUT_ENABLED && (
           <div
             className={cn(

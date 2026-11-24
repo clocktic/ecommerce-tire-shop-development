@@ -34,7 +34,7 @@ export function CheckoutForm() {
   const { data: session } = useSession()
   const [accepted, setAccepted] = useState(false)
   const [paymentChoice, setPaymentChoice] = useState<PaymentChoice>(
-    PAYPAL_CHECKOUT_ENABLED ? "paypal" : "card",
+    market === "eu" ? "ngenius" : PAYPAL_CHECKOUT_ENABLED ? "paypal" : "card",
   )
   const [failed, setFailed] = useState(false)
   const [placed, setPlaced] = useState(false)
@@ -91,6 +91,7 @@ export function CheckoutForm() {
             state: get("state"),
             country: get("country"),
             accepted,
+            paymentProvider: market === "eu" && paymentChoice === "ngenius" ? "ngenius" : "shopify",
           })
           if (!result.ok) {
             setFailed(true)
@@ -227,6 +228,15 @@ export function CheckoutForm() {
           market={market}
           choice={paymentChoice}
           onChoiceChange={setPaymentChoice}
+          ngeniusAction={
+            isEu ? (
+              <PayButton pending={pending}>
+                {pending
+                  ? x.checkout.placing
+                  : getPaymentMethodCopy(store.lang).ngeniusCta}
+              </PayButton>
+            ) : undefined
+          }
           cardAction={
             <PayButton pending={pending}>
               {pending
@@ -238,7 +248,7 @@ export function CheckoutForm() {
             <PayPalOrderButtons
               currency={MARKETS[market].currency}
               disabled={pending}
-              onFallbackToCard={() => setPaymentChoice("card")}
+              onFallbackToCard={() => setPaymentChoice(isEu ? "ngenius" : "card")}
               getOrderNumber={async () => {
                 if (createdPayPalOrderRef.current) {
                   return createdPayPalOrderRef.current

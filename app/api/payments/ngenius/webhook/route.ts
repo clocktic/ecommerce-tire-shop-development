@@ -25,6 +25,7 @@ export async function OPTIONS() {
 type WebhookBody = {
   eventId?: string
   eventName?: string
+  reference?: string
   orderReference?: string
   merchantOrderReference?: string
   order?: {
@@ -45,7 +46,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Invalid JSON" }, { status: 400 })
   }
 
-  const orderRef = (body.order?.reference || body.orderReference || "").trim()
+  const orderRef = (body.order?.reference || body.orderReference || body.reference || "").trim()
   const merchantOrderRef = (
     body.order?.merchantOrderReference ||
     body.merchantOrderReference ||
