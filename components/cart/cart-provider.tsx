@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
 import type { Market } from "@/lib/markets"
 
 export type CartLine = {
@@ -31,10 +31,19 @@ export const MAX_QUANTITY = 8
 // Carts are per market: prices and currency differ, so a US cart never leaks into the EU store.
 const storageKey = (market: Market) => `ts-cart-${market}-v1`
 
-export function CartProvider({ market, children }: { market: Market; children: React.ReactNode }) {
+export function CartProvider({
+  market,
+  lang = "en",
+  children,
+}: {
+  market: Market
+  lang?: string
+  children: React.ReactNode
+}) {
   const [lines, setLines] = useState<CartLine[]>([])
   const [loaded, setLoaded] = useState(false)
   const [open, setOpen] = useState(false)
+  const syncedSlugsKeyRef = useRef<string>("")
 
   useEffect(() => {
     try {
@@ -43,6 +52,7 @@ export function CartProvider({ market, children }: { market: Market; children: R
     } catch {
       setLines([])
     }
+    syncedSlugsKeyRef.current = ""
     setLoaded(true)
   }, [market])
 
@@ -50,12 +60,80 @@ export function CartProvider({ market, children }: { market: Market; children: R
     if (loaded) window.localStorage.setItem(storageKey(market), JSON.stringify(lines))
   }, [lines, loaded, market])
 
+  // Keep cached cart lines aligned with live server prices (e.g. after catalog or promo updates)
+  // so cart & checkout totals always match what is sent to PayPal / Shopify.
+  useEffect(() => {
+    if (!loaded || lines.length === 0) return
+    const slugs = lines.map((l) => l.slug)
+    const key = `${market}:${lang}:${slugs.join(",")}`
+    if (syncedSlugsKeyRef.current === key) return
+    syncedSlugsKeyRef.current = key
+
+    const controller = new AbortController()
+    fetch("/api/cart/sync", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ market, lang, slugs }),
+      signal: controller.signal,
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then(
+        (
+          data: {
+            items?: Record<
+              string,
+              { name: string; image: string; priceCents: number; available: boolean }
+            >
+          } | null,
+        ) => {
+          const items = data?.items
+          if (!items) return
+          setLines((current) => {
+            let changed = false
+            const next = current.map((line) => {
+              const fresh = items[line.slug]
+              if (!fresh) return line
+              const nextImage = fresh.image || line.image
+              if (
+                fresh.priceCents !== line.priceCents ||
+                fresh.name !== line.name ||
+                nextImage !== line.image
+              ) {
+                changed = true
+                return {
+                  ...line,
+                  name: fresh.name,
+                  image: nextImage,
+                  priceCents: fresh.priceCents,
+                }
+              }
+              return line
+            })
+            return changed ? next : current
+          })
+        },
+      )
+      .catch(() => {
+        // Ignore abort / transient network errors; server checkout always enforces live prices.
+      })
+
+    return () => controller.abort()
+  }, [loaded, lines, market, lang])
+
   const add = useCallback((line: CartLine, options?: { openDrawer?: boolean }) => {
     setLines((current) => {
       const existing = current.find((l) => l.slug === line.slug)
       if (existing) {
         return current.map((l) =>
-          l.slug === line.slug ? { ...l, quantity: Math.min(MAX_QUANTITY, l.quantity + line.quantity) } : l,
+          l.slug === line.slug
+            ? {
+                ...l,
+                name: line.name,
+                image: line.image || l.image,
+                priceCents: line.priceCents,
+                quantity: Math.min(MAX_QUANTITY, l.quantity + line.quantity),
+              }
+            : l,
         )
       }
       return [...current, { ...line, quantity: Math.min(MAX_QUANTITY, line.quantity) }]
