@@ -97,16 +97,60 @@ export async function sendTelegramNotification(
   return anySuccess ? { ok: true } : { ok: false, error: lastError ?? "Не удалось отправить сообщение" }
 }
 
+function formatCountryRu(code: string): string {
+  const upper = code.trim().toUpperCase()
+  if (!/^[A-Z]{2}$/.test(upper)) return upper
+  try {
+    const name = new Intl.DisplayNames(["ru"], { type: "region" }).of(upper)
+    return name && name !== upper ? `${name} (${upper})` : upper
+  } catch {
+    return upper
+  }
+}
+
+export function formatRegistrationRegion(input: {
+  market?: string | null
+  lang?: string | null
+  country?: string | null
+  region?: string | null
+  city?: string | null
+}): string {
+  const marketTag = input.market
+    ? input.lang
+      ? `${input.market.toUpperCase()} (${input.lang.toUpperCase()})`
+      : input.market.toUpperCase()
+    : null
+  const geoParts = [
+    input.country ? formatCountryRu(input.country) : null,
+    input.region?.trim() || null,
+    input.city?.trim() || null,
+  ].filter(Boolean)
+
+  if (marketTag && geoParts.length > 0) {
+    return `${marketTag} · ${geoParts.join(", ")}`
+  }
+  if (geoParts.length > 0) return geoParts.join(", ")
+  if (marketTag) return marketTag
+  return "Не определён"
+}
+
 export async function notifyTelegramNewUser(input: {
   name: string
   email: string
   id?: string
+  market?: string | null
+  lang?: string | null
+  country?: string | null
+  region?: string | null
+  city?: string | null
 }): Promise<TelegramResult> {
+  const regionLabel = formatRegistrationRegion(input)
   const lines = [
     `<b>Новая регистрация покупателя · ${escapeHtml(COMPANY.tradingName)}</b>`,
     ``,
     `<b>Имя:</b> ${escapeHtml(input.name || "—")}`,
     `<b>Email:</b> ${escapeHtml(input.email)}`,
+    `<b>Регион:</b> ${escapeHtml(regionLabel)}`,
     `<b>Статус клуба:</b> Скидка −7% активирована`,
     `<b>Время (UTC):</b> ${new Date().toISOString().replace("T", " ").slice(0, 19)}`,
   ]

@@ -1,10 +1,66 @@
 import "server-only"
 
+import { cookies, headers } from "next/headers"
 import { betterAuth } from "better-auth"
 import { nextCookies } from "better-auth/next-js"
 import { pool } from "@/lib/db"
 import { notifyEmailNewUser } from "@/lib/email"
+import { GEO_COOKIE, isMarket, MARKET_COOKIE, marketFromCountry } from "@/lib/markets"
 import { notifyTelegramNewUser } from "@/lib/telegram"
+
+function decodeGeoHeader(value: string | null): string | null {
+  if (!value) return null
+  const trimmed = value.trim()
+  if (!trimmed) return null
+  try {
+    return decodeURIComponent(trimmed)
+  } catch {
+    return trimmed
+  }
+}
+
+async function resolveRegistrationRegion(): Promise<{
+  market?: string
+  lang?: string
+  country?: string
+  region?: string
+  city?: string
+}> {
+  try {
+    const [requestHeaders, requestCookies] = await Promise.all([headers(), cookies()])
+    const country = requestHeaders.get("x-vercel-ip-country")?.trim().toUpperCase() || undefined
+    const region = decodeGeoHeader(requestHeaders.get("x-vercel-ip-country-region")) ?? undefined
+    const city = decodeGeoHeader(requestHeaders.get("x-vercel-ip-city")) ?? undefined
+
+    let market: string | undefined
+    let lang: string | undefined
+    const referer = requestHeaders.get("referer")
+    if (referer) {
+      try {
+        const pathname = new URL(referer).pathname
+        const match = pathname.match(/^\/(us|eu)\/([a-z]{2})(?:\/|$)/)
+        if (match) {
+          market = match[1]
+          lang = match[2]
+        }
+      } catch {
+        // Ignore malformed referer
+      }
+    }
+
+    if (!market) {
+      const chosen = requestCookies.get(MARKET_COOKIE)?.value
+      const geoCookie = requestCookies.get(GEO_COOKIE)?.value
+      if (isMarket(chosen)) market = chosen
+      else if (isMarket(geoCookie)) market = geoCookie
+      else market = marketFromCountry(country) ?? undefined
+    }
+
+    return { market, lang, country, region, city }
+  } catch {
+    return {}
+  }
+}
 
 export type SocialProvider = "google" | "apple" | "facebook"
 
@@ -83,15 +139,18 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (createdUser) => {
+          const regionInfo = await resolveRegistrationRegion()
           await Promise.all([
             notifyTelegramNewUser({
               id: createdUser.id,
               name: createdUser.name,
               email: createdUser.email,
+              ...regionInfo,
             }),
             notifyEmailNewUser({
               name: createdUser.name,
               email: createdUser.email,
+              ...regionInfo,
             }),
           ])
         },
