@@ -164,6 +164,9 @@ export async function notifyEmailNewUser(input: {
   email: string
   market?: string
   lang?: string
+  country?: string | null
+  region?: string | null
+  city?: string | null
 }): Promise<void> {
   let store = emailStore(input.market, input.lang)
   if (!input.market && !input.lang) {
@@ -177,6 +180,8 @@ export async function notifyEmailNewUser(input: {
     }
   }
   const c = emailCopy(store)
+  const geoParts = [input.country, input.region, input.city].filter(Boolean)
+  const regionSummary = `${store.market.toUpperCase()} (${store.lang.toUpperCase()})${geoParts.length > 0 ? ` · ${geoParts.join(", ")}` : ""}`
   await Promise.all([
     sendMail({
       to: input.email,
@@ -190,11 +195,12 @@ export async function notifyEmailNewUser(input: {
     sendStoreInboxMail({
       customerName: input.name,
       customerEmail: input.email,
-      subject: `[Регистрация] Новый покупатель: ${input.name || input.email}`,
+      subject: `[Регистрация] Новый покупатель (${store.market.toUpperCase()}): ${input.name || input.email}`,
       paragraphs: [
         `На сайте ${COMPANY.domain} зарегистрировался новый покупатель.`,
         `Имя: ${input.name || "—"}`,
         `Email: ${input.email}`,
+        `Регион: ${regionSummary}`,
         `Статус клуба: Скидка −7% активирована`,
       ],
     }),
