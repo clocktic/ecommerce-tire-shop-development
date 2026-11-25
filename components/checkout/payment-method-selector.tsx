@@ -146,18 +146,13 @@ export function PaymentMethodSelector({
   paypalAction: React.ReactNode
 }) {
   const showNgenius = market === "eu" && Boolean(ngeniusAction)
-  const defaultChoice: PaymentChoice = showNgenius
-    ? "ngenius"
-    : PAYPAL_CHECKOUT_ENABLED
-      ? "paypal"
-      : "card"
+  const isUs = market === "us"
+  const defaultChoice: PaymentChoice = showNgenius ? "ngenius" : "card"
   const [internalChoice, setInternalChoice] = useState<PaymentChoice>(defaultChoice)
   const rawChoice = controlledChoice ?? internalChoice
   const choice: PaymentChoice =
     rawChoice === "ngenius" && !showNgenius
-      ? PAYPAL_CHECKOUT_ENABLED
-        ? "paypal"
-        : "card"
+      ? "card"
       : rawChoice === "paypal" && !PAYPAL_CHECKOUT_ENABLED
         ? showNgenius
           ? "ngenius"
@@ -168,6 +163,135 @@ export function PaymentMethodSelector({
     onChoiceChange?.(next)
   }
   const c = getPaymentMethodCopy(lang)
+
+  const cardBlock = (
+    <div
+      key="card"
+      className={cn(
+        "rounded-lg border transition-colors",
+        choice === "card"
+          ? "border-primary/80 bg-secondary/45 shadow-[0_0_0_1px_rgba(220,38,38,0.25)]"
+          : "border-border bg-secondary/20 hover:border-border/80",
+      )}
+    >
+      <button
+        type="button"
+        onClick={() => setChoice("card")}
+        className="flex w-full items-start gap-2.5 p-3 text-left sm:gap-3 sm:p-3.5"
+      >
+        <span
+          className={cn(
+            "mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border",
+            choice === "card"
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-muted-foreground/50",
+          )}
+          aria-hidden="true"
+        >
+          {choice === "card" && <span className="size-1.5 rounded-full bg-white" />}
+        </span>
+        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+          <span className="text-sm font-semibold leading-snug text-foreground">
+            {isUs || !PAYPAL_CHECKOUT_ENABLED ? c.cardOnlyTitle : c.cardTitle}
+          </span>
+          <div className="flex flex-wrap items-center gap-1">
+            <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-semibold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
+              Apple Pay
+            </span>
+            <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-semibold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
+              G Pay
+            </span>
+            <span className="rounded bg-[#5A31F4] px-1 py-0.5 font-mono text-[9.5px] font-bold tracking-tight text-white sm:px-1.5 sm:text-[10px]">
+              Shop Pay
+            </span>
+            <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-bold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
+              VISA
+            </span>
+            <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-bold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
+              MC
+            </span>
+            <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-bold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
+              AMEX
+            </span>
+          </div>
+          <p className="text-xs leading-snug text-muted-foreground">{c.cardSub}</p>
+        </div>
+      </button>
+
+      {choice === "card" && (
+        <div className="flex flex-col gap-2 border-t border-border/60 px-3 pt-3 pb-3 sm:px-3.5 sm:pb-3.5">
+          {cardAction}
+          <p className="text-center text-[11px] leading-snug text-muted-foreground">
+            {c.cardRedirectNote}
+          </p>
+        </div>
+      )}
+    </div>
+  )
+
+  const paypalBlock = PAYPAL_CHECKOUT_ENABLED ? (
+    <div
+      key="paypal"
+      className={cn(
+        "rounded-lg border transition-colors",
+        choice === "paypal"
+          ? "border-primary/80 bg-secondary/45 shadow-[0_0_0_1px_rgba(220,38,38,0.25)]"
+          : "border-border bg-secondary/20 hover:border-border/80",
+      )}
+    >
+      <button
+        type="button"
+        onClick={() => setChoice("paypal")}
+        className="flex w-full items-start gap-2.5 p-3 text-left sm:gap-3 sm:p-3.5"
+      >
+        <span
+          className={cn(
+            "mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border",
+            choice === "paypal"
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-muted-foreground/50",
+          )}
+          aria-hidden="true"
+        >
+          {choice === "paypal" && <span className="size-1.5 rounded-full bg-white" />}
+        </span>
+        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+          <span className="text-sm font-semibold leading-snug text-foreground">
+            {c.paypalTitle}
+          </span>
+          <div className="flex flex-wrap items-center gap-1">
+            <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
+              VISA
+            </span>
+            <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
+              MC
+            </span>
+            <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
+              AMEX
+            </span>
+            <span className="rounded bg-[#FFC439] px-1.5 py-0.5 font-mono text-[10px] font-extrabold tracking-tight text-[#003087]">
+              PayPal
+            </span>
+            {market === "us" && (
+              <span className="rounded bg-[#008CFF] px-1.5 py-0.5 font-mono text-[10px] font-extrabold tracking-tight text-white">
+                venmo
+              </span>
+            )}
+            <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-semibold tracking-tight text-foreground">
+              Pay Later
+            </span>
+          </div>
+          <p className="text-xs leading-snug text-muted-foreground">{c.paypalSub}</p>
+        </div>
+      </button>
+
+      {choice === "paypal" && (
+        <div className="border-t border-border/60 px-2.5 pt-2.5 pb-2.5 sm:px-3.5 sm:pt-3 sm:pb-3.5">
+          {paypalAction}
+        </div>
+      )}
+    </div>
+  ) : null
 
   return (
     <div className="flex flex-col gap-3">
@@ -232,131 +356,17 @@ export function PaymentMethodSelector({
             )}
           </div>
         )}
-        {PAYPAL_CHECKOUT_ENABLED && (
-          <div
-            className={cn(
-              "rounded-lg border transition-colors",
-              choice === "paypal"
-                ? "border-primary/80 bg-secondary/45 shadow-[0_0_0_1px_rgba(220,38,38,0.25)]"
-                : "border-border bg-secondary/20 hover:border-border/80",
-            )}
-          >
-            <button
-              type="button"
-              onClick={() => setChoice("paypal")}
-              className="flex w-full items-start gap-2.5 p-3 text-left sm:gap-3 sm:p-3.5"
-            >
-              <span
-                className={cn(
-                  "mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border",
-                  choice === "paypal"
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-muted-foreground/50",
-                )}
-                aria-hidden="true"
-              >
-                {choice === "paypal" && <span className="size-1.5 rounded-full bg-white" />}
-              </span>
-              <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-                <span className="text-sm font-semibold leading-snug text-foreground">
-                  {c.paypalTitle}
-                </span>
-                <div className="flex flex-wrap items-center gap-1">
-                  <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
-                    VISA
-                  </span>
-                  <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
-                    MC
-                  </span>
-                  <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
-                    AMEX
-                  </span>
-                  <span className="rounded bg-[#FFC439] px-1.5 py-0.5 font-mono text-[10px] font-extrabold tracking-tight text-[#003087]">
-                    PayPal
-                  </span>
-                  {market === "us" && (
-                    <span className="rounded bg-[#008CFF] px-1.5 py-0.5 font-mono text-[10px] font-extrabold tracking-tight text-white">
-                      venmo
-                    </span>
-                  )}
-                  <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-semibold tracking-tight text-foreground">
-                    Pay Later
-                  </span>
-                </div>
-                <p className="text-xs leading-snug text-muted-foreground">{c.paypalSub}</p>
-              </div>
-            </button>
-
-            {choice === "paypal" && (
-              <div className="border-t border-border/60 px-2.5 pt-2.5 pb-2.5 sm:px-3.5 sm:pt-3 sm:pb-3.5">
-                {paypalAction}
-              </div>
-            )}
-          </div>
+        {isUs ? (
+          <>
+            {cardBlock}
+            {paypalBlock}
+          </>
+        ) : (
+          <>
+            {paypalBlock}
+            {cardBlock}
+          </>
         )}
-
-        {/* Shopify Checkout / Express Wallets & Cards */}
-        <div
-          className={cn(
-            "rounded-lg border transition-colors",
-            choice === "card"
-              ? "border-primary/80 bg-secondary/45 shadow-[0_0_0_1px_rgba(220,38,38,0.25)]"
-              : "border-border bg-secondary/20 hover:border-border/80",
-          )}
-        >
-          <button
-            type="button"
-            onClick={() => setChoice("card")}
-            className="flex w-full items-start gap-2.5 p-3 text-left sm:gap-3 sm:p-3.5"
-          >
-            <span
-              className={cn(
-                "mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border",
-                choice === "card"
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-muted-foreground/50",
-              )}
-              aria-hidden="true"
-            >
-              {choice === "card" && <span className="size-1.5 rounded-full bg-white" />}
-            </span>
-            <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-              <span className="text-sm font-semibold leading-snug text-foreground">
-                {PAYPAL_CHECKOUT_ENABLED ? c.cardTitle : c.cardOnlyTitle}
-              </span>
-              <div className="flex flex-wrap items-center gap-1">
-                <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-semibold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
-                  Apple Pay
-                </span>
-                <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-semibold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
-                  G Pay
-                </span>
-                <span className="rounded bg-[#5A31F4] px-1 py-0.5 font-mono text-[9.5px] font-bold tracking-tight text-white sm:px-1.5 sm:text-[10px]">
-                  Shop Pay
-                </span>
-                <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-bold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
-                  VISA
-                </span>
-                <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-bold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
-                  MC
-                </span>
-                <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-bold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
-                  AMEX
-                </span>
-              </div>
-              <p className="text-xs leading-snug text-muted-foreground">{c.cardSub}</p>
-            </div>
-          </button>
-
-          {choice === "card" && (
-            <div className="flex flex-col gap-2 border-t border-border/60 px-3 pt-3 pb-3 sm:px-3.5 sm:pb-3.5">
-              {cardAction}
-              <p className="text-center text-[11px] leading-snug text-muted-foreground">
-                {c.cardRedirectNote}
-              </p>
-            </div>
-          )}
-        </div>
       </div>
     </div>
   )
