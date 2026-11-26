@@ -12,7 +12,9 @@ import {
   type PaymentChoice,
 } from "@/components/checkout/payment-method-selector"
 import { PayPalOrderButtons } from "@/components/checkout/paypal-buttons"
+import { SepaBankDetails } from "@/components/checkout/sepa-bank-details"
 import { PAYPAL_CHECKOUT_ENABLED } from "@/lib/payments/paypal-config"
+import { getSepaCopy } from "@/lib/payments/sepa"
 import { useCart } from "@/components/cart/cart-provider"
 import { SummaryRows } from "@/components/cart/cart-view"
 import { useI18n } from "@/components/i18n/i18n-provider"
@@ -91,7 +93,12 @@ export function CheckoutForm() {
             state: get("state"),
             country: get("country"),
             accepted,
-            paymentProvider: market === "eu" && paymentChoice === "ngenius" ? "ngenius" : "shopify",
+            paymentProvider:
+              market === "eu" && paymentChoice === "sepa"
+                ? "sepa"
+                : market === "eu" && paymentChoice === "ngenius"
+                  ? "ngenius"
+                  : "shopify",
           })
           if (!result.ok) {
             setFailed(true)
@@ -99,16 +106,20 @@ export function CheckoutForm() {
           }
           setPlaced(true)
           clear()
+          const orderPath =
+            market === "eu" && paymentChoice === "sepa"
+              ? `/order/${result.orderNumber}?method=sepa`
+              : `/order/${result.orderNumber}`
           if (result.forwardUrl) {
             if (window.self !== window.top) {
               window.open(result.forwardUrl, "_blank", "noopener,noreferrer")
-              router.push(storePath(store, `/order/${result.orderNumber}`))
+              router.push(storePath(store, orderPath))
             } else {
               window.location.assign(result.forwardUrl)
             }
             return
           }
-          router.push(storePath(store, `/order/${result.orderNumber}`))
+          router.push(storePath(store, orderPath))
         })
       }}
     >
@@ -235,6 +246,19 @@ export function CheckoutForm() {
                   ? x.checkout.placing
                   : getPaymentMethodCopy(store.lang).ngeniusCta}
               </PayButton>
+            ) : undefined
+          }
+          sepaAction={
+            isEu ? (
+              <div className="flex flex-col gap-3">
+                <SepaBankDetails lang={store.lang} />
+                <PayButton pending={pending}>
+                  {pending ? x.checkout.placing : getSepaCopy(store.lang).checkoutCta}
+                </PayButton>
+                <p className="text-center text-[11px] leading-snug text-muted-foreground">
+                  {getSepaCopy(store.lang).checkoutNote}
+                </p>
+              </div>
             ) : undefined
           }
           cardAction={

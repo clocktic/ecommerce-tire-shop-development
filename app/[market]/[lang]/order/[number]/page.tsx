@@ -10,14 +10,15 @@ import { fmt, getDictionary, localeMeta, parseStore, storePath } from "@/lib/i18
 import { getExtras } from "@/lib/i18n/extras"
 import { formatPrice, MARKETS, type Market } from "@/lib/markets"
 import { getOrderByNumber, maskEmail } from "@/lib/orders"
+import { getSepaReportedAt, hasSepaBankTransfer } from "@/lib/payments/sepa"
 
 type Params = Promise<{ market: string; lang: string; number: string }>
-type SearchParams = Promise<{ session_id?: string }>
+type SearchParams = Promise<{ session_id?: string; method?: string }>
 
 export const metadata: Metadata = { robots: { index: false, follow: false } }
 
 export default async function OrderPage({ params, searchParams }: { params: Params; searchParams: SearchParams }) {
-  const [{ market, lang, number }, { session_id }] = await Promise.all([params, searchParams])
+  const [{ market, lang, number }, { session_id, method }] = await Promise.all([params, searchParams])
   const store = parseStore(market, lang)
   if (!store) notFound()
   const order = await getOrderByNumber(decodeURIComponent(number), session_id)
@@ -68,6 +69,13 @@ export default async function OrderPage({ params, searchParams }: { params: Para
               payNowLabel={x.order.payNow}
               lang={meta.content}
               market={order.market as Market}
+              defaultChoice={
+                order.market === "eu" && (method === "sepa" || hasSepaBankTransfer(order.notes))
+                  ? "sepa"
+                  : undefined
+              }
+              totalFormatted={price(order.totalCents)}
+              sepaReportedAt={getSepaReportedAt(order.notes)}
             />
           )}
           <div className="flex flex-wrap gap-3">

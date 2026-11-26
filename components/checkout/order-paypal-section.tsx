@@ -7,8 +7,10 @@ import { PayButton } from "@/components/checkout/pay-button"
 import {
   getPaymentMethodCopy,
   PaymentMethodSelector,
+  type PaymentChoice,
 } from "@/components/checkout/payment-method-selector"
 import { PayPalOrderButtons } from "@/components/checkout/paypal-buttons"
+import { SepaBankDetails } from "@/components/checkout/sepa-bank-details"
 
 export function OrderPayPalSection({
   orderNumber,
@@ -16,12 +18,18 @@ export function OrderPayPalSection({
   payNowLabel,
   lang = "en",
   market = "us",
+  defaultChoice,
+  totalFormatted,
+  sepaReportedAt = null,
 }: {
   orderNumber: string
   currency: string
   payNowLabel?: string
   lang?: string
   market?: Market
+  defaultChoice?: PaymentChoice
+  totalFormatted?: string
+  sepaReportedAt?: string | null
 }) {
   const router = useRouter()
   const [loadingShopify, setLoadingShopify] = useState(false)
@@ -85,6 +93,7 @@ export function OrderPayPalSection({
       <PaymentMethodSelector
         lang={lang}
         market={market}
+        defaultChoice={defaultChoice}
         ngeniusAction={
           isEu ? (
             <PayButton
@@ -94,6 +103,17 @@ export function OrderPayPalSection({
             >
               {getPaymentMethodCopy(lang).ngeniusCta}
             </PayButton>
+          ) : undefined
+        }
+        sepaAction={
+          isEu ? (
+            <SepaBankDetails
+              lang={lang}
+              orderNumber={orderNumber}
+              amountFormatted={totalFormatted}
+              initialReportedAt={sepaReportedAt}
+              showPaidButton
+            />
           ) : undefined
         }
         cardAction={

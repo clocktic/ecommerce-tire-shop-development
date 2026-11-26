@@ -14,6 +14,7 @@ import { fmt } from "@/lib/i18n/fmt"
 import { MARKETS, formatPrice } from "@/lib/markets"
 import { computeMemberDiscountCents } from "@/lib/member-discount"
 import { createNgeniusHostedOrder } from "@/lib/payments/ngenius"
+import { buildOrderNotes, SEPA_NOTE_TAG } from "@/lib/payments/sepa"
 import { createShopifyCheckoutSession } from "@/lib/payments/shopify"
 import { POLICIES } from "@/lib/policies"
 import { notifyTelegramNewOrder } from "@/lib/telegram"
@@ -36,7 +37,7 @@ export type PlaceOrderInput = {
   state?: string
   country: string
   accepted: boolean
-  paymentProvider?: "ngenius" | "shopify" | "paypal" | "stripe"
+  paymentProvider?: "ngenius" | "shopify" | "paypal" | "stripe" | "sepa"
 }
 
 export type PlaceOrderResult =
@@ -107,6 +108,8 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
   const totalCents = Math.max(0, subtotalCents - discountCents) + shippingCents
   const orderNumber = newOrderNumber(store.market)
 
+  const isSepa = store.market === "eu" && input.paymentProvider === "sepa"
+
   await db.insert(orders).values({
     id: orderId,
     orderNumber,
@@ -126,13 +129,17 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
     shippingRegion: fields.state || null,
     shippingPostalCode: fields.postal,
     shippingCountry: fields.country,
-    notes: discountCents > 0 ? "member_discount_7pct" : null,
+    notes: buildOrderNotes([
+      discountCents > 0 ? "member_discount_7pct" : null,
+      isSepa ? SEPA_NOTE_TAG : null,
+    ]),
   })
   await db.insert(orderItems).values(items)
 
   const isPayPal = input.paymentProvider === "paypal"
   const isNgenius =
     store.market === "eu" &&
+    !isSepa &&
     (input.paymentProvider === "ngenius" || input.paymentProvider === undefined)
 
   const ngeniusSession = isNgenius
@@ -140,7 +147,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
     : ({ ok: false as const, error: "Skipped" })
 
   const shopifySession =
-    isPayPal || isNgenius
+    isPayPal || isNgenius || isSepa
       ? ({ ok: false as const, error: "Skipped" })
       : await createShopifyCheckoutSession(orderNumber)
 
@@ -191,20 +198,24 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
         quantity: i.quantity,
         lineTotalCents: i.lineTotalCents,
       })),
-      paymentMethod: isPayPal
-        ? "PayPal Checkout"
-        : ngeniusSession.ok
-          ? "Card (N-Genius)"
-          : shopifySession.ok
-            ? "Shopify Checkout"
-            : "Ожидает оплаты",
-      paymentStatusLabel: isPayPal
-        ? "Открыто окно оплаты (PayPal)"
-        : ngeniusSession.ok
-          ? "Перенаправлен на оплату картой (N-Genius)"
-          : shopifySession.ok
-            ? "Перенаправлен на оплату (Shopify Checkout)"
-            : "Ожидает оплаты",
+      paymentMethod: isSepa
+        ? "SEPA Bank Transfer"
+        : isPayPal
+          ? "PayPal Checkout"
+          : ngeniusSession.ok
+            ? "Card (N-Genius)"
+            : shopifySession.ok
+              ? "Shopify Checkout"
+              : "Ожидает оплаты",
+      paymentStatusLabel: isSepa
+        ? "Ожидает банковского перевода (SEPA)"
+        : isPayPal
+          ? "Открыто окно оплаты (PayPal)"
+          : ngeniusSession.ok
+            ? "Перенаправлен на оплату картой (N-Genius)"
+            : shopifySession.ok
+              ? "Перенаправлен на оплату (Shopify Checkout)"
+              : "Ожидает оплаты",
     }),
   ])
 

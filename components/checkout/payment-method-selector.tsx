@@ -4,9 +4,10 @@ import { useState } from "react"
 import type { ContentLang } from "@/lib/i18n/config"
 import type { Market } from "@/lib/markets"
 import { PAYPAL_CHECKOUT_ENABLED } from "@/lib/payments/paypal-config"
+import { getSepaCopy } from "@/lib/payments/sepa"
 import { cn } from "@/lib/utils"
 
-export type PaymentChoice = "ngenius" | "card" | "paypal"
+export type PaymentChoice = "ngenius" | "sepa" | "card" | "paypal"
 
 interface Copy {
   heading: string
@@ -132,37 +133,43 @@ export function PaymentMethodSelector({
   lang = "en",
   market = "us",
   choice: controlledChoice,
+  defaultChoice: initialChoice,
   onChoiceChange,
   ngeniusAction,
+  sepaAction,
   cardAction,
   paypalAction,
 }: {
   lang?: string
   market?: Market
   choice?: PaymentChoice
+  defaultChoice?: PaymentChoice
   onChoiceChange?: (choice: PaymentChoice) => void
   ngeniusAction?: React.ReactNode
+  sepaAction?: React.ReactNode
   cardAction: React.ReactNode
   paypalAction: React.ReactNode
 }) {
   const showNgenius = market === "eu" && Boolean(ngeniusAction)
+  const showSepa = market === "eu" && Boolean(sepaAction)
   const isUs = market === "us"
-  const defaultChoice: PaymentChoice = showNgenius ? "ngenius" : "card"
-  const [internalChoice, setInternalChoice] = useState<PaymentChoice>(defaultChoice)
+  const fallbackChoice: PaymentChoice = showNgenius ? "ngenius" : "card"
+  const [internalChoice, setInternalChoice] = useState<PaymentChoice>(initialChoice ?? fallbackChoice)
   const rawChoice = controlledChoice ?? internalChoice
   const choice: PaymentChoice =
     rawChoice === "ngenius" && !showNgenius
       ? "card"
-      : rawChoice === "paypal" && !PAYPAL_CHECKOUT_ENABLED
-        ? showNgenius
-          ? "ngenius"
-          : "card"
-        : rawChoice
+      : rawChoice === "sepa" && !showSepa
+        ? fallbackChoice
+        : rawChoice === "paypal" && !PAYPAL_CHECKOUT_ENABLED
+          ? fallbackChoice
+          : rawChoice
   const setChoice = (next: PaymentChoice) => {
     setInternalChoice(next)
     onChoiceChange?.(next)
   }
   const c = getPaymentMethodCopy(lang)
+  const sepaCopy = getSepaCopy(lang)
 
   const cardBlock = (
     <div
@@ -352,6 +359,57 @@ export function PaymentMethodSelector({
                 <p className="text-center text-[11px] leading-snug text-muted-foreground">
                   {c.ngeniusRedirectNote}
                 </p>
+              </div>
+            )}
+          </div>
+        )}
+        {showSepa && (
+          <div
+            className={cn(
+              "rounded-lg border transition-colors",
+              choice === "sepa"
+                ? "border-primary/80 bg-secondary/45 shadow-[0_0_0_1px_rgba(220,38,38,0.25)]"
+                : "border-border bg-secondary/20 hover:border-border/80",
+            )}
+          >
+            <button
+              type="button"
+              onClick={() => setChoice("sepa")}
+              className="flex w-full items-start gap-2.5 p-3 text-left sm:gap-3 sm:p-3.5"
+            >
+              <span
+                className={cn(
+                  "mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border",
+                  choice === "sepa"
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-muted-foreground/50",
+                )}
+                aria-hidden="true"
+              >
+                {choice === "sepa" && <span className="size-1.5 rounded-full bg-white" />}
+              </span>
+              <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                <span className="text-sm font-semibold leading-snug text-foreground">
+                  {sepaCopy.title}
+                </span>
+                <div className="flex flex-wrap items-center gap-1">
+                  <span className="rounded bg-[#003399] px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-white">
+                    SEPA
+                  </span>
+                  <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-semibold tracking-tight text-foreground">
+                    EUR IBAN
+                  </span>
+                  <span className="rounded border border-emerald-500/40 bg-emerald-500/10 px-1.5 py-0.5 font-mono text-[10px] font-semibold tracking-tight text-emerald-400">
+                    0% Fee
+                  </span>
+                </div>
+                <p className="text-xs leading-snug text-muted-foreground">{sepaCopy.subtitle}</p>
+              </div>
+            </button>
+
+            {choice === "sepa" && (
+              <div className="flex flex-col gap-3 border-t border-border/60 px-3 pt-3 pb-3 sm:px-3.5 sm:pb-3.5">
+                {sepaAction}
               </div>
             )}
           </div>
