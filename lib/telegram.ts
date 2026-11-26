@@ -270,6 +270,53 @@ export async function notifyTelegramOrderPaid(input: {
   return sendTelegramNotification(lines.join("\n"))
 }
 
+export async function notifyTelegramSepaTransferReported(input: {
+  orderNumber: string
+  market: Market
+  customerName?: string | null
+  email: string
+  phone?: string | null
+  city?: string | null
+  country?: string | null
+  totalCents: number
+  senderNote?: string | null
+  items?: TelegramOrderItem[]
+}): Promise<TelegramResult> {
+  const fmtMoney = (cents: number) => formatPrice(cents, input.market, "de-DE")
+  const itemLines =
+    input.items && input.items.length > 0
+      ? [
+          ``,
+          `<b>Товары:</b>`,
+          ...input.items.map((item) => {
+            const label = item.brandName ? `${item.brandName} ${item.productName}` : item.productName
+            return `• ${item.quantity} × ${escapeHtml(label)} (${escapeHtml(fmtMoney(item.lineTotalCents))})`
+          }),
+        ]
+      : []
+
+  const destination = [input.city, input.country].filter(Boolean).join(", ")
+
+  const lines = [
+    `<b>Покупатель нажал «Я оплатил» (SEPA): ${escapeHtml(input.orderNumber)}</b>`,
+    `<b>Ожидаемая сумма:</b> <b>${escapeHtml(fmtMoney(input.totalCents))}</b>`,
+    `<b>Счёт зачисления:</b> <code>NL39 CLRB 0035 7984 54</code> (NOVATECH SYSTEMS SIA)`,
+    `<b>Референс:</b> <code>${escapeHtml(input.orderNumber)}</code>`,
+    ...(input.senderNote ? [`<b>Комментарий покупателя:</b> ${escapeHtml(input.senderNote)}`] : []),
+    ``,
+    `<b>Покупатель:</b> ${escapeHtml(input.customerName || "—")}`,
+    `<b>Email:</b> ${escapeHtml(input.email)}`,
+    ...(input.phone ? [`<b>Телефон:</b> ${escapeHtml(input.phone)}`] : []),
+    ...(destination ? [`<b>Куда:</b> ${escapeHtml(destination)}`] : []),
+    ...itemLines,
+    ``,
+    `<i>Проверьте поступление средств в ClearBank и переведите заказ в статус «Оплачен».</i>`,
+    `<a href="${escapeHtml(COMPANY.url)}/admin/orders?q=${encodeURIComponent(input.orderNumber)}">Открыть заказ в админке →</a>`,
+  ]
+
+  return sendTelegramNotification(lines.join("\n"))
+}
+
 export async function sendTelegramChatBotMessage(
   html: string,
   extra?: Record<string, unknown>,
