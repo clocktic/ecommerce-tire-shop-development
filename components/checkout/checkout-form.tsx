@@ -36,7 +36,7 @@ export function CheckoutForm() {
   const { data: session } = useSession()
   const [accepted, setAccepted] = useState(false)
   const [paymentChoice, setPaymentChoice] = useState<PaymentChoice>(
-    market === "eu" ? "ngenius" : "zen",
+    market === "eu" ? "ngenius" : "paypal",
   )
   const [failed, setFailed] = useState(false)
   const [placed, setPlaced] = useState(false)
