@@ -16,6 +16,7 @@ import { computeMemberDiscountCents } from "@/lib/member-discount"
 import { createNgeniusHostedOrder } from "@/lib/payments/ngenius"
 import { buildOrderNotes, SEPA_NOTE_TAG } from "@/lib/payments/sepa"
 import { createShopifyCheckoutSession } from "@/lib/payments/shopify"
+import { createZenHostedForm } from "@/lib/payments/zen"
 import { POLICIES } from "@/lib/policies"
 import { notifyTelegramNewOrder } from "@/lib/telegram"
 
@@ -37,7 +38,7 @@ export type PlaceOrderInput = {
   state?: string
   country: string
   accepted: boolean
-  paymentProvider?: "ngenius" | "shopify" | "paypal" | "stripe" | "sepa"
+  paymentProvider?: "zen" | "ngenius" | "shopify" | "paypal" | "stripe" | "sepa"
 }
 
 export type PlaceOrderResult =
@@ -141,13 +142,21 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
     store.market === "eu" &&
     !isSepa &&
     (input.paymentProvider === "ngenius" || input.paymentProvider === undefined)
+  const isZen =
+    store.market === "us" &&
+    !isPayPal &&
+    (input.paymentProvider === "zen" || input.paymentProvider === undefined)
 
   const ngeniusSession = isNgenius
     ? await createNgeniusHostedOrder(orderNumber)
     : ({ ok: false as const, error: "Skipped" })
 
+  const zenSession = isZen
+    ? await createZenHostedForm(orderNumber)
+    : ({ ok: false as const, error: "Skipped" })
+
   const shopifySession =
-    isPayPal || isNgenius || isSepa
+    isPayPal || isNgenius || isSepa || (isZen && zenSession.ok)
       ? ({ ok: false as const, error: "Skipped" })
       : await createShopifyCheckoutSession(orderNumber)
 
@@ -202,22 +211,30 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
         ? "SEPA Bank Transfer"
         : isPayPal
           ? "PayPal Checkout"
-          : ngeniusSession.ok
-            ? "Card (N-Genius)"
-            : shopifySession.ok
-              ? "Shopify Checkout"
-              : "Ожидает оплаты",
+          : zenSession.ok
+            ? "Card (Zen Payments)"
+            : ngeniusSession.ok
+              ? "Card (N-Genius)"
+              : shopifySession.ok
+                ? "Shopify Checkout"
+                : "Ожидает оплаты",
       paymentStatusLabel: isSepa
         ? "Ожидает банковского перевода (SEPA)"
         : isPayPal
           ? "Открыто окно оплаты (PayPal)"
-          : ngeniusSession.ok
-            ? "Перенаправлен на оплату картой (N-Genius)"
-            : shopifySession.ok
-              ? "Перенаправлен на оплату (Shopify Checkout)"
-              : "Ожидает оплаты",
+          : zenSession.ok
+            ? "Перенаправлен на оплату картой (Zen Payments)"
+            : ngeniusSession.ok
+              ? "Перенаправлен на оплату картой (N-Genius)"
+              : shopifySession.ok
+                ? "Перенаправлен на оплату (Shopify Checkout)"
+                : "Ожидает оплаты",
     }),
   ])
+
+  if (zenSession.ok) {
+    return { ok: true, orderNumber, forwardUrl: zenSession.forwardUrl }
+  }
 
   if (ngeniusSession.ok) {
     return { ok: true, orderNumber, forwardUrl: ngeniusSession.forwardUrl }

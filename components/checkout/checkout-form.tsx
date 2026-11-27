@@ -36,7 +36,7 @@ export function CheckoutForm() {
   const { data: session } = useSession()
   const [accepted, setAccepted] = useState(false)
   const [paymentChoice, setPaymentChoice] = useState<PaymentChoice>(
-    market === "eu" ? "ngenius" : "card",
+    market === "eu" ? "ngenius" : "zen",
   )
   const [failed, setFailed] = useState(false)
   const [placed, setPlaced] = useState(false)
@@ -98,7 +98,9 @@ export function CheckoutForm() {
                 ? "sepa"
                 : market === "eu" && paymentChoice === "ngenius"
                   ? "ngenius"
-                  : "shopify",
+                  : market === "us" && paymentChoice === "zen"
+                    ? "zen"
+                    : "shopify",
           })
           if (!result.ok) {
             setFailed(true)
@@ -239,6 +241,15 @@ export function CheckoutForm() {
           market={market}
           choice={paymentChoice}
           onChoiceChange={setPaymentChoice}
+          zenAction={
+            !isEu ? (
+              <PayButton pending={pending}>
+                {pending
+                  ? x.checkout.placing
+                  : getPaymentMethodCopy(store.lang).ngeniusCta}
+              </PayButton>
+            ) : undefined
+          }
           ngeniusAction={
             isEu ? (
               <PayButton pending={pending}>

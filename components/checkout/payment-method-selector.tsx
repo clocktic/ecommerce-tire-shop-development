@@ -7,7 +7,7 @@ import { PAYPAL_CHECKOUT_ENABLED } from "@/lib/payments/paypal-config"
 import { getSepaCopy } from "@/lib/payments/sepa"
 import { cn } from "@/lib/utils"
 
-export type PaymentChoice = "ngenius" | "sepa" | "card" | "paypal"
+export type PaymentChoice = "zen" | "ngenius" | "sepa" | "card" | "paypal"
 
 interface Copy {
   heading: string
@@ -135,6 +135,7 @@ export function PaymentMethodSelector({
   choice: controlledChoice,
   defaultChoice: initialChoice,
   onChoiceChange,
+  zenAction,
   ngeniusAction,
   sepaAction,
   cardAction,
@@ -145,25 +146,29 @@ export function PaymentMethodSelector({
   choice?: PaymentChoice
   defaultChoice?: PaymentChoice
   onChoiceChange?: (choice: PaymentChoice) => void
+  zenAction?: React.ReactNode
   ngeniusAction?: React.ReactNode
   sepaAction?: React.ReactNode
   cardAction: React.ReactNode
   paypalAction: React.ReactNode
 }) {
+  const showZen = market === "us" && Boolean(zenAction)
   const showNgenius = market === "eu" && Boolean(ngeniusAction)
   const showSepa = market === "eu" && Boolean(sepaAction)
   const isUs = market === "us"
-  const fallbackChoice: PaymentChoice = showNgenius ? "ngenius" : "card"
+  const fallbackChoice: PaymentChoice = showZen ? "zen" : showNgenius ? "ngenius" : "card"
   const [internalChoice, setInternalChoice] = useState<PaymentChoice>(initialChoice ?? fallbackChoice)
   const rawChoice = controlledChoice ?? internalChoice
   const choice: PaymentChoice =
-    rawChoice === "ngenius" && !showNgenius
-      ? "card"
-      : rawChoice === "sepa" && !showSepa
+    rawChoice === "zen" && !showZen
+      ? fallbackChoice
+      : rawChoice === "ngenius" && !showNgenius
         ? fallbackChoice
-        : rawChoice === "paypal" && !PAYPAL_CHECKOUT_ENABLED
+        : rawChoice === "sepa" && !showSepa
           ? fallbackChoice
-          : rawChoice
+          : rawChoice === "paypal" && !PAYPAL_CHECKOUT_ENABLED
+            ? fallbackChoice
+            : rawChoice
   const setChoice = (next: PaymentChoice) => {
     setInternalChoice(next)
     onChoiceChange?.(next)
@@ -199,7 +204,7 @@ export function PaymentMethodSelector({
         </span>
         <div className="flex min-w-0 flex-1 flex-col gap-1.5">
           <span className="text-sm font-semibold leading-snug text-foreground">
-            {isUs || !PAYPAL_CHECKOUT_ENABLED ? c.cardOnlyTitle : c.cardTitle}
+            {showZen || (PAYPAL_CHECKOUT_ENABLED && !isUs) ? c.cardTitle : c.cardOnlyTitle}
           </span>
           <div className="flex flex-wrap items-center gap-1">
             <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-semibold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
@@ -309,6 +314,68 @@ export function PaymentMethodSelector({
       </div>
 
       <div className="flex flex-col gap-2.5">
+        {showZen && (
+          <div
+            className={cn(
+              "rounded-lg border transition-colors",
+              choice === "zen"
+                ? "border-primary/80 bg-secondary/45 shadow-[0_0_0_1px_rgba(220,38,38,0.25)]"
+                : "border-border bg-secondary/20 hover:border-border/80",
+            )}
+          >
+            <button
+              type="button"
+              onClick={() => setChoice("zen")}
+              className="flex w-full items-start gap-2.5 p-3 text-left sm:gap-3 sm:p-3.5"
+            >
+              <span
+                className={cn(
+                  "mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border",
+                  choice === "zen"
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-muted-foreground/50",
+                )}
+                aria-hidden="true"
+              >
+                {choice === "zen" && <span className="size-1.5 rounded-full bg-white" />}
+              </span>
+              <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                <span className="text-sm font-semibold leading-snug text-foreground">
+                  {c.ngeniusTitle}
+                </span>
+                <div className="flex flex-wrap items-center gap-1">
+                  <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
+                    VISA
+                  </span>
+                  <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
+                    Mastercard
+                  </span>
+                  <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
+                    AMEX
+                  </span>
+                  <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
+                    Discover
+                  </span>
+                  <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-semibold tracking-tight text-muted-foreground">
+                    3D Secure
+                  </span>
+                </div>
+                <p className="text-xs leading-snug text-muted-foreground">
+                  Pay securely by Visa, Mastercard, American Express, or Discover
+                </p>
+              </div>
+            </button>
+
+            {choice === "zen" && (
+              <div className="flex flex-col gap-2 border-t border-border/60 px-3 pt-3 pb-3 sm:px-3.5 sm:pb-3.5">
+                {zenAction}
+                <p className="text-center text-[11px] leading-snug text-muted-foreground">
+                  {c.ngeniusRedirectNote}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
         {showNgenius && (
           <div
             className={cn(

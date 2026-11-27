@@ -34,6 +34,7 @@ export function OrderPayPalSection({
   const router = useRouter()
   const [loadingShopify, setLoadingShopify] = useState(false)
   const [loadingNgenius, setLoadingNgenius] = useState(false)
+  const [loadingZen, setLoadingZen] = useState(false)
   const isEu = market === "eu"
 
   const redirectTo = (url: string) => {
@@ -41,6 +42,28 @@ export function OrderPayPalSection({
       window.open(url, "_blank", "noopener,noreferrer")
     } else {
       window.location.assign(url)
+    }
+  }
+
+  const handleZenPay = async () => {
+    if (loadingZen) return
+    setLoadingZen(true)
+    try {
+      const res = await fetch("/api/payments/zen/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderNumber }),
+      })
+      const data = (await res.json()) as {
+        ok?: boolean
+        forwardUrl?: string
+      }
+      if (res.ok && data.ok && data.forwardUrl) {
+        redirectTo(data.forwardUrl)
+        return
+      }
+    } finally {
+      setLoadingZen(false)
     }
   }
 
@@ -94,6 +117,17 @@ export function OrderPayPalSection({
         lang={lang}
         market={market}
         defaultChoice={defaultChoice}
+        zenAction={
+          !isEu ? (
+            <PayButton
+              type="button"
+              pending={loadingZen}
+              onClick={handleZenPay}
+            >
+              {getPaymentMethodCopy(lang).ngeniusCta}
+            </PayButton>
+          ) : undefined
+        }
         ngeniusAction={
           isEu ? (
             <PayButton
