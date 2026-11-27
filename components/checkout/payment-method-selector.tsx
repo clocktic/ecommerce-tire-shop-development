@@ -156,7 +156,14 @@ export function PaymentMethodSelector({
   const showNgenius = market === "eu" && Boolean(ngeniusAction)
   const showSepa = market === "eu" && Boolean(sepaAction)
   const isUs = market === "us"
-  const fallbackChoice: PaymentChoice = showZen ? "zen" : showNgenius ? "ngenius" : "card"
+  const fallbackChoice: PaymentChoice =
+    isUs && PAYPAL_CHECKOUT_ENABLED
+      ? "paypal"
+      : showZen
+        ? "zen"
+        : showNgenius
+          ? "ngenius"
+          : "card"
   const [internalChoice, setInternalChoice] = useState<PaymentChoice>(initialChoice ?? fallbackChoice)
   const rawChoice = controlledChoice ?? internalChoice
   const choice: PaymentChoice =
@@ -314,6 +321,7 @@ export function PaymentMethodSelector({
       </div>
 
       <div className="flex flex-col gap-2.5">
+        {isUs && paypalBlock}
         {showZen && (
           <div
             className={cn(
@@ -481,7 +489,7 @@ export function PaymentMethodSelector({
             )}
           </div>
         )}
-        {paypalBlock}
+        {!isUs && paypalBlock}
         {cardBlock}
       </div>
     </div>
