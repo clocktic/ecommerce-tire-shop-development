@@ -153,11 +153,13 @@ export async function createZenHostedForm(
 
   if (response.status < 200 || response.status >= 300) {
     const message = String(response.data?.message || response.rawText || "Zen Hosted Form failed").slice(0, 200)
+    console.error("[zen] hosted-form failed:", response.status, message)
     return { ok: false, error: message }
   }
 
   const forwardUrl = typeof response.data?.url === "string" ? response.data.url.trim() : ""
   if (!forwardUrl) {
+    console.error("[zen] hosted-form returned no url:", response.rawText.slice(0, 300))
     return { ok: false, error: "Zen Payments did not return a hosted form URL" }
   }
 
