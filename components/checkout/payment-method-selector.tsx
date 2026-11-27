@@ -204,7 +204,7 @@ export function PaymentMethodSelector({
         </span>
         <div className="flex min-w-0 flex-1 flex-col gap-1.5">
           <span className="text-sm font-semibold leading-snug text-foreground">
-            {showZen || (PAYPAL_CHECKOUT_ENABLED && !isUs) ? c.cardTitle : c.cardOnlyTitle}
+            {showZen || PAYPAL_CHECKOUT_ENABLED ? c.cardTitle : c.cardOnlyTitle}
           </span>
           <div className="flex flex-wrap items-center gap-1">
             <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-semibold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
@@ -481,17 +481,8 @@ export function PaymentMethodSelector({
             )}
           </div>
         )}
-        {isUs ? (
-          <>
-            {cardBlock}
-            {paypalBlock}
-          </>
-        ) : (
-          <>
-            {paypalBlock}
-            {cardBlock}
-          </>
-        )}
+        {paypalBlock}
+        {cardBlock}
       </div>
     </div>
   )
