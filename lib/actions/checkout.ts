@@ -156,7 +156,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
     : ({ ok: false as const, error: "Skipped" })
 
   const shopifySession =
-    isPayPal || isNgenius || isSepa || (isZen && zenSession.ok)
+    isPayPal || isNgenius || isSepa || isZen
       ? ({ ok: false as const, error: "Skipped" })
       : await createShopifyCheckoutSession(orderNumber)
 
