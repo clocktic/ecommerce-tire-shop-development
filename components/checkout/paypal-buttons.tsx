@@ -53,9 +53,48 @@ type ApplePaySessionCtor = {
   STATUS_FAILURE: number
 }
 
+type PayPalGooglePayConfig = {
+  allowedPaymentMethods: unknown[]
+  merchantInfo: Record<string, unknown>
+  apiVersion: number
+  apiVersionMinor: number
+  countryCode?: string
+}
+
+type PayPalGooglePayApi = {
+  config: () => Promise<PayPalGooglePayConfig>
+  confirmOrder: (params: {
+    orderId: string
+    paymentMethodData: unknown
+  }) => Promise<{ status?: string }>
+  initiatePayerAction?: (params: { orderId: string }) => Promise<unknown>
+}
+
+type GooglePaymentsClient = {
+  isReadyToPay: (request: Record<string, unknown>) => Promise<{ result: boolean }>
+  createButton: (options: {
+    onClick: () => void
+    buttonColor?: "default" | "black" | "white"
+    buttonType?: "buy" | "pay" | "checkout" | "plain"
+    buttonSizeMode?: "static" | "fill"
+  }) => HTMLElement
+  loadPaymentData: (request: Record<string, unknown>) => Promise<{
+    paymentMethodData: unknown
+  }>
+}
+
 declare global {
   interface Window {
     ApplePaySession?: ApplePaySessionCtor
+    google?: {
+      payments?: {
+        api?: {
+          PaymentsClient: new (options: {
+            environment: "PRODUCTION" | "TEST"
+          }) => GooglePaymentsClient
+        }
+      }
+    }
     paypal?: {
       Buttons: (options: {
         style?: {
@@ -74,12 +113,37 @@ declare global {
         onError?: (err: unknown) => void
       }) => PayPalButtonsInstance
       Applepay?: () => PayPalApplePayApi
+      Googlepay?: () => PayPalGooglePayApi
     }
   }
 }
 
 const sdkPromises = new Map<string, Promise<void>>()
 let applePaySdkPromise: Promise<void> | null = null
+let googlePaySdkPromise: Promise<void> | null = null
+
+function loadGooglePaySdk(): Promise<void> {
+  if (googlePaySdkPromise) return googlePaySdkPromise
+  googlePaySdkPromise = new Promise<void>((resolve) => {
+    if (typeof window === "undefined") {
+      resolve()
+      return
+    }
+    const id = "google-pay-js-sdk"
+    if (document.getElementById(id) && window.google?.payments?.api?.PaymentsClient) {
+      resolve()
+      return
+    }
+    const script = document.createElement("script")
+    script.id = id
+    script.src = "https://pay.google.com/gp/p/js/pay.js"
+    script.async = true
+    script.onload = () => resolve()
+    script.onerror = () => resolve()
+    document.head.appendChild(script)
+  })
+  return googlePaySdkPromise
+}
 
 function loadApplePaySdk(): Promise<void> {
   if (applePaySdkPromise) return applePaySdkPromise
@@ -135,7 +199,7 @@ function loadPayPalSdk(currency: string): Promise<void> {
       PAYPAL_CLIENT_ID,
     )}&currency=${encodeURIComponent(
       cur,
-    )}&components=buttons,applepay&enable-funding=card,venmo,paylater`
+    )}&components=buttons,applepay,googlepay&enable-funding=card,venmo,paylater`
     script.async = true
     script.onload = () => resolve()
     script.onerror = () => {
@@ -169,12 +233,16 @@ export function PayPalOrderButtons({
   onFallbackToCard?: () => void
 }) {
   const containerRef = useRef<HTMLDivElement | null>(null)
+  const googlePayContainerRef = useRef<HTMLDivElement | null>(null)
   const [sdkReady, setSdkReady] = useState(false)
   const [timedOut, setTimedOut] = useState(false)
   const [renderKey, setRenderKey] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const [applePayConfig, setApplePayConfig] = useState<PayPalApplePayConfig | null>(null)
   const [applePayBusy, setApplePayBusy] = useState(false)
+  const [googlePayReady, setGooglePayReady] = useState(false)
+  const googlePayBusyRef = useRef(false)
+  const disabledRef = useRef(Boolean(disabled))
 
   const getOrderNumberRef = useRef(getOrderNumber)
   const validateBeforeApplePayRef = useRef(validateBeforeApplePay)
@@ -183,6 +251,7 @@ export function PayPalOrderButtons({
   const activeOrderNumberRef = useRef<string | null>(null)
 
   useEffect(() => {
+    disabledRef.current = Boolean(disabled)
     getOrderNumberRef.current = getOrderNumber
     validateBeforeApplePayRef.current = validateBeforeApplePay
     onSuccessRef.current = onSuccess
@@ -467,6 +536,144 @@ export function PayPalOrderButtons({
   }
 
   useEffect(() => {
+    let cancelled = false
+    setGooglePayReady(false)
+    const gpContainer = googlePayContainerRef.current
+    if (gpContainer) gpContainer.innerHTML = ""
+    if (!sdkReady || !totalCents || totalCents <= 0) return
+    if (typeof window === "undefined" || !window.paypal?.Googlepay) return
+
+    void (async () => {
+      try {
+        await loadGooglePaySdk()
+        if (cancelled) return
+        const PaymentsClientCtor = window.google?.payments?.api?.PaymentsClient
+        const googlepay = window.paypal?.Googlepay?.()
+        if (!PaymentsClientCtor || !googlepay) return
+
+        const gpConfig = await googlepay.config()
+        if (cancelled || !gpConfig?.allowedPaymentMethods?.length) return
+
+        const paymentsClient = new PaymentsClientCtor({ environment: "PRODUCTION" })
+        const readiness = await paymentsClient.isReadyToPay({
+          apiVersion: gpConfig.apiVersion,
+          apiVersionMinor: gpConfig.apiVersionMinor,
+          allowedPaymentMethods: gpConfig.allowedPaymentMethods,
+        })
+        if (cancelled || !readiness?.result) return
+
+        const handleGooglePayClick = async () => {
+          if (disabledRef.current || googlePayBusyRef.current) return
+          if (validateBeforeApplePayRef.current && !validateBeforeApplePayRef.current()) {
+            return
+          }
+          setError(null)
+          googlePayBusyRef.current = true
+          try {
+            const paymentData = await paymentsClient.loadPaymentData({
+              apiVersion: gpConfig.apiVersion,
+              apiVersionMinor: gpConfig.apiVersionMinor,
+              allowedPaymentMethods: gpConfig.allowedPaymentMethods,
+              merchantInfo: gpConfig.merchantInfo,
+              transactionInfo: {
+                totalPriceStatus: "FINAL",
+                totalPrice: (totalCents / 100).toFixed(2),
+                currencyCode: currency.toUpperCase(),
+                countryCode:
+                  gpConfig.countryCode || (currency.toUpperCase() === "EUR" ? "DE" : "US"),
+              },
+            })
+
+            const orderNumber = await getOrderNumberRef.current()
+            if (!orderNumber) {
+              const msg = "Please fill in all required shipping fields and accept the terms."
+              setError(msg)
+              onErrorMessageRef.current?.(msg)
+              return
+            }
+            activeOrderNumberRef.current = orderNumber
+
+            const createRes = await fetch("/api/payments/paypal/create-order", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ orderNumber }),
+            })
+            const createData = (await createRes.json()) as {
+              ok?: boolean
+              id?: string
+              error?: string
+            }
+            if (!createRes.ok || !createData.ok || !createData.id) {
+              throw new Error(createData.error || "Could not start Google Pay order")
+            }
+
+            const confirmRes = await googlepay.confirmOrder({
+              orderId: createData.id,
+              paymentMethodData: paymentData.paymentMethodData,
+            })
+
+            if (confirmRes?.status === "PAYER_ACTION_REQUIRED" && googlepay.initiatePayerAction) {
+              await googlepay.initiatePayerAction({ orderId: createData.id })
+            }
+
+            const captureRes = await fetch("/api/payments/paypal/capture-order", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                paypalOrderId: createData.id,
+                orderNumber,
+              }),
+            })
+            const captureData = (await captureRes.json()) as {
+              ok?: boolean
+              orderNumber?: string
+              error?: string
+            }
+            if (!captureRes.ok || !captureData.ok || !captureData.orderNumber) {
+              throw new Error(captureData.error || "Google Pay payment could not be captured.")
+            }
+
+            onSuccessRef.current(captureData.orderNumber)
+          } catch (err) {
+            const statusCode = (err as { statusCode?: string } | null)?.statusCode
+            if (statusCode === "CANCELED") return
+            const msg =
+              err instanceof Error && err.message
+                ? err.message
+                : "Google Pay payment did not complete. Please try again."
+            setError(msg)
+            onErrorMessageRef.current?.(msg)
+          } finally {
+            googlePayBusyRef.current = false
+          }
+        }
+
+        const button = paymentsClient.createButton({
+          onClick: () => {
+            void handleGooglePayClick()
+          },
+          buttonColor: "black",
+          buttonType: "pay",
+          buttonSizeMode: "fill",
+        })
+
+        const target = googlePayContainerRef.current
+        if (!cancelled && target) {
+          target.innerHTML = ""
+          target.appendChild(button)
+          setGooglePayReady(true)
+        }
+      } catch {
+        // Google Pay not available on this browser/device
+      }
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [sdkReady, currency, totalCents])
+
+  useEffect(() => {
     if (typeof document === "undefined") return
 
     const closeQrModal = (qrModal: HTMLElement) => {
@@ -584,6 +791,14 @@ export function PayPalOrderButtons({
             </button>
           </div>
         )}
+        <div
+          ref={googlePayContainerRef}
+          className={
+            sdkReady && googlePayReady
+              ? "mb-2 w-full rounded-md bg-white p-2 shadow-sm sm:rounded-lg sm:p-2.5 [&>div]:h-[45px] [&>div]:w-full"
+              : "hidden"
+          }
+        />
         <div
           ref={containerRef}
           className={
