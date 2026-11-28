@@ -20,6 +20,7 @@ import { SummaryRows } from "@/components/cart/cart-view"
 import { useI18n } from "@/components/i18n/i18n-provider"
 import { placeOrder } from "@/lib/actions/checkout"
 import { useSession } from "@/lib/auth-client"
+import { computeMemberDiscountCents } from "@/lib/member-discount"
 import { fmt } from "@/lib/i18n/fmt"
 import { storePath } from "@/lib/i18n/config"
 import { MARKETS, formatPrice } from "@/lib/markets"
@@ -282,7 +283,12 @@ export function CheckoutForm() {
           paypalAction={
             <PayPalOrderButtons
               currency={MARKETS[market].currency}
+              totalCents={Math.max(
+                0,
+                subtotalCents - computeMemberDiscountCents(subtotalCents, Boolean(session?.user)),
+              )}
               disabled={pending}
+              validateBeforeApplePay={() => Boolean(formRef.current?.reportValidity())}
               onFallbackToCard={() => setPaymentChoice(isEu ? "ngenius" : "card")}
               getOrderNumber={async () => {
                 if (createdPayPalOrderRef.current) {
