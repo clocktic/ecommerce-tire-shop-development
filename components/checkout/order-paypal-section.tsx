@@ -15,6 +15,7 @@ import { SepaBankDetails } from "@/components/checkout/sepa-bank-details"
 export function OrderPayPalSection({
   orderNumber,
   currency,
+  totalCents,
   payNowLabel,
   lang = "en",
   market = "us",
@@ -24,6 +25,7 @@ export function OrderPayPalSection({
 }: {
   orderNumber: string
   currency: string
+  totalCents?: number
   payNowLabel?: string
   lang?: string
   market?: Market
@@ -162,6 +164,7 @@ export function OrderPayPalSection({
         paypalAction={
           <PayPalOrderButtons
             currency={currency}
+            totalCents={totalCents}
             disabled={loadingShopify || loadingNgenius}
             getOrderNumber={async () => orderNumber}
             onSuccess={() => {

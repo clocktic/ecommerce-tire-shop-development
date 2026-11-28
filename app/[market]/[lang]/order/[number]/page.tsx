@@ -66,6 +66,7 @@ export default async function OrderPage({ params, searchParams }: { params: Para
             <OrderPayPalSection
               orderNumber={order.orderNumber}
               currency={MARKETS[order.market as Market].currency}
+              totalCents={order.totalCents}
               payNowLabel={x.order.payNow}
               lang={meta.content}
               market={order.market as Market}
