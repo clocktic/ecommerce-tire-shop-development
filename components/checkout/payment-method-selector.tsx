@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils"
 
 export type PaymentChoice = "zen" | "ngenius" | "sepa" | "card" | "paypal"
 
+export const SHOPIFY_CHECKOUT_ENABLED = false
+
 interface Copy {
   heading: string
   ngeniusTitle: string
@@ -171,15 +173,20 @@ export function PaymentMethodSelector({
   const showZen = market === "us" && Boolean(zenAction)
   const showNgenius = market === "eu" && Boolean(ngeniusAction)
   const showSepa = market === "eu" && Boolean(sepaAction)
+  const showCard = SHOPIFY_CHECKOUT_ENABLED && Boolean(cardAction)
   const isUs = market === "us"
   const fallbackChoice: PaymentChoice =
     isUs && PAYPAL_CHECKOUT_ENABLED
       ? "paypal"
-      : isUs
+      : showCard && isUs
         ? "card"
-        : showNgenius
-          ? "ngenius"
-          : "card"
+        : showZen
+          ? "zen"
+          : showNgenius
+            ? "ngenius"
+            : showCard
+              ? "card"
+              : "paypal"
   const [internalChoice, setInternalChoice] = useState<PaymentChoice>(initialChoice ?? fallbackChoice)
   const rawChoice = controlledChoice ?? internalChoice
   const choice: PaymentChoice =
@@ -189,9 +196,11 @@ export function PaymentMethodSelector({
         ? fallbackChoice
         : rawChoice === "sepa" && !showSepa
           ? fallbackChoice
-          : rawChoice === "paypal" && !PAYPAL_CHECKOUT_ENABLED
+          : rawChoice === "card" && !showCard
             ? fallbackChoice
-            : rawChoice
+            : rawChoice === "paypal" && !PAYPAL_CHECKOUT_ENABLED
+              ? fallbackChoice
+              : rawChoice
   const setChoice = (next: PaymentChoice) => {
     setInternalChoice(next)
     onChoiceChange?.(next)
@@ -199,7 +208,7 @@ export function PaymentMethodSelector({
   const c = getPaymentMethodCopy(lang)
   const sepaCopy = getSepaCopy(lang)
 
-  const cardBlock = (
+  const cardBlock = showCard ? (
     <div
       key="card"
       className={cn(
@@ -262,7 +271,7 @@ export function PaymentMethodSelector({
         </div>
       )}
     </div>
-  )
+  ) : null
 
   const paypalBlock = PAYPAL_CHECKOUT_ENABLED ? (
     <div
@@ -372,7 +381,7 @@ export function PaymentMethodSelector({
               </span>
               <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                 <span className="text-sm font-semibold leading-snug text-foreground">
-                  {c.zenTitle}
+                  {showCard ? c.zenTitle : c.ngeniusTitle}
                 </span>
                 <div className="flex flex-wrap items-center gap-1">
                   <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
