@@ -107,11 +107,11 @@ export default async function ProductPage({ params }: { params: Params }) {
       />
 
       <div className="grid gap-6 pb-16 md:grid-cols-12 md:gap-8 lg:gap-10">
-        <div className="md:col-span-5 lg:col-span-5">
+        <div className="min-w-0 md:col-span-5 lg:col-span-5">
           <ProductGallery images={product.images} alt={product.name} badge={product.sample ? t.product.demoProduct : undefined} />
         </div>
 
-        <div className="flex flex-col gap-6 md:col-span-7 lg:col-span-7">
+        <div className="flex min-w-0 flex-col gap-6 md:col-span-7 lg:col-span-7">
           <div className="flex flex-col gap-3">
             <BrandBadge
               brand={product.brand}

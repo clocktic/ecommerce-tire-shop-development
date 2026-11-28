@@ -56,9 +56,9 @@ export function AddToCart({ slug, name, image, priceCents, defaultQuantity, show
 
   return (
     <div ref={containerRef} className="flex flex-col gap-3">
-      <div className="flex items-stretch gap-2">
+      <div className="flex flex-wrap items-stretch gap-2">
         <div
-          className="flex items-center border border-border bg-card shadow-chip transition-transform duration-200 hover:-translate-y-0.5"
+          className="flex shrink-0 items-center border border-border bg-card shadow-chip transition-transform duration-200 hover:-translate-y-0.5"
           role="group"
           aria-label={t.product.quantity}
         >
@@ -83,21 +83,21 @@ export function AddToCart({ slug, name, image, priceCents, defaultQuantity, show
           </button>
         </div>
         {showSetPreset && (
-          <div className="flex items-stretch border border-border bg-card font-mono text-xs font-semibold" role="group" aria-label={t.product.quantity}>
+          <div className="flex shrink-0 items-stretch border border-border bg-card font-mono text-xs font-semibold" role="group" aria-label={t.product.quantity}>
             {[1, 2, 4].map((preset, idx) => (
               <button
                 key={preset}
                 type="button"
                 onClick={() => setQuantity(preset)}
                 aria-pressed={quantity === preset}
-                className={`px-2.5 transition-colors ${idx > 0 ? "border-l border-border" : ""} ${quantity === preset ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
+                className={`px-3 transition-colors ${idx > 0 ? "border-l border-border" : ""} ${quantity === preset ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
               >
                 {preset}×
               </button>
             ))}
           </div>
         )}
-        <Button size="lg" className="flex-1" disabled={disabled} onClick={handleAdd}>
+        <Button size="lg" className="min-w-[12rem] flex-1 basis-full sm:basis-0" disabled={disabled} onClick={handleAdd}>
           {added ? <Check aria-hidden="true" /> : null}
           {added
             ? t.product.added

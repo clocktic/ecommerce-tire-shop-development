@@ -96,7 +96,7 @@ export default async function StoreLayout({ children, params }: { children: Reac
       className={`${archivo.variable} ${jetbrains.variable} overflow-x-clip bg-background ${theme}`}
       suppressHydrationWarning
     >
-      <body className="min-h-dvh flex flex-col">
+      <body className="min-h-dvh flex flex-col overflow-x-clip">
         <ThemeSync />
         <ParallaxBackdrop />
       <CtaWheelRoll />
