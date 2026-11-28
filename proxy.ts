@@ -92,5 +92,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|admin|feeds|_next/static|_next/image|images|favicon|icon|robots.txt|sitemap.xml|.*\\..*).*)"],
+  matcher: ["/((?!api|admin|feeds|_next/static|_next/image|images|favicon|icon|robots.txt|sitemap.xml|\\.well-known|.*\\..*).*)"],
 }
