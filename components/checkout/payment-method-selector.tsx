@@ -15,6 +15,8 @@ interface Copy {
   ngeniusSub: string
   ngeniusCta: string
   ngeniusRedirectNote: string
+  zenTitle: string
+  zenSub: string
   cardTitle: string
   cardOnlyTitle: string
   cardSub: string
@@ -31,13 +33,15 @@ const COPY: Record<ContentLang, Copy> = {
     ngeniusSub: "Pay securely by Visa or Mastercard with 3D Secure protection",
     ngeniusCta: "Pay by card",
     ngeniusRedirectNote: "Redirects to the encrypted 3D Secure card payment page.",
+    zenTitle: "Alternative Card Checkout (3D Secure)",
+    zenSub: "Pay via ZEN 3D Secure gateway (Visa, Mastercard, Amex, Discover)",
     paypalTitle: "Debit / Credit Card, PayPal, Venmo & Pay Later",
     paypalSub: "Pay with Visa, Mastercard, Amex, Discover, PayPal, Venmo, or Pay in 4",
-    cardTitle: "Express Wallets & Alternative Checkout",
-    cardOnlyTitle: "Credit / Debit Card & Express Wallets",
-    cardSub: "Visa, Mastercard, Amex, Discover, Apple Pay, Google Pay & Shop Pay",
-    cardCta: "Proceed to payment",
-    cardRedirectNote: "Opens the encrypted payment page to complete your order.",
+    cardTitle: "Credit / Debit Card",
+    cardOnlyTitle: "Credit / Debit Card",
+    cardSub: "Pay securely by Visa, Mastercard, Amex, Discover, Apple Pay, Google Pay & Shop Pay",
+    cardCta: "Pay by card",
+    cardRedirectNote: "Opens the encrypted card payment page to complete your order.",
   },
   de: {
     heading: "Zahlungsart",
@@ -45,13 +49,15 @@ const COPY: Record<ContentLang, Copy> = {
     ngeniusSub: "Sicher mit Visa oder Mastercard und 3D-Secure-Schutz bezahlen",
     ngeniusCta: "Mit Karte bezahlen",
     ngeniusRedirectNote: "Leitet zur verschlüsselten 3D-Secure-Kartenzahlung weiter.",
+    zenTitle: "Alternative Kartenzahlung (3D Secure)",
+    zenSub: "Über ZEN 3D-Secure-Gateway bezahlen (Visa, Mastercard, Amex, Discover)",
     paypalTitle: "Kredit-/Debitkarte, PayPal & Später bezahlen",
     paypalSub: "Mit Visa, Mastercard, Amex, PayPal oder Ratenzahlung bezahlen",
-    cardTitle: "Express-Wallets & Alternativer Checkout",
-    cardOnlyTitle: "Kredit-/Debitkarte & Express-Wallets",
-    cardSub: "Visa, Mastercard, Amex, Apple Pay, Google Pay & Shop Pay",
-    cardCta: "Weiter zur Zahlung",
-    cardRedirectNote: "Öffnet die verschlüsselte Bezahlseite, um Ihre Bestellung abzuschließen.",
+    cardTitle: "Kredit- / Debitkarte",
+    cardOnlyTitle: "Kredit- / Debitkarte",
+    cardSub: "Sicher mit Visa, Mastercard, Amex, Apple Pay, Google Pay & Shop Pay bezahlen",
+    cardCta: "Mit Karte bezahlen",
+    cardRedirectNote: "Öffnet die verschlüsselte Karten-Bezahlseite, um Ihre Bestellung abzuschließen.",
   },
   fr: {
     heading: "Mode de paiement",
@@ -59,13 +65,15 @@ const COPY: Record<ContentLang, Copy> = {
     ngeniusSub: "Payez en toute sécurité par Visa ou Mastercard avec protection 3D Secure",
     ngeniusCta: "Payer par carte",
     ngeniusRedirectNote: "Redirige vers la page sécurisée de paiement par carte 3D Secure.",
+    zenTitle: "Paiement par carte alternatif (3D Secure)",
+    zenSub: "Payez via la passerelle 3D Secure ZEN (Visa, Mastercard, Amex, Discover)",
     paypalTitle: "Carte bancaire, PayPal & Paiement en 4x",
     paypalSub: "Payez par Visa, Mastercard, Amex ou PayPal",
-    cardTitle: "Portefeuilles express & Paiement alternatif",
-    cardOnlyTitle: "Carte bancaire & Portefeuilles express",
-    cardSub: "Visa, Mastercard, Amex, Apple Pay, Google Pay & Shop Pay",
-    cardCta: "Passer au paiement",
-    cardRedirectNote: "Ouvre la page de paiement sécurisée pour finaliser votre commande.",
+    cardTitle: "Carte bancaire",
+    cardOnlyTitle: "Carte bancaire",
+    cardSub: "Payez par Visa, Mastercard, Amex, Apple Pay, Google Pay & Shop Pay",
+    cardCta: "Payer par carte",
+    cardRedirectNote: "Ouvre la page de paiement par carte sécurisée pour finaliser votre commande.",
   },
   it: {
     heading: "Metodo di pagamento",
@@ -73,13 +81,15 @@ const COPY: Record<ContentLang, Copy> = {
     ngeniusSub: "Paga in sicurezza con Visa o Mastercard con protezione 3D Secure",
     ngeniusCta: "Paga con carta",
     ngeniusRedirectNote: "Reindirizza alla pagina crittografata di pagamento con carta 3D Secure.",
+    zenTitle: "Pagamento con carta alternativo (3D Secure)",
+    zenSub: "Paga tramite gateway ZEN 3D Secure (Visa, Mastercard, Amex, Discover)",
     paypalTitle: "Carta di credito/debito, PayPal & Paga in 3 rate",
     paypalSub: "Paga con Visa, Mastercard, Amex o PayPal",
-    cardTitle: "Wallet rapidi & Checkout alternativo",
-    cardOnlyTitle: "Carta di credito/debito & Wallet rapidi",
-    cardSub: "Visa, Mastercard, Amex, Apple Pay, Google Pay & Shop Pay",
-    cardCta: "Procedi al pagamento",
-    cardRedirectNote: "Apre la pagina di pagamento crittografata per completare l'ordine.",
+    cardTitle: "Carta di credito / debito",
+    cardOnlyTitle: "Carta di credito / debito",
+    cardSub: "Paga con Visa, Mastercard, Amex, Apple Pay, Google Pay & Shop Pay",
+    cardCta: "Paga con carta",
+    cardRedirectNote: "Apre la pagina crittografata di pagamento con carta per completare l'ordine.",
   },
   es: {
     heading: "Método de pago",
@@ -87,13 +97,15 @@ const COPY: Record<ContentLang, Copy> = {
     ngeniusSub: "Paga de forma segura con Visa o Mastercard con protección 3D Secure",
     ngeniusCta: "Pagar con tarjeta",
     ngeniusRedirectNote: "Redirige a la pasarela cifrada de pago con tarjeta 3D Secure.",
+    zenTitle: "Pago alternativo con tarjeta (3D Secure)",
+    zenSub: "Paga mediante pasarela ZEN 3D Secure (Visa, Mastercard, Amex, Discover)",
     paypalTitle: "Tarjeta de débito/crédito, PayPal y Paga después",
     paypalSub: "Paga con Visa, Mastercard, Amex o PayPal",
-    cardTitle: "Billeteras rápidas y Pago alternativo",
-    cardOnlyTitle: "Tarjeta de débito/crédito y Billeteras rápidas",
-    cardSub: "Visa, Mastercard, Amex, Apple Pay, Google Pay y Shop Pay",
-    cardCta: "Continuar al pago",
-    cardRedirectNote: "Abre la pasarela de pago segura para completar tu pedido.",
+    cardTitle: "Tarjeta de crédito / débito",
+    cardOnlyTitle: "Tarjeta de crédito / débito",
+    cardSub: "Paga con Visa, Mastercard, Amex, Apple Pay, Google Pay y Shop Pay",
+    cardCta: "Pagar con tarjeta",
+    cardRedirectNote: "Abre la pasarela segura de pago con tarjeta para completar tu pedido.",
   },
   "es-419": {
     heading: "Método de pago",
@@ -101,13 +113,15 @@ const COPY: Record<ContentLang, Copy> = {
     ngeniusSub: "Paga de forma segura con Visa o Mastercard con protección 3D Secure",
     ngeniusCta: "Pagar con tarjeta",
     ngeniusRedirectNote: "Redirige a la pasarela cifrada de pago con tarjeta 3D Secure.",
+    zenTitle: "Pago alternativo con tarjeta (3D Secure)",
+    zenSub: "Paga mediante pasarela ZEN 3D Secure (Visa, Mastercard, Amex, Discover)",
     paypalTitle: "Tarjeta de débito/crédito, PayPal, Venmo y Paga después",
     paypalSub: "Paga con Visa, Mastercard, Amex, PayPal o Venmo",
-    cardTitle: "Billeteras rápidas y Pago alternativo",
-    cardOnlyTitle: "Tarjeta de débito/crédito y Billeteras rápidas",
-    cardSub: "Visa, Mastercard, Amex, Discover, Apple Pay, Google Pay y Shop Pay",
-    cardCta: "Continuar al pago",
-    cardRedirectNote: "Abre la pasarela de pago segura para completar tu pedido.",
+    cardTitle: "Tarjeta de crédito / débito",
+    cardOnlyTitle: "Tarjeta de crédito / débito",
+    cardSub: "Paga con Visa, Mastercard, Amex, Discover, Apple Pay, Google Pay y Shop Pay",
+    cardCta: "Pagar con tarjeta",
+    cardRedirectNote: "Abre la pasarela segura de pago con tarjeta para completar tu pedido.",
   },
   nl: {
     heading: "Betaalmethode",
@@ -115,13 +129,15 @@ const COPY: Record<ContentLang, Copy> = {
     ngeniusSub: "Betaal veilig met Visa of Mastercard met 3D Secure-beveiliging",
     ngeniusCta: "Betalen met kaart",
     ngeniusRedirectNote: "Leidt door naar de versleutelde 3D Secure-kaartbetaalpagina.",
+    zenTitle: "Alternatieve kaartbetaling (3D Secure)",
+    zenSub: "Betaal via ZEN 3D Secure-gateway (Visa, Mastercard, Amex, Discover)",
     paypalTitle: "Betaalkaart / Creditcard, PayPal & Betaal later",
     paypalSub: "Betaal met Visa, Mastercard, Amex of PayPal",
-    cardTitle: "Express-wallets & Alternatieve checkout",
-    cardOnlyTitle: "Betaalkaart / Creditcard & Express-wallets",
-    cardSub: "Visa, Mastercard, Amex, Apple Pay, Google Pay & Shop Pay",
-    cardCta: "Doorgaan naar betaling",
-    cardRedirectNote: "Opent de beveiligde betaalpagina om je bestelling af te ronden.",
+    cardTitle: "Creditcard / Betaalkaart",
+    cardOnlyTitle: "Creditcard / Betaalkaart",
+    cardSub: "Betaal met Visa, Mastercard, Amex, Apple Pay, Google Pay & Shop Pay",
+    cardCta: "Betalen met kaart",
+    cardRedirectNote: "Opent de beveiligde kaartbetaalpagina om je bestelling af te ronden.",
   },
 }
 
@@ -159,8 +175,8 @@ export function PaymentMethodSelector({
   const fallbackChoice: PaymentChoice =
     isUs && PAYPAL_CHECKOUT_ENABLED
       ? "paypal"
-      : showZen
-        ? "zen"
+      : isUs
+        ? "card"
         : showNgenius
           ? "ngenius"
           : "card"
@@ -214,15 +230,6 @@ export function PaymentMethodSelector({
             {showZen || PAYPAL_CHECKOUT_ENABLED ? c.cardTitle : c.cardOnlyTitle}
           </span>
           <div className="flex flex-wrap items-center gap-1">
-            <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-semibold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
-              Apple Pay
-            </span>
-            <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-semibold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
-              G Pay
-            </span>
-            <span className="rounded bg-[#5A31F4] px-1 py-0.5 font-mono text-[9.5px] font-bold tracking-tight text-white sm:px-1.5 sm:text-[10px]">
-              Shop Pay
-            </span>
             <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-bold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
               VISA
             </span>
@@ -231,6 +238,15 @@ export function PaymentMethodSelector({
             </span>
             <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-bold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
               AMEX
+            </span>
+            <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-semibold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
+              Apple Pay
+            </span>
+            <span className="rounded border border-border/80 bg-background/80 px-1 py-0.5 font-mono text-[9.5px] font-semibold tracking-tight text-foreground sm:px-1.5 sm:text-[10px]">
+              G Pay
+            </span>
+            <span className="rounded bg-[#5A31F4] px-1 py-0.5 font-mono text-[9.5px] font-bold tracking-tight text-white sm:px-1.5 sm:text-[10px]">
+              Shop Pay
             </span>
           </div>
           <p className="text-xs leading-snug text-muted-foreground">{c.cardSub}</p>
@@ -328,6 +344,7 @@ export function PaymentMethodSelector({
 
       <div className="flex flex-col gap-2.5">
         {isUs && paypalBlock}
+        {isUs && cardBlock}
         {showZen && (
           <div
             className={cn(
@@ -355,7 +372,7 @@ export function PaymentMethodSelector({
               </span>
               <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                 <span className="text-sm font-semibold leading-snug text-foreground">
-                  {c.ngeniusTitle}
+                  {c.zenTitle}
                 </span>
                 <div className="flex flex-wrap items-center gap-1">
                   <span className="rounded border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-tight text-foreground">
@@ -375,7 +392,7 @@ export function PaymentMethodSelector({
                   </span>
                 </div>
                 <p className="text-xs leading-snug text-muted-foreground">
-                  Pay securely by Visa, Mastercard, American Express, or Discover
+                  {c.zenSub}
                 </p>
               </div>
             </button>
@@ -496,7 +513,7 @@ export function PaymentMethodSelector({
           </div>
         )}
         {!isUs && paypalBlock}
-        {cardBlock}
+        {!isUs && cardBlock}
       </div>
     </div>
   )
